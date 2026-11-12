@@ -4,7 +4,7 @@ All notable changes to KillerShell are documented here.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.5.2] - Unreleased
+## [1.5.2] - 2026-11-11
 
 1.5.2 makes exported search results, saved size filters and on-screen dates read the same on every Windows region, fixes dialog crashes, lost favorites and slow archive extraction, makes every killer script command work like the website's one-liner, and makes updates and the file pickers recover from more failures.
 
@@ -14,48 +14,50 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ### Fixed
 
-- The file picker loads icons and picture previews in the background, refreshes overwritten previews, and restores its position on any monitor.
-- About opens at once instead of waiting on the signature check, which can stall for many seconds on a network that drops revocation traffic; the publisher and thumbprint fill in when it finishes.
-- A folder typed into the file picker that cannot be opened keeps its reason on the status line after the picker goes back to the last folder that listed.
-- Exported search results write dates as 2026-11-02 14:30:00 whatever the Windows region, so Thai and Finnish settings no longer produce years like 2569 or times like 14.30 in the CSV and HTML, and sizes and counts in the HTML reports keep a decimal point.
-- A size filter such as 1,5 MB saved with your session loads back the same under any region, and sizes saved by earlier versions still load.
-- Suggested export file names use the same date and time digits whatever the Windows region.
-- Dragged tabs keep their current appearance and size.
-- A per-user or portable update reopens KillerShell even when antivirus or a locked-down PowerShell stops the update helper from loading.
-- Updating KillerShell no longer removes a relaunch another Killer app scheduled for its own update.
-- The file picker accepts a full path typed into the name box when the folder listing failed or timed out, and refuses a name no path can carry with its message even while a folder is still loading.
-- Changing the file type in the save picker while the name box holds characters no file name can carry no longer crashes KillerShell; the name keeps its text and shows the invalid-path message.
-- The window menu from a right-click on the title bar or Alt+Space opens at the pointer instead of about 20 pixels below and to the right of it.
-- Clicking or pressing a key while KillerShell fades out after Exit no longer leaves it hidden in the tray, and a window hidden partway through that fade comes back visible.
-- Killer script commands such as `amort` run with their own defaults when typed with no options, and every option reaches the script as typed, so `-RetainDays 30` keeps its name and `amort -D` means the script's `-DryRun` instead of PowerShell's `-Debug`. Each command now does exactly what the website's one-liner does: it downloads the latest script to `%TEMP%` and runs it. The copy of the commands that ships with KillerShell loads ahead of one installed from PSGallery, and `peek` is available. When the download fails, the command stops instead of running an older copy left in `%TEMP%`, and a computer where Group Policy sets the execution policy shows no error. Two terminal tabs running the same command at once each run their own copy.
-- Dragging the title bar of the registry, rename, file operation, folder picker, process, service, event and terminal profile dialogs no longer crashes KillerShell when the click arrives after the mouse button is already up.
 - A favorite on a share that is offline or a drive that is unplugged stays in its place in the favorites drawer, dimmed, with a tooltip that says it can't be reached, and it lights up again once the folder is back the next time the drawer opens. Before, it disappeared at launch and the next save deleted it for good, and upgrading from a version before 1.5.0 triggered that save on the first launch. KillerShell no longer waits on such a share before its window opens; the drawer checks its favorites in the background.
-- Pulling a USB drive or losing a share while browsing it moves the pane to This PC instead of leaving a listing of a place that is gone.
-- Clear all Data keeps the file associations KillerShell registered, so it stays listed in Windows Default apps.
-- Modifying a REG_NONE value edits its bytes and saves it as REG_NONE, and the value list shows its data as hex instead of "System.Byte[]". A value of a type KillerShell cannot write back says so instead of opening the text editor.
-- A relative address typed in the address bar, such as `..`, `Downloads` or `\Windows`, opens relative to the folder the tab is showing, and `D:` opens that drive's root, instead of resolving against the folder KillerShell was started from.
+- Paste refuses to copy or move a folder into itself or one of its own subfolders, the same way drag and drop already did.
+- Dragging the title bar of the registry, rename, file operation, folder picker, process, service, event and terminal profile dialogs no longer crashes KillerShell when the click arrives after the mouse button is already up.
+- Changing the file type in the save picker while the name box holds characters no file name can carry no longer crashes KillerShell; the name keeps its text and shows the invalid-path message.
+- Changing the file type in the save picker while the name is in quotes, such as "report.csv", no longer crashes KillerShell, and the Save button turns on as soon as a full path is typed while the folder listing is unavailable.
+- A per-user or portable update reopens KillerShell even when antivirus or a locked-down PowerShell stops the update helper from loading.
+- A per-user update that finds another install running, or finds the installed copy changed, reopens KillerShell instead of leaving it closed.
+- A failed all-users update says what went wrong, such as a refused download, another install running or a full disk, instead of Windows' "This installation is forbidden by system policy" or "Incorrect function."
+- Updating KillerShell no longer removes a relaunch another Killer app scheduled for its own update.
+- Clicking or pressing a key while KillerShell fades out after Exit no longer leaves it hidden in the tray, and a window hidden partway through that fade comes back visible.
+- Opening the recents menu no longer freezes the window while a folder on a dead share times out. Every folder is checked at once, and one that doesn't answer within a second is left out of that opening.
+- Extract All reads a zip, tar or tgz twice in total instead of once per file, so a large archive extracts in a steady run instead of looking hung. Names that escape the destination or collide on Windows are still refused before anything is written, and a name stored with a doubled slash extracts instead of refusing the archive.
+- Killer script commands such as `amort` run with their own defaults when typed with no options, and every option reaches the script as typed, so `-RetainDays 30` keeps its name and `amort -D` means the script's `-DryRun` instead of PowerShell's `-Debug`. Each command now does exactly what the website's one-liner does: it downloads the latest script to `%TEMP%` and runs it. The copy of the commands that ships with KillerShell loads ahead of one installed from PSGallery, and `peek` is available. When the download fails, the command stops instead of running an older copy left in `%TEMP%`, and a computer where Group Policy sets the execution policy shows no error. Two terminal tabs running the same command at once each run their own copy.
+- About opens at once instead of waiting on the signature check, which can stall for many seconds on a network that drops revocation traffic; the publisher and thumbprint fill in when it finishes.
 - Typing the name or path of another file in the text editor's path box and pressing Enter opens that file in the editor instead of refusing it as already existing, and a bare name such as `.env` means the file beside the open document. A blank untitled document gives its tab to the file; one with text in it keeps its tab and the file opens in a new one.
 - A log or other file that another program still has open for writing, such as a running service's log, opens in the text editor instead of failing because the file is in use.
 - Closing the last tab in the first pane while two panes are open folds the window back to one pane holding the second pane's tabs, the same as dragging that tab out does, instead of opening a new folder tab in its place.
-- Paste refuses to copy or move a folder into itself or one of its own subfolders, the same way drag and drop already did.
-- Opening the recents menu no longer freezes the window while a folder on a dead share times out. Every folder is checked at once, and one that doesn't answer within a second is left out of that opening.
-- Toggling hidden folders in the tree twice in quick succession no longer leaves tree clicks unable to navigate.
+- A relative address typed in the address bar, such as `..`, `Downloads` or `\Windows`, opens relative to the folder the tab is showing, and `D:` opens that drive's root, instead of resolving against the folder KillerShell was started from.
+- Pulling a USB drive or losing a share while browsing it moves the pane to This PC instead of leaving a listing of a place that is gone.
 - Opening a file that is already open in the hidden second pane switches to that tab instead of opening the file a second time.
+- Toggling hidden folders in the tree twice in quick succession no longer leaves tree clicks unable to navigate.
+- A file that grows or changes while its folder is open keeps its selection and keyboard focus.
+- A picture that can't be shown as a thumbnail is no longer locked until KillerShell closes, so it can be renamed or deleted, and it isn't read again every time its row redraws.
+- Clear all Data keeps the file associations KillerShell registered, so it stays listed in Windows Default apps.
+- Exported search results write dates as 2026-11-02 14:30:00 whatever the Windows region, so Thai and Finnish settings no longer produce years like 2569 or times like 14.30 in the CSV and HTML, and sizes and counts in the HTML reports keep a decimal point.
+- A size filter such as 1,5 MB saved with your session loads back the same under any region, and sizes saved by earlier versions still load.
+- Process start times, event times, and the dates in the file operation window and both file pickers read as 2026-11-02 14:30 whatever the Windows region, the same as the exports.
+- Suggested export file names use the same date and time digits whatever the Windows region.
+- KillerPivot and the killer script commands add TLS 1.2 to what the session already allows instead of replacing it, so they no longer switch off TLS 1.3 for the rest of a PowerShell session.
+- The file picker loads icons and picture previews in the background, refreshes overwritten previews, and restores its position on any monitor.
+- The file picker accepts a full path typed into the name box when the folder listing failed or timed out, and refuses a name no path can carry with its message even while a folder is still loading.
+- A folder typed into the file picker that cannot be opened keeps its reason on the status line after the picker goes back to the last folder that listed.
+- The folder picker comes back on a monitor to the left of or above the main one instead of forgetting where it was, and a spot that is no longer on any screen is pulled back onto one.
+- The window menu from a right-click on the title bar or Alt+Space opens at the pointer instead of about 20 pixels below and to the right of it.
+- Dragged tabs keep their current appearance and size.
+- A tab dragged partway and then interrupted, by Alt+Tab or a UAC prompt before the button came up, no longer stays drawn out of its place over its neighbor. It settles back into its slot.
+- Modifying a REG_NONE value edits its bytes and saves it as REG_NONE, and the value list shows its data as hex instead of "System.Byte[]". A value of a type KillerShell cannot write back says so instead of opening the text editor.
+- Escape cancels the registry value editor without saving, and its close button has a name for screen readers.
+- Text in the registry and confirmation dialogs follows a theme or high-contrast switch made while the dialog is open.
 - Copy SHA-256 reports to the tab that asked for it, even when you switch tabs while a large file is hashing.
 - An HTML export says it was exported when the file was written but no browser could open it.
-- A file that grows or changes while its folder is open keeps its selection and keyboard focus.
-- Process start times, event times, and the dates in the file operation window and both file pickers read as 2026-11-02 14:30 whatever the Windows region, the same as the exports.
-- The folder picker comes back on a monitor to the left of or above the main one instead of forgetting where it was, and a spot that is no longer on any screen is pulled back onto one.
 - The disk and network tiles on the Performance tab show a dash when their counters can't be read, instead of a steady 0, and a machine with performance counters switched off says so.
 - Closing a Storage tab right after clicking a square no longer writes that tab's summary into the status bar five seconds later.
 - The Storage scan progress line counts folders and files in the interface language.
-- Escape cancels the registry value editor without saving, and its close button has a name for screen readers.
-- Text in the registry and confirmation dialogs follows a theme or high-contrast switch made while the dialog is open.
-- A per-user update that finds another install running, or finds the installed copy changed, reopens KillerShell instead of leaving it closed.
-- A failed all-users update says what went wrong, such as a refused download, another install running or a full disk, instead of Windows' "This installation is forbidden by system policy" or "Incorrect function."
-- Extract All reads a zip, tar or tgz twice in total instead of once per file, so a large archive extracts in a steady run instead of looking hung. Names that escape the destination or collide on Windows are still refused before anything is written, and a name stored with a doubled slash extracts instead of refusing the archive.
-- Changing the file type in the save picker while the name is in quotes, such as "report.csv", no longer crashes KillerShell, and the Save button turns on as soon as a full path is typed while the folder listing is unavailable.
-- A picture that can't be shown as a thumbnail is no longer locked until KillerShell closes, so it can be renamed or deleted, and it isn't read again every time its row redraws.
 - Archive error messages, including names that collide on Windows, appear in the interface language.
 - The Install button refuses while an update or another install of the same folder is running, the same way the silent install and the update helpers do.
 - A portable copy no longer rewrites the text file icon beside itself when a different copy owns the file associations.
@@ -64,8 +66,6 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - A terminal tab closed right after it opens reports its shell's real exit code instead of a made-up 0.
 - The terminal prompt shows the git branch in a folder that became a repository after the prompt first visited it, such as after `git init` or a clone.
 - KillerPivot stores a key typed in capitals as lowercase, refuses a blank `-Name` before writing anything, keeps one `tenants.json.pivot-backup` instead of adding a new backup file on every save, and clears the per-save backups older versions left.
-- KillerPivot and the killer script commands add TLS 1.2 to what the session already allows instead of replacing it, so they no longer switch off TLS 1.3 for the rest of a PowerShell session.
-- A tab dragged partway and then interrupted, by Alt+Tab or a UAC prompt before the button came up, no longer stays drawn out of its place over its neighbor. It settles back into its slot.
 
 ### Changed
 
@@ -73,8 +73,8 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Only the main window remembers your tabs. Closing a Ctrl+N window or a torn-out tab's window no longer replaces the saved session with that window's tabs, and those windows close without the quit prompt about keeping tabs, the same as an administrator window. They still ask about unsaved documents, and a remembered choice to keep Esc from closing the window still applies. Installing or updating from one of those windows, or from an administrator window, leaves the saved session alone too.
 - Each folder remembers its own sort. Pick Name, Size or any other sort in a folder, or flip its direction, and that folder opens that way from then on, while every folder you haven't sorted opens by Modified with the newest on top. Search results still keep one sort per window pane.
 - In dual pane each pane shows its tab strip only while it holds more than one tab, the same as a single pane, instead of both panes showing one as soon as either had two. A tab dragged in from the other pane brings the strip up as it lands.
-- Every Performance graph has its own color on every theme: CPU green, memory blue, disk amber for reads and red for writes, network magenta for sends and yellow for receives, and GPU cyan, so no two graphs share a color.
 - The two columns of Performance cards flow on their own, so a short card no longer leaves a gap under it: the next card in its column moves up to meet it. A dragged card drops above or below the card under the pointer, or at the bottom of a column, and stays in that column; the cards you didn't move keep theirs.
+- Every Performance graph has its own color on every theme: CPU green, memory blue, disk amber for reads and red for writes, network magenta for sends and yellow for receives, and GPU cyan, so no two graphs share a color.
 - The memory card names the installed memory by type and speed, such as DDR4-3200, instead of repeating the amount the card already shows. A virtual machine that reports neither calls it Memory.
 - Single-line text fields are as tall as the dropdowns beside them, so form rows line up instead of the text boxes standing oversized. A field given its own height, such as the editor's Find box, keeps it.
 
