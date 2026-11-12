@@ -73,7 +73,6 @@
     <sys:String x:Key="Str_Sort_Found">wie gefunden</sys:String>
     <sys:String x:Key="Str_TT_FilterResults">Diese Ergebnisse filtern (Strg+F)</sys:String>
     <sys:String x:Key="Str_TT_Pipe">In diesen Ergebnissen suchen  (Strg+Umschalt+F)</sys:String>
-    <sys:String x:Key="Str_TT_DualPane">Fensteranordnung wechseln. Ctrl+Klick wechselt rückwärts; Rechtsklick wählt die Anordnung. F10 öffnet oder schließt das zweite Fenster.</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">Weitere Werkzeuge</sys:String>
     <sys:String x:Key="Str_TT_SystemTools">Systemwerkzeuge</sys:String>
     <sys:String x:Key="Str_TT_Sort">Sortieren nach  (Alt+S)</sys:String>
@@ -1012,6 +1011,7 @@
     <sys:String x:Key="Str_Layout_TabsBottom">Tabs unten</sys:String>
     <sys:String x:Key="Str_Layout_LeftRight">Fenster links und rechts</sys:String>
     <sys:String x:Key="Str_Layout_TopBottom">Fenster oben und unten</sys:String>
+    <sys:String x:Key="Str_Layout_Panes">Fensteraufteilung</sys:String>
     <sys:String x:Key="Str_TitleKind_FileBrowser">Dateibrowser</sys:String>
     <sys:String x:Key="Str_TitleKind_Search">Suchergebnisse</sys:String>
     <sys:String x:Key="Str_TitleKind_PowerShell">PowerShell-Terminal</sys:String>
@@ -1052,4 +1052,15 @@
     <sys:String x:Key="Str_Card_Close">Schließen</sys:String>
     <sys:String x:Key="Str_Card_MoveOtherPane">In den anderen Bereich verschieben</sys:String>
     <sys:String x:Key="Str_Card_MoveNewWindow">In ein neues Fenster verschieben</sys:String>
+    <sys:String x:Key="Str_Card_Explorer">Explorer</sys:String>
+    <sys:String x:Key="Str_Card_Terminal">Terminal</sys:String>
+    <sys:String x:Key="Str_Card_Search">Suchen</sys:String>
+    <sys:String x:Key="Str_Card_Undo">Rück&#xAD;gängig</sys:String>
+    <sys:String x:Key="Str_Card_Redo">Wieder&#xAD;holen</sys:String>
+    <sys:String x:Key="Str_Card_Save">Spei&#xAD;chern</sys:String>
+    <sys:String x:Key="Str_Card_Cut">Aus&#xAD;schnei&#xAD;den</sys:String>
+    <sys:String x:Key="Str_Card_Copy">Kopieren</sys:String>
+    <sys:String x:Key="Str_Card_Edit">Bear&#xAD;beiten</sys:String>
+    <sys:String x:Key="Str_Card_Rename">Um&#xAD;be&#xAD;nennen</sys:String>
+    <sys:String x:Key="Str_Card_SelectAll">Alles auswählen</sys:String>
 </ResourceDictionary>

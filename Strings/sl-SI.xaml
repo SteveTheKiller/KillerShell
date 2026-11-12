@@ -91,7 +91,6 @@
     <sys:String x:Key="Str_Sort_Found">po vrstnem redu najdb</sys:String>
     <sys:String x:Key="Str_TT_FilterResults">Filtriraj te rezultate (Ctrl+F)</sys:String>
     <sys:String x:Key="Str_TT_Pipe">Išči v teh rezultatih  (Ctrl+Shift+F)</sys:String>
-    <sys:String x:Key="Str_TT_DualPane">Preklopi postavitev podoken. Ctrl+klik obrne vrstni red; desni klik izbere postavitev. F10 odpre ali zapre drugo podokno.</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">Več orodij</sys:String>
     <sys:String x:Key="Str_TT_SystemTools">Sistemska orodja</sys:String>
     <sys:String x:Key="Str_TT_Sort">Razvrsti po  (Alt+S)</sys:String>
@@ -931,6 +930,7 @@ Nastavitve bodo ohranjene.</sys:String>
     <sys:String x:Key="Str_Layout_TabsBottom">Zavihki spodaj</sys:String>
     <sys:String x:Key="Str_Layout_LeftRight">Podokni levo in desno</sys:String>
     <sys:String x:Key="Str_Layout_TopBottom">Podokni zgoraj in spodaj</sys:String>
+    <sys:String x:Key="Str_Layout_Panes">Postavitev podoken</sys:String>
     <sys:String x:Key="Str_TitleKind_FileBrowser">Brskalnik datotek</sys:String>
     <sys:String x:Key="Str_TitleKind_Search">Rezultati iskanja</sys:String>
     <sys:String x:Key="Str_TitleKind_PowerShell">Terminal PowerShell</sys:String>
@@ -970,4 +970,15 @@ Nastavitve bodo ohranjene.</sys:String>
     <sys:String x:Key="Str_Card_Close">Zapri</sys:String>
     <sys:String x:Key="Str_Card_MoveOtherPane">Premakni v drugo podokno</sys:String>
     <sys:String x:Key="Str_Card_MoveNewWindow">Premakni v novo okno</sys:String>
+    <sys:String x:Key="Str_Card_Explorer">Raziskovalec</sys:String>
+    <sys:String x:Key="Str_Card_Terminal">Terminal</sys:String>
+    <sys:String x:Key="Str_Card_Search">Išči</sys:String>
+    <sys:String x:Key="Str_Card_Undo">Razveljavi</sys:String>
+    <sys:String x:Key="Str_Card_Redo">Uveljavi</sys:String>
+    <sys:String x:Key="Str_Card_Save">Shrani</sys:String>
+    <sys:String x:Key="Str_Card_Cut">Izreži</sys:String>
+    <sys:String x:Key="Str_Card_Copy">Kopiraj</sys:String>
+    <sys:String x:Key="Str_Card_Edit">Uredi</sys:String>
+    <sys:String x:Key="Str_Card_Rename">Preimenuj</sys:String>
+    <sys:String x:Key="Str_Card_SelectAll">Izberi vse</sys:String>
 </ResourceDictionary>

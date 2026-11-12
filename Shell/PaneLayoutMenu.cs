@@ -12,9 +12,6 @@ namespace KillerShell.Shell
         private const string DetailsBottomIcon = "M0,0 H14 V14 H0 Z M0,10 H14";
         private const string DetailsRightIcon = "M0,0 H14 V14 H0 Z M10,0 V14";
         private const string DetailsOffIcon = "M0,0 H14 V14 H0 Z M2,2 L12,12";
-        private const string OnePaneIcon = "M0,0 H14 V14 H0 Z";
-        private const string PanesLeftRightIcon = "M0,0 H6 V14 H0 Z M8,0 H14 V14 H8 Z";
-        private const string PanesTopBottomIcon = "M0,0 H14 V6 H0 Z M0,8 H14 V14 H0 Z";
 
         private static MenuItem LayoutMenuItem(string label, string shortcut, string geometry, Action action)
         {
@@ -46,23 +43,6 @@ namespace KillerShell.Shell
                 : pane.DetailsPaneOnRight ? DetailsRightIcon : DetailsBottomIcon);
             pane.DetailsPaneBtn.SetResourceReference(FrameworkElement.ToolTipProperty,
                 !pane.DetailsPaneOpen ? "Str_TT_DetailsBottom" : pane.DetailsPaneOnRight ? "Str_TT_DetailsOff" : "Str_TT_DetailsRight");
-        }
-
-        private void PaneOrientationMenu_Opened(object sender, RoutedEventArgs e)
-        {
-            var menu = (ContextMenu)sender;
-            menu.Items.Clear();
-            int current = !DualPane ? 0 : _paneSideBySide ? 1 : 2;
-            void AddLayout(string label, string shortcut, string icon, int layout)
-            {
-                var item = LayoutMenuItem(label, shortcut, icon, () => SetPaneLayout(layout));
-                item.IsCheckable = true;
-                item.IsChecked = layout == current;
-                menu.Items.Add(item);
-            }
-            AddLayout("Str_Layout_OnePane", "F10", OnePaneIcon, 0);
-            AddLayout("Str_Layout_LeftRight", "Ctrl+Alt+Left", PanesLeftRightIcon, 1);
-            AddLayout("Str_Layout_TopBottom", "Ctrl+Alt+Up", PanesTopBottomIcon, 2);
         }
 
         private void SetPaneOrientation(bool sideBySide)

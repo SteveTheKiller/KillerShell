@@ -51,7 +51,7 @@ public static class TitlebarContextScenario
         ShellWindowFixture.PumpUntil(() => left.RecentsMenu.IsOpen);
         left.RecentsMenu.IsOpen = false;
 
-        ShellWindowFixture.Click(window, "DualPaneRailBtn");
+        ShellWindowFixture.SelectLayout(window, "PaneLeftRightBtn");
         ShellWindowFixture.PumpUntil(() => right.IsVisible && right.Active != null);
         // The opening slide freezes the pane at a pixel width and releases it when it lands;
         // measuring before then compares a mid-slide width with the settled one.

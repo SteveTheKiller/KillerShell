@@ -117,7 +117,6 @@
     <sys:String x:Key="Str_Sort_Found">ahogy találták</sys:String>
     <sys:String x:Key="Str_TT_FilterResults">Az eredmények szűrése (Ctrl+F)</sys:String>
     <sys:String x:Key="Str_TT_Pipe">Keresés ezeken a találatokon belül (Ctrl+Shift+F)</sys:String>
-    <sys:String x:Key="Str_TT_DualPane">Panel-elrendezés váltása. Ctrl+kattintás: fordított sorrend; jobb kattintás: elrendezés kiválasztása. F10: második panel megnyitása vagy bezárása.</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">Több eszköz</sys:String>
     <sys:String x:Key="Str_TT_SystemTools">Rendszereszközök</sys:String>
     <sys:String x:Key="Str_TT_Sort">Rendezés (Alt+S)</sys:String>
@@ -1058,6 +1057,7 @@
     <sys:String x:Key="Str_Layout_TabsBottom">Lapok alul</sys:String>
     <sys:String x:Key="Str_Layout_LeftRight">Bal és jobb oldali panel</sys:String>
     <sys:String x:Key="Str_Layout_TopBottom">Felső és alsó panel</sys:String>
+    <sys:String x:Key="Str_Layout_Panes">Panelelrendezés</sys:String>
     <sys:String x:Key="Str_TitleKind_FileBrowser">Fájlböngésző</sys:String>
     <sys:String x:Key="Str_TitleKind_Search">Keresési eredmények</sys:String>
     <sys:String x:Key="Str_TitleKind_PowerShell">PowerShell terminál</sys:String>
@@ -1097,4 +1097,15 @@
     <sys:String x:Key="Str_Card_Close">Bezárás</sys:String>
     <sys:String x:Key="Str_Card_MoveOtherPane">Áthelyezés a másik panelre</sys:String>
     <sys:String x:Key="Str_Card_MoveNewWindow">Áthelyezés új ablakba</sys:String>
+    <sys:String x:Key="Str_Card_Explorer">Explorer</sys:String>
+    <sys:String x:Key="Str_Card_Terminal">Terminál</sys:String>
+    <sys:String x:Key="Str_Card_Search">Keresés</sys:String>
+    <sys:String x:Key="Str_Card_Undo">Vissza&#xAD;vonás</sys:String>
+    <sys:String x:Key="Str_Card_Redo">Újra</sys:String>
+    <sys:String x:Key="Str_Card_Save">Mentés</sys:String>
+    <sys:String x:Key="Str_Card_Cut">Kivágás</sys:String>
+    <sys:String x:Key="Str_Card_Copy">Másolás</sys:String>
+    <sys:String x:Key="Str_Card_Edit">Szer&#xAD;kesztés</sys:String>
+    <sys:String x:Key="Str_Card_Rename">Átnevezés</sys:String>
+    <sys:String x:Key="Str_Card_SelectAll">Összes kije&#xAD;lölése</sys:String>
 </ResourceDictionary>

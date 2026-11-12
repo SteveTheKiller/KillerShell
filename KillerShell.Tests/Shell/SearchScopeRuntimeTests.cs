@@ -49,7 +49,7 @@ public static class SearchScopeRuntimeScenario
         Assert.False(search.IsBrowsing);
         Assert.Equal("needle.txt", search.Results[0].FileName);
 
-        ShellWindowFixture.Click(window, "DualPaneRailBtn");
+        ShellWindowFixture.SelectLayout(window, "PaneLeftRightBtn");
         ShellWindowFixture.PumpUntil(() => right.IsVisible && right.Active.IsBrowsing);
         window.FocusPane(right);
         window.FocusPane(left);

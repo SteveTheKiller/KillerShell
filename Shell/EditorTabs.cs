@@ -205,6 +205,12 @@ namespace KillerShell.Shell
             // to follow it (Editing/EditorControl.OnPreviewMouseWheel).
             editor.ZoomChanged += ApplyEditorOptions;
 
+            // The card's header names the file as it is when the card opens: Save as can rename
+            // it, and an untitled document has no folder yet (Editing/EditorMenu.cs).
+            editor.CardHeaderSource = () => (OverflowRowIcon(tab, 32),                  // Tabs.cs
+                editor.IsUntitled ? Loc("Str_Ed_Untitled") : Path.GetFileName(editor.FilePath),
+                editor.IsUntitled ? string.Empty : Path.GetDirectoryName(editor.FilePath) ?? string.Empty);
+
             // Menu rows the control cannot carry out itself, because they are about the tab, the
             // bar or the settings rather than about the text (Editing/EditorMenu.cs).
             editor.MenuCommand += cmd =>

@@ -117,7 +117,6 @@
     <sys:String x:Key="Str_Sort_Found">за порядком знаходження</sys:String>
     <sys:String x:Key="Str_TT_FilterResults">Фільтрувати ці результати (Ctrl+F)</sys:String>
     <sys:String x:Key="Str_TT_Pipe">Шукати в цих результатах  (Ctrl+Shift+F)</sys:String>
-    <sys:String x:Key="Str_TT_DualPane">Змінити розташування панелей. Ctrl+клацання змінює порядок на зворотний; права кнопка миші дає змогу вибрати розташування. F10 відкриває або закриває другу панель.</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">Більше інструментів</sys:String>
     <sys:String x:Key="Str_TT_SystemTools">Системні інструменти</sys:String>
     <sys:String x:Key="Str_TT_Sort">Сортувати за  (Alt+S)</sys:String>
@@ -1058,6 +1057,7 @@
     <sys:String x:Key="Str_Layout_TabsBottom">Вкладки знизу</sys:String>
     <sys:String x:Key="Str_Layout_LeftRight">Панелі ліворуч і праворуч</sys:String>
     <sys:String x:Key="Str_Layout_TopBottom">Панелі зверху і знизу</sys:String>
+    <sys:String x:Key="Str_Layout_Panes">Розташування панелей</sys:String>
     <sys:String x:Key="Str_TitleKind_FileBrowser">Оглядач файлів</sys:String>
     <sys:String x:Key="Str_TitleKind_Search">Результати пошуку</sys:String>
     <sys:String x:Key="Str_TitleKind_PowerShell">Термінал PowerShell</sys:String>
@@ -1097,4 +1097,15 @@
     <sys:String x:Key="Str_Card_Close">Закрити</sys:String>
     <sys:String x:Key="Str_Card_MoveOtherPane">Перемістити на іншу панель</sys:String>
     <sys:String x:Key="Str_Card_MoveNewWindow">Перемістити в нове вікно</sys:String>
+    <sys:String x:Key="Str_Card_Explorer">Провідник</sys:String>
+    <sys:String x:Key="Str_Card_Terminal">Термінал</sys:String>
+    <sys:String x:Key="Str_Card_Search">Пошук</sys:String>
+    <sys:String x:Key="Str_Card_Undo">Скасу&#xAD;вати</sys:String>
+    <sys:String x:Key="Str_Card_Redo">Повто&#xAD;рити</sys:String>
+    <sys:String x:Key="Str_Card_Save">Зберегти</sys:String>
+    <sys:String x:Key="Str_Card_Cut">Вирізати</sys:String>
+    <sys:String x:Key="Str_Card_Copy">Копі&#xAD;ювати</sys:String>
+    <sys:String x:Key="Str_Card_Edit">Реда&#xAD;гувати</sys:String>
+    <sys:String x:Key="Str_Card_Rename">Пере&#xAD;йме&#xAD;нувати</sys:String>
+    <sys:String x:Key="Str_Card_SelectAll">Вибрати все</sys:String>
 </ResourceDictionary>

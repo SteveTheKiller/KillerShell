@@ -117,7 +117,6 @@
     <sys:String x:Key="Str_Sort_Found">som funnet</sys:String>
     <sys:String x:Key="Str_TT_FilterResults">Filtrer disse resultatene  (Ctrl+F)</sys:String>
     <sys:String x:Key="Str_TT_Pipe">Søk i disse resultatene  (Ctrl+Shift+F)</sys:String>
-    <sys:String x:Key="Str_TT_DualPane">Bytt ruteoppsett. Ctrl+klikk går bakover; høyreklikk velger oppsett. F10 åpner eller lukker den andre ruten.</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">Flere verktøy</sys:String>
     <sys:String x:Key="Str_TT_SystemTools">Systemverktøy</sys:String>
     <sys:String x:Key="Str_TT_Sort">Sorter etter  (Alt+S)</sys:String>
@@ -1058,6 +1057,7 @@
     <sys:String x:Key="Str_Layout_TabsBottom">Faner nederst</sys:String>
     <sys:String x:Key="Str_Layout_LeftRight">Ruter til venstre og høyre</sys:String>
     <sys:String x:Key="Str_Layout_TopBottom">Ruter øverst og nederst</sys:String>
+    <sys:String x:Key="Str_Layout_Panes">Ruteoppsett</sys:String>
     <sys:String x:Key="Str_TitleKind_FileBrowser">Filutforsker</sys:String>
     <sys:String x:Key="Str_TitleKind_Search">Søkeresultater</sys:String>
     <sys:String x:Key="Str_TitleKind_PowerShell">PowerShell-terminal</sys:String>
@@ -1097,4 +1097,15 @@
     <sys:String x:Key="Str_Card_Close">Lukk</sys:String>
     <sys:String x:Key="Str_Card_MoveOtherPane">Flytt til den andre ruten</sys:String>
     <sys:String x:Key="Str_Card_MoveNewWindow">Flytt til et nytt vindu</sys:String>
+    <sys:String x:Key="Str_Card_Explorer">Filutforsker</sys:String>
+    <sys:String x:Key="Str_Card_Terminal">Terminal</sys:String>
+    <sys:String x:Key="Str_Card_Search">Søk</sys:String>
+    <sys:String x:Key="Str_Card_Undo">Angre</sys:String>
+    <sys:String x:Key="Str_Card_Redo">Gjør om</sys:String>
+    <sys:String x:Key="Str_Card_Save">Lagre</sys:String>
+    <sys:String x:Key="Str_Card_Cut">Klipp ut</sys:String>
+    <sys:String x:Key="Str_Card_Copy">Kopier</sys:String>
+    <sys:String x:Key="Str_Card_Edit">Rediger</sys:String>
+    <sys:String x:Key="Str_Card_Rename">Gi nytt navn</sys:String>
+    <sys:String x:Key="Str_Card_SelectAll">Merk alt</sys:String>
 </ResourceDictionary>

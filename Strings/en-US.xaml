@@ -117,7 +117,6 @@
     <sys:String x:Key="Str_Sort_Found">as found</sys:String>
     <sys:String x:Key="Str_TT_FilterResults">Filter these results (Ctrl+F)</sys:String>
     <sys:String x:Key="Str_TT_Pipe">Search within these results  (Ctrl+Shift+F)</sys:String>
-    <sys:String x:Key="Str_TT_DualPane">Cycle pane layout. Ctrl+click reverses the order; right-click chooses a layout. F10 toggles the second pane.</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">More tools</sys:String>
     <sys:String x:Key="Str_TT_SystemTools">System tools</sys:String>
     <sys:String x:Key="Str_TT_Sort">Sort by  (Alt+S)</sys:String>
@@ -1058,6 +1057,7 @@
     <sys:String x:Key="Str_Layout_TabsBottom">Tabs on bottom</sys:String>
     <sys:String x:Key="Str_Layout_LeftRight">Left and right panes</sys:String>
     <sys:String x:Key="Str_Layout_TopBottom">Top and bottom panes</sys:String>
+    <sys:String x:Key="Str_Layout_Panes">Pane layout</sys:String>
     <sys:String x:Key="Str_TitleKind_FileBrowser">File Browser</sys:String>
     <sys:String x:Key="Str_TitleKind_Search">Search Results</sys:String>
     <sys:String x:Key="Str_TitleKind_PowerShell">PowerShell Terminal</sys:String>
@@ -1097,4 +1097,15 @@
     <sys:String x:Key="Str_Card_Close">Close</sys:String>
     <sys:String x:Key="Str_Card_MoveOtherPane">Move to the other pane</sys:String>
     <sys:String x:Key="Str_Card_MoveNewWindow">Move to a new window</sys:String>
+    <sys:String x:Key="Str_Card_Explorer">Explorer</sys:String>
+    <sys:String x:Key="Str_Card_Terminal">Terminal</sys:String>
+    <sys:String x:Key="Str_Card_Search">Search</sys:String>
+    <sys:String x:Key="Str_Card_Undo">Undo</sys:String>
+    <sys:String x:Key="Str_Card_Redo">Redo</sys:String>
+    <sys:String x:Key="Str_Card_Save">Save</sys:String>
+    <sys:String x:Key="Str_Card_Cut">Cut</sys:String>
+    <sys:String x:Key="Str_Card_Copy">Copy</sys:String>
+    <sys:String x:Key="Str_Card_Edit">Edit</sys:String>
+    <sys:String x:Key="Str_Card_Rename">Rename</sys:String>
+    <sys:String x:Key="Str_Card_SelectAll">Select all</sys:String>
 </ResourceDictionary>

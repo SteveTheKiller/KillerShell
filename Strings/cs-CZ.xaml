@@ -95,7 +95,6 @@
     <sys:String x:Key="Str_Sort_Found">v pořadí nalezení</sys:String>
     <sys:String x:Key="Str_TT_FilterResults">Filtrovat tyto výsledky (Ctrl+F)</sys:String>
     <sys:String x:Key="Str_TT_Pipe">Hledat uvnitř těchto výsledků  (Ctrl+Shift+F)</sys:String>
-    <sys:String x:Key="Str_TT_DualPane">Přepínat rozložení panelů. Ctrl+kliknutí obrátí pořadí; pravým kliknutím vyberete rozložení. F10 otevře nebo zavře druhý panel.</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">Další nástroje</sys:String>
     <sys:String x:Key="Str_TT_SystemTools">Systémové nástroje</sys:String>
     <sys:String x:Key="Str_TT_Sort">Řadit podle  (Alt+S)</sys:String>
@@ -1010,6 +1009,7 @@
     <sys:String x:Key="Str_Layout_TabsBottom">Karty dole</sys:String>
     <sys:String x:Key="Str_Layout_LeftRight">Panely vlevo a vpravo</sys:String>
     <sys:String x:Key="Str_Layout_TopBottom">Panely nahoře a dole</sys:String>
+    <sys:String x:Key="Str_Layout_Panes">Rozložení panelů</sys:String>
     <sys:String x:Key="Str_TitleKind_FileBrowser">Prohlížeč souborů</sys:String>
     <sys:String x:Key="Str_TitleKind_Search">Výsledky hledání</sys:String>
     <sys:String x:Key="Str_TitleKind_PowerShell">Terminál PowerShell</sys:String>
@@ -1050,4 +1050,15 @@
     <sys:String x:Key="Str_Card_Close">Zavřít</sys:String>
     <sys:String x:Key="Str_Card_MoveOtherPane">Přesunout do druhého panelu</sys:String>
     <sys:String x:Key="Str_Card_MoveNewWindow">Přesunout do nového okna</sys:String>
+    <sys:String x:Key="Str_Card_Explorer">Průzkumník</sys:String>
+    <sys:String x:Key="Str_Card_Terminal">Terminál</sys:String>
+    <sys:String x:Key="Str_Card_Search">Hledat</sys:String>
+    <sys:String x:Key="Str_Card_Undo">Zpět</sys:String>
+    <sys:String x:Key="Str_Card_Redo">Znovu</sys:String>
+    <sys:String x:Key="Str_Card_Save">Uložit</sys:String>
+    <sys:String x:Key="Str_Card_Cut">Vyjmout</sys:String>
+    <sys:String x:Key="Str_Card_Copy">Kopírovat</sys:String>
+    <sys:String x:Key="Str_Card_Edit">Upravit</sys:String>
+    <sys:String x:Key="Str_Card_Rename">Pře&#xAD;jmeno&#xAD;vat</sys:String>
+    <sys:String x:Key="Str_Card_SelectAll">Vybrat vše</sys:String>
 </ResourceDictionary>

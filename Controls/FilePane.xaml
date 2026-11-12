@@ -2183,19 +2183,23 @@
                                                  which is the point on a script: opening a .ps1 the normal way
                                                  runs it (ResultsMenu.cs MenuEdit_Click). -->
                                             <Button Style="{StaticResource CardQuickButton}" Uid="fileonly" CommandParameter="edit"
-                                                    Content="&#xE70F;" Tag="{DynamicResource Str_Menu_Edit}">
+                                                    Content="&#xE70F;" Tag="{DynamicResource Str_Card_Edit}"
+                                                    AutomationProperties.Name="{DynamicResource Str_Menu_Edit}">
                                                 <Button.ToolTip><TextBlock><Run Text="{DynamicResource Str_Menu_Edit}"/><Run Text="  (F7)"/></TextBlock></Button.ToolTip>
                                             </Button>
                                             <Button Style="{StaticResource CardQuickButton}" Uid="item" CommandParameter="cut"
-                                                    Content="&#xE8C6;" Tag="{DynamicResource Str_Menu_Cut}">
+                                                    Content="&#xE8C6;" Tag="{DynamicResource Str_Card_Cut}"
+                                                    AutomationProperties.Name="{DynamicResource Str_Menu_Cut}">
                                                 <Button.ToolTip><TextBlock><Run Text="{DynamicResource Str_Menu_Cut}"/><Run Text="  (Ctrl+X)"/></TextBlock></Button.ToolTip>
                                             </Button>
                                             <Button Style="{StaticResource CardQuickButton}" Uid="item" CommandParameter="copy"
-                                                    Content="&#xE8C8;" Tag="{DynamicResource Str_Menu_Copy}">
+                                                    Content="&#xE8C8;" Tag="{DynamicResource Str_Card_Copy}"
+                                                    AutomationProperties.Name="{DynamicResource Str_Menu_Copy}">
                                                 <Button.ToolTip><TextBlock><Run Text="{DynamicResource Str_Menu_Copy}"/><Run Text="  (Ctrl+C)"/></TextBlock></Button.ToolTip>
                                             </Button>
                                             <Button Style="{StaticResource CardQuickButton}" Uid="item" CommandParameter="rename"
-                                                    Content="&#xE8AC;" Tag="{DynamicResource Str_Menu_Rename}">
+                                                    Content="&#xE8AC;" Tag="{DynamicResource Str_Card_Rename}"
+                                                    AutomationProperties.Name="{DynamicResource Str_Menu_Rename}">
                                                 <Button.ToolTip><TextBlock><Run Text="{DynamicResource Str_Menu_Rename}"/><Run Text="  (F2)"/></TextBlock></Button.ToolTip>
                                             </Button>
                                             <Button Style="{StaticResource CardQuickButton}" Uid="item" CommandParameter="delete"

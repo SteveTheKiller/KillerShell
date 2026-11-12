@@ -464,6 +464,17 @@ namespace KillerShell.Shell
 
             SyncNicknameMenu(FolderTree.ContextMenu, _treeMenuNode.Path);   // NicknameCommands.cs
 
+            // The card names the folder it acts on, so a right-click two rows off the one you
+            // meant shows up before anything runs. The tree draws its icons at 16; the header
+            // asks the cache for a real 32 rather than stretching that one.
+            var icon = new Image
+            {
+                Source = Services.IconCache.For(_treeMenuNode.Path, 32, isDirectory: true),
+                Width = 32, Height = 32,
+            };
+            Controls.CardMenus.SetHeader(TreeCardHead, icon.Source == null ? null : icon,
+                                         _treeMenuNode.NameLabel, _treeMenuNode.Path);
+
             // Read fresh on every open rather than bound once - the same convention
             // ColumnVisibilityMenu and the CPU tile's per-core toggle follow, and it keeps the
             // tick right when Ctrl+Shift+H flipped it from the keyboard.
@@ -485,6 +496,30 @@ namespace KillerShell.Shell
         }
 
         private string? TreeMenuPath() => _treeMenuNode?.Path;
+
+        /// <summary>
+        /// The tree card's quick buttons, told apart by CommandParameter. The card closes first and
+        /// the command runs once it has, because three of them move focus: Search here puts the
+        /// caret in the search box, and a closing menu hands focus back to the tree.
+        /// </summary>
+        private void TreeCard_ButtonClick(object sender, RoutedEventArgs e)
+        {
+            if (e.OriginalSource is not System.Windows.Controls.Primitives.ButtonBase button
+                || button.CommandParameter is not string command) return;
+            Action<object, RoutedEventArgs>? run = command switch
+            {
+                "newtab"   => TreeOpenNewTab_Click,
+                "explorer" => TreeShowInExplorer_Click,
+                "terminal" => TreeTerminal_Click,
+                "search"   => TreeSearchHere_Click,
+                "copypath" => TreeCopyPath_Click,
+                _ => null,
+            };
+            if (run == null) return;
+            e.Handled = true;
+            if (sender is ContextMenu card) card.IsOpen = false;
+            AfterMenuCloses(() => run(button, new RoutedEventArgs()));   // ResultsMenu.cs
+        }
 
         private void TreeOpenNewTab_Click(object sender, RoutedEventArgs e)
         {

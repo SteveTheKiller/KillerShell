@@ -112,12 +112,12 @@ namespace KillerShell.Terminal
             // in its tooltip, so the card is a way to DISCOVER them.
             var quick = KillerShell.Controls.CardMenus.QuickStrip(out var strip);
             quick.Tag = "cardquick";
-            _copyButton = KillerShell.Controls.CardMenus.QuickButton(strip, m, 0xE8C8, "Str_Term_Copy", "Str_Term_Copy", "Ctrl+Shift+C", () =>
+            _copyButton = KillerShell.Controls.CardMenus.QuickButton(strip, m, 0xE8C8, "Str_Card_Copy", "Str_Term_Copy", "Ctrl+Shift+C", () =>
             {
                 if (CopySelection()) ClearSelection();
             });
             KillerShell.Controls.CardMenus.QuickButton(strip, m, 0xE77F, "Str_Term_Paste", "Str_Term_Paste", "Ctrl+Shift+V", Paste);
-            KillerShell.Controls.CardMenus.QuickButton(strip, m, 0xE8B3, "Str_Term_SelectAll", "Str_Term_SelectAll", "Ctrl+Shift+A", SelectAll);
+            KillerShell.Controls.CardMenus.QuickButton(strip, m, 0xE8B3, "Str_Card_SelectAll", "Str_Term_SelectAll", "Ctrl+Shift+A", SelectAll);
             // The eraser, not MDL2's Clear X: that X is Close, two buttons along.
             KillerShell.Controls.CardMenus.QuickButton(strip, m, 0xE75C, "Str_Term_Clear", "Str_Term_Clear", "Ctrl+Shift+L", ClearShell);
             // The reverse of "open a terminal here": whatever the shell has cd'd to, opened as a
@@ -130,9 +130,8 @@ namespace KillerShell.Terminal
             // raised rather than carried out here. The control does not know it is in a tab.
             KillerShell.Controls.CardMenus.QuickButton(strip, m, 0xE8BB, "Str_Card_Close", "Str_Term_Close", "Ctrl+W",
                 () => MenuCommand?.Invoke(TerminalMenuCommand.CloseTab));
+            // No separator under the strip: its own bottom rule is that line already.
             m.Items.Add(quick);
-
-            m.Items.Add(new Separator());
 
             var launches = new MenuItem { InputGestureText = "F8" };
             launches.SetResourceReference(HeaderedItemsControl.HeaderProperty, "Str_Term_NewShell");

@@ -165,7 +165,7 @@ public static class FixedTabRingScenario
     {
         using var fixture = new ShellWindowFixture();
         var app = Application.Current;
-        ShellWindowFixture.Click(fixture.Window, "DualPaneRailBtn");
+        ShellWindowFixture.SelectLayout(fixture.Window, "PaneLeftRightBtn");
         foreach (var theme in new[] { Theme.Blood, Theme.Greed, Theme.Cyanotic })
         {
             ThemeManager.Apply(theme);

@@ -109,7 +109,6 @@
     <sys:String x:Key="Str_Sort_Found">come trovati</sys:String>
     <sys:String x:Key="Str_TT_FilterResults">Filtra questi risultati (Ctrl+F)</sys:String>
     <sys:String x:Key="Str_TT_Pipe">Cerca dentro questi risultati  (Ctrl+Shift+F)</sys:String>
-    <sys:String x:Key="Str_TT_DualPane">Cambia la disposizione dei riquadri. Ctrl+clic inverte l'ordine; clic destro per scegliere. F10 apre o chiude il secondo riquadro.</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">Altri strumenti</sys:String>
     <sys:String x:Key="Str_TT_SystemTools">Strumenti di sistema</sys:String>
     <sys:String x:Key="Str_TT_Sort">Ordina per  (Alt+S)</sys:String>
@@ -1021,6 +1020,7 @@
     <sys:String x:Key="Str_Layout_TabsBottom">Schede in basso</sys:String>
     <sys:String x:Key="Str_Layout_LeftRight">Riquadri affiancati</sys:String>
     <sys:String x:Key="Str_Layout_TopBottom">Riquadri sovrapposti</sys:String>
+    <sys:String x:Key="Str_Layout_Panes">Disposizione dei riquadri</sys:String>
     <sys:String x:Key="Str_TitleKind_FileBrowser">Esplora file</sys:String>
     <sys:String x:Key="Str_TitleKind_Search">Risultati della ricerca</sys:String>
     <sys:String x:Key="Str_TitleKind_PowerShell">Terminale PowerShell</sys:String>
@@ -1060,4 +1060,15 @@
     <sys:String x:Key="Str_Card_Close">Chiudi</sys:String>
     <sys:String x:Key="Str_Card_MoveOtherPane">Sposta nell’altro riquadro</sys:String>
     <sys:String x:Key="Str_Card_MoveNewWindow">Sposta in una nuova finestra</sys:String>
+    <sys:String x:Key="Str_Card_Explorer">Explorer</sys:String>
+    <sys:String x:Key="Str_Card_Terminal">Terminale</sys:String>
+    <sys:String x:Key="Str_Card_Search">Cerca</sys:String>
+    <sys:String x:Key="Str_Card_Undo">Annulla</sys:String>
+    <sys:String x:Key="Str_Card_Redo">Ripeti</sys:String>
+    <sys:String x:Key="Str_Card_Save">Salva</sys:String>
+    <sys:String x:Key="Str_Card_Cut">Taglia</sys:String>
+    <sys:String x:Key="Str_Card_Copy">Copia</sys:String>
+    <sys:String x:Key="Str_Card_Edit">Modifica</sys:String>
+    <sys:String x:Key="Str_Card_Rename">Rinomina</sys:String>
+    <sys:String x:Key="Str_Card_SelectAll">Seleziona tutto</sys:String>
 </ResourceDictionary>

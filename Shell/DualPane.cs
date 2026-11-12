@@ -187,13 +187,27 @@ namespace KillerShell.Shell
             else          OpenSecondPane();
         }
 
-        // The rail cycles through all three layouts. Keyboard toggle commands retain their
-        // open/close behavior and remembered orientation.
-        internal void DualPane_Click(object sender, RoutedEventArgs e)
+        // The footer's layout switch (MainWindow.xaml PaneLayoutSwitch). Checked, not Click, so
+        // a screen reader selecting a button switches the layout as well. The sync below sets
+        // IsChecked from the real state and must not echo back into another layout change.
+        private bool _syncingLayoutSwitch;
+
+        private void PaneLayoutSwitch_Checked(object sender, RoutedEventArgs e)
         {
-            int current = !DualPane ? 0 : _paneSideBySide ? 1 : 2;
-            bool reverse = (System.Windows.Input.Keyboard.Modifiers & System.Windows.Input.ModifierKeys.Control) != 0;
-            SetPaneLayout((current + (reverse ? 2 : 1)) % 3);
+            if (_syncingLayoutSwitch || !IsLoaded) return;
+            if (sender is FrameworkElement { Tag: string tag } && int.TryParse(tag, out int layout))
+                SetPaneLayout(layout);
+            // Whatever the layout came out as, the lit button says so.
+            SyncPaneLayoutSwitch(!DualPane ? 0 : _paneSideBySide ? 1 : 2);
+        }
+
+        private void SyncPaneLayoutSwitch(int layout)
+        {
+            var target = layout == 0 ? PaneOneBtn : layout == 1 ? PaneLeftRightBtn : PaneTopBottomBtn;
+            if (target.IsChecked == true) return;
+            _syncingLayoutSwitch = true;
+            try { target.IsChecked = true; }
+            finally { _syncingLayoutSwitch = false; }
         }
 
         private void SetPaneLayout(int layout)
@@ -206,13 +220,6 @@ namespace KillerShell.Shell
                 else SetPaneOrientation(layout == 1);
             }
             finally { _paneLayoutKeepsWindowSize = false; }
-        }
-
-        internal void DualPaneOrient_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            if (!DualPane) return;   // nothing to reorient with one pane
-            TogglePaneOrientation();
-            e.Handled = true;
         }
 
         private void OpenSecondPane()
@@ -349,14 +356,7 @@ namespace KillerShell.Shell
             if (!slideCols) PaneColA.Width = new GridLength(1, GridUnitType.Star);
             PaneRowA.Height = new GridLength(1, GridUnitType.Star);
 
-            // The rail button accents while the split is open, the same tell the search and
-            // bookmarks toggles use (RailButton keys off Tag="on").
-            DualPaneRailBtn.Tag = two ? "on" : null;
-
-            DualPaneRailBtn.Content = System.Windows.Media.Geometry.Parse(!two ? OnePaneIcon
-                : _paneSideBySide ? PanesLeftRightIcon : PanesTopBottomIcon);
-            DualPaneRailBtn.SetResourceReference(System.Windows.Automation.AutomationProperties.NameProperty,
-                !two ? "Str_Layout_OnePane" : _paneSideBySide ? "Str_Layout_LeftRight" : "Str_Layout_TopBottom");
+            SyncPaneLayoutSwitch(!two ? 0 : _paneSideBySide ? 1 : 2);
 
             ApplyPaneMargins();
         }
@@ -847,7 +847,17 @@ namespace KillerShell.Shell
                 UpdatePaneFocusRing();
             }
 
-            _paneSlideSettle = FullSettle;
+            // Landing early stops this tween too. The next toggle may slide the OTHER track (a
+            // stacked close runs on the rows, a side-by-side open on the columns), so nothing
+            // replaces this clock: it would run on, hold its track, and land a second time
+            // after the next layout had already opened - collapsing the pane it just showed.
+            System.Action? land = null;
+            land = () =>
+            {
+                track.BeginAnimation(prop, null);
+                FullSettle();
+            };
+            _paneSlideSettle = land;
 
             var anim = new GridLengthAnimation
             {
@@ -864,12 +874,13 @@ namespace KillerShell.Shell
 
             anim.Completed += (_, _) =>
             {
-                // Clear FIRST: an animation left running holds the property at its final value
-                // and every later write is silently ignored, which would freeze the split at
-                // whatever pixel width it happened to land on.
-                track.BeginAnimation(prop, null);
+                // Landed already: FinishPendingPaneSlide ran this slide's landing out of band.
+                if (!ReferenceEquals(_paneSlideSettle, land)) return;
+                // Clear FIRST (land does): an animation left running holds the property at its
+                // final value and every later write is silently ignored, which would freeze the
+                // split at whatever pixel width it happened to land on.
                 _paneSlideSettle = null;
-                FullSettle();
+                land();
             };
 
             track.BeginAnimation(prop, anim);

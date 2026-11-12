@@ -141,6 +141,19 @@ internal sealed class ShellWindowFixture : IDisposable
     internal static void Click(MainWindow window, string name)
         => ((Button)window.FindName(name)).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
 
+    /// <summary>
+    /// Pick a pane layout in the footer the way a click or a screen reader does: through the
+    /// radio button's automation peer, which checks it and raises Checked.
+    /// </summary>
+    internal static void SelectLayout(MainWindow window, string name)
+    {
+        var radio = (System.Windows.Controls.RadioButton)window.FindName(name);
+        var peer = System.Windows.Automation.Peers.UIElementAutomationPeer.CreatePeerForElement(radio);
+        var item = (System.Windows.Automation.Provider.ISelectionItemProvider)
+            peer.GetPattern(System.Windows.Automation.Peers.PatternInterface.SelectionItem);
+        item.Select();
+    }
+
     internal static void PumpUntil(Func<bool> done, [System.Runtime.CompilerServices.CallerLineNumber] int line = 0,
         Func<string>? diagnostic = null)
     {

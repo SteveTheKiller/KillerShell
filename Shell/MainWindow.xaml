@@ -341,28 +341,53 @@
                              already say the right thing (FolderTree.cs). On the TreeView itself,
                              not the item template - see the results list for why. -->
                         <TreeView.ContextMenu>
-                            <ContextMenu>
-                                <!-- "Open in new tab", not Str_Tab_New ("new search") - this row
-                                     opens the node in a NEW TAB and has done for a long time; the
-                                     label was left over from when every tab was a search, and it
-                                     described the old app rather than what the row does. -->
-                                <MenuItem Header="{DynamicResource Str_Menu_OpenInNewTab}" Click="TreeOpenNewTab_Click" InputGestureText="Ctrl+Enter">
-                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE710;"/></MenuItem.Icon>
+                            <!-- The tree card: the folder's icon, name and path up top, the
+                                 everyday verbs as a row of buttons, and the rest as rows. The
+                                 header is filled as the card opens (FolderTree.cs), and every
+                                 button is a gesture the tree already has, named in its tooltip. -->
+                            <ContextMenu Style="{StaticResource CardMenu}" ButtonBase.Click="TreeCard_ButtonClick">
+                                <MenuItem x:Name="TreeCardHead" Tag="cardhead" Style="{StaticResource CardSlot}"/>
+                                <MenuItem Tag="cardquick" Style="{StaticResource CardSlot}" Padding="0"
+                                          AutomationProperties.Name="{DynamicResource Str_Card_Actions}">
+                                    <MenuItem.Header>
+                                        <Border BorderBrush="{DynamicResource MenuBorderBrush}" BorderThickness="0,1" Padding="2,4">
+                                            <UniformGrid Rows="1">
+                                                <!-- "Open in new tab", not Str_Tab_New ("new search"): this
+                                                     opens the node in a NEW TAB, and the old label was left
+                                                     over from when every tab was a search. -->
+                                                <Button Style="{StaticResource CardQuickButton}" CommandParameter="newtab"
+                                                        Content="&#xE710;" Tag="{DynamicResource Str_Card_NewTab}"
+                                                        AutomationProperties.Name="{DynamicResource Str_Menu_OpenInNewTab}">
+                                                    <Button.ToolTip><TextBlock><Run Text="{DynamicResource Str_Menu_OpenInNewTab}"/><Run Text="  (Ctrl+Enter)"/></TextBlock></Button.ToolTip>
+                                                </Button>
+                                                <Button Style="{StaticResource CardQuickButton}" CommandParameter="explorer"
+                                                        Content="&#xE838;" Tag="{DynamicResource Str_Card_Explorer}"
+                                                        AutomationProperties.Name="{DynamicResource Str_Menu_ShowExplorer}">
+                                                    <Button.ToolTip><TextBlock><Run Text="{DynamicResource Str_Menu_ShowExplorer}"/><Run Text="  (F6)"/></TextBlock></Button.ToolTip>
+                                                </Button>
+                                                <Button Style="{StaticResource CardQuickButton}" CommandParameter="terminal"
+                                                        Content="&#xE756;" Tag="{DynamicResource Str_Card_Terminal}"
+                                                        AutomationProperties.Name="{DynamicResource Str_Menu_OpenTerminal}">
+                                                    <Button.ToolTip><TextBlock><Run Text="{DynamicResource Str_Menu_OpenTerminal}"/><Run Text="  (F8)"/></TextBlock></Button.ToolTip>
+                                                </Button>
+                                                <Button Style="{StaticResource CardQuickButton}" CommandParameter="search"
+                                                        Content="&#xE721;" Tag="{DynamicResource Str_Card_Search}"
+                                                        AutomationProperties.Name="{DynamicResource Str_Menu_SearchHere}">
+                                                    <Button.ToolTip><TextBlock><Run Text="{DynamicResource Str_Menu_SearchHere}"/><Run Text="  (F3)"/></TextBlock></Button.ToolTip>
+                                                </Button>
+                                                <!-- E8C8 (Copy, two documents), not E71B (Link, a chain). -->
+                                                <Button Style="{StaticResource CardQuickButton}" CommandParameter="copypath"
+                                                        Content="&#xE8C8;" Tag="{DynamicResource Str_Card_Path}"
+                                                        AutomationProperties.Name="{DynamicResource Str_Menu_CopyPath}">
+                                                    <Button.ToolTip><TextBlock><Run Text="{DynamicResource Str_Menu_CopyPath}"/><Run Text="  (Ctrl+Shift+C)"/></TextBlock></Button.ToolTip>
+                                                </Button>
+                                            </UniformGrid>
+                                        </Border>
+                                    </MenuItem.Header>
                                 </MenuItem>
-                                <MenuItem Header="{DynamicResource Str_Menu_ShowExplorer}" Click="TreeShowInExplorer_Click" InputGestureText="F6">
-                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE838;"/></MenuItem.Icon>
-                                </MenuItem>
-                                <MenuItem Header="{DynamicResource Str_Menu_SearchHere}" Click="TreeSearchHere_Click" InputGestureText="F3">
-                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE721;"/></MenuItem.Icon>
-                                </MenuItem>
-                                <Separator/>
-                                <!-- The same two terminal rows the saved places carry, and the
-                                     Storage Analyzer aimed at this folder. A folder is a folder
-                                     wherever it is shown, so the tree, the places and the
-                                     listing all offer the same verbs. -->
-                                <MenuItem Header="{DynamicResource Str_Menu_OpenTerminal}" Click="TreeTerminal_Click" InputGestureText="F8">
-                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE756;"/></MenuItem.Icon>
-                                </MenuItem>
+                                <!-- The admin terminal and the Storage Analyzer aimed at this
+                                     folder. A folder is a folder wherever it is shown, so the
+                                     tree, the places and the listing all offer the same verbs. -->
                                 <MenuItem Header="{DynamicResource Str_Menu_OpenTerminalAdmin}" Click="TreeTerminalAdmin_Click" InputGestureText="Ctrl+F8">
                                     <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE7EF;"/></MenuItem.Icon>
                                 </MenuItem>
@@ -373,7 +398,7 @@
                                 <!-- The tree's OWN hidden switch, not the listing's Ctrl+H. Checked
                                      state is set as the menu opens (FolderTree.cs
                                      FolderTree_ContextMenuOpening) rather than bound, matching how
-                                     the favorite row above flips its own header. -->
+                                     the favorite row below flips its own header. -->
                                 <!-- Alt+H (KeyCommands.cs): Ctrl+Shift+H, the obvious pick, is
                                      Copy SHA-256, and Ctrl+H is the listing's own hidden switch. -->
                                 <MenuItem x:Name="TreeHiddenItem" IsCheckable="True"
@@ -382,10 +407,6 @@
                                 <Separator/>
                                 <MenuItem Tag="fav" Header="{DynamicResource Str_Menu_AddFavorite}" Click="TreeFavorite_Click" InputGestureText="Ctrl+D">
                                     <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE734;"/></MenuItem.Icon>
-                                </MenuItem>
-                                <!-- E8C8 (Copy, two documents), not E71B (Link, a chain). -->
-                                <MenuItem Header="{DynamicResource Str_Menu_CopyPath}" Click="TreeCopyPath_Click" InputGestureText="Ctrl+Shift+C">
-                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE8C8;"/></MenuItem.Icon>
                                 </MenuItem>
                                 <!-- Nickname rows: header and visibility are set as the menu opens
                                      (NicknameCommands.cs SyncNicknameMenu), found by Tag. -->
@@ -724,59 +745,6 @@
                         VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,10,0,0"
                         ToolTip="{DynamicResource Str_TT_CollapseSidebar}" Click="TreePanel_Click"/>
                 <StackPanel x:Name="RailBottom" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,6">
-                    <!-- Workspace layout comes before the content and tool controls. -->
-                    <Button x:Name="DualPaneRailBtn" Content="M0,0 H14 V14 H0 Z"
-                            Margin="0,0,0,10" Click="DualPane_Click"
-                            ToolTip="{DynamicResource Str_TT_DualPane}">
-                        <Button.ContextMenu><ContextMenu Opened="PaneOrientationMenu_Opened"/></Button.ContextMenu>
-                        <Button.Style>
-                            <Style TargetType="Button" BasedOn="{StaticResource RailButton}">
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="Button">
-                                            <Border Background="Transparent">
-                                                <Grid Width="14" Height="14" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                                    <Grid.Resources>
-                                                        <Style TargetType="Path">
-                                                            <Setter Property="Data" Value="{Binding Content, RelativeSource={RelativeSource TemplatedParent}}"/>
-                                                            <Setter Property="Stretch" Value="Uniform"/>
-                                                            <Setter Property="StrokeThickness" Value="1"/>
-                                                            <Setter Property="IsHitTestVisible" Value="False"/>
-                                                        </Style>
-                                                    </Grid.Resources>
-                                                    <Path x:Name="LayoutHalo" Stroke="#D8000000" Visibility="Collapsed"
-                                                          Opacity="{DynamicResource WordmarkAccentShadowOpacity}">
-                                                        <Path.RenderTransform><TranslateTransform X="1" Y="2"/></Path.RenderTransform>
-                                                        <Path.Effect><BlurEffect Radius="3"/></Path.Effect>
-                                                    </Path>
-                                                    <Path x:Name="LayoutGlyph" Stroke="{DynamicResource TextBrush}">
-                                                        <Path.Effect>
-                                                            <DropShadowEffect Color="Black" BlurRadius="4" ShadowDepth="2" Direction="270"
-                                                                              Opacity="{DynamicResource IconShadowOpacity}"/>
-                                                        </Path.Effect>
-                                                    </Path>
-                                                    <Path x:Name="LayoutAccent" Stroke="{DynamicResource AccentLogo}" Visibility="Collapsed"
-                                                          Opacity="{DynamicResource WordmarkAccentShadowOpacity}"/>
-                                                </Grid>
-                                            </Border>
-                                            <ControlTemplate.Triggers>
-                                                <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter TargetName="LayoutGlyph" Property="Stroke" Value="{DynamicResource PrimaryBrush}"/>
-                                                    <Setter TargetName="LayoutHalo" Property="Visibility" Value="Visible"/>
-                                                    <Setter TargetName="LayoutAccent" Property="Visibility" Value="Visible"/>
-                                                </Trigger>
-                                                <Trigger Property="Tag" Value="on">
-                                                    <Setter TargetName="LayoutGlyph" Property="Stroke" Value="{DynamicResource PrimaryBrush}"/>
-                                                    <Setter TargetName="LayoutHalo" Property="Visibility" Value="Visible"/>
-                                                    <Setter TargetName="LayoutAccent" Property="Visibility" Value="Visible"/>
-                                                </Trigger>
-                                            </ControlTemplate.Triggers>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </Button.Style>
-                    </Button>
                     <!-- E734 (star): the saved-locations slide-up under the tree
                          (Bookmarks.cs). Accents while open, like the search toggle. -->
                     <Button x:Name="BookmarksBtn" Style="{StaticResource RailButton}" Content="&#xE734;"
@@ -1459,8 +1427,9 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <Border Grid.ColumnSpan="2" IsHitTestVisible="False" Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
+            <Border Grid.ColumnSpan="3" IsHitTestVisible="False" Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
             <!-- 10.5 left, not the 16 the rest of the family uses: the status dot is the first
                  thing in this row and it should sit on the same vertical line as the icon rail
                  above it (RailCol, 24 wide, so its icons center at 12). The dot is 3 wide, so
@@ -1531,7 +1500,7 @@
                  overlay rather than a column so the version block keeps its natural width.
                  IsVisibleChanged re-runs the status elision, because the line's usable width
                  changes the moment this appears or goes away. -->
-            <StackPanel x:Name="PortableBadge" Grid.ColumnSpan="2" Orientation="Horizontal"
+            <StackPanel x:Name="PortableBadge" Grid.ColumnSpan="3" Orientation="Horizontal"
                         HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed"
                         IsVisibleChanged="PortableBadge_IsVisibleChanged">
                 <Button x:Name="InstallBtn" Content="{DynamicResource Str_Portable}" ToolTip="{DynamicResource Str_Btn_Install}" Click="Install_Click"
@@ -1542,6 +1511,81 @@
                     </Button.Resources>
                 </Button>
             </StackPanel>
+            <!-- The pane layout switch: one pane, panes side by side, panes stacked. Three
+                 buttons in a sunken cell of their own, the way KillerPDF's footer carries its view
+                 modes, so every layout is one click and the current one is always lit. Checked
+                 rather than Click drives them, so a screen reader selecting one switches the
+                 layout too; ApplyPaneLayout (DualPane.cs) sets the checked one from the real
+                 state, which also covers F10 and Ctrl+Alt+Left/Up. -->
+            <!-- The 10 is the gap between this cell and the version cell, outside both. -->
+            <Border Grid.Column="1" Margin="0,0,10,0">
+            <Grid x:Name="PaneLayoutSwitch" Margin="{DynamicResource FooterCellMargin}"
+                  AutomationProperties.Name="{DynamicResource Str_Layout_Panes}">
+                <Grid.Resources>
+                    <Style x:Key="PaneLayoutButton" TargetType="RadioButton">
+                        <Setter Property="GroupName" Value="PaneLayout"/>
+                        <Setter Property="Width" Value="25"/>
+                        <Setter Property="Height" Value="20"/>
+                        <Setter Property="Padding" Value="0"/>
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="Foreground" Value="{DynamicResource TextFooter}"/>
+                        <Setter Property="Cursor" Value="Hand"/>
+                        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                        <Setter Property="VerticalAlignment" Value="Center"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="RadioButton">
+                                    <Border x:Name="Bd" Background="{TemplateBinding Background}"
+                                            BorderBrush="Transparent" BorderThickness="0,0,0,2"
+                                            CornerRadius="{DynamicResource ControlCornerRadius}">
+                                        <Path x:Name="Icon" Data="{Binding Content, RelativeSource={RelativeSource TemplatedParent}}" Width="14" Height="14"
+                                              Stretch="Uniform" StrokeThickness="1" Margin="0,2,0,0"
+                                              Stroke="{TemplateBinding Foreground}" Opacity="0.75"
+                                              HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="Icon" Property="Stroke" Value="{DynamicResource PrimaryBrush}"/>
+                                            <Setter TargetName="Icon" Property="Opacity" Value="1"/>
+                                        </Trigger>
+                                        <Trigger Property="IsKeyboardFocused" Value="True">
+                                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource MenuHoverBrush}"/>
+                                        </Trigger>
+                                        <Trigger Property="IsChecked" Value="True">
+                                            <Setter TargetName="Icon" Property="Stroke" Value="{DynamicResource PrimaryBrush}"/>
+                                            <Setter TargetName="Icon" Property="Opacity" Value="1"/>
+                                            <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource PrimaryBrush}"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Grid.Resources>
+                <Border IsHitTestVisible="False" Panel.ZIndex="2"
+                        BorderBrush="{DynamicResource FooterBevelDarkBrush}"  BorderThickness="{DynamicResource FooterCellLightThickness}"/>
+                <Border IsHitTestVisible="False" Panel.ZIndex="2"
+                        BorderBrush="{DynamicResource FooterBevelLightBrush}" BorderThickness="{DynamicResource FooterCellDarkThickness}"/>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="{DynamicResource FooterCellPadding}">
+                    <!-- The same three outlines the old layout menu drew (PaneLayoutMenu.cs). -->
+                    <RadioButton x:Name="PaneOneBtn" Style="{StaticResource PaneLayoutButton}" Tag="0"
+                                 Content="M0,0 H14 V14 H0 Z" Checked="PaneLayoutSwitch_Checked" IsChecked="True"
+                                 AutomationProperties.Name="{DynamicResource Str_Layout_OnePane}">
+                        <RadioButton.ToolTip><TextBlock><Run Text="{DynamicResource Str_Layout_OnePane}"/><Run Text="  (F10)"/></TextBlock></RadioButton.ToolTip>
+                    </RadioButton>
+                    <RadioButton x:Name="PaneLeftRightBtn" Style="{StaticResource PaneLayoutButton}" Tag="1"
+                                 Content="M0,0 H6 V14 H0 Z M8,0 H14 V14 H8 Z" Checked="PaneLayoutSwitch_Checked"
+                                 AutomationProperties.Name="{DynamicResource Str_Layout_LeftRight}">
+                        <RadioButton.ToolTip><TextBlock><Run Text="{DynamicResource Str_Layout_LeftRight}"/><Run Text="  (Ctrl+Alt+Left)"/></TextBlock></RadioButton.ToolTip>
+                    </RadioButton>
+                    <RadioButton x:Name="PaneTopBottomBtn" Style="{StaticResource PaneLayoutButton}" Tag="2"
+                                 Content="M0,0 H14 V6 H0 Z M0,8 H14 V14 H0 Z" Checked="PaneLayoutSwitch_Checked"
+                                 AutomationProperties.Name="{DynamicResource Str_Layout_TopBottom}">
+                        <RadioButton.ToolTip><TextBlock><Run Text="{DynamicResource Str_Layout_TopBottom}"/><Run Text="  (Ctrl+Alt+Up)"/></TextBlock></RadioButton.ToolTip>
+                    </RadioButton>
+                </StackPanel>
+            </Grid>
+            </Border>
             <!-- On 98SE a status bar is a row of sunken CELLS rather than plain text on a strip,
                  so the version block gets a margin and padding of its own there. Both are 0
                  elsewhere, leaving the existing 0,0,16,0 to position it as before. -->
@@ -1553,7 +1597,7 @@
                  height could fix that - the cell was not short because of its own numbers, it was
                  short because its PARENT refused to give it the row's height. The inner content
                  keeps its own VerticalAlignment="Center" below, so the text still centers. -->
-            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Stretch" Margin="0,0,16,0">
+            <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Stretch" Margin="0,0,16,0">
                 <!-- A Win98 status cell is SUNKEN: dark along the top and left, light along the
                      bottom and right. Only the dark half was here, which drew half a box round
                      the version text. Both are zero-thickness elsewhere. -->
@@ -1580,7 +1624,7 @@
             </StackPanel>
             <!-- Bottom-right resize grip: dotted triangle at the content corner, forwards a
                  HTBOTTOMRIGHT resize to Windows on drag (same as KillerPDF/KillerScan). -->
-            <Canvas x:Name="ResizeGripDots" Grid.ColumnSpan="2" Width="13" Height="13"
+            <Canvas x:Name="ResizeGripDots" Grid.ColumnSpan="3" Width="13" Height="13"
                     Visibility="{DynamicResource GripDotsVisibility}"
                     HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,4,4"
                     Background="Transparent" Cursor="SizeNWSE"
@@ -1601,7 +1645,7 @@
                  hairlines to read, and SnapsToDevicePixels keeps them from smearing across two
                  rows. Drawn shadow-first so the white sits on top where they touch, which is the
                  order that makes the ridge read as raised. -->
-            <Canvas x:Name="ResizeGripLines" Grid.ColumnSpan="2" Width="13" Height="13"
+            <Canvas x:Name="ResizeGripLines" Grid.ColumnSpan="3" Width="13" Height="13"
                     Visibility="{DynamicResource GripLinesVisibility}"
                     HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,3,3"
                     Background="Transparent" Cursor="SizeNWSE"

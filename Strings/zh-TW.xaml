@@ -73,7 +73,6 @@
     <sys:String x:Key="Str_Sort_Found">預設順序</sys:String>
     <sys:String x:Key="Str_TT_FilterResults">篩選這些結果（Ctrl+F）</sys:String>
     <sys:String x:Key="Str_TT_Pipe">在這些結果中搜尋  (Ctrl+Shift+F)</sys:String>
-    <sys:String x:Key="Str_TT_DualPane">切換窗格配置。Ctrl+按一下可反向切換，按右鍵可選擇配置。F10開啟或關閉第二個窗格。</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">更多工具</sys:String>
     <sys:String x:Key="Str_TT_SystemTools">系統工具</sys:String>
     <sys:String x:Key="Str_TT_Sort">排序方式  (Alt+S)</sys:String>
@@ -1009,6 +1008,7 @@
     <sys:String x:Key="Str_Layout_TabsBottom">分頁置底</sys:String>
     <sys:String x:Key="Str_Layout_LeftRight">左右窗格</sys:String>
     <sys:String x:Key="Str_Layout_TopBottom">上下窗格</sys:String>
+    <sys:String x:Key="Str_Layout_Panes">窗格配置</sys:String>
     <sys:String x:Key="Str_TitleKind_FileBrowser">檔案瀏覽器</sys:String>
     <sys:String x:Key="Str_TitleKind_Search">搜尋結果</sys:String>
     <sys:String x:Key="Str_TitleKind_PowerShell">PowerShell 終端機</sys:String>
@@ -1043,10 +1043,21 @@
     <sys:String x:Key="Str_Card_Lines">行</sys:String>
     <sys:String x:Key="Str_Card_FolderOptions">資料夾選項</sys:String>
     <sys:String x:Key="Str_Card_FilesFolders">{0} 個檔案，{1} 個資料夾</sys:String>
-    <sys:String x:Key="Str_Card_NewTab">新增索引標籤</sys:String>
+    <sys:String x:Key="Str_Card_NewTab">新索引標籤</sys:String>
     <sys:String x:Key="Str_Card_OtherPane">另一窗格</sys:String>
     <sys:String x:Key="Str_Card_NewWindow">新視窗</sys:String>
     <sys:String x:Key="Str_Card_Close">關閉</sys:String>
     <sys:String x:Key="Str_Card_MoveOtherPane">移至另一窗格</sys:String>
     <sys:String x:Key="Str_Card_MoveNewWindow">移至新視窗</sys:String>
+    <sys:String x:Key="Str_Card_Explorer">檔案總管</sys:String>
+    <sys:String x:Key="Str_Card_Terminal">終端機</sys:String>
+    <sys:String x:Key="Str_Card_Search">搜尋</sys:String>
+    <sys:String x:Key="Str_Card_Undo">復原</sys:String>
+    <sys:String x:Key="Str_Card_Redo">重做</sys:String>
+    <sys:String x:Key="Str_Card_Save">儲存</sys:String>
+    <sys:String x:Key="Str_Card_Cut">剪下</sys:String>
+    <sys:String x:Key="Str_Card_Copy">複製</sys:String>
+    <sys:String x:Key="Str_Card_Edit">編輯</sys:String>
+    <sys:String x:Key="Str_Card_Rename">重新命名</sys:String>
+    <sys:String x:Key="Str_Card_SelectAll">全選</sys:String>
 </ResourceDictionary>

@@ -117,7 +117,6 @@
     <sys:String x:Key="Str_Sort_Found">como encontrado</sys:String>
     <sys:String x:Key="Str_TT_FilterResults">Filtrar estes resultados (Ctrl+F)</sys:String>
     <sys:String x:Key="Str_TT_Pipe">Pesquisar dentro destes resultados  (Ctrl+Shift+F)</sys:String>
-    <sys:String x:Key="Str_TT_DualPane">Alternar o layout dos painéis. Ctrl+clique inverte a ordem; clique com o botão direito para escolher. F10 abre ou fecha o segundo painel.</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">Mais ferramentas</sys:String>
     <sys:String x:Key="Str_TT_SystemTools">Ferramentas do sistema</sys:String>
     <sys:String x:Key="Str_TT_Sort">Ordenar por  (Alt+S)</sys:String>
@@ -1058,6 +1057,7 @@
     <sys:String x:Key="Str_Layout_TabsBottom">Guias na parte inferior</sys:String>
     <sys:String x:Key="Str_Layout_LeftRight">Painéis lado a lado</sys:String>
     <sys:String x:Key="Str_Layout_TopBottom">Painéis superior e inferior</sys:String>
+    <sys:String x:Key="Str_Layout_Panes">Layout dos painéis</sys:String>
     <sys:String x:Key="Str_TitleKind_FileBrowser">Navegador de arquivos</sys:String>
     <sys:String x:Key="Str_TitleKind_Search">Resultados da pesquisa</sys:String>
     <sys:String x:Key="Str_TitleKind_PowerShell">Terminal do PowerShell</sys:String>
@@ -1097,4 +1097,15 @@
     <sys:String x:Key="Str_Card_Close">Fechar</sys:String>
     <sys:String x:Key="Str_Card_MoveOtherPane">Mover para o outro painel</sys:String>
     <sys:String x:Key="Str_Card_MoveNewWindow">Mover para uma nova janela</sys:String>
+    <sys:String x:Key="Str_Card_Explorer">Explorador</sys:String>
+    <sys:String x:Key="Str_Card_Terminal">Terminal</sys:String>
+    <sys:String x:Key="Str_Card_Search">Pesquisar</sys:String>
+    <sys:String x:Key="Str_Card_Undo">Desfazer</sys:String>
+    <sys:String x:Key="Str_Card_Redo">Refazer</sys:String>
+    <sys:String x:Key="Str_Card_Save">Salvar</sys:String>
+    <sys:String x:Key="Str_Card_Cut">Recortar</sys:String>
+    <sys:String x:Key="Str_Card_Copy">Copiar</sys:String>
+    <sys:String x:Key="Str_Card_Edit">Editar</sys:String>
+    <sys:String x:Key="Str_Card_Rename">Renomear</sys:String>
+    <sys:String x:Key="Str_Card_SelectAll">Selecionar tudo</sys:String>
 </ResourceDictionary>

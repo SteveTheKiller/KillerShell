@@ -1701,7 +1701,12 @@ namespace KillerShell.Shell
                     .Transform(new Point(LeftPane.ActualWidth / 2, 0)).X;
             }
 
-            double left = Math.Max(0, Math.Min(FooterLayout.ActualWidth - PortableBadge.ActualWidth,
+            // Never over the layout switch: a divider dragged far right would otherwise park
+            // the badge on top of the buttons beside it.
+            double limit = PaneLayoutSwitch.ActualWidth > 0
+                ? PaneLayoutSwitch.TransformToVisual(FooterLayout).Transform(new Point(0, 0)).X - 6
+                : FooterLayout.ActualWidth;
+            double left = Math.Max(0, Math.Min(limit - PortableBadge.ActualWidth,
                                               anchor - PortableBadge.ActualWidth / 2));
             if (PortableBadge.HorizontalAlignment != HorizontalAlignment.Left)
                 PortableBadge.HorizontalAlignment = HorizontalAlignment.Left;

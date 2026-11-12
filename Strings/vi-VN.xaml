@@ -109,7 +109,6 @@
   <sys:String x:Key="Str_Sort_Found">theo thứ tự tìm thấy</sys:String>
   <sys:String x:Key="Str_TT_FilterResults">Lọc các kết quả này (Ctrl+F)</sys:String>
   <sys:String x:Key="Str_TT_Pipe">Tìm kiếm trong các kết quả này  (Ctrl+Shift+F)</sys:String>
-  <sys:String x:Key="Str_TT_DualPane">Chuyển bố cục ngăn. Ctrl+nhấp để chuyển theo thứ tự ngược; nhấp chuột phải để chọn bố cục. F10 mở hoặc đóng ngăn thứ hai.</sys:String>
   <sys:String x:Key="Str_TT_MoreTools">Công cụ khác</sys:String>
   <sys:String x:Key="Str_TT_SystemTools">Công cụ hệ thống</sys:String>
   <sys:String x:Key="Str_TT_Sort">Sắp xếp theo  (Alt+S)</sys:String>
@@ -1014,6 +1013,7 @@ Các cài đặt của bạn sẽ không bị xóa.</sys:String>
     <sys:String x:Key="Str_Layout_TabsBottom">Tab ở dưới</sys:String>
     <sys:String x:Key="Str_Layout_LeftRight">Ngăn trái và phải</sys:String>
     <sys:String x:Key="Str_Layout_TopBottom">Ngăn trên và dưới</sys:String>
+    <sys:String x:Key="Str_Layout_Panes">Bố cục ngăn</sys:String>
     <sys:String x:Key="Str_TitleKind_FileBrowser">Trình duyệt tệp</sys:String>
     <sys:String x:Key="Str_TitleKind_Search">Kết quả tìm kiếm</sys:String>
     <sys:String x:Key="Str_TitleKind_PowerShell">Terminal PowerShell</sys:String>
@@ -1053,4 +1053,15 @@ Các cài đặt của bạn sẽ không bị xóa.</sys:String>
   <sys:String x:Key="Str_Card_Close">Đóng</sys:String>
   <sys:String x:Key="Str_Card_MoveOtherPane">Chuyển sang ngăn kia</sys:String>
   <sys:String x:Key="Str_Card_MoveNewWindow">Chuyển sang cửa sổ mới</sys:String>
+  <sys:String x:Key="Str_Card_Explorer">Explorer</sys:String>
+  <sys:String x:Key="Str_Card_Terminal">Terminal</sys:String>
+  <sys:String x:Key="Str_Card_Search">Tìm kiếm</sys:String>
+  <sys:String x:Key="Str_Card_Undo">Hoàn tác</sys:String>
+  <sys:String x:Key="Str_Card_Redo">Làm lại</sys:String>
+  <sys:String x:Key="Str_Card_Save">Lưu</sys:String>
+  <sys:String x:Key="Str_Card_Cut">Cắt</sys:String>
+  <sys:String x:Key="Str_Card_Copy">Sao chép</sys:String>
+  <sys:String x:Key="Str_Card_Edit">Chỉnh sửa</sys:String>
+  <sys:String x:Key="Str_Card_Rename">Đổi tên</sys:String>
+  <sys:String x:Key="Str_Card_SelectAll">Chọn tất cả</sys:String>
 </ResourceDictionary>

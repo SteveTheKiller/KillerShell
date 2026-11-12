@@ -118,7 +118,6 @@ namespace KillerShell.Shell
             if (tab.Term == null && tab.Editor == null && tab.Procs == null && tab.Events == null
                 && tab.Registry == null && tab.Perf == null && tab.Storage == null)
             {
-                card.Items.Add(new Separator());
                 var pipe = new MenuItem { Tag = "pipe", InputGestureText = "Ctrl+Shift+F" };
                 pipe.SetResourceReference(HeaderedItemsControl.HeaderProperty, "Str_Menu_PipeTab");
                 var glyph = new KillerFamily.Accessibility.Glyph { Text = ((char)0xE721).ToString() };

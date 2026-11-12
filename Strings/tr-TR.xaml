@@ -73,7 +73,6 @@
     <sys:String x:Key="Str_Sort_Found">bulunma sırası</sys:String>
     <sys:String x:Key="Str_TT_FilterResults">Bu sonuçları filtrele (Ctrl+F)</sys:String>
     <sys:String x:Key="Str_TT_Pipe">Bu sonuçların içinde ara  (Ctrl+Shift+F)</sys:String>
-    <sys:String x:Key="Str_TT_DualPane">Bölme düzenini değiştirin. Ctrl+tıklama sırayı tersine çevirir; sağ tıklama düzen seçmenizi sağlar. F10 ikinci bölmeyi açar veya kapatır.</sys:String>
     <sys:String x:Key="Str_TT_MoreTools">Diğer araçlar</sys:String>
     <sys:String x:Key="Str_TT_SystemTools">Sistem araçları</sys:String>
     <sys:String x:Key="Str_TT_Sort">Sıralama ölçütü  (Alt+S)</sys:String>
@@ -1012,6 +1011,7 @@
     <sys:String x:Key="Str_Layout_TabsBottom">Sekmeler altta</sys:String>
     <sys:String x:Key="Str_Layout_LeftRight">Sol ve sağ bölmeler</sys:String>
     <sys:String x:Key="Str_Layout_TopBottom">Üst ve alt bölmeler</sys:String>
+    <sys:String x:Key="Str_Layout_Panes">Bölme düzeni</sys:String>
     <sys:String x:Key="Str_TitleKind_FileBrowser">Dosya Tarayıcısı</sys:String>
     <sys:String x:Key="Str_TitleKind_Search">Arama Sonuçları</sys:String>
     <sys:String x:Key="Str_TitleKind_PowerShell">PowerShell Terminali</sys:String>
@@ -1052,4 +1052,15 @@
     <sys:String x:Key="Str_Card_Close">Kapat</sys:String>
     <sys:String x:Key="Str_Card_MoveOtherPane">Diğer bölmeye taşı</sys:String>
     <sys:String x:Key="Str_Card_MoveNewWindow">Yeni pencereye taşı</sys:String>
+    <sys:String x:Key="Str_Card_Explorer">Explorer</sys:String>
+    <sys:String x:Key="Str_Card_Terminal">Terminal</sys:String>
+    <sys:String x:Key="Str_Card_Search">Ara</sys:String>
+    <sys:String x:Key="Str_Card_Undo">Geri al</sys:String>
+    <sys:String x:Key="Str_Card_Redo">Yinele</sys:String>
+    <sys:String x:Key="Str_Card_Save">Kaydet</sys:String>
+    <sys:String x:Key="Str_Card_Cut">Kes</sys:String>
+    <sys:String x:Key="Str_Card_Copy">Kopyala</sys:String>
+    <sys:String x:Key="Str_Card_Edit">Düzenle</sys:String>
+    <sys:String x:Key="Str_Card_Rename">Yeniden adlandır</sys:String>
+    <sys:String x:Key="Str_Card_SelectAll">Tümünü seç</sys:String>
 </ResourceDictionary>
