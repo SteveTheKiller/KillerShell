@@ -478,7 +478,7 @@ namespace KillerShell.Shell
                 "utf8bom"  => new UTF8Encoding(true),
                 "utf16le"  => new UnicodeEncoding(false, true),
                 "utf16be"  => new UnicodeEncoding(true, true),
-                "ansi"     => Encoding.Default,
+                "ansi"     => Editing.EditorControl.Ansi,   // the locale's page, even with UTF-8 as the system's
                 _          => null,
             };
             if (encoding == null) return;

@@ -401,7 +401,7 @@ namespace KillerShell.Editing
         /// UTF-32 when the rest decodes as UTF-32, otherwise UTF-16 when that decodes; either
         /// way the bytes come back unchanged on save.
         ///
-        /// Encoding.Default is the system ANSI codepage on net48 - which is what a .bat or a .reg
+        /// Ansi is the system ANSI codepage (see Ansi below) - which is what a .bat or a .reg
         /// written by an older tool actually is - and it is only ever reached when there is no
         /// mark and the bytes are not valid UTF-8, so plain ASCII never lands there.
         /// </remarks>
@@ -434,10 +434,44 @@ namespace KillerShell.Editing
 
             if (Strict(bytes, 0, new UTF8Encoding(false, true), new UTF8Encoding(false), out encoding, out text, ref badLabel))
                 return true;
-            var legacyDecoder = (Encoding)Encoding.Default.Clone();
+            var legacy = Ansi;
+            var legacyDecoder = (Encoding)legacy.Clone();
             legacyDecoder.DecoderFallback = DecoderFallback.ExceptionFallback;
-            return Strict(bytes, 0, legacyDecoder, Encoding.Default, out encoding, out text, ref badLabel);
+            return Strict(bytes, 0, legacyDecoder, legacy, out encoding, out text, ref badLabel);
         }
+
+        /// <summary>
+        /// The legacy ANSI code page files without a mark are read and written in.
+        /// </summary>
+        /// <remarks>
+        /// Normally Encoding.Default. With Windows set to "Use Unicode UTF-8 for worldwide
+        /// language support" that IS UTF-8, and a file written by an older tool in Windows-1252
+        /// failed the UTF-8 read and then failed this one too, so the editor refused to open it.
+        /// The system locale still names the page its old programs wrote, so that is asked for
+        /// instead, and 1252 stands in for a locale that names none.
+        /// </remarks>
+        internal static Encoding Ansi => _ansi ??= ResolveAnsi(Encoding.Default, SystemLocaleAnsiCodePage());
+        private static Encoding? _ansi;
+
+        internal static Encoding ResolveAnsi(Encoding system, int localePage)
+        {
+            if (system.CodePage != 65001) return system;
+            int page = localePage is > 0 and not 65001 and not 1 ? localePage : 1252;
+            try { return Encoding.GetEncoding(page); }
+            catch (Exception ex) when (ex is ArgumentException or NotSupportedException) { return Encoding.GetEncoding(1252); }
+        }
+
+        private static int SystemLocaleAnsiCodePage()
+        {
+            var data = new StringBuilder(8);
+            return GetLocaleInfoEx("!x-sys-default-locale", LocaleIDefaultAnsiCodePage, data, data.Capacity) > 0
+                   && int.TryParse(data.ToString(), out int page) ? page : 0;
+        }
+
+        private const uint LocaleIDefaultAnsiCodePage = 0x1004;
+
+        [System.Runtime.InteropServices.DllImport("kernel32.dll", CharSet = System.Runtime.InteropServices.CharSet.Unicode)]
+        private static extern int GetLocaleInfoEx(string localeName, uint type, StringBuilder data, int size);
 
         private static bool Strict(byte[] bytes, int skip, Encoding decoder, Encoding writer,
                                    out Encoding encoding, out string text, ref string badLabel)

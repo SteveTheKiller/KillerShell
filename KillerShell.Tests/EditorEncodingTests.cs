@@ -22,6 +22,24 @@ namespace KillerShell.Tests
     /// </summary>
     public sealed class EditorEncodingTests
     {
+        // With Windows set to use UTF-8 for worldwide language support, the system's "ANSI"
+        // page is UTF-8, and the legacy page has to come from the system locale instead.
+        [Theory]
+        [InlineData(1252, 1252)]
+        [InlineData(932, 932)]
+        [InlineData(0, 1252)]
+        [InlineData(65001, 1252)]
+        public void AUtf8SystemReadsLegacyFilesInTheLocalePage(int localePage, int expected)
+            => Assert.Equal(expected, EditorControl.ResolveAnsi(new UTF8Encoding(false), localePage).CodePage);
+
+        [Fact]
+        public void AnOrdinarySystemKeepsItsOwnAnsiPage()
+        {
+            var system = Encoding.GetEncoding(1251);
+            Assert.Same(system, EditorControl.ResolveAnsi(system, 1252));
+            Assert.NotEqual(65001, EditorControl.Ansi.CodePage);
+        }
+
         [Theory]
         [InlineData("utf8")]
         [InlineData("utf8-bom")]
