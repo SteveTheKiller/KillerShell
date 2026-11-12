@@ -100,13 +100,23 @@ namespace KillerShell.Shell
             if (sender is not FrameworkElement { DataContext: Bookmark b } row) return;
 
             // This PC and the Recycle Bin are places, not folders: a terminal, a scan or a
-            // Properties sheet has nowhere to point, so they keep only Remove.
+            // Properties sheet has nowhere to point, so they keep only their name and Remove.
             bool sentinel = IsPlaceSentinel(b.Path);   // Browse.cs
-            if (row.ContextMenu != null)
-                foreach (var item in row.ContextMenu.Items.OfType<Control>())
-                    item.Visibility = sentinel && item.Tag as string != "remove" ? Visibility.Collapsed : Visibility.Visible;
+            var card = row.ContextMenu;
+            if (card == null) return;
+            foreach (var item in card.Items.OfType<Control>())
+                item.Visibility = sentinel && item.Tag as string is not ("remove" or "cardhead")
+                    ? Visibility.Collapsed : Visibility.Visible;
 
-            SyncNicknameMenu(row.ContextMenu, sentinel ? null : b.Path);
+            // The card names the place it acts on, the same header the tree card draws.
+            if (card.Items.OfType<MenuItem>().FirstOrDefault(m => m.Tag as string == "cardhead") is { } head)
+            {
+                var source = sentinel ? null : Services.IconCache.For(b.Path, 32, isDirectory: true);
+                var icon = source == null ? null : new Image { Source = source, Width = 32, Height = 32 };
+                Controls.CardMenus.SetHeader(head, icon, b.NameLabel, sentinel ? "" : b.Path);
+            }
+
+            SyncNicknameMenu(card, sentinel ? null : b.Path);
         }
 
         // The listing acts on the item the menu opened on (the seed), not the whole selection:

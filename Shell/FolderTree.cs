@@ -523,18 +523,35 @@ namespace KillerShell.Shell
 
         private void TreeOpenNewTab_Click(object sender, RoutedEventArgs e)
         {
-            string? p = TreeMenuPath();
-            if (p == null) return;
-            CaptureTab(_active);              // Tabs.cs - always a NEW tab, that is what was asked
-            ActivateTab(CreateTab());
-            _ = NavigateTo(p);
+            if (TreeMenuPath() is { } p) OpenFolderInNewTab(p);
         }
 
         private void TreeShowInExplorer_Click(object sender, RoutedEventArgs e)
         {
-            string? p = TreeMenuPath();
-            if (p != null && Directory.Exists(p))
-                System.Diagnostics.Process.Start("explorer.exe", $"/select,\"{p.TrimEnd('\\')}\"");
+            if (TreeMenuPath() is { } p) ShowFolderInExplorer(p);
+        }
+
+        // The folder verbs the tree card and the saved place card share. A folder is a folder
+        // wherever it is listed, so both cards run the same code on the path they opened on.
+        private void OpenFolderInNewTab(string path)
+        {
+            CaptureTab(_active);              // Tabs.cs - always a NEW tab, that is what was asked
+            ActivateTab(CreateTab());
+            _ = NavigateTo(path);
+        }
+
+        private static void ShowFolderInExplorer(string path)
+        {
+            if (Directory.Exists(path))
+                System.Diagnostics.Process.Start("explorer.exe", $"/select,\"{path.TrimEnd('\\')}\"");
+        }
+
+        private void SearchInFolder(string path)
+        {
+            Pane.RootPathBox.Text    = path;
+            Pane.ScopePathLabel.Text = path;
+            _active.RootPath    = path;
+            if (!_searchOpen) ToggleSearchPanel();   // SearchPanel.cs - nothing to type into otherwise
         }
 
         private void TreeTerminal_Click(object sender, RoutedEventArgs e)
@@ -556,12 +573,7 @@ namespace KillerShell.Shell
 
         private void TreeSearchHere_Click(object sender, RoutedEventArgs e)
         {
-            string? p = TreeMenuPath();
-            if (p == null) return;
-            Pane.RootPathBox.Text    = p;
-            Pane.ScopePathLabel.Text = p;
-            _active.RootPath    = p;
-            if (!_searchOpen) ToggleSearchPanel();   // SearchPanel.cs - nothing to type into otherwise
+            if (TreeMenuPath() is { } p) SearchInFolder(p);
         }
 
         private void TreeFavorite_Click(object sender, RoutedEventArgs e)

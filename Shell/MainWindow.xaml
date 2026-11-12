@@ -620,10 +620,42 @@
                                             </Style>
                                         </Border.Style>
                                         <Border.ContextMenu>
-                                            <ContextMenu>
-                                                <MenuItem Header="{DynamicResource Str_Menu_OpenTerminal}"
-                                                          Click="BookmarkTerminal_Click">
-                                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE756;"/></MenuItem.Icon>
+                                            <!-- The saved place card: the same folder card the tree
+                                                 shows, because a folder is a folder wherever it is
+                                                 listed. The header is filled per row as the card opens
+                                                 (NicknameCommands.cs BookmarkRow_ContextMenuOpening).
+                                                 No gestures in the tooltips: the tree's keys act on
+                                                 the tree, and the places list has none of its own. -->
+                                            <ContextMenu Style="{StaticResource CardMenu}" ButtonBase.Click="BookmarkCard_ButtonClick">
+                                                <MenuItem Tag="cardhead" Style="{StaticResource CardSlot}"/>
+                                                <MenuItem Tag="cardquick" Style="{StaticResource CardSlot}" Padding="0"
+                                                          AutomationProperties.Name="{DynamicResource Str_Card_Actions}">
+                                                    <MenuItem.Header>
+                                                        <Border BorderBrush="{DynamicResource MenuBorderBrush}" BorderThickness="0,1" Padding="2,4">
+                                                            <UniformGrid Rows="1">
+                                                                <Button Style="{StaticResource CardQuickButton}" CommandParameter="newtab"
+                                                                        Content="&#xE710;" Tag="{DynamicResource Str_Card_NewTab}"
+                                                                        AutomationProperties.Name="{DynamicResource Str_Menu_OpenInNewTab}"
+                                                                        ToolTip="{DynamicResource Str_Menu_OpenInNewTab}"/>
+                                                                <Button Style="{StaticResource CardQuickButton}" CommandParameter="explorer"
+                                                                        Content="&#xE838;" Tag="{DynamicResource Str_Card_Explorer}"
+                                                                        AutomationProperties.Name="{DynamicResource Str_Menu_ShowExplorer}"
+                                                                        ToolTip="{DynamicResource Str_Menu_ShowExplorer}"/>
+                                                                <Button Style="{StaticResource CardQuickButton}" CommandParameter="terminal"
+                                                                        Content="&#xE756;" Tag="{DynamicResource Str_Card_Terminal}"
+                                                                        AutomationProperties.Name="{DynamicResource Str_Menu_OpenTerminal}"
+                                                                        ToolTip="{DynamicResource Str_Menu_OpenTerminal}"/>
+                                                                <Button Style="{StaticResource CardQuickButton}" CommandParameter="search"
+                                                                        Content="&#xE721;" Tag="{DynamicResource Str_Card_Search}"
+                                                                        AutomationProperties.Name="{DynamicResource Str_Menu_SearchHere}"
+                                                                        ToolTip="{DynamicResource Str_Menu_SearchHere}"/>
+                                                                <Button Style="{StaticResource CardQuickButton}" CommandParameter="copypath"
+                                                                        Content="&#xE8C8;" Tag="{DynamicResource Str_Card_Path}"
+                                                                        AutomationProperties.Name="{DynamicResource Str_Menu_CopyPath}"
+                                                                        ToolTip="{DynamicResource Str_Menu_CopyPath}"/>
+                                                            </UniformGrid>
+                                                        </Border>
+                                                    </MenuItem.Header>
                                                 </MenuItem>
                                                 <MenuItem Header="{DynamicResource Str_Menu_OpenTerminalAdmin}"
                                                           Click="BookmarkTerminalAdmin_Click">
