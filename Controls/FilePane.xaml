@@ -2173,8 +2173,8 @@
                              card and runs it, so they go through the same handlers the rows always did.
                              Rows keep their Tags, which is how the open-time code finds them. -->
                         <ContextMenu x:Key="ResultMenu" Style="{StaticResource CardMenu}" ButtonBase.Click="ResultCard_ButtonClick">
-                            <MenuItem Tag="cardhead" Style="{StaticResource CardSlot}" StaysOpenOnClick="True"/>
-                            <MenuItem Tag="cardquick" Style="{StaticResource CardSlot}" Padding="0" StaysOpenOnClick="True"
+                            <MenuItem Tag="cardhead" Style="{StaticResource CardSlot}"/>
+                            <MenuItem Tag="cardquick" Style="{StaticResource CardSlot}" Padding="0"
                                       AutomationProperties.Name="{DynamicResource Str_Card_Actions}">
                                 <MenuItem.Header>
                                     <Border BorderBrush="{DynamicResource MenuBorderBrush}" BorderThickness="0,1" Padding="2,4">
@@ -2212,7 +2212,7 @@
                             </MenuItem>
                             <!-- The copy variants, all acting on the whole selection, one entry per line.
                                  Lines appears only on content matches, Name and SHA-256 only on files. -->
-                            <MenuItem Tag="cardcopy" Style="{StaticResource CardSlot}" Padding="24,6,4,4" StaysOpenOnClick="True"
+                            <MenuItem Tag="cardcopy" Style="{StaticResource CardSlot}" Padding="24,6,4,4"
                                       AutomationProperties.Name="{DynamicResource Str_Card_CopyLabel}">
                                 <MenuItem.Header>
                                     <DockPanel>
