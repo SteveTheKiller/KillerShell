@@ -75,6 +75,13 @@ public static class FolderSortScenario
         Go(named);
         Assert.Equal(1, pane.Active.SortIndex);
         Assert.False(pane.Active.SortAsc);
+
+        // A search started here takes the pane's search sort, not this folder's.
+        TitlePathInputScenario.Invoke(window, "SetWindowViewSetting", "ResultsSortL", "3|0");
+        TitlePathInputScenario.Invoke(window, "UseSearchSort", pane.Active);
+        Assert.Equal(3, pane.Active.SortIndex);
+        Assert.False(pane.Active.SortAsc);
+        Assert.Equal("1|0|" + named, ThemeManager.GetSetting("FolderSorts"));
     }
 }
 

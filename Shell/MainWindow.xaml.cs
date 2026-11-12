@@ -591,6 +591,7 @@ namespace KillerShell.Shell
                 Pane.RootPathBox.Text = Pane.ScopePathLabel.Text = pickedRoot;
             }
             StopWatching();
+            if (tab.IsBrowsing) UseSearchSort(tab);   // ResultsView.cs - search results keep the pane's sort
             tab.IsBrowsing = false;
             _listCts?.Cancel();
             UpdateLocationColumn();

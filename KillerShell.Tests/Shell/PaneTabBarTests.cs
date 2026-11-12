@@ -47,6 +47,44 @@ public sealed class PaneTabBarTests
     [InlineData(nameof(CloseLastLeftTabFromRightScenario))]
     public Task ClosingTheLeftPanesLastTabKeepsTheRightPanesTabs(string scenario)
         => RuntimeComponentProcess.Run(scenario);
+
+    // A right-pane tab still fading out when the fold moves it to the left pane still closes.
+    [Fact]
+    public Task AFadingTabClosesAfterTheFoldMovesIt()
+        => RuntimeComponentProcess.Run(nameof(CloseDuringFoldScenario));
+}
+
+public static class CloseDuringFoldScenario
+{
+    public static void Run()
+    {
+        using var fixture = new ShellWindowFixture();
+        var window = fixture.Window;
+        var left = (FilePane)window.FindName("LeftPane");
+        var right = (FilePane)window.FindName("RightPane");
+
+        window.ToggleDualPane();
+        ShellWindowFixture.PumpUntil(() => right.Active.IsBrowsing);
+        window.FocusPane(right);
+        var folder = right.Active;
+        window.OpenPerformanceMonitor();
+        var perf = right.Active;
+        window.UpdateLayout();
+        ShellWindowFixture.PumpUntil(() => right.TabStrip.ItemContainerGenerator.ContainerFromItem(perf) is FrameworkElement);
+
+        // The right tab starts its fade, and the left pane's only tab closes before it ends.
+        window.CloseTab_Click(new Button { Tag = perf }, new RoutedEventArgs(Button.ClickEvent));
+        Assert.Contains(perf, right.Tabs);
+        window.CloseTab_Click(new Button { Tag = left.Tabs[0] }, new RoutedEventArgs(Button.ClickEvent));
+
+        ShellWindowFixture.PumpUntil(() => !window.DualPane
+                                        && !left.Tabs.Contains(perf)
+                                        && left.Tabs.Count == 1
+                                        && ReferenceEquals(left.Active, folder)
+                                        && right.Tabs.Count == 0,
+            diagnostic: () => "dual=" + window.DualPane + "; left=" + string.Join(",", System.Linq.Enumerable.Select(left.Tabs, t => t.Title))
+                              + "; right=" + right.Tabs.Count);
+    }
 }
 
 public static class PaneTabBarScenario

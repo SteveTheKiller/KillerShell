@@ -1116,6 +1116,9 @@ namespace KillerShell.Shell
 
         private void FinishCloseTab(FilePane owner, SearchTab t)
         {
+            // The pane is looked up again at the end of a fade: closing the left pane's last tab
+            // folds the window and moves the right pane's tabs, a fading one included, to the left.
+            owner = LeftPane.Tabs.Contains(t) ? LeftPane : RightPane.Tabs.Contains(t) ? RightPane : owner;
             var focused = Pane;
             bool background = !ReferenceEquals(owner, focused);
             FocusPaneQuiet(owner);

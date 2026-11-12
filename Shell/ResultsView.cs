@@ -670,6 +670,17 @@ namespace KillerShell.Shell
             DemoMode ? "demo.FolderSorts" : "FolderSorts",
             Services.ThemeManager.GetSetting, Services.ThemeManager.SetSetting);
 
+        /// <summary>
+        /// A browsing tab turning into a search takes the pane's search sort, not the folder's it
+        /// was showing. Modified, newest first when the pane has never saved one.
+        /// </summary>
+        private void UseSearchSort(Models.SearchTab tab)
+        {
+            tab.SortIndex = Services.FolderSortMemory.DefaultIndex;
+            tab.SortAsc = Services.FolderSortMemory.DefaultAsc;
+            RestoreWindowSort(tab, Pane);
+        }
+
         /// <summary>Give a tab that is opening <paramref name="folder"/> that folder's sort.</summary>
         private void ApplyFolderSort(Models.SearchTab tab, string folder)
         {
