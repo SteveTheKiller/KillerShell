@@ -49,6 +49,12 @@ public static class ResultMenuScenario
             Assert.Equal(Visibility.Visible, quick.Visibility);
             Assert.Equal(new[] { "open", "cut", "copy", "rename", "delete" }, Shown(quick));
             Assert.Equal(new[] { "path", "folder" }, Shown(chips));
+            // A screen reader hears the whole command on a chip, not just "Path".
+            Assert.Equal(fixture.Window.FindResource("Str_Menu_CopyPath"),
+                System.Windows.Automation.AutomationProperties.GetName(QuickButton(chips, "path")));
+            // Clicking the card's header, label or strip border leaves it open.
+            foreach (var slot in new[] { "cardhead", "cardquick", "cardcopy" })
+                Assert.True(Tagged(menu.Items, slot).StaysOpenOnClick, slot + " closes the card on a click that does nothing");
             Assert.Equal(Visibility.Collapsed, Gesture(menu, "Ctrl+V").Visibility);
             Assert.Equal(Visibility.Collapsed, Gesture(menu, "Ctrl+Shift+N").Visibility);
             Assert.Equal(Visibility.Collapsed, Gesture(menu, "Ctrl+Shift+O").Visibility);
@@ -120,11 +126,9 @@ public static class ResultMenuScenario
     private static Button QuickButton(MenuItem slot, string command)
         => Assert.Single(Buttons(slot), b => (string)b.CommandParameter == command);
 
+    // The name UI Automation reads: the slot MenuItem's own, since a panel header has no peer.
     private static string HeaderTitle(ContextMenu menu)
-    {
-        var header = Assert.IsAssignableFrom<FrameworkElement>(Tagged(menu.Items, "cardhead").Header);
-        return System.Windows.Automation.AutomationProperties.GetName(header);
-    }
+        => System.Windows.Automation.AutomationProperties.GetName(Tagged(menu.Items, "cardhead"));
 
     private static void OpenMenu(FilePane pane, bool keyboard)
     {

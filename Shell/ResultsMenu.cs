@@ -129,7 +129,15 @@ namespace KillerShell.Shell
             };
             foreach (var item in ResultMenuItems(menu.Items))
             {
-                if ((item.Tag as string) == "cardhead") item.Header = ResultCardHeader(rows);
+                if ((item.Tag as string) == "cardhead")
+                {
+                    // The name goes on the slot itself: a panel has no automation peer, so a
+                    // screen reader only hears what the card is about from the MenuItem.
+                    var header = ResultCardHeader(rows);
+                    item.Header = header;
+                    System.Windows.Automation.AutomationProperties.SetName(item,
+                        System.Windows.Automation.AutomationProperties.GetName(header));
+                }
                 if (Relevant(item.Tag as string) is bool show) item.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
 
                 // The card's quick buttons and copy chips follow the same rules as the rows; their

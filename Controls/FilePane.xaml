@@ -2173,8 +2173,8 @@
                              card and runs it, so they go through the same handlers the rows always did.
                              Rows keep their Tags, which is how the open-time code finds them. -->
                         <ContextMenu x:Key="ResultMenu" Style="{StaticResource CardMenu}" ButtonBase.Click="ResultCard_ButtonClick">
-                            <MenuItem Tag="cardhead" Style="{StaticResource CardSlot}"/>
-                            <MenuItem Tag="cardquick" Style="{StaticResource CardSlot}" Padding="0"
+                            <MenuItem Tag="cardhead" Style="{StaticResource CardSlot}" StaysOpenOnClick="True"/>
+                            <MenuItem Tag="cardquick" Style="{StaticResource CardSlot}" Padding="0" StaysOpenOnClick="True"
                                       AutomationProperties.Name="{DynamicResource Str_Card_Actions}">
                                 <MenuItem.Header>
                                     <Border BorderBrush="{DynamicResource MenuBorderBrush}" BorderThickness="0,1" Padding="2,4">
@@ -2212,25 +2212,28 @@
                             </MenuItem>
                             <!-- The copy variants, all acting on the whole selection, one entry per line.
                                  Lines appears only on content matches, Name and SHA-256 only on files. -->
-                            <MenuItem Tag="cardcopy" Style="{StaticResource CardSlot}" Padding="24,6,4,4">
+                            <MenuItem Tag="cardcopy" Style="{StaticResource CardSlot}" Padding="24,6,4,4" StaysOpenOnClick="True"
+                                      AutomationProperties.Name="{DynamicResource Str_Card_CopyLabel}">
                                 <MenuItem.Header>
                                     <DockPanel>
-                                        <TextBlock Style="{StaticResource CardLabel}" Text="{DynamicResource Str_Card_CopyLabel}"/>
+                                        <!-- Grows past the kit's 52 for a long translation (Russian is 60 px) instead of trimming. -->
+                                        <TextBlock Style="{StaticResource CardLabel}" Width="Auto" MinWidth="52" Padding="0,0,6,0"
+                                                   Text="{DynamicResource Str_Card_CopyLabel}"/>
                                         <WrapPanel VerticalAlignment="Center">
-                                            <Button Style="{StaticResource CardChip}" CommandParameter="path" Content="{DynamicResource Str_Card_Path}">
+                                            <Button Style="{StaticResource CardChip}" CommandParameter="path" Content="{DynamicResource Str_Card_Path}" AutomationProperties.Name="{DynamicResource Str_Menu_CopyPath}">
                                                 <Button.ToolTip><TextBlock><Run Text="{DynamicResource Str_Menu_CopyPath}"/><Run Text="  (Ctrl+Shift+C)"/></TextBlock></Button.ToolTip>
                                             </Button>
-                                            <Button Style="{StaticResource CardChip}" Uid="fileonly" CommandParameter="name" Content="{DynamicResource Str_Card_Name}">
+                                            <Button Style="{StaticResource CardChip}" Uid="fileonly" CommandParameter="name" Content="{DynamicResource Str_Card_Name}" AutomationProperties.Name="{DynamicResource Str_Menu_CopyName}">
                                                 <Button.ToolTip><TextBlock><Run Text="{DynamicResource Str_Menu_CopyName}"/><Run Text="  (Ctrl+Shift+M)"/></TextBlock></Button.ToolTip>
                                             </Button>
-                                            <Button Style="{StaticResource CardChip}" CommandParameter="folder" Content="{DynamicResource Str_Card_Folder}">
+                                            <Button Style="{StaticResource CardChip}" CommandParameter="folder" Content="{DynamicResource Str_Card_Folder}" AutomationProperties.Name="{DynamicResource Str_Menu_CopyFolder}">
                                                 <Button.ToolTip><TextBlock><Run Text="{DynamicResource Str_Menu_CopyFolder}"/><Run Text="  (Ctrl+Shift+D)"/></TextBlock></Button.ToolTip>
                                             </Button>
-                                            <Button Style="{StaticResource CardChip}" Uid="matchedlines" CommandParameter="lines" Content="{DynamicResource Str_Card_Lines}">
+                                            <Button Style="{StaticResource CardChip}" Uid="matchedlines" CommandParameter="lines" Content="{DynamicResource Str_Card_Lines}" AutomationProperties.Name="{DynamicResource Str_Menu_CopyLines}">
                                                 <Button.ToolTip><TextBlock><Run Text="{DynamicResource Str_Menu_CopyLines}"/><Run Text="  (Ctrl+Shift+Y)"/></TextBlock></Button.ToolTip>
                                             </Button>
                                             <!-- SHA-256 is a name, the same in every language. -->
-                                            <Button Style="{StaticResource CardChip}" Uid="fileonly" CommandParameter="hash" Content="SHA-256">
+                                            <Button Style="{StaticResource CardChip}" Uid="fileonly" CommandParameter="hash" Content="SHA-256" AutomationProperties.Name="{DynamicResource Str_Menu_CopyHash}">
                                                 <Button.ToolTip><TextBlock><Run Text="{DynamicResource Str_Menu_CopyHash}"/><Run Text="  (Ctrl+Shift+H)"/></TextBlock></Button.ToolTip>
                                             </Button>
                                         </WrapPanel>
