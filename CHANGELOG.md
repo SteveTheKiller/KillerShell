@@ -4,9 +4,9 @@ All notable changes to KillerShell are documented here.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.5.2] - 2026-11-11
+## [1.6.0] - Unreleased
 
-1.5.2 makes exported search results, saved size filters and on-screen dates read the same on every Windows region, fixes dialog crashes, lost favorites and slow archive extraction, makes every killer script command work like the website's one-liner, and makes updates and the file pickers recover from more failures.
+1.6.0 turns the file and folder right-click menu into a card with quick buttons, makes exported search results, saved size filters and on-screen dates read the same on every Windows region, fixes dialog crashes, lost favorites and slow archive extraction, makes every killer script command work like the website's one-liner, and makes updates and the file pickers recover from more failures.
 
 ### Security
 
@@ -69,6 +69,8 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ### Changed
 
+- Right-clicking a file or folder opens a card instead of a long list. It names what you clicked with its icon, type, size and date, puts Open, Edit, Cut, Copy, Rename and Delete in a row of buttons, and copies the path, name, folder, matched lines or SHA-256 from one row of chips. The rarer folder commands sit under Folder options, and every shortcut works as before. A selection shows how many items it holds, and empty space names the folder with its full path.
+- Buttons are flat, without the drop shadow under them.
 - The KillerScripts module no longer keeps its own copy of the scripts, so `Update-KillerScripts` and the `-Offline` switch of `Invoke-KillerScript` are gone; every command downloads the latest script when you run it. The module is now version 1.1.0, and the `%LOCALAPPDATA%\KillerScripts` folder earlier versions filled is no longer used and can be deleted.
 - Only the main window remembers your tabs. Closing a Ctrl+N window or a torn-out tab's window no longer replaces the saved session with that window's tabs, and those windows close without the quit prompt about keeping tabs, the same as an administrator window. They still ask about unsaved documents, and a remembered choice to keep Esc from closing the window still applies. Installing or updating from one of those windows, or from an administrator window, leaves the saved session alone too.
 - Each folder remembers its own sort. Pick Name, Size or any other sort in a folder, or flip its direction, and that folder opens that way from then on, while every folder you haven't sorted opens by Modified with the newest on top. Search results still keep one sort per window pane.
