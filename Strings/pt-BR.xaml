@@ -1091,4 +1091,10 @@
     <sys:String x:Key="Str_Card_Lines">Linhas</sys:String>
     <sys:String x:Key="Str_Card_FolderOptions">Opções da pasta</sys:String>
     <sys:String x:Key="Str_Card_FilesFolders">Arquivos: {0}, pastas: {1}</sys:String>
+    <sys:String x:Key="Str_Card_NewTab">Nova guia</sys:String>
+    <sys:String x:Key="Str_Card_OtherPane">Outro painel</sys:String>
+    <sys:String x:Key="Str_Card_NewWindow">Nova janela</sys:String>
+    <sys:String x:Key="Str_Card_Close">Fechar</sys:String>
+    <sys:String x:Key="Str_Card_MoveOtherPane">Mover para o outro painel</sys:String>
+    <sys:String x:Key="Str_Card_MoveNewWindow">Mover para uma nova janela</sys:String>
 </ResourceDictionary>

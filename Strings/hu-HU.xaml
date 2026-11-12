@@ -1091,4 +1091,10 @@
     <sys:String x:Key="Str_Card_Lines">Sorok</sys:String>
     <sys:String x:Key="Str_Card_FolderOptions">Mappabeállítások</sys:String>
     <sys:String x:Key="Str_Card_FilesFolders">{0} fájl, {1} mappa</sys:String>
+    <sys:String x:Key="Str_Card_NewTab">Új lap</sys:String>
+    <sys:String x:Key="Str_Card_OtherPane">Másik panel</sys:String>
+    <sys:String x:Key="Str_Card_NewWindow">Új ablak</sys:String>
+    <sys:String x:Key="Str_Card_Close">Bezárás</sys:String>
+    <sys:String x:Key="Str_Card_MoveOtherPane">Áthelyezés a másik panelre</sys:String>
+    <sys:String x:Key="Str_Card_MoveNewWindow">Áthelyezés új ablakba</sys:String>
 </ResourceDictionary>

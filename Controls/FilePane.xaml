@@ -311,13 +311,9 @@
                                         PreviewMouseLeftButtonUp="Tab_DragUp"
                                         LostMouseCapture="Tab_LostCapture">
                                     <Border.ContextMenu>
-                                        <ContextMenu Opened="TabPlacementMenu_Opened">
-                                            <MenuItem Header="{DynamicResource Str_Menu_PipeTab}"
-                                                      Tag="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
-                                                      Click="PipeTab_Click" InputGestureText="Ctrl+Shift+F">
-                                                <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE721;"/></MenuItem.Icon>
-                                            </MenuItem>
-                                        </ContextMenu>
+                                        <!-- The tab card: built as it opens, about the tab it was
+                                             opened on (TabPlacement.cs TabPlacementMenu_Opened). -->
+                                        <ContextMenu Style="{StaticResource CardMenu}" Tag="tabcard" Opened="TabPlacementMenu_Opened"/>
                                     </Border.ContextMenu>
                                     <Grid>
                                         <!-- Grain follows the tab's radius, or the texture squares

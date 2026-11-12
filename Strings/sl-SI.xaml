@@ -964,4 +964,10 @@ Nastavitve bodo ohranjene.</sys:String>
     <sys:String x:Key="Str_Card_Lines">Vrstice</sys:String>
     <sys:String x:Key="Str_Card_FolderOptions">Možnosti mape</sys:String>
     <sys:String x:Key="Str_Card_FilesFolders">Datoteke: {0}, mape: {1}</sys:String>
+    <sys:String x:Key="Str_Card_NewTab">Nov zavihek</sys:String>
+    <sys:String x:Key="Str_Card_OtherPane">Drugo podokno</sys:String>
+    <sys:String x:Key="Str_Card_NewWindow">Novo okno</sys:String>
+    <sys:String x:Key="Str_Card_Close">Zapri</sys:String>
+    <sys:String x:Key="Str_Card_MoveOtherPane">Premakni v drugo podokno</sys:String>
+    <sys:String x:Key="Str_Card_MoveNewWindow">Premakni v novo okno</sys:String>
 </ResourceDictionary>

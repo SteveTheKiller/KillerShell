@@ -1046,4 +1046,10 @@
     <sys:String x:Key="Str_Card_Lines">Zeilen</sys:String>
     <sys:String x:Key="Str_Card_FolderOptions">Ordneroptionen</sys:String>
     <sys:String x:Key="Str_Card_FilesFolders">Dateien: {0}, Ordner: {1}</sys:String>
+    <sys:String x:Key="Str_Card_NewTab">Neuer Tab</sys:String>
+    <sys:String x:Key="Str_Card_OtherPane">Anderer Bereich</sys:String>
+    <sys:String x:Key="Str_Card_NewWindow">Neues Fenster</sys:String>
+    <sys:String x:Key="Str_Card_Close">Schließen</sys:String>
+    <sys:String x:Key="Str_Card_MoveOtherPane">In den anderen Bereich verschieben</sys:String>
+    <sys:String x:Key="Str_Card_MoveNewWindow">In ein neues Fenster verschieben</sys:String>
 </ResourceDictionary>

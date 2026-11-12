@@ -1042,4 +1042,10 @@
     <sys:String x:Key="Str_Card_Lines">行</sys:String>
     <sys:String x:Key="Str_Card_FolderOptions">フォルダーのオプション</sys:String>
     <sys:String x:Key="Str_Card_FilesFolders">ファイル {0} 個、フォルダー {1} 個</sys:String>
+    <sys:String x:Key="Str_Card_NewTab">新しいタブ</sys:String>
+    <sys:String x:Key="Str_Card_OtherPane">もう一方のペイン</sys:String>
+    <sys:String x:Key="Str_Card_NewWindow">新しいウィンドウ</sys:String>
+    <sys:String x:Key="Str_Card_Close">閉じる</sys:String>
+    <sys:String x:Key="Str_Card_MoveOtherPane">もう一方のペインに移動</sys:String>
+    <sys:String x:Key="Str_Card_MoveNewWindow">新しいウィンドウに移動</sys:String>
 </ResourceDictionary>

@@ -1091,4 +1091,10 @@
     <sys:String x:Key="Str_Card_Lines">Linjer</sys:String>
     <sys:String x:Key="Str_Card_FolderOptions">Mappealternativer</sys:String>
     <sys:String x:Key="Str_Card_FilesFolders">Filer: {0}, mapper: {1}</sys:String>
+    <sys:String x:Key="Str_Card_NewTab">Ny fane</sys:String>
+    <sys:String x:Key="Str_Card_OtherPane">Annen rute</sys:String>
+    <sys:String x:Key="Str_Card_NewWindow">Nytt vindu</sys:String>
+    <sys:String x:Key="Str_Card_Close">Lukk</sys:String>
+    <sys:String x:Key="Str_Card_MoveOtherPane">Flytt til den andre ruten</sys:String>
+    <sys:String x:Key="Str_Card_MoveNewWindow">Flytt til et nytt vindu</sys:String>
 </ResourceDictionary>

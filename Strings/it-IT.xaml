@@ -1054,4 +1054,10 @@
     <sys:String x:Key="Str_Card_Lines">Righe</sys:String>
     <sys:String x:Key="Str_Card_FolderOptions">Opzioni cartella</sys:String>
     <sys:String x:Key="Str_Card_FilesFolders">File: {0}, cartelle: {1}</sys:String>
+    <sys:String x:Key="Str_Card_NewTab">Nuova scheda</sys:String>
+    <sys:String x:Key="Str_Card_OtherPane">Altro riquadro</sys:String>
+    <sys:String x:Key="Str_Card_NewWindow">Nuova finestra</sys:String>
+    <sys:String x:Key="Str_Card_Close">Chiudi</sys:String>
+    <sys:String x:Key="Str_Card_MoveOtherPane">Sposta nell’altro riquadro</sys:String>
+    <sys:String x:Key="Str_Card_MoveNewWindow">Sposta in una nuova finestra</sys:String>
 </ResourceDictionary>

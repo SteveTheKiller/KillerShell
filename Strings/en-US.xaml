@@ -1091,4 +1091,10 @@
     <sys:String x:Key="Str_Card_Lines">Lines</sys:String>
     <sys:String x:Key="Str_Card_FolderOptions">Folder options</sys:String>
     <sys:String x:Key="Str_Card_FilesFolders">Files: {0}, folders: {1}</sys:String>
+    <sys:String x:Key="Str_Card_NewTab">New tab</sys:String>
+    <sys:String x:Key="Str_Card_OtherPane">Other pane</sys:String>
+    <sys:String x:Key="Str_Card_NewWindow">New window</sys:String>
+    <sys:String x:Key="Str_Card_Close">Close</sys:String>
+    <sys:String x:Key="Str_Card_MoveOtherPane">Move to the other pane</sys:String>
+    <sys:String x:Key="Str_Card_MoveNewWindow">Move to a new window</sys:String>
 </ResourceDictionary>

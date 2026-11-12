@@ -1046,4 +1046,10 @@
     <sys:String x:Key="Str_Card_Lines">Líneas</sys:String>
     <sys:String x:Key="Str_Card_FolderOptions">Opciones de carpeta</sys:String>
     <sys:String x:Key="Str_Card_FilesFolders">Archivos: {0}, carpetas: {1}</sys:String>
+    <sys:String x:Key="Str_Card_NewTab">Nueva pestaña</sys:String>
+    <sys:String x:Key="Str_Card_OtherPane">Otro panel</sys:String>
+    <sys:String x:Key="Str_Card_NewWindow">Nueva ventana</sys:String>
+    <sys:String x:Key="Str_Card_Close">Cerrar</sys:String>
+    <sys:String x:Key="Str_Card_MoveOtherPane">Mover al otro panel</sys:String>
+    <sys:String x:Key="Str_Card_MoveNewWindow">Mover a una ventana nueva</sys:String>
 </ResourceDictionary>

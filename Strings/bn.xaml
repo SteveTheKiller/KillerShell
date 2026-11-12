@@ -1043,4 +1043,10 @@
     <sys:String x:Key="Str_Card_Lines">লাইন</sys:String>
     <sys:String x:Key="Str_Card_FolderOptions">ফোল্ডার বিকল্প</sys:String>
     <sys:String x:Key="Str_Card_FilesFolders">{0}টি ফাইল, {1}টি ফোল্ডার</sys:String>
+    <sys:String x:Key="Str_Card_NewTab">নতুন ট্যাব</sys:String>
+    <sys:String x:Key="Str_Card_OtherPane">অন্য প্যান</sys:String>
+    <sys:String x:Key="Str_Card_NewWindow">নতুন উইন্ডো</sys:String>
+    <sys:String x:Key="Str_Card_Close">বন্ধ করুন</sys:String>
+    <sys:String x:Key="Str_Card_MoveOtherPane">অন্য প্যানে সরান</sys:String>
+    <sys:String x:Key="Str_Card_MoveNewWindow">নতুন উইন্ডোতে সরান</sys:String>
 </ResourceDictionary>

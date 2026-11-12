@@ -306,11 +306,6 @@ namespace KillerShell.Shell
         // ═══════════════════════════════════════════════════════════
         internal void PipeButton_Click(object sender, RoutedEventArgs e) => PipeIntoNewTab(_active);
 
-        internal void PipeTab_Click(object sender, RoutedEventArgs e)
-        {
-            if (sender is MenuItem mi && mi.Tag is SearchTab t) PipeIntoNewTab(t);
-        }
-
         private void PipeIntoNewTab(SearchTab src)
         {
             // Pipe exactly what the user SEES: the collection view, so an active

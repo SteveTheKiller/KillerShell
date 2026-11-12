@@ -1047,4 +1047,10 @@ Các cài đặt của bạn sẽ không bị xóa.</sys:String>
   <sys:String x:Key="Str_Card_Lines">Dòng</sys:String>
   <sys:String x:Key="Str_Card_FolderOptions">Tùy chọn thư mục</sys:String>
   <sys:String x:Key="Str_Card_FilesFolders">{0} tệp, {1} thư mục</sys:String>
+  <sys:String x:Key="Str_Card_NewTab">Thẻ mới</sys:String>
+  <sys:String x:Key="Str_Card_OtherPane">Ngăn kia</sys:String>
+  <sys:String x:Key="Str_Card_NewWindow">Cửa sổ mới</sys:String>
+  <sys:String x:Key="Str_Card_Close">Đóng</sys:String>
+  <sys:String x:Key="Str_Card_MoveOtherPane">Chuyển sang ngăn kia</sys:String>
+  <sys:String x:Key="Str_Card_MoveNewWindow">Chuyển sang cửa sổ mới</sys:String>
 </ResourceDictionary>

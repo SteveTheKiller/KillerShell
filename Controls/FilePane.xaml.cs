@@ -768,7 +768,6 @@ namespace KillerShell
 
         // ── Pipe + export ────────────────────────────────────────
         private void PipeButton_Click(object s, RoutedEventArgs e)         => Owner.PipeButton_Click(s, e);
-        private void PipeTab_Click(object s, RoutedEventArgs e)            => Owner.PipeTab_Click(s, e);
         // These two pass THIS pane rather than (sender, args): the reflow acts on the pane that
         // resized, which is not necessarily the focused one.
         // Raised by the location ROW, not the strip: the strip's own width is a consequence of

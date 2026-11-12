@@ -582,15 +582,15 @@ namespace KillerShell.Shell
         /// broken - so this sidesteps font rendering in this spot entirely rather than trying a
         /// fourth variation of a technique that has now failed twice.
         /// </remarks>
-        private static FrameworkElement OverflowRowIcon(SearchTab tab)
+        private static FrameworkElement OverflowRowIcon(SearchTab tab, int size = 16)
         {
             if (tab.IsBrowsing && !string.IsNullOrEmpty(tab.CurrentFolder)
                 && System.IO.Directory.Exists(tab.CurrentFolder))
             {
                 return new Image
                 {
-                    Width = 16, Height = 16,
-                    Source = Services.IconCache.For(tab.CurrentFolder, 16, isDirectory: true),
+                    Width = size, Height = size,
+                    Source = Services.IconCache.For(tab.CurrentFolder, size, isDirectory: true),
                 };
             }
 
@@ -598,8 +598,8 @@ namespace KillerShell.Shell
             {
                 return new Image
                 {
-                    Width = 16, Height = 16,
-                    Source = Services.IconCache.For(tab.Editor.FilePath, 16),
+                    Width = size, Height = size,
+                    Source = Services.IconCache.For(tab.Editor.FilePath, size),
                 };
             }
 
@@ -613,8 +613,8 @@ namespace KillerShell.Shell
             {
                 return new Image
                 {
-                    Width = 16, Height = 16,
-                    Source = Services.IconCache.For(exePath, 16),
+                    Width = size, Height = size,
+                    Source = Services.IconCache.For(exePath, size),
                 };
             }
 
@@ -624,7 +624,7 @@ namespace KillerShell.Shell
             {
                 return new Image
                 {
-                    Width = 16, Height = 16,
+                    Width = size, Height = size,
                     Source = Services.IconCache.Art("drive_icon"),
                 };
             }
@@ -635,7 +635,7 @@ namespace KillerShell.Shell
             // in - a shell in the accent, a Processes tab in DangerRed, an Event Viewer tab in
             // WarningAmber, a Performance tab in InfoBlue (all fixed, non-theme keys already used
             // for status color elsewhere - Controls.xaml), anything else muted.
-            var dot = new System.Windows.Shapes.Ellipse { Width = 8, Height = 8, Margin = new Thickness(4) };
+            var dot = new System.Windows.Shapes.Ellipse { Width = size / 2, Height = size / 2, Margin = new Thickness(size / 4) };
             string brush = tab.IsTerminal ? "PrimaryBrush"
                 : tab.IsProcessList         ? "DangerRed"
                 : tab.IsEventViewer         ? "WarningAmber"
@@ -1176,6 +1176,21 @@ namespace KillerShell.Shell
                 // to one pane, the same way dragging that last tab out does (PaneDrag.cs). A fresh
                 // blank tab here left you looking at a folder you never opened while the tab you
                 // were working in sat in the other half (2026-11-11).
+                // A right-pane tab still fading out of its own close finishes closing FIRST, so
+                // the fold never moves a tab the user already closed. Left to its fade, the close
+                // rode on an animation of a chip the fold had just taken off the strip, and in a
+                // loaded full test run that tab came back to life in the folded pane. Only while
+                // a tab stays behind: the right pane emptying here is not a fold any more.
+                if (DualPane)
+                {
+                    var fading = RightPane.Tabs.Where(_closingTabs.Contains).ToList();
+                    if (fading.Count > 0 && fading.Count < RightPane.Tabs.Count)
+                    {
+                        foreach (var closing in fading) FinishCloseTab(RightPane, closing);
+                        FocusPaneQuiet(LeftPane);
+                    }
+                }
+
                 if (DualPane && RightPane.Active is { } keep)
                 {
                     CollapseToSinglePane(keep);   // PaneDrag.cs

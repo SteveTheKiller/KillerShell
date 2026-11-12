@@ -1043,4 +1043,10 @@
     <sys:String x:Key="Str_Card_Lines">行</sys:String>
     <sys:String x:Key="Str_Card_FolderOptions">文件夹选项</sys:String>
     <sys:String x:Key="Str_Card_FilesFolders">{0} 个文件，{1} 个文件夹</sys:String>
+    <sys:String x:Key="Str_Card_NewTab">新建标签页</sys:String>
+    <sys:String x:Key="Str_Card_OtherPane">另一窗格</sys:String>
+    <sys:String x:Key="Str_Card_NewWindow">新窗口</sys:String>
+    <sys:String x:Key="Str_Card_Close">关闭</sys:String>
+    <sys:String x:Key="Str_Card_MoveOtherPane">移到另一窗格</sys:String>
+    <sys:String x:Key="Str_Card_MoveNewWindow">移到新窗口</sys:String>
 </ResourceDictionary>

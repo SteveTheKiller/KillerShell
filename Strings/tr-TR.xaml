@@ -1046,4 +1046,10 @@
     <sys:String x:Key="Str_Card_Lines">Satırlar</sys:String>
     <sys:String x:Key="Str_Card_FolderOptions">Klasör seçenekleri</sys:String>
     <sys:String x:Key="Str_Card_FilesFolders">{0} dosya, {1} klasör</sys:String>
+    <sys:String x:Key="Str_Card_NewTab">Yeni sekme</sys:String>
+    <sys:String x:Key="Str_Card_OtherPane">Diğer bölme</sys:String>
+    <sys:String x:Key="Str_Card_NewWindow">Yeni pencere</sys:String>
+    <sys:String x:Key="Str_Card_Close">Kapat</sys:String>
+    <sys:String x:Key="Str_Card_MoveOtherPane">Diğer bölmeye taşı</sys:String>
+    <sys:String x:Key="Str_Card_MoveNewWindow">Yeni pencereye taşı</sys:String>
 </ResourceDictionary>

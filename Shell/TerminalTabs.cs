@@ -237,6 +237,8 @@ namespace KillerShell.Shell
             // hosts actually on this machine (ProfileMenu.cs). Subscribed here rather than at
             // menu-build time because the menu is not built until the first right-click.
             term.ProfileSubmenuOpening += BuildProfileMenu;
+            // The card's header: the shell's own icon and name, and the folder it is in now.
+            term.CardHeaderSource = () => (OverflowRowIcon(tab, 32), profile.Name, tab.CurrentFolder);   // Tabs.cs
             term.LaunchSubmenuOpening += menu => BuildTerminalProfiles(menu, profile.BrowsePath(tab.CurrentFolder));
 
             // And the folder follows a cd, so the OTHER pane can be pointed at it later - and so
@@ -296,6 +298,8 @@ namespace KillerShell.Shell
             tab.RootPath = folder;
 
             term.ProfileSubmenuOpening += BuildProfileMenu;
+            // The card's header: the shell's own icon and name, and the folder it is in now.
+            term.CardHeaderSource = () => (OverflowRowIcon(tab, 32), profile.Name, tab.CurrentFolder);   // Tabs.cs
             term.StartDemo(canned);
             SyncTerminalBar(tab);             // TerminalBar.cs
             return tab;

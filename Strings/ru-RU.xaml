@@ -1057,4 +1057,10 @@
     <sys:String x:Key="Str_Card_Lines">Строки</sys:String>
     <sys:String x:Key="Str_Card_FolderOptions">Параметры папки</sys:String>
     <sys:String x:Key="Str_Card_FilesFolders">Файлы: {0}, папки: {1}</sys:String>
+    <sys:String x:Key="Str_Card_NewTab">Новая вкладка</sys:String>
+    <sys:String x:Key="Str_Card_OtherPane">Другая панель</sys:String>
+    <sys:String x:Key="Str_Card_NewWindow">Новое окно</sys:String>
+    <sys:String x:Key="Str_Card_Close">Закрыть</sys:String>
+    <sys:String x:Key="Str_Card_MoveOtherPane">Переместить на другую панель</sys:String>
+    <sys:String x:Key="Str_Card_MoveNewWindow">Переместить в новое окно</sys:String>
 </ResourceDictionary>

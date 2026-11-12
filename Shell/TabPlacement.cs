@@ -46,6 +46,13 @@ namespace KillerShell.Shell
         internal void TabPlacementMenu_Opened(object sender, RoutedEventArgs e)
         {
             var menu = (ContextMenu)sender;
+            if (Equals(menu.Tag, "tabcard"))
+            {
+                // A tab's own card is rebuilt on every opening, about the tab it opened on.
+                menu.Items.Clear();
+                if ((menu.PlacementTarget as FrameworkElement)?.DataContext is Models.SearchTab tab)
+                    FillTabCard(menu, tab);
+            }
             for (int index = menu.Items.Count - 1; index >= 0; index--)
                 if (menu.Items[index] is FrameworkElement item && ReferenceEquals(item.Tag, TabPlacementMenuTag))
                     menu.Items.RemoveAt(index);
@@ -64,6 +71,70 @@ namespace KillerShell.Shell
             }
             AddChoice(false);
             AddChoice(true);
+        }
+
+        /// <summary>
+        /// The tab card: a header naming the tab and where it is, quick buttons for New tab, the
+        /// two moves and Close, then Search within these results on a tab that lists results. The
+        /// placement choices follow (TabPlacementMenu_Opened). Every command acts on THIS tab and
+        /// its pane, which need not be the focused ones.
+        /// </summary>
+        private void FillTabCard(ContextMenu card, Models.SearchTab tab)
+        {
+            var pane = LeftPane.Tabs.Contains(tab) ? LeftPane : RightPane.Tabs.Contains(tab) ? RightPane : null;
+            if (pane == null) return;
+            var other = ReferenceEquals(pane, LeftPane) ? RightPane : LeftPane;
+
+            var head = Controls.CardMenus.Slot();
+            head.Tag = "cardhead";
+            Controls.CardMenus.SetHeader(head, OverflowRowIcon(tab, 32), tab.Title, TabCardMeta(tab));
+            card.Items.Add(head);
+
+            var quick = Controls.CardMenus.QuickStrip(out var strip);
+            quick.Tag = "cardquick";
+            Controls.CardMenus.QuickButton(strip, card, 0xE710, "Str_Card_NewTab", "Str_Card_NewTab", "Ctrl+T", () =>
+            {
+                FocusPane(pane);
+                NewTab_Click(this, new RoutedEventArgs());   // Tabs.cs
+            });
+            // The same move a drag across makes (PaneDrag.cs), appended to the other pane's strip.
+            var move = Controls.CardMenus.QuickButton(strip, card, 0xE8AB, "Str_Card_OtherPane", "Str_Card_MoveOtherPane", null, () =>
+            {
+                if (!DualPane || !pane.Tabs.Contains(tab)) return;
+                FocusPane(pane);
+                MoveTabToPaneAt(tab, other, other.Tabs.Count);
+            });
+            move.CommandParameter = "otherpane";
+            move.Visibility = DualPane ? Visibility.Visible : Visibility.Collapsed;
+            Controls.CardMenus.QuickButton(strip, card, 0xE8A7, "Str_Card_NewWindow", "Str_Card_MoveNewWindow", null, () =>
+            {
+                FocusPane(pane);
+                TearOutTab(tab);   // TabTearOut.cs - the same as dragging it out of the window
+            });
+            Controls.CardMenus.QuickButton(strip, card, 0xE8BB, "Str_Card_Close", "Str_Card_Close", "Ctrl+W", () => CloseTab(tab));
+            card.Items.Add(quick);
+
+            // Piping takes the rows the tab lists, so a shell, document or tool tab has none.
+            if (tab.Term == null && tab.Editor == null && tab.Procs == null && tab.Events == null
+                && tab.Registry == null && tab.Perf == null && tab.Storage == null)
+            {
+                card.Items.Add(new Separator());
+                var pipe = new MenuItem { Tag = "pipe", InputGestureText = "Ctrl+Shift+F" };
+                pipe.SetResourceReference(HeaderedItemsControl.HeaderProperty, "Str_Menu_PipeTab");
+                var glyph = new KillerFamily.Accessibility.Glyph { Text = ((char)0xE721).ToString() };
+                glyph.SetResourceReference(FrameworkElement.StyleProperty, "MenuGlyph");
+                pipe.Icon = glyph;
+                pipe.Click += (_, _) => { FocusPane(pane); PipeIntoNewTab(tab); };   // Results.cs
+                card.Items.Add(pipe);
+            }
+        }
+
+        /// <summary>The header's second line: where the tab is or what it searched.</summary>
+        private static string TabCardMeta(Models.SearchTab tab)
+        {
+            if (tab.Editor != null) return tab.Editor.IsUntitled ? string.Empty : tab.Editor.FilePath;
+            if (tab.HasSearch && !string.IsNullOrEmpty(tab.QueryLabel)) return tab.QueryLabel;
+            return tab.Term != null || tab.IsBrowsing ? tab.CurrentFolder : string.Empty;
         }
 
         private void ApplyTabPlacementChrome(FilePane pane)

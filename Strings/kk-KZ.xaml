@@ -1057,4 +1057,10 @@
     <sys:String x:Key="Str_Card_Lines">Жолдар</sys:String>
     <sys:String x:Key="Str_Card_FolderOptions">Қалта параметрлері</sys:String>
     <sys:String x:Key="Str_Card_FilesFolders">Файлдар: {0}, қалталар: {1}</sys:String>
+    <sys:String x:Key="Str_Card_NewTab">Жаңа қойынды</sys:String>
+    <sys:String x:Key="Str_Card_OtherPane">Басқа тақта</sys:String>
+    <sys:String x:Key="Str_Card_NewWindow">Жаңа терезе</sys:String>
+    <sys:String x:Key="Str_Card_Close">Жабу</sys:String>
+    <sys:String x:Key="Str_Card_MoveOtherPane">Басқа тақтаға жылжыту</sys:String>
+    <sys:String x:Key="Str_Card_MoveNewWindow">Жаңа терезеге жылжыту</sys:String>
 </ResourceDictionary>

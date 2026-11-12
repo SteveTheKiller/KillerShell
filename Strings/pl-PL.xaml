@@ -960,4 +960,10 @@
   <sys:String x:Key="Str_Card_Lines">Wiersze</sys:String>
   <sys:String x:Key="Str_Card_FolderOptions">Opcje folderu</sys:String>
   <sys:String x:Key="Str_Card_FilesFolders">Pliki: {0}, foldery: {1}</sys:String>
+  <sys:String x:Key="Str_Card_NewTab">Nowa karta</sys:String>
+  <sys:String x:Key="Str_Card_OtherPane">Drugi panel</sys:String>
+  <sys:String x:Key="Str_Card_NewWindow">Nowe okno</sys:String>
+  <sys:String x:Key="Str_Card_Close">Zamknij</sys:String>
+  <sys:String x:Key="Str_Card_MoveOtherPane">Przenieś do drugiego panelu</sys:String>
+  <sys:String x:Key="Str_Card_MoveNewWindow">Przenieś do nowego okna</sys:String>
 </ResourceDictionary>

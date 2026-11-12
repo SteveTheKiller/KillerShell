@@ -21,10 +21,17 @@ namespace KillerShell.Terminal
         public event Action<TerminalMenuCommand>? MenuCommand;
 
         private ContextMenu? _menu;
-        private MenuItem? _copyItem;
+        private MenuItem? _cardHead;
+        private Button? _copyButton;
         private MenuItem? _reloadProfileItem;
         internal TerminalShellKind ShellKind { get; set; } = TerminalShellKind.PowerShell;
         internal event Action<MenuItem>? LaunchSubmenuOpening;
+
+        /// <summary>
+        /// What the card's header shows: an icon, the shell's name and where it is. Supplied by the
+        /// window, which knows the profile and the tab; with none, the card opens without a header.
+        /// </summary>
+        internal Func<(FrameworkElement? Icon, string Title, string Meta)>? CardHeaderSource { get; set; }
 
         /// <summary>
         /// Raised as the Edit profile submenu opens, carrying the row for the window to fill.
@@ -46,7 +53,7 @@ namespace KillerShell.Terminal
         }
 
         /// <summary>
-        /// Open the menu at the pointer, building it once.
+        /// Open the card at the pointer, building it once.
         /// </summary>
         /// <remarks>
         /// Right-click OPENS A MENU rather than pasting, which is the other terminal convention.
@@ -58,9 +65,17 @@ namespace KillerShell.Terminal
         {
             _menu ??= BuildMenu();
 
-            // Copy is the one row whose availability changes: with no selection there is nothing
-            // to copy, and a lit row that does nothing is worse than a dim one.
-            _copyItem?.IsEnabled = _hasSelection;
+            // The header is about where the shell is NOW, so it is filled on every opening.
+            if (_cardHead != null)
+            {
+                var source = CardHeaderSource?.Invoke();
+                _cardHead.Visibility = source.HasValue ? Visibility.Visible : Visibility.Collapsed;
+                if (source is { } head) KillerShell.Controls.CardMenus.SetHeader(_cardHead, head.Icon, head.Title, head.Meta);
+            }
+
+            // Copy is the one button whose availability changes: with no selection there is
+            // nothing to copy, and a lit button that does nothing is worse than a dim one.
+            _copyButton?.IsEnabled = _hasSelection;
             // cmd.exe has no PowerShell $PROFILE. The same menu belongs to both terminal skins,
             // so keep the row visible for discovery but make its scope honest.
             _reloadProfileItem?.IsEnabled = ShellKind == TerminalShellKind.PowerShell;
@@ -75,30 +90,50 @@ namespace KillerShell.Terminal
         // made KillerPDF's release.ps1 PS7-only.
         private static string Glyph(int cp) => ((char)cp).ToString();
 
+        // Clear is the SHELL's job, not ours. Wiping our own buffer would leave the shell
+        // believing it had already drawn a prompt, so the next keystroke would paint over
+        // nothing. Sending the command brings the prompt back the way the shell wants it,
+        // and cls works the same in pwsh, powershell and cmd.
+        private void ClearShell() => Send(ShellKind == TerminalShellKind.Wsl || ShellKind == TerminalShellKind.Custom ? "clear\r" : "cls\r");
+
+        /// <summary>
+        /// The terminal card: a header naming the shell and its folder, quick buttons for the
+        /// everyday verbs, then the shell, font, prompt and profile rows.
+        /// </summary>
         private ContextMenu BuildMenu()
         {
-            var m = new ContextMenu();
+            var m = KillerShell.Controls.CardMenus.Card();
 
-            _copyItem = Row(m, "Str_Term_Copy", Glyph(0xE8C8), "Ctrl+Shift+C", () =>
+            _cardHead = KillerShell.Controls.CardMenus.Slot();
+            _cardHead.Tag = "cardhead";
+            m.Items.Add(_cardHead);
+
+            // Every quick button is a gesture that already exists on the keyboard, named with it
+            // in its tooltip, so the card is a way to DISCOVER them.
+            var quick = KillerShell.Controls.CardMenus.QuickStrip(out var strip);
+            quick.Tag = "cardquick";
+            _copyButton = KillerShell.Controls.CardMenus.QuickButton(strip, m, 0xE8C8, "Str_Term_Copy", "Str_Term_Copy", "Ctrl+Shift+C", () =>
             {
                 if (CopySelection()) ClearSelection();
             });
-
-            Row(m, "Str_Term_Paste",     Glyph(0xE77F), "Ctrl+Shift+V", Paste);
-            Row(m, "Str_Term_SelectAll", Glyph(0xE8B3), "Ctrl+Shift+A", SelectAll);
-
-            m.Items.Add(new Separator());
-
-            // Clear is the SHELL's job, not ours. Wiping our own buffer would leave the shell
-            // believing it had already drawn a prompt, so the next keystroke would paint over
-            // nothing. Sending the command brings the prompt back the way the shell wants it,
-            // and cls works the same in pwsh, powershell and cmd.
-            Row(m, "Str_Term_Clear", Glyph(0xE894), "Ctrl+Shift+L", () => Send(ShellKind == TerminalShellKind.Wsl || ShellKind == TerminalShellKind.Custom ? "clear\r" : "cls\r"));
-
-            m.Items.Add(new Separator());
-
+            KillerShell.Controls.CardMenus.QuickButton(strip, m, 0xE77F, "Str_Term_Paste", "Str_Term_Paste", "Ctrl+Shift+V", Paste);
+            KillerShell.Controls.CardMenus.QuickButton(strip, m, 0xE8B3, "Str_Term_SelectAll", "Str_Term_SelectAll", "Ctrl+Shift+A", SelectAll);
+            // The eraser, not MDL2's Clear X: that X is Close, two buttons along.
+            KillerShell.Controls.CardMenus.QuickButton(strip, m, 0xE75C, "Str_Term_Clear", "Str_Term_Clear", "Ctrl+Shift+L", ClearShell);
+            // The reverse of "open a terminal here": whatever the shell has cd'd to, opened as a
+            // folder tab. The buffer tracks the working directory already (OSC 7), so this is
+            // free - and after a few minutes of cd-ing around, getting the folder listing to
+            // follow is otherwise a copy of the path and a paste into the address bar.
+            KillerShell.Controls.CardMenus.QuickButton(strip, m, 0xE8B7, "Str_Card_Folder", "Str_Term_OpenFolder", "Ctrl+Shift+T",
+                () => MenuCommand?.Invoke(TerminalMenuCommand.OpenFolder));
             // These belong to the WINDOW - it owns the panes and the tab strip - so they are
             // raised rather than carried out here. The control does not know it is in a tab.
+            KillerShell.Controls.CardMenus.QuickButton(strip, m, 0xE8BB, "Str_Card_Close", "Str_Term_Close", "Ctrl+W",
+                () => MenuCommand?.Invoke(TerminalMenuCommand.CloseTab));
+            m.Items.Add(quick);
+
+            m.Items.Add(new Separator());
+
             var launches = new MenuItem { InputGestureText = "F8" };
             launches.SetResourceReference(HeaderedItemsControl.HeaderProperty, "Str_Term_NewShell");
             var launchIcon = new Glyph { Text = Glyph(0xE756) };
@@ -108,15 +143,10 @@ namespace KillerShell.Terminal
             launches.Items.Add(new MenuItem());
             launches.SubmenuOpened += (_, _) => LaunchSubmenuOpening?.Invoke(launches);
 
-            // The reverse of "open a terminal here": whatever the shell has cd'd to, opened as a
-            // folder tab. The buffer tracks the working directory already (OSC 7), so this is
-            // free - and after a few minutes of cd-ing around, getting the folder listing to
-            // follow is otherwise a copy of the path and a paste into the address bar.
-            Row(m, "Str_Term_OpenFolder", Glyph(0xE8B7), "Ctrl+Shift+T",
-                () => MenuCommand?.Invoke(TerminalMenuCommand.OpenFolder));
-
             Row(m, "Str_Term_Fonts", Glyph(0xE8D2), "Ctrl+Shift+,",
                 () => MenuCommand?.Invoke(TerminalMenuCommand.Fonts));
+
+            m.Items.Add(new Separator());
 
             // The prompt is a SCRIPT the user owns, not a setting, so the menu opens the file
             // rather than a dialog of checkboxes over it - anything a dialog could offer, the
@@ -160,19 +190,16 @@ namespace KillerShell.Terminal
             profile.SubmenuOpened += (_, _) => ProfileSubmenuOpening?.Invoke(profile);
             m.Items.Add(profile);
 
-            m.Items.Add(new Separator());
-            Row(m, "Str_Term_Close", Glyph(0xE8BB), "Ctrl+W",
-                () => MenuCommand?.Invoke(TerminalMenuCommand.CloseTab));
-
             return m;
         }
 
         internal bool HandleMenuShortcut(KeyEventArgs e)
         {
             if (Keyboard.Modifiers != (ModifierKeys.Control | ModifierKeys.Shift)) return false;
+            // Clear is a quick button on the card, not a row, so its chord runs it directly.
+            if (e.Key == Key.L) { ClearShell(); return true; }
             string? gesture = e.Key switch
             {
-                Key.L => "Ctrl+Shift+L",
                 Key.OemComma => "Ctrl+Shift+,",
                 Key.E => "Ctrl+Shift+E",
                 Key.R => "Ctrl+Shift+R",

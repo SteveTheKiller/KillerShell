@@ -1091,4 +1091,10 @@
     <sys:String x:Key="Str_Card_Lines">Рядки</sys:String>
     <sys:String x:Key="Str_Card_FolderOptions">Параметри папки</sys:String>
     <sys:String x:Key="Str_Card_FilesFolders">Файли: {0}, папки: {1}</sys:String>
+    <sys:String x:Key="Str_Card_NewTab">Нова вкладка</sys:String>
+    <sys:String x:Key="Str_Card_OtherPane">Інша панель</sys:String>
+    <sys:String x:Key="Str_Card_NewWindow">Нове вікно</sys:String>
+    <sys:String x:Key="Str_Card_Close">Закрити</sys:String>
+    <sys:String x:Key="Str_Card_MoveOtherPane">Перемістити на іншу панель</sys:String>
+    <sys:String x:Key="Str_Card_MoveNewWindow">Перемістити в нове вікно</sys:String>
 </ResourceDictionary>

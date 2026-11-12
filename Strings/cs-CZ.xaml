@@ -1044,4 +1044,10 @@
     <sys:String x:Key="Str_Card_Lines">Řádky</sys:String>
     <sys:String x:Key="Str_Card_FolderOptions">Možnosti složky</sys:String>
     <sys:String x:Key="Str_Card_FilesFolders">Soubory: {0}, složky: {1}</sys:String>
+    <sys:String x:Key="Str_Card_NewTab">Nová karta</sys:String>
+    <sys:String x:Key="Str_Card_OtherPane">Druhý panel</sys:String>
+    <sys:String x:Key="Str_Card_NewWindow">Nové okno</sys:String>
+    <sys:String x:Key="Str_Card_Close">Zavřít</sys:String>
+    <sys:String x:Key="Str_Card_MoveOtherPane">Přesunout do druhého panelu</sys:String>
+    <sys:String x:Key="Str_Card_MoveNewWindow">Přesunout do nového okna</sys:String>
 </ResourceDictionary>

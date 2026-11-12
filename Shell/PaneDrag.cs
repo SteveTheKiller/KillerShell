@@ -142,11 +142,16 @@ namespace KillerShell.Shell
         /// implies, and leave it active and focused there.
         /// </summary>
         private void MoveTabToPane(SearchTab t, FilePane target, MouseEventArgs e)
+            => MoveTabToPaneAt(t, target, InsertIndexFor(target, e));
+
+        /// <summary>
+        /// The move itself, at a known position: the drag above, and the tab card's Other pane
+        /// button, which appends. The focused pane is the source.
+        /// </summary>
+        private void MoveTabToPaneAt(SearchTab t, FilePane target, int insert)
         {
             var source = Pane;
             if (ReferenceEquals(source, target)) return;
-
-            int insert = InsertIndexFor(target, e);
 
             // The control has to leave the old pane's slot BEFORE the tab does. A
             // TerminalControl can only have one visual parent, and leaving it parented to the
