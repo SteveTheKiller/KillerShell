@@ -51,7 +51,10 @@ namespace KillerShell.Controls
             var header = new DockPanel { Margin = new Thickness(4, 2, 4, 6) };
             if (icon != null)
             {
-                icon.Margin = new Thickness(0, 0, 10, 0);
+                // Added to, not replaced: a fallback dot centers itself in a full-size box with
+                // its own margin, and losing that would pull its text 16 px left of an image's.
+                var own = icon.Margin;
+                icon.Margin = new Thickness(own.Left, own.Top, own.Right + 10, own.Bottom);
                 icon.VerticalAlignment = VerticalAlignment.Center;
                 DockPanel.SetDock(icon, Dock.Left);
                 header.Children.Add(icon);

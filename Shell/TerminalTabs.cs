@@ -300,6 +300,13 @@ namespace KillerShell.Shell
             term.ProfileSubmenuOpening += BuildProfileMenu;
             // The card's header: the shell's own icon and name, and the folder it is in now.
             term.CardHeaderSource = () => (OverflowRowIcon(tab, 32), profile.Name, tab.CurrentFolder);   // Tabs.cs
+            // The card's Close and Folder buttons work in a demo too. New terminal stays inert on
+            // purpose: OpenShell would start a real process on this machine.
+            term.MenuCommand += cmd => Dispatcher.BeginInvoke(new Action(() =>
+            {
+                if (cmd == TerminalMenuCommand.CloseTab) CloseTab(tab);
+                else if (cmd == TerminalMenuCommand.OpenFolder) OpenFolderTabLeft(tab.CurrentFolder);
+            }));
             term.StartDemo(canned);
             SyncTerminalBar(tab);             // TerminalBar.cs
             return tab;

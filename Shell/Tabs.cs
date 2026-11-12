@@ -625,7 +625,7 @@ namespace KillerShell.Shell
                 return new Image
                 {
                     Width = size, Height = size,
-                    Source = Services.IconCache.Art("drive_icon"),
+                    Source = Services.IconCache.Art("drive_icon", size),
                 };
             }
 
@@ -1181,13 +1181,25 @@ namespace KillerShell.Shell
                 // rode on an animation of a chip the fold had just taken off the strip, and in a
                 // loaded full test run that tab came back to life in the folded pane. Only while
                 // a tab stays behind: the right pane emptying here is not a fold any more.
+                //
+                // When every right tab is fading, nothing on the right survives: this pane takes
+                // its fresh tab FIRST, so closing the right pane's last tab has a tab to focus,
+                // and the window ends as one pane holding that tab.
                 if (DualPane)
                 {
                     var fading = RightPane.Tabs.Where(_closingTabs.Contains).ToList();
-                    if (fading.Count > 0 && fading.Count < RightPane.Tabs.Count)
+                    if (fading.Count > 0)
                     {
+                        bool none = fading.Count == RightPane.Tabs.Count;
+                        if (none) ActivateTab(CreateTab(), updateShared);
                         foreach (var closing in fading) FinishCloseTab(RightPane, closing);
                         FocusPaneQuiet(LeftPane);
+                        if (none)
+                        {
+                            UpdateTabBar();
+                            RunPaneCrossfade(snap);
+                            return;
+                        }
                     }
                 }
 

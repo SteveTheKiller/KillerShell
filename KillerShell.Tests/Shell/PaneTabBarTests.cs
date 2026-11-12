@@ -52,6 +52,50 @@ public sealed class PaneTabBarTests
     [Fact]
     public Task AFadingTabClosesAfterTheFoldMovesIt()
         => RuntimeComponentProcess.Run(nameof(CloseDuringFoldScenario));
+
+    // Every right tab mid-fade when the left pane's last tab closes: nothing comes back.
+    [Fact]
+    public Task ClosingEverythingDuringTheFadesLeavesOneFreshTab()
+        => RuntimeComponentProcess.Run(nameof(CloseAllDuringFoldScenario));
+}
+
+public static class CloseAllDuringFoldScenario
+{
+    public static void Run()
+    {
+        using var fixture = new ShellWindowFixture();
+        var window = fixture.Window;
+        var left = (FilePane)window.FindName("LeftPane");
+        var right = (FilePane)window.FindName("RightPane");
+
+        window.ToggleDualPane();
+        ShellWindowFixture.PumpUntil(() => right.Active.IsBrowsing);
+        window.FocusPane(right);
+        var folder = right.Active;
+        window.OpenPerformanceMonitor();
+        var perf = right.Active;
+        var leftTab = left.Tabs[0];
+        window.UpdateLayout();
+        ShellWindowFixture.PumpUntil(() => right.TabStrip.ItemContainerGenerator.ContainerFromItem(perf) is FrameworkElement
+                                        && right.TabStrip.ItemContainerGenerator.ContainerFromItem(folder) is FrameworkElement);
+
+        window.CloseTab_Click(new Button { Tag = perf }, new RoutedEventArgs(Button.ClickEvent));
+        window.CloseTab_Click(new Button { Tag = folder }, new RoutedEventArgs(Button.ClickEvent));
+        Assert.Equal(2, right.Tabs.Count);   // both still in their fades
+        window.CloseTab_Click(new Button { Tag = leftTab }, new RoutedEventArgs(Button.ClickEvent));
+
+        ShellWindowFixture.PumpUntil(() => !window.DualPane
+                                        && left.Tabs.Count == 1
+                                        && !left.Tabs.Contains(perf) && !left.Tabs.Contains(folder) && !left.Tabs.Contains(leftTab)
+                                        && ReferenceEquals(window.Pane, left)
+                                        && right.Tabs.Count == 0,
+            diagnostic: () => "dual=" + window.DualPane + "; left=" + string.Join(",", System.Linq.Enumerable.Select(left.Tabs, t => t.Title))
+                              + "; right=" + right.Tabs.Count);
+        // And it stays that way once the fades would have ended.
+        ShellWindowFixture.PumpUntil(() => true);
+        Assert.Single(left.Tabs);
+        Assert.Empty(right.Tabs);
+    }
 }
 
 public static class CloseDuringFoldScenario
