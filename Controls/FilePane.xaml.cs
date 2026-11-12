@@ -836,6 +836,7 @@ namespace KillerShell
         }
 
         // ── Results context menu ─────────────────────────────────
+        private void ResultCard_ButtonClick(object s, RoutedEventArgs e)   => Owner.ResultCard_ButtonClick(s, e);
         private void MenuOpen_Click(object s, RoutedEventArgs e)           => Owner.MenuOpen_Click(s, e);
         private void MenuEdit_Click(object s, RoutedEventArgs e)           => Owner.MenuEdit_Click(s, e);
         private void MenuOpenWith_Click(object s, RoutedEventArgs e)       => Owner.MenuOpenWith_Click(s, e);

@@ -1031,4 +1031,15 @@
     <sys:String x:Key="Str_Details_Pages">ページ数</sys:String>
     <sys:String x:Key="Str_Details_Duration">再生時間</sys:String>
     <sys:String x:Key="Str_Details_FileVersion">ファイルバージョン</sys:String>
+
+    <!-- File card (FilePane.xaml ResultMenu) -->
+    <sys:String x:Key="Str_Card_Actions">アクション</sys:String>
+    <sys:String x:Key="Str_Card_Delete">削除</sys:String>
+    <sys:String x:Key="Str_Card_CopyLabel">コピー</sys:String>
+    <sys:String x:Key="Str_Card_Path">パス</sys:String>
+    <sys:String x:Key="Str_Card_Name">名前</sys:String>
+    <sys:String x:Key="Str_Card_Folder">フォルダー</sys:String>
+    <sys:String x:Key="Str_Card_Lines">行</sys:String>
+    <sys:String x:Key="Str_Card_FolderOptions">フォルダーのオプション</sys:String>
+    <sys:String x:Key="Str_Card_FilesFolders">ファイル {0} 個、フォルダー {1} 個</sys:String>
 </ResourceDictionary>

@@ -1081,4 +1081,14 @@
     <sys:String x:Key="Str_Details_Pages">oldalak</sys:String>
     <sys:String x:Key="Str_Details_Duration">időtartam</sys:String>
     <sys:String x:Key="Str_Details_FileVersion">fájlverzió</sys:String>
+    <!-- File card (FilePane.xaml ResultMenu) -->
+    <sys:String x:Key="Str_Card_Actions">Műveletek</sys:String>
+    <sys:String x:Key="Str_Card_Delete">Törlés</sys:String>
+    <sys:String x:Key="Str_Card_CopyLabel">Másolás</sys:String>
+    <sys:String x:Key="Str_Card_Path">Elérési út</sys:String>
+    <sys:String x:Key="Str_Card_Name">Név</sys:String>
+    <sys:String x:Key="Str_Card_Folder">Mappa</sys:String>
+    <sys:String x:Key="Str_Card_Lines">Sorok</sys:String>
+    <sys:String x:Key="Str_Card_FolderOptions">Mappabeállítások</sys:String>
+    <sys:String x:Key="Str_Card_FilesFolders">{0} fájl, {1} mappa</sys:String>
 </ResourceDictionary>

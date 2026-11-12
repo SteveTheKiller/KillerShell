@@ -32,6 +32,41 @@
                         <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE7B3;"/></MenuItem.Icon>
                     </MenuItem>
                 </ContextMenu>
+                <!-- A one-shot action chip on a card row (the file card's Copy row). The same face as
+                     the kit's CardToggle chip, but a Button: it runs and closes the card instead of
+                     holding a state. Fixed height and centered text so a row of them lines up with
+                     the CardLabel beside it. -->
+                <Style x:Key="CardChip" TargetType="Button">
+                    <Setter Property="Foreground" Value="{DynamicResource MenuTextBrush}"/>
+                    <Setter Property="FontSize" Value="12"/>
+                    <Setter Property="Height" Value="24"/>
+                    <Setter Property="Padding" Value="9,0"/>
+                    <Setter Property="Margin" Value="0,2,6,2"/>
+                    <Setter Property="Cursor" Value="Hand"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="Button">
+                                <Border x:Name="Bd" Background="Transparent" BorderBrush="{DynamicResource MenuBorderBrush}" BorderThickness="1"
+                                        CornerRadius="{DynamicResource SmallCornerRadius}" Padding="{TemplateBinding Padding}">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" RecognizesAccessKey="False"/>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="Bd" Property="Background" Value="{DynamicResource MenuHoverBrush}"/>
+                                        <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource DimTextBrush}"/>
+                                        <Setter Property="Foreground" Value="{DynamicResource MenuHoverTextBrush}"/>
+                                    </Trigger>
+                                    <Trigger Property="IsKeyboardFocused" Value="True">
+                                        <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource PrimaryBrush}"/>
+                                    </Trigger>
+                                    <Trigger Property="IsPressed" Value="True">
+                                        <Setter TargetName="Bd" Property="Background" Value="{DynamicResource RowSelectedBrush}"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
                 <Style x:Key="TerminalTabCloseButton" TargetType="Button" BasedOn="{StaticResource DangerButton}">
                     <Setter Property="Foreground" Value="{Binding MenuBarContentForeground, RelativeSource={RelativeSource AncestorType=local:FilePane}}"/>
                 </Style>
@@ -2130,21 +2165,87 @@
                          SelectionChanged="ResultsList_SelectionChanged"
                          ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto">
                     <ListBox.Resources>
-                        <!-- One menu for all three views. No per-item Tag bindings: the
-                             right-click records what is under the pointer and each command asks
-                             FilesForCommand what to act on, which is what lets a command work on
-                             a whole selection ("copy 12 paths") instead of a single Tag.
-                             Related copy and archive commands share submenus. -->
-                        <ContextMenu x:Key="ResultMenu">
-                            <MenuItem Tag="item" Header="{DynamicResource Str_Menu_OpenFile}"      Click="MenuOpen_Click"           InputGestureText="Enter">
-                                <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE8E5;"/></MenuItem.Icon>
+                        <!-- The file card (the kit's card menu, KillerNotes 1.7.0 the reference). A header
+                             naming what was right-clicked, quick buttons for the everyday verbs, the copy
+                             variants as one row of chips, then a short list. The header, strip and chips
+                             are filled and shown as the menu opens (ResultsMenu.cs); a button or chip
+                             carries its command in CommandParameter, and ResultCard_ButtonClick closes the
+                             card and runs it, so they go through the same handlers the rows always did.
+                             Rows keep their Tags, which is how the open-time code finds them. -->
+                        <ContextMenu x:Key="ResultMenu" Style="{StaticResource CardMenu}" ButtonBase.Click="ResultCard_ButtonClick">
+                            <MenuItem Tag="cardhead" Style="{StaticResource CardSlot}"/>
+                            <MenuItem Tag="cardquick" Style="{StaticResource CardSlot}" Padding="0"
+                                      AutomationProperties.Name="{DynamicResource Str_Card_Actions}">
+                                <MenuItem.Header>
+                                    <Border BorderBrush="{DynamicResource MenuBorderBrush}" BorderThickness="0,1" Padding="2,4">
+                                        <UniformGrid Rows="1">
+                                            <Button Style="{StaticResource CardQuickButton}" Uid="item" CommandParameter="open"
+                                                    Content="&#xE8E5;" Tag="{DynamicResource Str_Btn_Open}">
+                                                <Button.ToolTip><TextBlock><Run Text="{DynamicResource Str_Btn_Open}"/><Run Text="  (Enter)"/></TextBlock></Button.ToolTip>
+                                            </Button>
+                                            <!-- Edit opens the file in a TAB rather than through its association,
+                                                 which is the point on a script: opening a .ps1 the normal way
+                                                 runs it (ResultsMenu.cs MenuEdit_Click). -->
+                                            <Button Style="{StaticResource CardQuickButton}" Uid="fileonly" CommandParameter="edit"
+                                                    Content="&#xE70F;" Tag="{DynamicResource Str_Menu_Edit}">
+                                                <Button.ToolTip><TextBlock><Run Text="{DynamicResource Str_Menu_Edit}"/><Run Text="  (F7)"/></TextBlock></Button.ToolTip>
+                                            </Button>
+                                            <Button Style="{StaticResource CardQuickButton}" Uid="item" CommandParameter="cut"
+                                                    Content="&#xE8C6;" Tag="{DynamicResource Str_Menu_Cut}">
+                                                <Button.ToolTip><TextBlock><Run Text="{DynamicResource Str_Menu_Cut}"/><Run Text="  (Ctrl+X)"/></TextBlock></Button.ToolTip>
+                                            </Button>
+                                            <Button Style="{StaticResource CardQuickButton}" Uid="item" CommandParameter="copy"
+                                                    Content="&#xE8C8;" Tag="{DynamicResource Str_Menu_Copy}">
+                                                <Button.ToolTip><TextBlock><Run Text="{DynamicResource Str_Menu_Copy}"/><Run Text="  (Ctrl+C)"/></TextBlock></Button.ToolTip>
+                                            </Button>
+                                            <Button Style="{StaticResource CardQuickButton}" Uid="item" CommandParameter="rename"
+                                                    Content="&#xE8AC;" Tag="{DynamicResource Str_Menu_Rename}">
+                                                <Button.ToolTip><TextBlock><Run Text="{DynamicResource Str_Menu_Rename}"/><Run Text="  (F2)"/></TextBlock></Button.ToolTip>
+                                            </Button>
+                                            <Button Style="{StaticResource CardQuickButton}" Uid="item" CommandParameter="delete"
+                                                    Content="&#xE74D;" Tag="{DynamicResource Str_Card_Delete}">
+                                                <Button.ToolTip><TextBlock><Run Text="{DynamicResource Str_Menu_Delete}"/><Run Text="  (Delete)"/></TextBlock></Button.ToolTip>
+                                            </Button>
+                                        </UniformGrid>
+                                    </Border>
+                                </MenuItem.Header>
                             </MenuItem>
-                            <!-- Edit opens the file in a TAB rather than through its association,
-                                 which is the point on a script: opening a .ps1 the normal way
-                                 runs it (ResultsMenu.cs MenuEdit_Click). -->
-                            <MenuItem Tag="fileonly" Header="{DynamicResource Str_Menu_Edit}"          Click="MenuEdit_Click"           InputGestureText="F7">
-                                <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE70F;"/></MenuItem.Icon>
+                            <!-- The copy variants, all acting on the whole selection, one entry per line.
+                                 Lines appears only on content matches, Name and SHA-256 only on files. -->
+                            <MenuItem Tag="cardcopy" Style="{StaticResource CardSlot}" Padding="24,6,4,4">
+                                <MenuItem.Header>
+                                    <DockPanel>
+                                        <TextBlock Style="{StaticResource CardLabel}" Text="{DynamicResource Str_Card_CopyLabel}"/>
+                                        <WrapPanel VerticalAlignment="Center">
+                                            <Button Style="{StaticResource CardChip}" CommandParameter="path" Content="{DynamicResource Str_Card_Path}">
+                                                <Button.ToolTip><TextBlock><Run Text="{DynamicResource Str_Menu_CopyPath}"/><Run Text="  (Ctrl+Shift+C)"/></TextBlock></Button.ToolTip>
+                                            </Button>
+                                            <Button Style="{StaticResource CardChip}" Uid="fileonly" CommandParameter="name" Content="{DynamicResource Str_Card_Name}">
+                                                <Button.ToolTip><TextBlock><Run Text="{DynamicResource Str_Menu_CopyName}"/><Run Text="  (Ctrl+Shift+M)"/></TextBlock></Button.ToolTip>
+                                            </Button>
+                                            <Button Style="{StaticResource CardChip}" CommandParameter="folder" Content="{DynamicResource Str_Card_Folder}">
+                                                <Button.ToolTip><TextBlock><Run Text="{DynamicResource Str_Menu_CopyFolder}"/><Run Text="  (Ctrl+Shift+D)"/></TextBlock></Button.ToolTip>
+                                            </Button>
+                                            <Button Style="{StaticResource CardChip}" Uid="matchedlines" CommandParameter="lines" Content="{DynamicResource Str_Card_Lines}">
+                                                <Button.ToolTip><TextBlock><Run Text="{DynamicResource Str_Menu_CopyLines}"/><Run Text="  (Ctrl+Shift+Y)"/></TextBlock></Button.ToolTip>
+                                            </Button>
+                                            <!-- SHA-256 is a name, the same in every language. -->
+                                            <Button Style="{StaticResource CardChip}" Uid="fileonly" CommandParameter="hash" Content="SHA-256">
+                                                <Button.ToolTip><TextBlock><Run Text="{DynamicResource Str_Menu_CopyHash}"/><Run Text="  (Ctrl+Shift+H)"/></TextBlock></Button.ToolTip>
+                                            </Button>
+                                        </WrapPanel>
+                                    </DockPanel>
+                                </MenuItem.Header>
                             </MenuItem>
+                            <Separator/>
+                            <!-- Empty space in a folder: the card names the folder and these lead. -->
+                            <MenuItem Tag="background" Header="{DynamicResource Str_Menu_Paste}"         Click="MenuPaste_Click"     InputGestureText="Ctrl+V">
+                                <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE77F;"/></MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Tag="background" Header="{DynamicResource Str_Menu_NewFolder}"     Click="MenuNewFolder_Click" InputGestureText="Ctrl+Shift+N">
+                                <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE8F4;"/></MenuItem.Icon>
+                            </MenuItem>
+                            <Separator/>
                             <MenuItem Tag="fileonly" Header="{DynamicResource Str_Menu_OpenWith}"      Click="MenuOpenWith_Click"       InputGestureText="Ctrl+Shift+O">
                                 <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE7AC;"/></MenuItem.Icon>
                             </MenuItem>
@@ -2152,105 +2253,51 @@
                                 <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE7EF;"/></MenuItem.Icon>
                             </MenuItem>
                             <Separator/>
+                            <!-- The "act on this folder" verbs: the row itself when it is a folder, the
+                                 folder holding it when it is a file (ResultsMenu.cs MenuFolder). -->
                             <MenuItem Tag="item" Header="{DynamicResource Str_Menu_ShowExplorer}"  Click="MenuShowInExplorer_Click" InputGestureText="F6">
                                 <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE838;"/></MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Header="{DynamicResource Str_Menu_OpenTerminal}"  Click="MenuTerminal_Click"       InputGestureText="F8">
+                                <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE756;"/></MenuItem.Icon>
                             </MenuItem>
                             <MenuItem Header="{DynamicResource Str_Menu_SearchHere}"    Click="MenuSearchHere_Click"     InputGestureText="F3">
                                 <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE721;"/></MenuItem.Icon>
                             </MenuItem>
-                            <!-- Shells, grouped with the other "act on this folder" verbs above
-                                 rather than with the file commands: a terminal opens ON a folder,
-                                 the same way Show in Explorer and Search inside this folder do.
-                                 The keyboard had these from the start (F8 / Ctrl+F8) and the
-                                 menu did not, which made the whole feature keyboard-only. -->
-                            <MenuItem Header="{DynamicResource Str_Menu_OpenTerminal}"  Click="MenuTerminal_Click"       InputGestureText="F8">
-                                <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE756;"/></MenuItem.Icon>
-                            </MenuItem>
-                            <MenuItem Header="{DynamicResource Str_Menu_OpenTerminalAdmin}" Click="MenuTerminalAdmin_Click" InputGestureText="Ctrl+F8">
-                                <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE7EF;"/></MenuItem.Icon>
-                            </MenuItem>
-                            <!-- Another "act on this folder" verb, so it sits with the shells
-                                 rather than with the file commands. The same row appears on a
-                                 tree node and a saved place - a folder offers the same verbs
-                                 wherever it is drawn. -->
-                            <MenuItem Header="{DynamicResource Str_Menu_AnalyzeStorage}" Click="MenuAnalyze_Click" InputGestureText="Shift+F4">
-                                <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xEDA2;"/></MenuItem.Icon>
-                            </MenuItem>
-                            <MenuItem Header="{DynamicResource Str_Menu_ExcludeFolder}" Click="MenuExcludeFolder_Click"  InputGestureText="Ctrl+Shift+E">
-                                <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE738;"/></MenuItem.Icon>
-                            </MenuItem>
-                            <!-- Header swaps between add and remove as the menu opens, so one
-                                 item covers both directions (ResultsMenu.cs). -->
-                            <MenuItem Tag="fav" Header="{DynamicResource Str_Menu_AddFavorite}"
-                                      Click="MenuFavorite_Click" InputGestureText="Ctrl+D">
-                                <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE734;"/></MenuItem.Icon>
-                            </MenuItem>
-                            <Separator/>
-                            <!-- E8C8 is MDL2's Copy (two stacked documents). This was E71B, which
-                                 is LINK - a chain - and read as "make a shortcut" rather than
-                                 "copy". E8C8 is what Copy below already uses, and the editor,
-                                 terminal, Registry Editor and Storage Analyzer menus too. -->
-                            <MenuItem Tag="copyspecial" Header="{DynamicResource Str_Menu_CopySpecial}">
-                                <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE8C8;"/></MenuItem.Icon>
-                            <MenuItem Header="{DynamicResource Str_Menu_CopyPath}"      Click="MenuCopyPath_Click"   InputGestureText="Ctrl+Shift+C">
-                                <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE8C8;"/></MenuItem.Icon>
-                            </MenuItem>
-                            <MenuItem Tag="fileonly" Header="{DynamicResource Str_Menu_CopyName}"      Click="MenuCopyName_Click"   InputGestureText="Ctrl+Shift+M">
-                                <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE8AC;"/></MenuItem.Icon>
-                            </MenuItem>
-                            <MenuItem Header="{DynamicResource Str_Menu_CopyFolder}"    Click="MenuCopyFolder_Click" InputGestureText="Ctrl+Shift+D">
+                            <!-- The rarer folder verbs, one hover away. The same rows appear on a tree
+                                 node and a saved place - a folder offers the same verbs wherever it is
+                                 drawn. -->
+                            <MenuItem Tag="folderoptions" Header="{DynamicResource Str_Card_FolderOptions}">
                                 <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE8B7;"/></MenuItem.Icon>
+                                <MenuItem Header="{DynamicResource Str_Menu_OpenTerminalAdmin}" Click="MenuTerminalAdmin_Click" InputGestureText="Ctrl+F8">
+                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE7EF;"/></MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem Header="{DynamicResource Str_Menu_AnalyzeStorage}" Click="MenuAnalyze_Click" InputGestureText="Shift+F4">
+                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xEDA2;"/></MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem Header="{DynamicResource Str_Menu_ExcludeFolder}" Click="MenuExcludeFolder_Click"  InputGestureText="Ctrl+Shift+E">
+                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE738;"/></MenuItem.Icon>
+                                </MenuItem>
+                                <!-- Header swaps between add and remove as the menu opens, so one
+                                     item covers both directions (ResultsMenu.cs). -->
+                                <MenuItem Tag="fav" Header="{DynamicResource Str_Menu_AddFavorite}"
+                                          Click="MenuFavorite_Click" InputGestureText="Ctrl+D">
+                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE734;"/></MenuItem.Icon>
+                                </MenuItem>
                             </MenuItem>
-                            <MenuItem Tag="matchedlines" Header="{DynamicResource Str_Menu_CopyLines}"     Click="MenuCopyLines_Click"  InputGestureText="Ctrl+Shift+Y">
-                                <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE8A5;"/></MenuItem.Icon>
-                            </MenuItem>
-                            <!-- "Copy file" used to sit here. It was PutFilesOnClipboard(Copy)
-                                 written twice - same CF_HDROP, same Preferred DropEffect blob,
-                                 same status key as Ctrl+C / Copy below. Removed as redundant. -->
-                            <MenuItem Tag="fileonly" Header="{DynamicResource Str_Menu_CopyHash}"      Click="MenuCopyHash_Click"   InputGestureText="Ctrl+Shift+H">
-                                <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE72E;"/></MenuItem.Icon>
-                            </MenuItem>
-                            </MenuItem>
-                            <!-- File operations (FileCommands.cs). Cut / Copy / Paste sit above
-                                 the destructive pair, and New folder last, so Delete never lands
-                                 where the eye expects Paste. -->
                             <Separator/>
-                            <!-- InputGestureText is the literal chord, never a localized string:
-                                 a key name is the same in every language, and this is how
-                                 KillerPDF's MakeMenuItem passes it. Each one below is a binding
-                                 that really exists in Window_PreviewKeyDown - an item showing a
-                                 shortcut that does nothing is worse than showing none. -->
-                            <MenuItem Tag="item" Header="{DynamicResource Str_Menu_Cut}"           Click="MenuCut_Click"       InputGestureText="Ctrl+X">
-                                <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE8C6;"/></MenuItem.Icon>
-                            </MenuItem>
-                            <MenuItem Tag="item" Header="{DynamicResource Str_Menu_Copy}"          Click="MenuCopy_Click"      InputGestureText="Ctrl+C">
-                                <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE8C8;"/></MenuItem.Icon>
-                            </MenuItem>
-                            <MenuItem Tag="background" Header="{DynamicResource Str_Menu_Paste}"         Click="MenuPaste_Click"     InputGestureText="Ctrl+V">
-                                <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE77F;"/></MenuItem.Icon>
-                            </MenuItem>
-                            <MenuItem Tag="item" Header="{DynamicResource Str_Menu_Rename}"        Click="MenuRename_Click"    InputGestureText="F2">
-                                <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE8AC;"/></MenuItem.Icon>
-                            </MenuItem>
-                            <!-- Nickname rows, next to Rename because they read like one: header
-                                 and visibility are set as the menu opens (NicknameCommands.cs). -->
+                            <!-- Nickname rows, which read like Rename: header and visibility are set
+                                 as the menu opens (NicknameCommands.cs). -->
                             <MenuItem Tag="nick" Header="{DynamicResource Str_Menu_AddNickname}" Click="MenuNickname_Click" InputGestureText="Alt+N">
                                 <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE8EC;"/></MenuItem.Icon>
                             </MenuItem>
                             <MenuItem Tag="nickdel" Header="{DynamicResource Str_Menu_RemoveNickname}" Click="MenuNicknameRemove_Click" InputGestureText="Alt+Shift+N">
                                 <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE738;"/></MenuItem.Icon>
                             </MenuItem>
-                            <MenuItem Tag="item" Header="{DynamicResource Str_Menu_Delete}"        Click="MenuDelete_Click"    InputGestureText="Delete">
-                                <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE74D;"/></MenuItem.Icon>
-                            </MenuItem>
-                            <MenuItem Tag="background" Header="{DynamicResource Str_Menu_NewFolder}"     Click="MenuNewFolder_Click" InputGestureText="Ctrl+Shift+N">
-                                <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE8F4;"/></MenuItem.Icon>
-                            </MenuItem>
                             <!-- Archive verbs (ArchiveEdit.cs). Shown only where they apply:
                                  Compress on real files and folders, the two Extract rows when the
                                  selection is archives this build can read. The Extract to row's
                                  header carries the folder name and is set as the menu opens. -->
-                            <Separator Tag="zipsep"/>
                             <MenuItem Tag="archiveoptions" Header="{DynamicResource Str_Menu_ArchiveOptions}">
                                 <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xF012;"/></MenuItem.Icon>
                             <MenuItem Tag="zip" Header="{DynamicResource Str_Menu_Compress}" Click="MenuCompress_Click" InputGestureText="Alt+Z">

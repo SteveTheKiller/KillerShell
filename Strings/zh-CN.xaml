@@ -1032,4 +1032,15 @@
     <sys:String x:Key="Str_Details_Pages">页数</sys:String>
     <sys:String x:Key="Str_Details_Duration">时长</sys:String>
     <sys:String x:Key="Str_Details_FileVersion">文件版本</sys:String>
+
+    <!-- File card (FilePane.xaml ResultMenu) -->
+    <sys:String x:Key="Str_Card_Actions">操作</sys:String>
+    <sys:String x:Key="Str_Card_Delete">删除</sys:String>
+    <sys:String x:Key="Str_Card_CopyLabel">复制</sys:String>
+    <sys:String x:Key="Str_Card_Path">路径</sys:String>
+    <sys:String x:Key="Str_Card_Name">名称</sys:String>
+    <sys:String x:Key="Str_Card_Folder">文件夹</sys:String>
+    <sys:String x:Key="Str_Card_Lines">行</sys:String>
+    <sys:String x:Key="Str_Card_FolderOptions">文件夹选项</sys:String>
+    <sys:String x:Key="Str_Card_FilesFolders">{0} 个文件，{1} 个文件夹</sys:String>
 </ResourceDictionary>

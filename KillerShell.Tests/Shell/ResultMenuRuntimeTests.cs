@@ -41,31 +41,46 @@ public static class ResultMenuScenario
             pane.Active.Results.Add(file);
             pane.ResultsList.SelectedItem = folder;
             OpenMenu(pane, true);
-            Assert.Equal(fixture.Window.FindResource("Str_Btn_Open"), Gesture(menu, "Enter").Header);
-            var special = Tagged(menu.Items, "copyspecial");
-            Assert.Equal(5, special.Items.Count);
-            Assert.Equal(2, special.Items.OfType<MenuItem>().Count(item => item.Visibility == Visibility.Visible));
-            Assert.Equal(Visibility.Visible, Gesture(menu, "Ctrl+C").Visibility);
+            // A folder: the card names it, offers the five verbs that apply to a folder (no Edit),
+            // and the Path and Folder chips (no Name, Lines or SHA-256).
+            Assert.Equal("Runbooks", HeaderTitle(menu));
+            var quick = Tagged(menu.Items, "cardquick");
+            var chips = Tagged(menu.Items, "cardcopy");
+            Assert.Equal(Visibility.Visible, quick.Visibility);
+            Assert.Equal(new[] { "open", "cut", "copy", "rename", "delete" }, Shown(quick));
+            Assert.Equal(new[] { "path", "folder" }, Shown(chips));
             Assert.Equal(Visibility.Collapsed, Gesture(menu, "Ctrl+V").Visibility);
             Assert.Equal(Visibility.Collapsed, Gesture(menu, "Ctrl+Shift+N").Visibility);
+            Assert.Equal(Visibility.Collapsed, Gesture(menu, "Ctrl+Shift+O").Visibility);
             var archives = Tagged(menu.Items, "archiveoptions");
             Assert.Equal(Visibility.Visible, archives.Visibility);
             Assert.Contains("Runbooks.zip", Tagged(archives.Items, "zip").Header.ToString());
             Assert.Contains("Runbooks.tar.gz", Tagged(archives.Items, "targz").Header.ToString());
-            Assert.Contains(menu.Items.OfType<MenuItem>(), item => item.InputGestureText == "Shift+F4");
+            Assert.Contains(Tagged(menu.Items, "folderoptions").Items.OfType<MenuItem>(), item => item.InputGestureText == "Shift+F4");
 
             pane.ResultsList.SelectedItem = file;
             OpenMenu(pane, true);
-            Assert.Equal(fixture.Window.FindResource("Str_Menu_OpenFile"), Gesture(menu, "Enter").Header);
-            Assert.Equal(4, special.Items.OfType<MenuItem>().Count(item => item.Visibility == Visibility.Visible));
-            Assert.Equal(Visibility.Collapsed, Tagged(special.Items, "matchedlines").Visibility);
+            Assert.Equal(entry.Name, HeaderTitle(menu));
+            Assert.Equal(new[] { "open", "edit", "cut", "copy", "rename", "delete" }, Shown(quick));
+            Assert.Equal(new[] { "path", "name", "folder", "hash" }, Shown(chips));
+            Assert.Equal(Visibility.Visible, Gesture(menu, "Ctrl+Shift+O").Visibility);
+
+            // Empty space: the card names the folder being browsed, and only the folder verbs remain.
             OpenMenu(pane, false);
-            Assert.Equal(Visibility.Collapsed, special.Visibility);
+            Assert.Equal(pane.Active.Title, HeaderTitle(menu));
+            Assert.Equal(Visibility.Collapsed, quick.Visibility);
+            Assert.Equal(Visibility.Collapsed, chips.Visibility);
             Assert.Equal(Visibility.Collapsed, archives.Visibility);
-            Assert.Equal(Visibility.Collapsed, Gesture(menu, "Ctrl+C").Visibility);
             Assert.Equal(Visibility.Visible, Gesture(menu, "Ctrl+V").Visibility);
             Assert.Equal(Visibility.Visible, Gesture(menu, "Ctrl+Shift+N").Visibility);
 
+            // Two rows: the card counts them.
+            pane.ResultsList.SelectedItems.Add(folder);
+            pane.ResultsList.SelectedItems.Add(file);
+            OpenMenu(pane, true);
+            Assert.Equal(string.Format((string)fixture.Window.FindResource("Str_Status_Selected"), 2), HeaderTitle(menu));
+
+            pane.ResultsList.SelectedItems.Clear();
             pane.ResultsList.SelectedItem = folder;
             OpenMenu(pane, true);
             Tagged(archives.Items, "targz").RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
@@ -74,7 +89,8 @@ public static class ResultMenuScenario
             ShellWindowFixture.PumpUntil(() => pane.Active.Results.Any(row => row.FileName == "Runbooks.tar.gz"));
             pane.ResultsList.SelectedItem = pane.Active.Results.First(row => row.FileName == "Runbooks.tar.gz");
             OpenMenu(pane, true);
-            Gesture(menu, "Enter").RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+            // The quick Open button runs the same command the Open row did: an archive opens as a folder.
+            QuickButton(quick, "open").RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent));
             ShellWindowFixture.PumpUntil(() => pane.Active.CurrentFolder == ArchiveProvider.Combine(parent + @"\Runbooks.tar.gz", ""));
         }
         finally { MainWindow.DemoMode = false; }
@@ -85,6 +101,30 @@ public static class ResultMenuScenario
 
     private static MenuItem Gesture(ContextMenu menu, string gesture)
         => Assert.Single(menu.Items.OfType<MenuItem>(), item => item.InputGestureText == gesture);
+
+    private static Button[] Buttons(MenuItem slot)
+    {
+        var found = new System.Collections.Generic.List<Button>();
+        void Walk(object node)
+        {
+            if (node is Button button) { found.Add(button); return; }
+            if (node is DependencyObject d) foreach (var child in LogicalTreeHelper.GetChildren(d)) Walk(child);
+        }
+        Walk(slot.Header);
+        return found.ToArray();
+    }
+
+    private static string[] Shown(MenuItem slot)
+        => Buttons(slot).Where(b => b.Visibility == Visibility.Visible).Select(b => (string)b.CommandParameter).ToArray();
+
+    private static Button QuickButton(MenuItem slot, string command)
+        => Assert.Single(Buttons(slot), b => (string)b.CommandParameter == command);
+
+    private static string HeaderTitle(ContextMenu menu)
+    {
+        var header = Assert.IsAssignableFrom<FrameworkElement>(Tagged(menu.Items, "cardhead").Header);
+        return System.Windows.Automation.AutomationProperties.GetName(header);
+    }
 
     private static void OpenMenu(FilePane pane, bool keyboard)
     {

@@ -1037,4 +1037,14 @@ Các cài đặt của bạn sẽ không bị xóa.</sys:String>
     <sys:String x:Key="Str_Details_Pages">số trang</sys:String>
     <sys:String x:Key="Str_Details_Duration">thời lượng</sys:String>
     <sys:String x:Key="Str_Details_FileVersion">phiên bản tệp</sys:String>
+  <!-- File card (FilePane.xaml ResultMenu) -->
+  <sys:String x:Key="Str_Card_Actions">Thao tác</sys:String>
+  <sys:String x:Key="Str_Card_Delete">Xóa</sys:String>
+  <sys:String x:Key="Str_Card_CopyLabel">Sao chép</sys:String>
+  <sys:String x:Key="Str_Card_Path">Đường dẫn</sys:String>
+  <sys:String x:Key="Str_Card_Name">Tên</sys:String>
+  <sys:String x:Key="Str_Card_Folder">Thư mục</sys:String>
+  <sys:String x:Key="Str_Card_Lines">Dòng</sys:String>
+  <sys:String x:Key="Str_Card_FolderOptions">Tùy chọn thư mục</sys:String>
+  <sys:String x:Key="Str_Card_FilesFolders">{0} tệp, {1} thư mục</sys:String>
 </ResourceDictionary>

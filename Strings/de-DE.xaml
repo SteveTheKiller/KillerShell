@@ -1035,4 +1035,15 @@
     <sys:String x:Key="Str_Details_Pages">Seiten</sys:String>
     <sys:String x:Key="Str_Details_Duration">Dauer</sys:String>
     <sys:String x:Key="Str_Details_FileVersion">Dateiversion</sys:String>
+
+    <!-- File card (FilePane.xaml ResultMenu) -->
+    <sys:String x:Key="Str_Card_Actions">Aktionen</sys:String>
+    <sys:String x:Key="Str_Card_Delete">Löschen</sys:String>
+    <sys:String x:Key="Str_Card_CopyLabel">Kopieren</sys:String>
+    <sys:String x:Key="Str_Card_Path">Pfad</sys:String>
+    <sys:String x:Key="Str_Card_Name">Name</sys:String>
+    <sys:String x:Key="Str_Card_Folder">Ordner</sys:String>
+    <sys:String x:Key="Str_Card_Lines">Zeilen</sys:String>
+    <sys:String x:Key="Str_Card_FolderOptions">Ordneroptionen</sys:String>
+    <sys:String x:Key="Str_Card_FilesFolders">Dateien: {0}, Ordner: {1}</sys:String>
 </ResourceDictionary>

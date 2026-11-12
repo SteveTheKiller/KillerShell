@@ -1032,4 +1032,15 @@
     <sys:String x:Key="Str_Details_Pages">পৃষ্ঠা</sys:String>
     <sys:String x:Key="Str_Details_Duration">সময়কাল</sys:String>
     <sys:String x:Key="Str_Details_FileVersion">ফাইল সংস্করণ</sys:String>
+
+    <!-- File card (FilePane.xaml ResultMenu) -->
+    <sys:String x:Key="Str_Card_Actions">অ্যাকশন</sys:String>
+    <sys:String x:Key="Str_Card_Delete">মুছুন</sys:String>
+    <sys:String x:Key="Str_Card_CopyLabel">কপি</sys:String>
+    <sys:String x:Key="Str_Card_Path">পাথ</sys:String>
+    <sys:String x:Key="Str_Card_Name">নাম</sys:String>
+    <sys:String x:Key="Str_Card_Folder">ফোল্ডার</sys:String>
+    <sys:String x:Key="Str_Card_Lines">লাইন</sys:String>
+    <sys:String x:Key="Str_Card_FolderOptions">ফোল্ডার বিকল্প</sys:String>
+    <sys:String x:Key="Str_Card_FilesFolders">{0}টি ফাইল, {1}টি ফোল্ডার</sys:String>
 </ResourceDictionary>

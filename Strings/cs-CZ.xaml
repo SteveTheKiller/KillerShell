@@ -1033,4 +1033,15 @@
     <sys:String x:Key="Str_Details_Pages">strany</sys:String>
     <sys:String x:Key="Str_Details_Duration">délka</sys:String>
     <sys:String x:Key="Str_Details_FileVersion">verze souboru</sys:String>
+
+    <!-- File card (FilePane.xaml ResultMenu) -->
+    <sys:String x:Key="Str_Card_Actions">Akce</sys:String>
+    <sys:String x:Key="Str_Card_Delete">Odstranit</sys:String>
+    <sys:String x:Key="Str_Card_CopyLabel">Kopírovat</sys:String>
+    <sys:String x:Key="Str_Card_Path">Cesta</sys:String>
+    <sys:String x:Key="Str_Card_Name">Název</sys:String>
+    <sys:String x:Key="Str_Card_Folder">Složka</sys:String>
+    <sys:String x:Key="Str_Card_Lines">Řádky</sys:String>
+    <sys:String x:Key="Str_Card_FolderOptions">Možnosti složky</sys:String>
+    <sys:String x:Key="Str_Card_FilesFolders">Soubory: {0}, složky: {1}</sys:String>
 </ResourceDictionary>

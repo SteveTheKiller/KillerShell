@@ -950,4 +950,14 @@
     <sys:String x:Key="Str_Details_Pages">strony</sys:String>
     <sys:String x:Key="Str_Details_Duration">czas trwania</sys:String>
     <sys:String x:Key="Str_Details_FileVersion">wersja pliku</sys:String>
+  <!-- File card (FilePane.xaml ResultMenu) -->
+  <sys:String x:Key="Str_Card_Actions">Akcje</sys:String>
+  <sys:String x:Key="Str_Card_Delete">Usuń</sys:String>
+  <sys:String x:Key="Str_Card_CopyLabel">Kopiuj</sys:String>
+  <sys:String x:Key="Str_Card_Path">Ścieżka</sys:String>
+  <sys:String x:Key="Str_Card_Name">Nazwa</sys:String>
+  <sys:String x:Key="Str_Card_Folder">Folder</sys:String>
+  <sys:String x:Key="Str_Card_Lines">Wiersze</sys:String>
+  <sys:String x:Key="Str_Card_FolderOptions">Opcje folderu</sys:String>
+  <sys:String x:Key="Str_Card_FilesFolders">Pliki: {0}, foldery: {1}</sys:String>
 </ResourceDictionary>

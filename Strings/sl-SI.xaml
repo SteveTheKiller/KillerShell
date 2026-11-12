@@ -954,4 +954,14 @@ Nastavitve bodo ohranjene.</sys:String>
     <sys:String x:Key="Str_Details_Pages">strani</sys:String>
     <sys:String x:Key="Str_Details_Duration">trajanje</sys:String>
     <sys:String x:Key="Str_Details_FileVersion">različica datoteke</sys:String>
+    <!-- File card (FilePane.xaml ResultMenu) -->
+    <sys:String x:Key="Str_Card_Actions">Dejanja</sys:String>
+    <sys:String x:Key="Str_Card_Delete">Izbriši</sys:String>
+    <sys:String x:Key="Str_Card_CopyLabel">Kopiraj</sys:String>
+    <sys:String x:Key="Str_Card_Path">Pot</sys:String>
+    <sys:String x:Key="Str_Card_Name">Ime</sys:String>
+    <sys:String x:Key="Str_Card_Folder">Mapa</sys:String>
+    <sys:String x:Key="Str_Card_Lines">Vrstice</sys:String>
+    <sys:String x:Key="Str_Card_FolderOptions">Možnosti mape</sys:String>
+    <sys:String x:Key="Str_Card_FilesFolders">Datoteke: {0}, mape: {1}</sys:String>
 </ResourceDictionary>

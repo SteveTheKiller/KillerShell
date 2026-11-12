@@ -1081,4 +1081,14 @@
     <sys:String x:Key="Str_Details_Pages">sider</sys:String>
     <sys:String x:Key="Str_Details_Duration">varighet</sys:String>
     <sys:String x:Key="Str_Details_FileVersion">filversjon</sys:String>
+    <!-- File card (FilePane.xaml ResultMenu) -->
+    <sys:String x:Key="Str_Card_Actions">Handlinger</sys:String>
+    <sys:String x:Key="Str_Card_Delete">Slett</sys:String>
+    <sys:String x:Key="Str_Card_CopyLabel">Kopier</sys:String>
+    <sys:String x:Key="Str_Card_Path">Bane</sys:String>
+    <sys:String x:Key="Str_Card_Name">Navn</sys:String>
+    <sys:String x:Key="Str_Card_Folder">Mappe</sys:String>
+    <sys:String x:Key="Str_Card_Lines">Linjer</sys:String>
+    <sys:String x:Key="Str_Card_FolderOptions">Mappealternativer</sys:String>
+    <sys:String x:Key="Str_Card_FilesFolders">Filer: {0}, mapper: {1}</sys:String>
 </ResourceDictionary>

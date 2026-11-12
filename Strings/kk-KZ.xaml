@@ -1047,4 +1047,14 @@
     <sys:String x:Key="Str_Details_Pages">беттер</sys:String>
     <sys:String x:Key="Str_Details_Duration">ұзақтығы</sys:String>
     <sys:String x:Key="Str_Details_FileVersion">файл нұсқасы</sys:String>
+    <!-- File card (FilePane.xaml ResultMenu) -->
+    <sys:String x:Key="Str_Card_Actions">Әрекеттер</sys:String>
+    <sys:String x:Key="Str_Card_Delete">Жою</sys:String>
+    <sys:String x:Key="Str_Card_CopyLabel">Көшіру</sys:String>
+    <sys:String x:Key="Str_Card_Path">Жол</sys:String>
+    <sys:String x:Key="Str_Card_Name">Атауы</sys:String>
+    <sys:String x:Key="Str_Card_Folder">Қалта</sys:String>
+    <sys:String x:Key="Str_Card_Lines">Жолдар</sys:String>
+    <sys:String x:Key="Str_Card_FolderOptions">Қалта параметрлері</sys:String>
+    <sys:String x:Key="Str_Card_FilesFolders">Файлдар: {0}, қалталар: {1}</sys:String>
 </ResourceDictionary>

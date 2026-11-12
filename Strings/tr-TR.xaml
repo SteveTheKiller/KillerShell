@@ -1035,4 +1035,15 @@
     <sys:String x:Key="Str_Details_Pages">sayfalar</sys:String>
     <sys:String x:Key="Str_Details_Duration">süre</sys:String>
     <sys:String x:Key="Str_Details_FileVersion">dosya sürümü</sys:String>
+
+    <!-- File card (FilePane.xaml ResultMenu) -->
+    <sys:String x:Key="Str_Card_Actions">Eylemler</sys:String>
+    <sys:String x:Key="Str_Card_Delete">Sil</sys:String>
+    <sys:String x:Key="Str_Card_CopyLabel">Kopyala</sys:String>
+    <sys:String x:Key="Str_Card_Path">Yol</sys:String>
+    <sys:String x:Key="Str_Card_Name">Ad</sys:String>
+    <sys:String x:Key="Str_Card_Folder">Klasör</sys:String>
+    <sys:String x:Key="Str_Card_Lines">Satırlar</sys:String>
+    <sys:String x:Key="Str_Card_FolderOptions">Klasör seçenekleri</sys:String>
+    <sys:String x:Key="Str_Card_FilesFolders">{0} dosya, {1} klasör</sys:String>
 </ResourceDictionary>

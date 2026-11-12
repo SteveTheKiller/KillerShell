@@ -1081,4 +1081,14 @@
     <sys:String x:Key="Str_Details_Pages">сторінки</sys:String>
     <sys:String x:Key="Str_Details_Duration">тривалість</sys:String>
     <sys:String x:Key="Str_Details_FileVersion">версія файлу</sys:String>
+    <!-- File card (FilePane.xaml ResultMenu) -->
+    <sys:String x:Key="Str_Card_Actions">Дії</sys:String>
+    <sys:String x:Key="Str_Card_Delete">Видалити</sys:String>
+    <sys:String x:Key="Str_Card_CopyLabel">Копіювати</sys:String>
+    <sys:String x:Key="Str_Card_Path">Шлях</sys:String>
+    <sys:String x:Key="Str_Card_Name">Ім’я</sys:String>
+    <sys:String x:Key="Str_Card_Folder">Папка</sys:String>
+    <sys:String x:Key="Str_Card_Lines">Рядки</sys:String>
+    <sys:String x:Key="Str_Card_FolderOptions">Параметри папки</sys:String>
+    <sys:String x:Key="Str_Card_FilesFolders">Файли: {0}, папки: {1}</sys:String>
 </ResourceDictionary>

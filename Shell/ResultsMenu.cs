@@ -91,8 +91,8 @@ namespace KillerShell.Shell
             // Found by Tag rather than x:Name: the menu is declared inside ListBox.Resources, and
             // XAML does not generate fields for elements inside a resource. Resolve from the
             // active pane each time, since each pane has its own menu instance.
-            var favorite = Pane.ResultsList.ContextMenu?.Items.OfType<MenuItem>()
-                                        .FirstOrDefault(m => (m.Tag as string) == "fav");
+            var menuItems = Pane.ResultsList.ContextMenu is { } open ? ResultMenuItems(open.Items).ToList() : [];
+            var favorite = menuItems.FirstOrDefault(m => (m.Tag as string) == "fav");
 
             favorite?.Header = Loc(IsBookmarked(MenuFolder())
                 ? "Str_Menu_RemoveFavorite"
@@ -103,8 +103,7 @@ namespace KillerShell.Shell
             // space. Right-clicking empty space used to still show it, and clicking it there
             // either silently did nothing or, worse, acted on whatever was left selected from
             // before (2026-08-03).
-            var shellMenu = Pane.ResultsList.ContextMenu?.Items.OfType<MenuItem>()
-                                        .FirstOrDefault(m => (m.Tag as string) == "shellmenu");
+            var shellMenu = menuItems.FirstOrDefault(m => (m.Tag as string) == "shellmenu");
             shellMenu?.Visibility = seed != null && !DemoMode ? Visibility.Visible : Visibility.Collapsed;
 
             // Same rule for the nickname rows: they belong to the item under the pointer.
@@ -120,21 +119,120 @@ namespace KillerShell.Shell
             var rows = onItem ? MenuRows() : [];
             bool filesOnly = rows.Count > 0 && rows.All(row => !row.IsDirectory);
             bool lines = filesOnly && rows.Any(row => row.Matches.Any(match => match.Lines.Count > 0));
+            bool? Relevant(string? role) => role switch
+            {
+                "item" or "cardquick" or "cardcopy" => onItem,
+                "fileonly" => filesOnly,
+                "matchedlines" => lines,
+                "background" => !onItem && _active.IsBrowsing,
+                _ => null,
+            };
             foreach (var item in ResultMenuItems(menu.Items))
             {
-                if (item.InputGestureText == "Enter")
-                    item.Header = Loc(filesOnly ? "Str_Menu_OpenFile" : "Str_Btn_Open");
-                bool? show = (item.Tag as string) switch
-                {
-                    "item" or "copyspecial" => onItem,
-                    "fileonly" => filesOnly,
-                    "matchedlines" => lines,
-                    "background" => !onItem && _active.IsBrowsing,
-                    _ => null,
-                };
-                if (show.HasValue) item.Visibility = show.Value ? Visibility.Visible : Visibility.Collapsed;
+                if ((item.Tag as string) == "cardhead") item.Header = ResultCardHeader(rows);
+                if (Relevant(item.Tag as string) is bool show) item.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
+
+                // The card's quick buttons and copy chips follow the same rules as the rows; their
+                // role rides in Uid, because Tag is the caption on a quick button.
+                foreach (var button in CardButtons(item))
+                    if (Relevant(button.Uid) is bool on) button.Visibility = on ? Visibility.Visible : Visibility.Collapsed;
             }
             TrimResultMenuSeparators(menu.Items);
+        }
+
+        /// <summary>The buttons inside a card slot's header (the quick strip, the copy chips).</summary>
+        private static IEnumerable<System.Windows.Controls.Primitives.ButtonBase> CardButtons(MenuItem slot)
+        {
+            if ((slot.Tag as string) is not ("cardquick" or "cardcopy") || slot.Header is not DependencyObject root) yield break;
+            var pending = new Stack<object>();
+            pending.Push(root);
+            while (pending.Count > 0)
+            {
+                if (pending.Pop() is not DependencyObject node) continue;
+                if (node is System.Windows.Controls.Primitives.ButtonBase button) { yield return button; continue; }
+                foreach (var child in LogicalTreeHelper.GetChildren(node)) pending.Push(child);
+            }
+        }
+
+        /// <summary>
+        /// The card's header: what the menu is about. One row shows its icon, name and type, size and
+        /// date; a selection shows how many; empty space names the folder being browsed.
+        /// </summary>
+        private FrameworkElement ResultCardHeader(List<SearchResult> rows)
+        {
+            string title, meta;
+            System.Windows.Media.ImageSource? icon = null;
+            if (rows.Count == 1)
+            {
+                var row = rows[0];
+                title = string.IsNullOrEmpty(row.FileName) ? Path.GetFileName(row.FilePath) : row.FileName;
+                meta = string.Join(" · ", new[] { row.TypeName, row.IsDirectory ? string.Empty : row.SizeLabel, row.ModifiedLabel }
+                    .Where(part => !string.IsNullOrWhiteSpace(part)));
+                icon = row.Icon;
+            }
+            else if (rows.Count > 1)
+            {
+                // No icon: the first row's would read as if the card were about that one file.
+                int folders = rows.Count(row => row.IsDirectory);
+                title = string.Format(Loc("Str_Status_Selected"), rows.Count.ToString("N0"));
+                meta = string.Format(Loc("Str_Card_FilesFolders"), (rows.Count - folders).ToString("N0"), folders.ToString("N0"));
+            }
+            else
+            {
+                // Empty space: the folder being browsed, with its full path under the name.
+                string folder = _active.IsBrowsing && !IsThisPc(_active.CurrentFolder) ? _active.CurrentFolder : string.Empty;
+                title = _active.Title;
+                meta = folder;
+                if (folder.Length > 0 && !DemoMode) icon = Services.IconCache.For(folder, 32, true);
+            }
+
+            var text = new StackPanel { VerticalAlignment = VerticalAlignment.Center };
+            var name = new TextBlock { Text = title, FontSize = 14, FontWeight = FontWeights.SemiBold, TextTrimming = TextTrimming.CharacterEllipsis };
+            name.SetResourceReference(TextBlock.ForegroundProperty, "TextBrush");
+            var detail = new TextBlock { Text = meta, FontSize = 11, Margin = new Thickness(0, 1, 0, 0), TextTrimming = TextTrimming.CharacterEllipsis };
+            detail.SetResourceReference(TextBlock.ForegroundProperty, "DimTextBrush");
+            text.Children.Add(name);
+            if (meta.Length > 0) text.Children.Add(detail);
+
+            var header = new DockPanel { Margin = new Thickness(4, 2, 4, 6) };
+            if (icon != null)
+            {
+                var image = new Image { Source = icon, Width = 32, Height = 32, Margin = new Thickness(0, 0, 10, 0), VerticalAlignment = VerticalAlignment.Center };
+                DockPanel.SetDock(image, Dock.Left);
+                header.Children.Add(image);
+            }
+            header.Children.Add(text);
+            System.Windows.Automation.AutomationProperties.SetName(header, title);
+            return header;
+        }
+
+        /// <summary>
+        /// A quick button or copy chip on the card: close the card, then run the same handler the
+        /// row for that command runs, so the selection rules and status messages are unchanged.
+        /// </summary>
+        internal void ResultCard_ButtonClick(object sender, RoutedEventArgs e)
+        {
+            if (e.OriginalSource is not System.Windows.Controls.Primitives.ButtonBase button
+                || button.CommandParameter is not string command) return;
+            Action<object, RoutedEventArgs>? run = command switch
+            {
+                "open"   => MenuOpen_Click,
+                "edit"   => MenuEdit_Click,
+                "cut"    => MenuCut_Click,
+                "copy"   => MenuCopy_Click,
+                "rename" => MenuRename_Click,
+                "delete" => MenuDelete_Click,
+                "path"   => MenuCopyPath_Click,
+                "name"   => MenuCopyName_Click,
+                "folder" => MenuCopyFolder_Click,
+                "lines"  => MenuCopyLines_Click,
+                "hash"   => MenuCopyHash_Click,
+                _ => null,
+            };
+            if (run == null) return;
+            e.Handled = true;
+            if (sender is ContextMenu card) card.IsOpen = false;
+            run(button, new RoutedEventArgs());
         }
 
         private static IEnumerable<MenuItem> ResultMenuItems(ItemCollection items)
