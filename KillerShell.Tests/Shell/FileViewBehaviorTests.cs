@@ -28,6 +28,54 @@ public sealed class FileViewBehaviorTests
     [Fact]
     public Task WindowRestoresAndWritesItsOwnViewAndSortPreferences()
         => RuntimeComponentProcess.Run(nameof(FileWindowPreferencesScenario));
+
+    [Fact]
+    public Task EachFolderKeepsItsOwnSortAndOthersOpenNewestFirst()
+        => RuntimeComponentProcess.Run(nameof(FolderSortScenario));
+}
+
+public static class FolderSortScenario
+{
+    public static void Run()
+    {
+        using var fixture = new ShellWindowFixture();
+        var window = fixture.Window;
+        var pane = window.Pane;
+        var sort = (ComboBox)pane.FindName("SortChoice");
+        string named = Path.Combine(fixture.Root, "named");
+        string other = Path.Combine(fixture.Root, "other");
+        Directory.CreateDirectory(named);
+        Directory.CreateDirectory(other);
+
+        void Go(string folder)
+        {
+            var task = (Task)TitlePathInputScenario.Invoke(window, "NavigateTo", folder, true, false, false)!;
+            ShellWindowFixture.PumpUntil(() => task.IsCompleted);
+            task.GetAwaiter().GetResult();
+        }
+
+        Go(named);
+        Assert.Equal(4, pane.Active.SortIndex);
+        Assert.False(pane.Active.SortAsc);
+        sort.SelectedIndex = 1;   // Name, A first
+
+        Go(other);
+        Assert.Equal(4, pane.Active.SortIndex);
+        Assert.False(pane.Active.SortAsc);
+        Assert.Equal(4, sort.SelectedIndex);
+
+        Go(named);
+        Assert.Equal(1, pane.Active.SortIndex);
+        Assert.True(pane.Active.SortAsc);
+        Assert.Equal(1, sort.SelectedIndex);
+
+        // Flipping the direction is remembered too.
+        ((Button)pane.FindName("SortDirButton")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        Go(other);
+        Go(named);
+        Assert.Equal(1, pane.Active.SortIndex);
+        Assert.False(pane.Active.SortAsc);
+    }
 }
 
 public static class FileSortBehaviorScenario
@@ -125,10 +173,13 @@ public static class FileWindowPreferencesScenario
         string? Read(string key) => settings.TryGetValue(key, out var value) ? value : null;
         void Write(string key, string value) => settings[key] = value;
         string viewKey, sortKey;
+        // A browsed folder takes its own remembered sort, not the window's, which is left for
+        // search results.
+        settings["FolderSorts"] = "3|0|" + root;
         using (var saved = new WindowViewSettings(MainWindow.IsElevated ? "admin" : "normal", Read, Write))
         {
             saved.Set("ResultsViewL", "2");
-            saved.Set("ResultsSortL", "3|0");
+            saved.Set("ResultsSortL", "5|1");
             saved.Set("ResultsRowIconSizeL", "24");
             viewKey = saved.Key("ResultsViewL");
             sortKey = saved.Key("ResultsSortL");
@@ -147,7 +198,8 @@ public static class FileWindowPreferencesScenario
             Click(window, "ViewIconsBtn");
             ((ComboBox)window.Pane.FindName("SortChoice")).SelectedIndex = 1;
             Assert.Equal("1", Read(viewKey));
-            Assert.Equal("1|1", Read(sortKey));
+            Assert.Equal("1|1|" + root, Read("FolderSorts"));
+            Assert.Equal("5|1", Read(sortKey));
             Assert.Equal("0", Read("ResultsViewL"));
         }
         finally

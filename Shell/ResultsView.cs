@@ -648,9 +648,35 @@ namespace KillerShell.Shell
             tab.SortAsc = parts[1] == "1";
         }
 
+        /// <summary>
+        /// Remember a sort the user just chose. A folder listing keeps it for that folder
+        /// (FolderSortMemory.cs), so other folders still open newest first; search results keep
+        /// it per window pane, the way they always have.
+        /// </summary>
         private void SaveWindowSort(Models.SearchTab tab)
-            => SetWindowViewSetting("ResultsSort" + PaneKey(Pane),
+        {
+            if (tab.IsBrowsing)
+            {
+                FolderSorts.Remember(tab.CurrentFolder, tab.SortIndex, tab.SortAsc);
+                return;
+            }
+            SetWindowViewSetting("ResultsSort" + PaneKey(Pane),
                 tab.SortIndex.ToString(CultureInfo.InvariantCulture) + "|" + (tab.SortAsc ? "1" : "0"));
+        }
+
+        // Demo mode browses invented folders, so it keeps its own map and never touches the real one.
+        private Services.FolderSortMemory? _folderSorts;
+        private Services.FolderSortMemory FolderSorts => _folderSorts ??= new Services.FolderSortMemory(
+            DemoMode ? "demo.FolderSorts" : "FolderSorts",
+            Services.ThemeManager.GetSetting, Services.ThemeManager.SetSetting);
+
+        /// <summary>Give a tab that is opening <paramref name="folder"/> that folder's sort.</summary>
+        private void ApplyFolderSort(Models.SearchTab tab, string folder)
+        {
+            var (index, asc) = FolderSorts.For(folder);
+            tab.SortIndex = index;
+            tab.SortAsc = asc;
+        }
 
         private void InitResultsView()
         {

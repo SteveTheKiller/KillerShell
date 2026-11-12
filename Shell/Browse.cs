@@ -103,6 +103,9 @@ namespace KillerShell.Shell
 
             tab.CurrentFolder = folder;
             tab.IsBrowsing    = true;
+            // Every folder opens in its own remembered sort, Modified newest first until you pick
+            // another one there (ResultsView.cs). ApplySort below puts it on the new rows.
+            ApplyFolderSort(tab, folder);
             tab.Title         = thisPc  ? Loc("Str_Nav_ThisPc")
                               : archive ? ArchiveTitle(arcPath, arcEntry)
                               : FolderTitle(folder);
