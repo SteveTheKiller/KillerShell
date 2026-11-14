@@ -38,6 +38,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Closing the last tab in the first pane while two panes are open folds the window back to one pane holding the second pane's tabs, the same as dragging that tab out does, instead of opening a new folder tab in its place.
 - A relative address typed in the address bar, such as `..`, `Downloads` or `\Windows`, opens relative to the folder the tab is showing, and `D:` opens that drive's root, instead of resolving against the folder KillerShell was started from.
 - Search here uses the chosen folder, and keyboard-opened tree menus use the focused item.
+- A folder that refreshes in place, because something changed in it, you clicked back into its pane or you changed a view option, stays scrolled where you were instead of jumping to the top or to the selected item.
 - Opening a folder from a tab of search results drops the match count and query from that pane's footer, which kept describing the search under the folder listing.
 - Pulling a USB drive or losing a share while browsing it moves the pane to This PC instead of leaving a listing of a place that is gone.
 - Opening a file that is already open in the hidden second pane switches to that tab instead of opening the file a second time.

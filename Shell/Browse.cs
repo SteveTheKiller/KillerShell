@@ -101,6 +101,11 @@ namespace KillerShell.Shell
                 tab.HistoryIndex = tab.History.Count - 1;
             }
 
+            // Re-listing the folder already on screen (the folder changed on disk, a click back into
+            // the pane, a view option) keeps the view where you left it.
+            bool relisting = tab.IsBrowsing && tab == _active
+                             && string.Equals(tab.CurrentFolder, folder, StringComparison.OrdinalIgnoreCase);
+
             // A results tab that opens a folder is a folder listing from here on, so the summary of
             // the search it used to show ("14 matches  name: invoice") goes with those results.
             if (!tab.IsBrowsing)
@@ -206,6 +211,11 @@ namespace KillerShell.Shell
             // Only while a selection is being carried. Every other navigation goes through
             // untouched, selection changes and all - a move to a new folder SHOULD blank the strip.
             bool keeping = keptPaths != null;
+            // Clearing the collection collapses the list's extent to nothing, which pins the scroll
+            // offset to the top, so the refill came back at the top or wherever the restored
+            // selection pulled it. Read the offset before the refill and put it back after.
+            var scroller = relisting && tab == _active ? FindDescendant<System.Windows.Controls.ScrollViewer>(Pane.ResultsList) : null;
+            double keptX = scroller?.HorizontalOffset ?? 0, keptY = scroller?.VerticalOffset ?? 0;
             if (keeping) _restoringSelection = true;
             try
             {
@@ -221,6 +231,12 @@ namespace KillerShell.Shell
             // the filter, never between them and the refill: both re-shape the collection view the
             // list is bound to, and a selection applied first would be re-evaluated underneath it.
             if (keptPaths != null && keptPaths.Count > 0) ApplySelectionByPath(Pane, tab, keptPaths);
+            if (scroller != null && (keptX > 0 || keptY > 0))
+            {
+                Pane.ResultsList.UpdateLayout();
+                scroller.ScrollToHorizontalOffset(keptX);
+                scroller.ScrollToVerticalOffset(keptY);
+            }
 
             // Watch AFTER the listing lands, so the first events cannot arrive against a
             // collection that is still being filled (BrowseWatcher.cs). There is no directory
