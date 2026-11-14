@@ -61,6 +61,8 @@ namespace KillerShell.Editing
         private Encoding _encoding = new UTF8Encoding(false);
         private Encoding _savedEncoding = new UTF8Encoding(false);
         private string? _savedTextOverride;
+        private byte[]? _incompleteUtf8Bytes;
+        private string? _incompleteUtf8Text;
 
         /// <summary>
         /// SHA-256 of the bytes this document last read from or wrote to disk, or null when there
@@ -183,8 +185,15 @@ namespace KillerShell.Editing
         {
             try
             {
-                byte[] bytes = ReadShared(FilePath);
-                if (!TryDecode(bytes, out Encoding encoding, out string text, out string badLabel))
+                byte[] bytes = ReadShared(FilePath, out bool activeWriter);
+                bool incomplete = activeWriter && TryDecodeGrowingUtf8(bytes, out _, out _);
+                Encoding encoding;
+                string text;
+                string badLabel = string.Empty;
+                bool decoded = incomplete
+                    ? TryDecodeGrowingUtf8(bytes, out encoding, out text)
+                    : TryDecode(bytes, out encoding, out text, out badLabel);
+                if (!decoded)
                 {
                     // Refused rather than opened with replacement characters: an unchanged save
                     // would then write different bytes over the file. No tab is created.
@@ -194,6 +203,8 @@ namespace KillerShell.Editing
                 _encoding = encoding;
                 _savedEncoding = encoding;
                 _savedTextOverride = null;
+                _incompleteUtf8Bytes = incomplete ? bytes : null;
+                _incompleteUtf8Text = incomplete ? text : null;
                 DiskHash = Services.VerifiedFile.Sha256(bytes);
                 Text = text;
 
@@ -222,6 +233,8 @@ namespace KillerShell.Editing
         /// </remarks>
         internal void LoadDemo(string text)
         {
+            _incompleteUtf8Bytes = null;
+            _incompleteUtf8Text = null;
             _encoding     = new UTF8Encoding(false);
             _savedEncoding = _encoding;
             _savedTextOverride = null;
@@ -243,6 +256,8 @@ namespace KillerShell.Editing
         /// </remarks>
         internal void LoadEmpty()
         {
+            _incompleteUtf8Bytes = null;
+            _incompleteUtf8Text = null;
             _encoding     = new UTF8Encoding(false);
             _savedEncoding = _encoding;
             _savedTextOverride = null;
@@ -355,8 +370,17 @@ namespace KillerShell.Editing
         /// </summary>
         internal byte[] EncodedBytes() => Encode(Text, _encoding);
 
-        private static byte[] Encode(string text, Encoding encoding)
+        private byte[] Encode(string text, Encoding encoding)
         {
+            if (_incompleteUtf8Bytes != null)
+            {
+                // A writer stopped between UTF-8 bytes. Keep that exact snapshot on an
+                // unchanged save; edits must wait for a reload with the complete character.
+                if (!string.Equals(text, _incompleteUtf8Text, StringComparison.Ordinal)
+                    || !SameEncoding(encoding, _savedEncoding))
+                    throw new InvalidOperationException(string.Format(MainWindow.LocStatic("Str_Ed_BadEncoding"), "UTF-8"));
+                return (byte[])_incompleteUtf8Bytes.Clone();
+            }
             byte[] preamble = encoding.GetPreamble();
             var strict = (Encoding)encoding.Clone();
             strict.EncoderFallback = EncoderFallback.ExceptionFallback;
@@ -377,13 +401,48 @@ namespace KillerShell.Editing
         /// shares only reads, so a log a service or a running build is writing refused to open at
         /// all. Reading never blocks that writer; a save over it still fails and says so.
         /// </summary>
-        private static byte[] ReadShared(string path)
+        private static byte[] ReadShared(string path, out bool activeWriter)
         {
             using var stream = new FileStream(path, FileMode.Open, FileAccess.Read,
                                               FileShare.ReadWrite | FileShare.Delete);
+            activeWriter = false;
+            try
+            {
+                using var probe = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read | FileShare.Delete);
+            }
+            catch (IOException ex) when ((ex.HResult & 0xFFFF) == 32) { activeWriter = true; }
             using var copy = new MemoryStream(stream.CanSeek ? (int)Math.Min(stream.Length, int.MaxValue) : 0);
             stream.CopyTo(copy);
             return copy.ToArray();
+        }
+
+        private static bool TryDecodeGrowingUtf8(byte[] bytes, out Encoding encoding, out string text)
+        {
+            bool bom = StartsWith(bytes, 0xEF, 0xBB, 0xBF);
+            int skip = bom ? 3 : 0;
+            encoding = new UTF8Encoding(bom);
+            text = string.Empty;
+            int lead = bytes.Length - 1;
+            while (lead >= skip && bytes[lead] >= 0x80 && bytes[lead] <= 0xBF) lead--;
+            if (lead < skip) return false;
+            int expected = bytes[lead] >= 0xC2 && bytes[lead] <= 0xDF ? 2
+                : bytes[lead] >= 0xE0 && bytes[lead] <= 0xEF ? 3
+                : bytes[lead] >= 0xF0 && bytes[lead] <= 0xF4 ? 4 : 0;
+            int tail = bytes.Length - lead;
+            if (expected == 0 || tail >= expected) return false;
+            try
+            {
+                var strict = new UTF8Encoding(false, true);
+                // A non-flushing strict decoder accepts a pending final character, but
+                // still rejects invalid continuation bytes and overlong sequences.
+                strict.GetDecoder().GetChars(bytes, skip, bytes.Length - skip, new char[bytes.Length], 0, false);
+                text = strict.GetString(bytes, skip, lead - skip);
+                if (bom) return true;
+                // Without a BOM, ASCII alone cannot distinguish unfinished UTF-8 from ANSI.
+                foreach (char character in text) if (character > 0x7F) return true;
+                return false;
+            }
+            catch (DecoderFallbackException) { text = string.Empty; return false; }
         }
 
         /// <summary>
