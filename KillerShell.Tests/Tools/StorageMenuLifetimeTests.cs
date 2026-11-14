@@ -226,8 +226,19 @@ public static class StorageMenuLifetimeScenario
             .Where(menu => menu.IsOpen && menu.IsVisible && PresentationSource.FromVisual(menu) != null)
             .Distinct().ToArray();
 
+    // The card header names the item and puts its full path on the dim line under the name.
     private static IEnumerable<string> HeaderPaths(ContextMenu menu)
-        => menu.Items.OfType<MenuItem>().Select(item => item.Header).OfType<TextBlock>().Select(item => item.Text);
+        => menu.Items.OfType<MenuItem>().Where(item => item.Tag as string == "cardhead")
+            .Select(item => LogicalTexts(item.Header as DependencyObject).LastOrDefault())
+            .Where(text => !string.IsNullOrEmpty(text))!;
+
+    private static IEnumerable<string> LogicalTexts(DependencyObject? root)
+    {
+        if (root == null) yield break;
+        if (root is TextBlock block) yield return block.Text;
+        foreach (var child in LogicalTreeHelper.GetChildren(root).OfType<DependencyObject>())
+            foreach (var text in LogicalTexts(child)) yield return text;
+    }
 
     private static void WaitHeader(string expected)
     {

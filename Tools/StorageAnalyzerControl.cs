@@ -1400,51 +1400,31 @@ namespace KillerShell.Tools
 
         private void ShowMapMenu(FsNode? n, bool keyboard)
         {
-            var menu = new ContextMenu();
+            var menu = KillerShell.Controls.CardMenus.Card();
 
             if (n != null)
             {
                 string path = FullPath(n);
 
-                var pathText = new TextBlock
-                {
-                    Text = path,
-                    TextWrapping = TextWrapping.Wrap,
-                    TextTrimming = TextTrimming.None,
-                    MaxWidth = 440,
-                    Margin = new Thickness(12, 6, 12, 6),
-                };
-                pathText.SetResourceReference(TextBlock.ForegroundProperty, "TextBrush");
-                var pathHeader = new MenuItem
-                {
-                    Header = pathText,
-                    Focusable = false,
-                    IsHitTestVisible = false,
-                };
-                pathHeader.SetResourceReference(FrameworkElement.StyleProperty, "PanelMenuItem");
-                menu.Items.Add(pathHeader);
-                menu.Items.Add(new Separator());
+                // The card names the item with its icon and size; the full path is the dim line.
+                var head = KillerShell.Controls.CardMenus.Slot();
+                head.Tag = "cardhead";
+                var source = Services.IconCache.For(path, 32, isDirectory: n.IsDir);
+                var icon = source == null ? null : new Image { Source = source, Width = 32, Height = 32 };
+                KillerShell.Controls.CardMenus.SetHeader(head, icon, n.Name + "  " + FormatSize(n.Size), path);
+                System.Windows.Automation.AutomationProperties.SetName(head, n.Name);
+                menu.Items.Add(head);
 
-                var openTab = MakeItem("Str_Storage_OpenInTab", 0xE8DA, "Shift+Enter");
-                openTab.Click += (_, _) => OpenNodeInTab(n);
-                menu.Items.Add(openTab);
-
-                var reveal = MakeItem("Str_Storage_RevealExplorer", 0xE838, "F6");
-                reveal.Click += (_, _) => RevealNode(n);
-                menu.Items.Add(reveal);
-
-                var copy = MakeItem("Str_Storage_CopyPath", 0xE8C8, "Ctrl+Shift+C");
-                copy.Click += (_, _) => CopyNodePath(n);
-                menu.Items.Add(copy);
-
-                menu.Items.Add(new Separator());
-
-                var del = MakeItem("Str_Storage_Delete", 0xE74D, "Del");
-                del.Click += (_, _) => RecycleNode(n, path);
-                del.IsEnabled = MayRecycle(n);
-                menu.Items.Add(del);
-
-                menu.Items.Add(new Separator());
+                // E8DA open, E838 the family's "show me where this lives" folder, E8C8 Copy and
+                // E74D Delete, each with its shortcut in the tooltip.
+                var quick = KillerShell.Controls.CardMenus.QuickStrip(out var strip);
+                quick.Tag = "cardquick";
+                KillerShell.Controls.CardMenus.QuickButton(strip, menu, 0xE8DA, "Str_Card_NewTab", "Str_Storage_OpenInTab", "Shift+Enter", () => OpenNodeInTab(n));
+                KillerShell.Controls.CardMenus.QuickButton(strip, menu, 0xE838, "Str_Card_Explorer", "Str_Storage_RevealExplorer", "F6", () => RevealNode(n));
+                KillerShell.Controls.CardMenus.QuickButton(strip, menu, 0xE8C8, "Str_Card_Path", "Str_Storage_CopyPath", "Ctrl+Shift+C", () => CopyNodePath(n));
+                KillerShell.Controls.CardMenus.QuickButton(strip, menu, 0xE74D, "Str_Card_Delete", "Str_Storage_Delete", "Del",
+                    () => RecycleNode(n, path)).IsEnabled = MayRecycle(n);
+                menu.Items.Add(quick);
             }
 
             // The color-mode toggle lives here per the design decision - checked radios, so the

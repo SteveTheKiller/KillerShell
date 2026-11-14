@@ -30,6 +30,44 @@ public sealed class ToolCardTests
     [Fact]
     public Task RegistryKeyAndValueMenusAreCards()
         => RuntimeComponentProcess.Run(nameof(RegistryCardScenario));
+
+    [Fact]
+    public Task StorageMapMenuIsACard()
+        => RuntimeComponentProcess.Run(nameof(StorageCardScenario));
+}
+
+public static class StorageCardScenario
+{
+    public static void Run()
+    {
+        using var fixture = new ShellWindowFixture();
+        var window = fixture.Window;
+        var control = new StorageAnalyzerControl(fixture.Root);
+        window.Pane.Tabs.Add(new SearchTab("Storage") { Storage = control });
+        MenuBarTabBlendScenario.SelectTab(window.Pane, window.Pane.Tabs.Last());
+        var folder = System.IO.Path.Combine(fixture.Root, "Big");
+        System.IO.Directory.CreateDirectory(folder);
+        System.IO.File.WriteAllBytes(System.IO.Path.Combine(folder, "blob.bin"), new byte[200000]);
+        try
+        {
+            control.ScanFolder(fixture.Root);
+            var scanning = typeof(StorageAnalyzerControl).GetField("_scanning", BindingFlags.NonPublic | BindingFlags.Instance)!;
+            ShellWindowFixture.PumpUntil(() => !(bool)scanning.GetValue(control)!);
+            var root = typeof(StorageAnalyzerControl).GetField("_root", BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(control)!;
+            var children = (System.Collections.IEnumerable)root.GetType().GetField("Children", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)?.GetValue(root)!
+                ?? (System.Collections.IEnumerable)root.GetType().GetProperty("Children", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(root)!;
+            var big = children.Cast<object>().First();
+            typeof(StorageAnalyzerControl).GetMethod("ShowMapMenu", BindingFlags.NonPublic | BindingFlags.Instance)!
+                .Invoke(control, [big, false]);
+            var card = ToolCardProbe.OpenCard();
+            ToolCardProbe.AssertCard(card, "Big",
+                ToolCardProbe.L("Str_Storage_OpenInTab"), ToolCardProbe.L("Str_Storage_RevealExplorer"),
+                ToolCardProbe.L("Str_Storage_CopyPath"), ToolCardProbe.L("Str_Storage_Delete"));
+            Assert.Contains(card.Items.OfType<MenuItem>(), item => item.IsCheckable);
+            card.IsOpen = false;
+        }
+        finally { control.Shutdown(); }
+    }
 }
 
 public static class RegistryCardScenario
