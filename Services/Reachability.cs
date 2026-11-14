@@ -36,8 +36,12 @@ namespace KillerShell.Services
         private static Task<bool> Join(string path, Func<string, bool> probe,
             System.Collections.Concurrent.ConcurrentDictionary<string, Task<bool>> running)
         {
-            var task = running.GetOrAdd(path, key => Start(key, probe, running));
-            if (!task.IsCompleted) return task;
+            // A check this call started is this call's answer even if it already finished: a quick
+            // probe can complete before IsCompleted is read, and treating it as an old answer
+            // probed the same path a second time.
+            bool started = false;
+            var task = running.GetOrAdd(path, key => { started = true; return Start(key, probe, running); });
+            if (started || !task.IsCompleted) return task;
             Forget(path, task, running);
             return running.GetOrAdd(path, key => Start(key, probe, running));
         }
