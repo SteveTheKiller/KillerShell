@@ -1112,6 +1112,7 @@
     <sys:String x:Key="Str_Card_SelectAll">Merk alt</sys:String>
     <sys:String x:Key="Str_Card_Paste">Lim inn</sys:String>
     <sys:String x:Key="Str_Card_Clear">Tøm historikk</sys:String>
+    <sys:String x:Key="Str_Card_AsAdmin">Som admin</sys:String>
     <sys:String x:Key="Str_Ks_ContextMenu">åpne hurtigmenyen</sys:String>
     <sys:String x:Key="Str_TT_RemoveSearchTerm">Fjern søkeord</sys:String>
     <sys:String x:Key="Str_TT_RemoveSearchFilter">Fjern filter</sys:String>

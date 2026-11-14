@@ -981,6 +981,7 @@
   <sys:String x:Key="Str_Card_SelectAll">Zaznacz wszystko</sys:String>
   <sys:String x:Key="Str_Card_Paste">Wklej</sys:String>
   <sys:String x:Key="Str_Card_Clear">Wyczyść historię</sys:String>
+  <sys:String x:Key="Str_Card_AsAdmin">Jako admin</sys:String>
     <sys:String x:Key="Str_Ks_ContextMenu">otwórz menu kontekstowe</sys:String>
     <sys:String x:Key="Str_TT_RemoveSearchTerm">Usuń warunek wyszukiwania</sys:String>
     <sys:String x:Key="Str_TT_RemoveSearchFilter">Usuń filtr</sys:String>

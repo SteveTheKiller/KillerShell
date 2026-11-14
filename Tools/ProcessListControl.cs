@@ -1186,65 +1186,75 @@ namespace KillerShell.Tools
             return item;
         }
 
+        // The card's header: the program's own icon when it has a file, its name, and one dim line
+        // of what tells rows apart.
+        private static MenuItem CardHeader(ContextMenu card, string path, string title, string meta)
+        {
+            var head = KillerShell.Controls.CardMenus.Slot();
+            head.Tag = "cardhead";
+            var source = path.Length > 0 ? Services.IconCache.For(path, 32, isDirectory: false) : null;
+            var icon = source == null ? null : new Image { Source = source, Width = 32, Height = 32 };
+            KillerShell.Controls.CardMenus.SetHeader(head, icon, title, meta);
+            card.Items.Add(head);
+            return head;
+        }
+
+        // Codepoints, not literal PUA characters - a literal glyph does not survive tooling
+        // (CLAUDE.md), which is exactly why every other glyph in this app is set this way.
+        // E838 is the family's "show me where this lives" folder, E711 the cross a dead shell's
+        // tab wears, E777 "start over", E7EF the elevation shield, E768 Play and E71A Stop. Each
+        // command keeps its keyboard shortcut in its tooltip, as every card's buttons do.
         private void BuildProcessContextMenu(ProcessInfo p)
         {
-            var menu = new ContextMenu { PlacementTarget = _grid };
+            var menu = KillerShell.Controls.CardMenus.Card();
+            menu.PlacementTarget = _grid;
+            CardHeader(menu, p.HasPath ? p.Path : string.Empty, p.Name,
+                string.Join(" · ", new[] { KillerShell.Shell.MainWindow.LocStatic("Str_Col_ProcPid") + " " + p.Pid, p.User, p.MemoryLabel }
+                    .Where(part => !string.IsNullOrWhiteSpace(part))));
 
-            // Codepoints, not literal PUA characters - a literal glyph does not survive tooling
-            // (CLAUDE.md), which is exactly why every other glyph in this app is set this way.
-
-            // E838: the same folder glyph the rest of the family uses for "show me where this
-            // lives" (KillerNotes' data-folder button, Killendar's dialog data-folder row).
-            AddMenuItem(menu, "Str_Menu_ProcOpenLocation", ((char)0xE838).ToString(), (_, _) =>
+            var quick = KillerShell.Controls.CardMenus.QuickStrip(out var strip);
+            quick.Tag = "cardquick";
+            KillerShell.Controls.CardMenus.QuickButton(strip, menu, 0xE838, "Str_Card_Folder", "Str_Menu_ProcOpenLocation", "Ctrl+O", () =>
             {
-                if (p.HasPath) OpenFileLocationRequested?.Invoke(
-                    System.IO.Path.GetDirectoryName(p.Path) ?? string.Empty);
-            }, enabled: p.HasPath, gesture: "Ctrl+O");
+                if (p.HasPath) OpenFileLocationRequested?.Invoke(System.IO.Path.GetDirectoryName(p.Path) ?? string.Empty);
+            }).IsEnabled = p.HasPath;
+            KillerShell.Controls.CardMenus.QuickButton(strip, menu, 0xE711, "Str_Menu_ProcKill", "Str_Menu_ProcKill", "Del", () => KillWithConfirm(p));
+            KillerShell.Controls.CardMenus.QuickButton(strip, menu, 0xE777, "Str_Menu_ProcRestart", "Str_Menu_ProcRestart", "Ctrl+R",
+                () => RestartProcess(p, elevated: false)).IsEnabled = p.HasPath;
+            KillerShell.Controls.CardMenus.QuickButton(strip, menu, 0xE7EF, "Str_Card_AsAdmin", "Str_Menu_ProcRunAsAdmin", "Ctrl+Shift+A",
+                () => RestartProcess(p, elevated: true)).IsEnabled = p.HasPath;
+            menu.Items.Add(quick);
 
-            // E711: a cross, the same glyph a dead shell's tab wears when its process exits
-            // (TerminalTabs.cs) - so "this ends the process" reads the same way twice in the app.
-            AddMenuItem(menu, "Str_Menu_ProcKill", ((char)0xE711).ToString(), (_, _) => KillWithConfirm(p),
-                gesture: "Del");
-
-            // E777 (Refresh/ReplyMirrored reads as "start over"): kill then relaunch from Path.
-            AddMenuItem(menu, "Str_Menu_ProcRestart", ((char)0xE777).ToString(), (_, _) => RestartProcess(p, elevated: false),
-                enabled: p.HasPath, gesture: "Ctrl+R");
-
-            // E7EF: the shield, the same elevation glyph the terminal rail's admin rows use
-            // (MainWindow.xaml TermAdminBtn / RailShellPsAdmin_Click) - one glyph means one thing
-            // everywhere in the app.
-            AddMenuItem(menu, "Str_Menu_ProcRunAsAdmin", ((char)0xE7EF).ToString(), (_, _) => RestartProcess(p, elevated: true),
-                enabled: p.HasPath, gesture: "Ctrl+Shift+A");
-
+            // E946: the information glyph. Enter on the row opens the same dialog.
+            AddMenuItem(menu, "Str_Proc_DetailsTitle", ((char)0xE946).ToString(), (_, _) => OpenProcessDetails(), gesture: "Enter");
             menu.IsOpen = true;
         }
 
         private void BuildServiceContextMenu(ServiceInfo s)
         {
-            var menu = new ContextMenu { PlacementTarget = _grid };
+            var menu = KillerShell.Controls.CardMenus.Card();
+            menu.PlacementTarget = _grid;
+            string exe = s.HasPath ? Services.ProcessListLogic.ExtractExePath(s.Path) : string.Empty;
+            CardHeader(menu, exe, string.IsNullOrEmpty(s.DisplayName) ? s.Name : s.DisplayName,
+                string.Join(" · ", new[] { s.Name, s.Status, s.StartupType }.Where(part => !string.IsNullOrWhiteSpace(part))));
 
-            // E838: same folder glyph and same event as the process menu's "Open file location" -
-            // conceptually identical (open the folder containing the service's executable).
-            AddMenuItem(menu, "Str_Menu_ProcOpenLocation", ((char)0xE838).ToString(), (_, _) =>
+            var quick = KillerShell.Controls.CardMenus.QuickStrip(out var strip);
+            quick.Tag = "cardquick";
+            KillerShell.Controls.CardMenus.QuickButton(strip, menu, 0xE838, "Str_Card_Folder", "Str_Menu_ProcOpenLocation", "Ctrl+O", () =>
             {
-                if (s.HasPath) OpenFileLocationRequested?.Invoke(
-                    System.IO.Path.GetDirectoryName(Services.ProcessListLogic.ExtractExePath(s.Path)) ?? string.Empty);
-            }, enabled: s.HasPath, gesture: "Ctrl+O");
+                if (s.HasPath) OpenFileLocationRequested?.Invoke(System.IO.Path.GetDirectoryName(exe) ?? string.Empty);
+            }).IsEnabled = s.HasPath;
+            // Start is off while the service runs; Stop and Restart need it running and stoppable,
+            // the same rule ServiceController.CanStop gives Windows.
+            KillerShell.Controls.CardMenus.QuickButton(strip, menu, 0xE768, "Str_Menu_SvcStart", "Str_Menu_SvcStart", "Ctrl+S",
+                () => StartServiceWithConfirm(s)).IsEnabled = !s.IsRunning;
+            KillerShell.Controls.CardMenus.QuickButton(strip, menu, 0xE71A, "Str_Menu_SvcStop", "Str_Menu_SvcStop", "Del",
+                () => StopServiceWithConfirm(s)).IsEnabled = s.IsRunning && s.CanStop;
+            KillerShell.Controls.CardMenus.QuickButton(strip, menu, 0xE777, "Str_Menu_ProcRestart", "Str_Menu_ProcRestart", "Ctrl+R",
+                () => RestartServiceWithConfirm(s)).IsEnabled = s.IsRunning && s.CanStop;
+            menu.Items.Add(quick);
 
-            // E768 (Play): starts a stopped service. Disabled while already running.
-            AddMenuItem(menu, "Str_Menu_SvcStart", ((char)0xE768).ToString(), (_, _) => StartServiceWithConfirm(s),
-                enabled: !s.IsRunning, gesture: "Ctrl+S");
-
-            // E71A (Stop): stops a running, stoppable service. Disabled while not running, or
-            // while ServiceController.CanStop says Windows will refuse anyway.
-            AddMenuItem(menu, "Str_Menu_SvcStop", ((char)0xE71A).ToString(), (_, _) => StopServiceWithConfirm(s),
-                enabled: s.IsRunning && s.CanStop, gesture: "Del");
-
-            // E777: the SAME "start over" glyph the process menu's Restart already uses - one
-            // glyph, one meaning, everywhere in the app.
-            AddMenuItem(menu, "Str_Menu_ProcRestart", ((char)0xE777).ToString(), (_, _) => RestartServiceWithConfirm(s),
-                enabled: s.IsRunning && s.CanStop, gesture: "Ctrl+R");
-
+            AddMenuItem(menu, "Str_Svc_DetailsTitle", ((char)0xE946).ToString(), (_, _) => OpenServiceDetails(), gesture: "Enter");
             menu.IsOpen = true;
         }
 

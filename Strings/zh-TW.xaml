@@ -1064,6 +1064,7 @@
     <sys:String x:Key="Str_Card_SelectAll">全選</sys:String>
     <sys:String x:Key="Str_Card_Paste">貼上</sys:String>
     <sys:String x:Key="Str_Card_Clear">清除回捲記錄</sys:String>
+    <sys:String x:Key="Str_Card_AsAdmin">以系統管理員身分</sys:String>
     <sys:String x:Key="Str_Ks_ContextMenu">開啟快顯功能表</sys:String>
     <sys:String x:Key="Str_TT_RemoveSearchTerm">移除搜尋詞</sys:String>
     <sys:String x:Key="Str_TT_RemoveSearchFilter">移除篩選器</sys:String>

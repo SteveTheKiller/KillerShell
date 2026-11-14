@@ -1078,6 +1078,7 @@
     <sys:String x:Key="Str_Card_SelectAll">Бәрін таңдау</sys:String>
     <sys:String x:Key="Str_Card_Paste">Қою</sys:String>
     <sys:String x:Key="Str_Card_Clear">Тарихты тазалау</sys:String>
+    <sys:String x:Key="Str_Card_AsAdmin">Әкімші ретінде</sys:String>
     <sys:String x:Key="Str_Ks_ContextMenu">контекстік мәзірді ашу</sys:String>
     <sys:String x:Key="Str_TT_RemoveSearchTerm">Іздеу сөзін алып тастау</sys:String>
     <sys:String x:Key="Str_TT_RemoveSearchFilter">Сүзгіні алып тастау</sys:String>

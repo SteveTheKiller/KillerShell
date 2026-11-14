@@ -1064,6 +1064,7 @@
     <sys:String x:Key="Str_Card_SelectAll">সব নির্বাচন</sys:String>
     <sys:String x:Key="Str_Card_Paste">পেস্ট করুন</sys:String>
     <sys:String x:Key="Str_Card_Clear">স্ক্রলব্যাক মুছুন</sys:String>
+    <sys:String x:Key="Str_Card_AsAdmin">প্রশাসক হিসেবে</sys:String>
     <sys:String x:Key="Str_Ks_ContextMenu">প্রসঙ্গ মেনু খুলুন</sys:String>
     <sys:String x:Key="Str_TT_RemoveSearchTerm">সার্চ টার্ম সরান</sys:String>
     <sys:String x:Key="Str_TT_RemoveSearchFilter">ফিল্টার সরান</sys:String>

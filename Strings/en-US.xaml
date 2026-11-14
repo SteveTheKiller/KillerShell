@@ -1112,6 +1112,7 @@
     <sys:String x:Key="Str_Card_SelectAll">Select all</sys:String>
     <sys:String x:Key="Str_Card_Paste">Paste</sys:String>
     <sys:String x:Key="Str_Card_Clear">Clear scrollback</sys:String>
+    <sys:String x:Key="Str_Card_AsAdmin">As admin</sys:String>
     <sys:String x:Key="Str_Ks_ContextMenu">open the context menu</sys:String>
     <sys:String x:Key="Str_TT_RemoveSearchTerm">Remove search term</sys:String>
     <sys:String x:Key="Str_TT_RemoveSearchFilter">Remove filter</sys:String>

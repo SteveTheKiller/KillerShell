@@ -1067,6 +1067,7 @@
     <sys:String x:Key="Str_Card_SelectAll">Todo</sys:String>
     <sys:String x:Key="Str_Card_Paste">Pegar</sys:String>
     <sys:String x:Key="Str_Card_Clear">Borrar historial</sys:String>
+    <sys:String x:Key="Str_Card_AsAdmin">Como admin</sys:String>
     <sys:String x:Key="Str_Ks_ContextMenu">abrir el menú contextual</sys:String>
     <sys:String x:Key="Str_TT_RemoveSearchTerm">Quitar término de búsqueda</sys:String>
     <sys:String x:Key="Str_TT_RemoveSearchFilter">Quitar filtro</sys:String>

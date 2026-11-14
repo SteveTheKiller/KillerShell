@@ -1065,6 +1065,7 @@
     <sys:String x:Key="Str_Card_SelectAll">Vybrat vše</sys:String>
     <sys:String x:Key="Str_Card_Paste">Vložit</sys:String>
     <sys:String x:Key="Str_Card_Clear">Vymazat historii</sys:String>
+    <sys:String x:Key="Str_Card_AsAdmin">Jako správce</sys:String>
     <sys:String x:Key="Str_Ks_ContextMenu">otevřít místní nabídku</sys:String>
     <sys:String x:Key="Str_TT_RemoveSearchTerm">Odebrat hledaný výraz</sys:String>
     <sys:String x:Key="Str_TT_RemoveSearchFilter">Odebrat filtr</sys:String>

@@ -1112,6 +1112,7 @@
     <sys:String x:Key="Str_Card_SelectAll">Вибрати все</sys:String>
     <sys:String x:Key="Str_Card_Paste">Вставити</sys:String>
     <sys:String x:Key="Str_Card_Clear">Очистити історію</sys:String>
+    <sys:String x:Key="Str_Card_AsAdmin">Від адміна</sys:String>
     <sys:String x:Key="Str_Ks_ContextMenu">відкрити контекстне меню</sys:String>
     <sys:String x:Key="Str_TT_RemoveSearchTerm">Видалити умову пошуку</sys:String>
     <sys:String x:Key="Str_TT_RemoveSearchFilter">Видалити фільтр</sys:String>
