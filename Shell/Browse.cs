@@ -101,6 +101,17 @@ namespace KillerShell.Shell
                 tab.HistoryIndex = tab.History.Count - 1;
             }
 
+            // A results tab that opens a folder is a folder listing from here on, so the summary of
+            // the search it used to show ("14 matches  name: invoice") goes with those results.
+            if (!tab.IsBrowsing)
+            {
+                tab.StatsLabel = tab.QueryLabel = tab.ScannedLabel = string.Empty;
+                if (tab == _active)
+                {
+                    Pane.StatsText.Text = Pane.QueryText.Text = string.Empty;
+                    Pane.ScannedText.Visibility = Visibility.Collapsed;
+                }
+            }
             tab.CurrentFolder = folder;
             tab.IsBrowsing    = true;
             // Every folder opens in its own remembered sort, Modified newest first until you pick
