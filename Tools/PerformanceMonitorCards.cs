@@ -388,16 +388,16 @@ namespace KillerShell.Tools
             menu.Items.Add(item);
         }
 
-        // Outlines in a 14px box, drawn like the pane layout menu's (Shell/PaneLayoutMenu.cs): a
-        // card in one half of the row, and a card across all of it.
-        private const string OneColumnIcon = "M0.5,0.5 H6.5 V13.5 H0.5 Z";
-        private const string TwoColumnsIcon = "M0.5,0.5 H13.5 V13.5 H0.5 Z";
+        // The footer's own pane layout shapes (MainWindow.xaml PaneOneBtn, PaneLeftRightBtn): one
+        // frame for one column, two frames side by side for two.
+        private const string OneColumnIcon = "M0,0 H14 V14 H0 Z";
+        private const string TwoColumnsIcon = "M0,0 H6 V14 H0 Z M8,0 H14 V14 H8 Z";
 
         /// <summary>One of the pair that sets a card's width. The checkmark takes the icon's
         /// place in the family template's reserved gutter while it is the card's width.</summary>
         private static void AddWidthMenuItem(ContextMenu menu, string headerKey, string geometry, bool chosen, Action click)
         {
-            var icon = new System.Windows.Shapes.Path { Width = 14, Height = 14, Stretch = Stretch.None,
+            var icon = new System.Windows.Shapes.Path { Width = 12, Height = 12, Stretch = Stretch.Uniform,
                 StrokeThickness = 1, Data = Geometry.Parse(geometry) };
             icon.SetBinding(System.Windows.Shapes.Shape.StrokeProperty, new System.Windows.Data.Binding("Foreground")
                 { RelativeSource = new System.Windows.Data.RelativeSource(System.Windows.Data.RelativeSourceMode.FindAncestor, typeof(MenuItem), 1) });
