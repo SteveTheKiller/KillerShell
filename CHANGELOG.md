@@ -95,6 +95,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 ### Added
 
 - The memory graph shows cached memory stacked on top of memory in use, in the same colors and order as the bar under it, so the graph tells the same story as the bar.
+- The `search` command takes `--max-seconds` like `storage` does: when time runs out it returns the matches found so far and says `"stoppedEarly":true`.
 
 ## [1.5.1] - 2026-11-01
 

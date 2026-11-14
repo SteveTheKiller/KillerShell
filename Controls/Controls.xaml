@@ -1574,9 +1574,10 @@
     </Style>
 
     <!-- One option of a segmented toggle: RadioButtons sharing a GroupName inside a Border
-         filled with MenuHoverBrush. The checked option lifts onto the menu surface. -->
+         filled with MenuHoverBrush. The checked option lifts onto the menu surface with the accent;
+         the others keep the plain menu text, made readable on the fill (MenuTrackTextBrush). -->
     <Style x:Key="CardSegment" TargetType="RadioButton">
-        <Setter Property="Foreground" Value="{DynamicResource MenuHoverTextBrush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource MenuTrackTextBrush}"/>
         <Setter Property="FontSize" Value="12"/>
         <Setter Property="Padding" Value="10,3"/>
         <Setter Property="Cursor" Value="Hand"/>
@@ -2809,6 +2810,12 @@
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
                             <Setter TargetName="hdrBg" Property="Background" Value="{DynamicResource RowSelectedBrush}"/>
+                        </Trigger>
+                        <!-- Headers are tab stops for the Apps key column menu: an accent edge marks keyboard focus. -->
+                        <Trigger Property="IsKeyboardFocused" Value="True">
+                            <Setter TargetName="hdrBg" Property="BorderBrush" Value="{DynamicResource PrimaryBrush}"/>
+                            <Setter TargetName="hdrBg" Property="BorderThickness" Value="1"/>
+                            <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

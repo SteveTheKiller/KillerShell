@@ -82,7 +82,7 @@ namespace KillerShell.Cli
         // option's value that is spelled --json stays what it is.
         private static readonly Dictionary<string, (int Start, string[] ValueOptions)> VerbLayouts = new(StringComparer.Ordinal)
         {
-            ["search"] = (2, ["--name", "--content", "--limit", "--csv", "--html"]),
+            ["search"] = (2, ["--name", "--content", "--limit", "--csv", "--html", "--max-seconds"]),
             ["list"] = (2, ["--limit"]),
             ["info"] = (2, []),
             ["read"] = (2, ["--max-chars"]),
@@ -460,6 +460,7 @@ namespace KillerShell.Cli
             string? csvPath = null;
             string? htmlPath = null;
             int limit = DefaultLimit;
+            int maximumSeconds = 0;
             for (int i = 2; i < args.Length; i += 2)
             {
                 if (i + 1 >= args.Length)
@@ -468,6 +469,11 @@ namespace KillerShell.Cli
                 {
                     case "--name": name = args[i + 1]; break;
                     case "--content": content = args[i + 1]; break;
+                    case "--max-seconds":
+                        if (!int.TryParse(args[i + 1], NumberStyles.None, CultureInfo.InvariantCulture, out maximumSeconds)
+                            || maximumSeconds < 1 || maximumSeconds > MaximumScanSeconds)
+                            throw new ArgumentException("--max-seconds must be between 1 and " + MaximumScanSeconds);
+                        break;
                     case "--limit":
                         if (!int.TryParse(args[i + 1], NumberStyles.None, CultureInfo.InvariantCulture, out limit)
                             || limit < 1 || limit > MaximumLimit)
@@ -491,6 +497,9 @@ namespace KillerShell.Cli
 
             var found = new List<SearchResult>();
             using var cancellation = new CancellationTokenSource();
+            using var timeLimit = new CancellationTokenSource();
+            using var deadlineRegistration = timeLimit.Token.Register(cancellation.Cancel);
+            if (maximumSeconds > 0) timeLimit.CancelAfter(TimeSpan.FromSeconds(maximumSeconds));
             var engine = new SearchEngine();
             // One past the limit is collected, so "the limit was reached" means a match was left
             // out, not merely that exactly limit matches existed.
@@ -506,6 +515,8 @@ namespace KillerShell.Cli
             System.Threading.Tasks.Task.Run(() => engine.SearchAsync(root, [group], Array.Empty<SearchFilter>(),
                 string.Empty, string.Empty, false, cancellation.Token)).GetAwaiter().GetResult();
 
+            bool stoppedEarly = timeLimit.IsCancellationRequested;
+            timeLimit.CancelAfter(Timeout.Infinite);
             bool limitReached = found.Count > limit;
             var ordered = found.OrderBy(item => item.FilePath, StringComparer.OrdinalIgnoreCase).Take(limit).ToList();
             // Both names are claimed before either report is written, so a refusal on the second
@@ -540,6 +551,7 @@ namespace KillerShell.Cli
                 output.Append('}');
             }
             output.Append("],\"limitReached\":").Append(limitReached ? "true" : "false");
+            output.Append(",\"stoppedEarly\":").Append(stoppedEarly ? "true" : "false");
             output.Append(",\"incompletePaths\":").Append(engine.IncompletePaths.ToString(CultureInfo.InvariantCulture));
             output.Append(",\"skippedDirectoryLinks\":").Append(engine.SkippedDirectoryLinks.ToString(CultureInfo.InvariantCulture));
             if (csvPath != null) output.Append(",\"csv\":").Append(JsonString(csvPath));
@@ -725,8 +737,8 @@ namespace KillerShell.Cli
 
         private static void PrintUsage()
         {
-            Console.WriteLine("killershell search <folder> --name <pattern> [--content <text>] [--limit 1..500] [--csv <new file>] [--html <new file>]");
-            Console.WriteLine("killershell search <folder> --content <text> [--limit 1..500] [--csv <new file>] [--html <new file>]");
+            Console.WriteLine("killershell search <folder> --name <pattern> [--content <text>] [--limit 1..500] [--max-seconds 1..3600] [--csv <new file>] [--html <new file>]");
+            Console.WriteLine("killershell search <folder> --content <text> [--limit 1..500] [--max-seconds 1..3600] [--csv <new file>] [--html <new file>]");
             Console.WriteLine("killershell list <folder> [--limit 1..500]");
             Console.WriteLine("killershell info <path>");
             Console.WriteLine("killershell read <file> [--max-chars 1..65536]");
@@ -742,6 +754,7 @@ namespace KillerShell.Cli
             Console.WriteLine("Data commands print JSON; --help and --version print plain text. An optional --json after a command's options is accepted.");
             Console.WriteLine("--filter matches a process name or exact PID (with --detail also its path or command line), a service name or display name, or an event provider, ID or message text.");
             Console.WriteLine("--max-seconds stops a storage scan after that many seconds; the report then says \"truncated\":true.");
+            Console.WriteLine("For search, --max-seconds returns collected matches and says \"stoppedEarly\":true when time runs out.");
             Console.WriteLine("Export files (--csv, --html) must not exist yet; an existing file is refused with exit code 2.");
             Console.WriteLine("Exit codes: 0 succeeded (--help included), 1 the command failed, 2 bad or missing arguments.");
         }
