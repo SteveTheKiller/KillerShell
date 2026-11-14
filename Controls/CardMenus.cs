@@ -75,6 +75,30 @@ namespace KillerShell.Controls
             dock.Children.Insert(0, element);
         }
 
+        /// <summary>
+        /// A command for the top right of a card header: a glyph with the command and its shortcut
+        /// in the tooltip and the command as its name. A click closes the card, then runs it.
+        /// </summary>
+        internal static Button HeaderButton(ContextMenu card, int glyph, string commandKey, string? gesture, Action run)
+        {
+            var button = new Button { Content = ((char)glyph).ToString() };
+            button.SetResourceReference(FrameworkElement.StyleProperty, "CardHeaderButton");
+            button.SetResourceReference(AutomationProperties.NameProperty, commandKey);
+            var tip = new TextBlock();
+            var command = new Run();
+            command.SetResourceReference(Run.TextProperty, commandKey);
+            tip.Inlines.Add(command);
+            if (!string.IsNullOrEmpty(gesture)) tip.Inlines.Add(new Run("  (" + gesture + ")"));
+            button.ToolTip = tip;
+            button.Click += (_, e) =>
+            {
+                e.Handled = true;
+                card.IsOpen = false;
+                run();
+            };
+            return button;
+        }
+
         /// <summary>Fill a header slot, naming the slot itself so a screen reader hears it.</summary>
         internal static void SetHeader(MenuItem slot, FrameworkElement? icon, string title, string meta)
         {

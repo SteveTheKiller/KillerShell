@@ -21,6 +21,7 @@ namespace KillerShell.Terminal
         public event Action<TerminalMenuCommand>? MenuCommand;
 
         private ContextMenu? _menu;
+        private Button? _closeButton;
         private MenuItem? _cardHead;
         private Button? _copyButton;
         private MenuItem? _reloadProfileItem;
@@ -80,7 +81,14 @@ namespace KillerShell.Terminal
             {
                 var source = CardHeaderSource?.Invoke();
                 _cardHead.Visibility = source.HasValue ? Visibility.Visible : Visibility.Collapsed;
-                if (source is { } head) KillerShell.Controls.CardMenus.SetHeader(_cardHead, head.Icon, head.Title, head.Meta);
+                if (source is { } head)
+                {
+                    KillerShell.Controls.CardMenus.SetHeader(_cardHead, head.Icon, head.Title, head.Meta);
+                    // The header is rebuilt on every opening; the one Close button moves into it.
+                    if (_closeButton is { Parent: Panel old }) old.Children.Remove(_closeButton);
+                    if (_closeButton != null && _cardHead.Header is FrameworkElement header)
+                        KillerShell.Controls.CardMenus.AddTrailing(header, _closeButton);
+                }
             }
 
             // Copy is the one button whose availability changes: with no selection there is
@@ -148,9 +156,10 @@ namespace KillerShell.Terminal
             // follow is otherwise a copy of the path and a paste into the address bar.
             KillerShell.Controls.CardMenus.QuickButton(strip, m, 0xE8B7, "Str_Card_Folder", "Str_Term_OpenFolder", "Ctrl+Shift+T",
                 () => MenuCommand?.Invoke(TerminalMenuCommand.OpenFolder));
-            // These belong to the WINDOW - it owns the panes and the tab strip - so they are
-            // raised rather than carried out here. The control does not know it is in a tab.
-            KillerShell.Controls.CardMenus.QuickButton(strip, m, 0xE8BB, "Str_Card_Close", "Str_Term_Close", "Ctrl+W",
+            // Close belongs to the WINDOW - it owns the panes and the tab strip - so it is raised
+            // rather than carried out here; the control does not know it is in a tab. It sits at
+            // the top right of the header rather than in the row, which keeps the card narrow.
+            _closeButton = KillerShell.Controls.CardMenus.HeaderButton(m, 0xE8BB, "Str_Term_Close", "Ctrl+W",
                 () => MenuCommand?.Invoke(TerminalMenuCommand.CloseTab));
             // No separator under the strip: its own bottom rule is that line already.
             m.Items.Add(quick);
