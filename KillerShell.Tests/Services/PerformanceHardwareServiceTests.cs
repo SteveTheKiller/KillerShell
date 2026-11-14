@@ -15,6 +15,7 @@ namespace KillerShell.Tests.Services
             Assert.NotNull(info.Gpus);
             Assert.NotNull(info.NetAdapters);
             Assert.False(string.IsNullOrEmpty(info.Cpu));
+            Assert.DoesNotMatch(@"\(\d+C / \d+T\)$", info.Cpu);
             Assert.False(string.IsNullOrEmpty(info.Ram));
             Assert.False(string.IsNullOrEmpty(info.Gpu));
             Assert.False(string.IsNullOrEmpty(info.Network));

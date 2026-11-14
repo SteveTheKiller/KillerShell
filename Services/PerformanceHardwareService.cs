@@ -87,7 +87,7 @@ namespace KillerShell.Services
                         if (baseMhz == 0 && row["MaxClockSpeed"] is { } speed) baseMhz = Convert.ToInt32(speed);
                     }
                 }
-                if (names.Count > 0) cpu = string.Join(" + ", names) + $" ({cores}C / {threads}T)";
+                if (names.Count > 0) cpu = string.Join(" + ", names);
             }
             catch (Exception ex) when (ex is not OperationCanceledException) { }
 
