@@ -935,28 +935,27 @@ namespace KillerShell.Tools
         {
             if (_grid.SelectedItem is not EventLogEntryInfo entry) { e.Handled = true; return; }
 
-            var menu = new ContextMenu { PlacementTarget = _grid };
+            // The card: the source as its name, then level, event ID and time, the way a tech
+            // reads an event aloud. Its three commands are buttons, each with its shortcut.
+            var menu = KillerShell.Controls.CardMenus.Card();
+            menu.PlacementTarget = _grid;
+            var head = KillerShell.Controls.CardMenus.Slot();
+            head.Tag = "cardhead";
+            KillerShell.Controls.CardMenus.SetHeader(head, null, entry.Source,
+                string.Join(" · ", new[] { entry.Level, KillerShell.Shell.MainWindow.LocStatic("Str_Evt_DetailsId") + " " + entry.EventId, entry.TimeLabel }
+                    .Where(part => !string.IsNullOrWhiteSpace(part))));
+            menu.Items.Add(head);
 
-            MenuItem Item(string headerKey, string glyph, string gesture, RoutedEventHandler click)
-            {
-                var item = new MenuItem { InputGestureText = gesture };
-                item.SetResourceReference(HeaderedItemsControl.HeaderProperty, headerKey);
-                var icon = new Glyph { Text = glyph };
-                icon.SetResourceReference(FrameworkElement.StyleProperty, "MenuGlyph");
-                var iconBox = new Viewbox { Width = 14, Height = 14, Stretch = Stretch.Uniform, Child = icon };
-                item.Icon = iconBox;
-                item.Click += click;
-                menu.Items.Add(item);
-                return item;
-            }
-
-            // E8C8: MDL2's Copy, two stacked documents - the glyph every copy action in the app
-            // uses (the folder tree's Copy full path, the editor, the terminal, the Registry
-            // Editor, the Storage Analyzer). It was E71B, which is LINK - a chain.
-            Item("Str_Menu_EvtCopyMessage", ((char)0xE8C8).ToString(), "Ctrl+Shift+C",
-                 (_, _) => CopyToClipboard(entry.Message, "Str_Evt_MessageCopied"));
-            Item("Str_Menu_EvtCopyDetails", ((char)0xE8C8).ToString(), "Ctrl+C",
-                 (_, _) => CopyToClipboard(FormatDetails(entry), "Str_Evt_DetailsCopied"));
+            var quick = KillerShell.Controls.CardMenus.QuickStrip(out var strip);
+            quick.Tag = "cardquick";
+            // E8C8: MDL2's Copy, the glyph every copy action in the app uses. E946: information,
+            // for the details dialog Enter and a double-click open.
+            KillerShell.Controls.CardMenus.QuickButton(strip, menu, 0xE8C8, "Str_Menu_EvtCopyMessage", "Str_Menu_EvtCopyMessage", "Ctrl+Shift+C",
+                () => CopyToClipboard(entry.Message, "Str_Evt_MessageCopied"));
+            KillerShell.Controls.CardMenus.QuickButton(strip, menu, 0xE8C8, "Str_Menu_EvtCopyDetails", "Str_Menu_EvtCopyDetails", "Ctrl+C",
+                () => CopyToClipboard(FormatDetails(entry), "Str_Evt_DetailsCopied"));
+            KillerShell.Controls.CardMenus.QuickButton(strip, menu, 0xE946, "Str_Evt_DetailsTitle", "Str_Evt_DetailsTitle", "Enter", OpenDetails);
+            menu.Items.Add(quick);
 
             menu.IsOpen = true;
             e.Handled = true;

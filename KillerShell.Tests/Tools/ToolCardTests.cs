@@ -22,6 +22,40 @@ public sealed class ToolCardTests
     [Fact]
     public Task ProcessAndServiceMenusAreCards()
         => RuntimeComponentProcess.Run(nameof(ProcessServiceCardScenario));
+
+    [Fact]
+    public Task EventMenuIsACard()
+        => RuntimeComponentProcess.Run(nameof(EventCardScenario));
+}
+
+public static class EventCardScenario
+{
+    public static void Run()
+    {
+        using var fixture = new ShellWindowFixture();
+        MainWindow.DemoMode = true;
+        var window = fixture.Window;
+        var control = new EventViewerControl();
+        window.Pane.Tabs.Add(new SearchTab("Events") { Events = control });
+        MenuBarTabBlendScenario.SelectTab(window.Pane, window.Pane.Tabs.Last());
+        try
+        {
+            var grid = MenuBarTabBlendScenario.Descendants<DataGrid>(control).Single();
+            ShellWindowFixture.PumpUntil(() => grid.Items.Count > 0);
+            grid.SelectedIndex = 0;
+            var entry = (EventLogEntryInfo)grid.SelectedItem;
+            var args = (ContextMenuEventArgs)typeof(ContextMenuEventArgs).GetConstructor(
+                BindingFlags.NonPublic | BindingFlags.Instance, null, [typeof(object), typeof(bool)], null)!.Invoke([grid, true]);
+            args.RoutedEvent = FrameworkElement.ContextMenuOpeningEvent;
+            grid.RaiseEvent(args);
+            var card = ToolCardProbe.OpenCard();
+            ToolCardProbe.AssertCard(card, entry.Source,
+                ToolCardProbe.L("Str_Menu_EvtCopyMessage"), ToolCardProbe.L("Str_Menu_EvtCopyDetails"),
+                ToolCardProbe.L("Str_Evt_DetailsTitle"));
+            card.IsOpen = false;
+        }
+        finally { control.Shutdown(); MainWindow.DemoMode = false; }
+    }
 }
 
 public static class ToolCardProbe
