@@ -31,6 +31,21 @@ namespace KillerShell.Services
             return string.Join(";", entries);
         }
 
+        /// <summary>
+        /// The PowerShell statement the terminal startup command runs inside the session: the
+        /// bundled root goes first, and any copy already on the path is removed, so running it
+        /// again (after $PROFILE, or in a nested pwsh that inherited the path) never adds a
+        /// second entry. It stays needed because PowerShell 7 inserts its own folders ahead of
+        /// the inherited path at startup.
+        /// </summary>
+        internal static string PowerShellSnippet(string root)
+        {
+            string quoted = root.Replace("'", "''");
+            return "$ksRoot = '" + quoted + "'; " +
+                   "$env:PSModulePath = (@($ksRoot) + @($env:PSModulePath -split ';' | " +
+                   "Where-Object { $_.Trim() -and $_.Trim().TrimEnd('\\', '/') -ine $ksRoot.TrimEnd('\\', '/') })) -join ';'; ";
+        }
+
         private static string Normalize(string path) => path.Trim().TrimEnd('\\', '/');
     }
 }

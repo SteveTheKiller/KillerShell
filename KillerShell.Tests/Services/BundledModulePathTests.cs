@@ -32,4 +32,28 @@ public sealed class BundledModulePathTests
     [Fact]
     public void EmptyEntriesAreDropped()
         => Assert.Equal(Root + ";" + User + ";" + System, BundledModulePath.WithBundledFirst(";" + User + ";;" + System + ";", Root));
+
+    // The terminal startup command runs once per shell, after $PROFILE and again in every nested
+    // pwsh, so it must leave exactly one bundled entry however many times it runs.
+    [Theory]
+    [InlineData("powershell.exe")]
+    [InlineData("pwsh.exe")]
+    public void RunningTheStartupSnippetTwiceLeavesOneBundledEntry(string host)
+    {
+        string snippet = BundledModulePath.PowerShellSnippet(Root);
+        string command = "$env:PSModulePath = '" + User + ";" + System + "'; " + snippet + snippet +
+            "($env:PSModulePath -split ';') -join '|'";
+        var start = new global::System.Diagnostics.ProcessStartInfo
+        {
+            FileName = host,
+            Arguments = "-NoProfile -Command \"" + command + "\"",
+            UseShellExecute = false,
+            CreateNoWindow = true,
+            RedirectStandardOutput = true,
+        };
+        using var process = global::System.Diagnostics.Process.Start(start)!;
+        string output = process.StandardOutput.ReadToEnd().Trim();
+        process.WaitForExit();
+        Assert.Equal(Root + "|" + User + "|" + System, output);
+    }
 }

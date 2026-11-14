@@ -119,7 +119,9 @@ namespace KillerShell.Shell
         {
             // PowerShell 7 inserts its standard module folders ahead of an inherited path.
             // Restore the bundled root inside the session, even when the prompt is disabled.
-            string modules = "$env:PSModulePath = '" + ModulesRoot().Replace("'", "''") + ";' + $env:PSModulePath; ";
+            // The entry is moved to the front, never added again: this runs after $PROFILE and in
+            // every nested pwsh that inherited the path.
+            string modules = Services.BundledModulePath.PowerShellSnippet(ModulesRoot());
             string modulesOnly = " -NoExit -Command \"" + modules + "\"";
 
             // Set KS_PROMPT=0 to opt out for good. Checked here rather than in the script so
