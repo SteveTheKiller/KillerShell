@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
@@ -19,6 +20,16 @@ namespace KillerShell.Controls
         {
             var menu = new ContextMenu();
             menu.SetResourceReference(FrameworkElement.StyleProperty, "CardMenu");
+            // A quick strip that ends the card drops its bottom rule: the card's own edge is right
+            // under it, and two lines there read as a stray divider. Checked on every opening,
+            // since a card can gain or hide rows between openings.
+            menu.Opened += (_, _) =>
+            {
+                var last = menu.Items.OfType<FrameworkElement>().LastOrDefault(item => item.Visibility == Visibility.Visible);
+                foreach (var slot in menu.Items.OfType<MenuItem>())
+                    if (slot.Tag as string == "cardquick" && slot.Header is Border rule)
+                        rule.BorderThickness = new Thickness(0, 1, 0, ReferenceEquals(slot, last) ? 0 : 1);
+            };
             return menu;
         }
 

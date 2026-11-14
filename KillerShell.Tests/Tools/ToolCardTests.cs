@@ -135,6 +135,10 @@ public static class RegistryCardScenario
             ToolCardProbe.AssertCard(card, "Theme",
                 ToolCardProbe.L("Str_Menu_RegModify"), ToolCardProbe.L("Str_Menu_RegRename"),
                 ToolCardProbe.L("Str_Menu_RegDelete"), ToolCardProbe.L("Str_Menu_RegCopyName"));
+            // The value card ends on its buttons, so the strip's bottom rule would only double
+            // the card's own edge. The key card has rows under its strip and keeps the rule.
+            var valueStrip = (Border)card.Items.OfType<MenuItem>().Single(item => item.Tag as string == "cardquick").Header;
+            Assert.Equal(0, valueStrip.BorderThickness.Bottom);
             card.IsOpen = false;
         }
         finally { control.Shutdown(); MainWindow.DemoMode = false; }
