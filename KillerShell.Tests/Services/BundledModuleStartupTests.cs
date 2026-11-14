@@ -80,8 +80,8 @@ public sealed class BundledModuleStartupTests
                 string errors = await stderr;
                 Assert.True(exited, "PowerShell module startup timed out with KS_PROMPT=" + prompt + ".");
                 Assert.True(process.ExitCode == 0, "KS_PROMPT=" + prompt + Environment.NewLine + output + Environment.NewLine + errors);
-                string line = Assert.Single(output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
-                    .Where(value => value.StartsWith("KS_MODULE_BASE=", StringComparison.Ordinal)));
+                string line = Assert.Single(output.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries),
+                    value => value.StartsWith("KS_MODULE_BASE=", StringComparison.Ordinal));
                 results.Add((prompt, line.Substring("KS_MODULE_BASE=".Length)));
             }
 

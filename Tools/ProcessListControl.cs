@@ -311,6 +311,9 @@ namespace KillerShell.Tools
             grid.PreviewMouseRightButtonUp += (_, e) => Services.ColumnVisibilityMenu.HandleHeaderRightClick(
                 e, _mode == ViewMode.Processes ? "Processes" : "Services",
                 _mode == ViewMode.Processes ? _processColEntries : _serviceColEntries);
+            Services.ColumnVisibilityMenu.AttachKeyboard(grid,
+                () => _mode == ViewMode.Processes ? "Processes" : "Services",
+                () => _mode == ViewMode.Processes ? _processColEntries : _serviceColEntries);
 
             grid.ContextMenuOpening += Grid_ContextMenuOpening;
             grid.MouseDoubleClick   += Grid_MouseDoubleClick;

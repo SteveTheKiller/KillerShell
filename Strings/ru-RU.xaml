@@ -248,6 +248,7 @@
     <sys:String x:Key="Str_Status_ElevationDeclined">Повышение прав отклонено</sys:String>
     <sys:String x:Key="Str_Status_FileOnly">Эта команда работает только с файлами, не с папками</sys:String>
     <sys:String x:Key="Str_Status_ShellFailed">Windows отказалась это открыть</sys:String>
+    <sys:String x:Key="Str_Status_ShellSelectionNeedsOneFolder">Для меню Windows выберите элементы из одной папки</sys:String>
     <sys:String x:Key="Str_Status_Excluded">{0} исключается - запустите поиск снова, чтобы применить</sys:String>
     <sys:String x:Key="Str_Status_AlreadyExcluded">{0} уже исключён</sys:String>
     <sys:String x:Key="Str_Menu_Minimize">Свернуть</sys:String>
@@ -403,7 +404,7 @@
     <sys:String x:Key="Str_Term_Copy">Копировать</sys:String>
     <sys:String x:Key="Str_Term_Paste">Вставить</sys:String>
     <sys:String x:Key="Str_Term_SelectAll">Выделить всё</sys:String>
-    <sys:String x:Key="Str_Term_Clear">Очистить</sys:String>
+    <sys:String x:Key="Str_Term_Clear">Очистить историю прокрутки</sys:String>
     <sys:String x:Key="Str_Term_NewShell">Новый терминал</sys:String>
     <sys:String x:Key="Str_Term_OpenFolder">Открыть здесь папку</sys:String>
     <sys:String x:Key="Str_Term_Fonts">Шрифты...</sys:String>
@@ -467,7 +468,7 @@
     <sys:String x:Key="Str_TT_TermNew">Новый терминал  (F8)</sys:String>
     <sys:String x:Key="Str_TT_TermAdmin">Новый терминал от имени администратора  (Ctrl+F8)</sys:String>
     <sys:String x:Key="Str_TT_TermFolder">Открыть эту папку во вкладке  (Ctrl+Shift+T)</sys:String>
-    <sys:String x:Key="Str_TT_TermClear">Очистить  (Ctrl+Shift+L)</sys:String>
+    <sys:String x:Key="Str_TT_TermClear">Очистить историю прокрутки (Ctrl+Shift+L)</sys:String>
     <sys:String x:Key="Str_TT_TermFonts">Шрифты...  (Ctrl+Shift+,)</sys:String>
     <sys:String x:Key="Str_TT_EdPath">Нажмите, чтобы изменить - введите путь и нажмите Enter, чтобы переименовать или переместить файл. Введите существующий файл, чтобы открыть его.</sys:String>
     <sys:String x:Key="Str_Ed_WrapOn">Перенос по словам включён.</sys:String>
@@ -1074,4 +1075,9 @@
     <sys:String x:Key="Str_Card_Edit">Изменить</sys:String>
     <sys:String x:Key="Str_Card_Rename">Пере&#xAD;име&#xAD;новать</sys:String>
     <sys:String x:Key="Str_Card_SelectAll">Выделить всё</sys:String>
+    <sys:String x:Key="Str_Ks_ContextMenu">открыть контекстное меню</sys:String>
+    <sys:String x:Key="Str_TT_RemoveSearchTerm">Удалить поисковый запрос</sys:String>
+    <sys:String x:Key="Str_TT_RemoveSearchFilter">Удалить фильтр</sys:String>
+    <sys:String x:Key="Str_A11y_ColumnHeadings">Заголовки столбцов</sys:String>
+    <sys:String x:Key="Str_A11y_ColumnHeadingsHelp">Нажмите Menu (Apps), чтобы выбрать видимые столбцы.</sys:String>
 </ResourceDictionary>

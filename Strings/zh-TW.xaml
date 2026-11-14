@@ -288,7 +288,7 @@
     <sys:String x:Key="Str_Term_Copy">複製</sys:String>
     <sys:String x:Key="Str_Term_Paste">貼上</sys:String>
     <sys:String x:Key="Str_Term_SelectAll">全選</sys:String>
-    <sys:String x:Key="Str_Term_Clear">清除畫面</sys:String>
+    <sys:String x:Key="Str_Term_Clear">清除回捲記錄</sys:String>
     <sys:String x:Key="Str_Term_NewShell">新增終端機</sys:String>
     <sys:String x:Key="Str_Term_OpenFolder">開啟此資料夾</sys:String>
     <sys:String x:Key="Str_Term_Fonts">字型...</sys:String>
@@ -353,6 +353,7 @@
     <sys:String x:Key="Str_Status_ElevationDeclined">已拒絕提升權限</sys:String>
     <sys:String x:Key="Str_Status_FileOnly">這個命令只能用於檔案，不能用於資料夾</sys:String>
     <sys:String x:Key="Str_Status_ShellFailed">Windows 未能開啟它</sys:String>
+    <sys:String x:Key="Str_Status_ShellSelectionNeedsOneFolder">請從同一資料夾選取項目以開啟 Windows 功能表</sys:String>
     <sys:String x:Key="Str_Status_Excluded">正在排除 {0} - 重新搜尋後生效</sys:String>
     <sys:String x:Key="Str_Status_AlreadyExcluded">{0} 已被排除</sys:String>
 
@@ -477,7 +478,7 @@
     <sys:String x:Key="Str_TT_TermNew">新增終端機  (F8)</sys:String>
     <sys:String x:Key="Str_TT_TermAdmin">以系統管理員身分新增終端機  (Ctrl+F8)</sys:String>
     <sys:String x:Key="Str_TT_TermFolder">在分頁中開啟此資料夾  (Ctrl+Shift+T)</sys:String>
-    <sys:String x:Key="Str_TT_TermClear">清除  (Ctrl+Shift+L)</sys:String>
+    <sys:String x:Key="Str_TT_TermClear">清除回捲記錄 (Ctrl+Shift+L)</sys:String>
     <sys:String x:Key="Str_TT_TermFonts">字型...  (Ctrl+Shift+,)</sys:String>
 
     <sys:String x:Key="Str_Ed_WrapOn">自動換行已開啟。</sys:String>
@@ -1060,4 +1061,9 @@
     <sys:String x:Key="Str_Card_Edit">編輯</sys:String>
     <sys:String x:Key="Str_Card_Rename">重新命名</sys:String>
     <sys:String x:Key="Str_Card_SelectAll">全選</sys:String>
+    <sys:String x:Key="Str_Ks_ContextMenu">開啟快顯功能表</sys:String>
+    <sys:String x:Key="Str_TT_RemoveSearchTerm">移除搜尋詞</sys:String>
+    <sys:String x:Key="Str_TT_RemoveSearchFilter">移除篩選器</sys:String>
+    <sys:String x:Key="Str_A11y_ColumnHeadings">欄位標題</sys:String>
+    <sys:String x:Key="Str_A11y_ColumnHeadingsHelp">按 Menu (Apps) 選擇要顯示的欄位。</sys:String>
 </ResourceDictionary>

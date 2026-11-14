@@ -14,6 +14,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ### Fixed
 
+- Clear scrollback preserves pending terminal input and running programs.
 - Killer script commands restore the terminal's execution policy after the script finishes or fails.
 - A favorite on a share that is offline or a drive that is unplugged stays in its place in the favorites drawer, dimmed, with a tooltip that says it can't be reached, and it lights up again once the folder is back the next time the drawer opens. Before, it disappeared at launch and the next save deleted it for good, and upgrading from a version before 1.5.0 triggered that save on the first launch. KillerShell no longer waits on such a share before its window opens; the drawer checks its favorites in the background.
 - Paste refuses to copy or move a folder into itself or one of its own subfolders, the same way drag and drop already did.
@@ -27,14 +28,16 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Clicking or pressing a key while KillerShell fades out after Exit no longer leaves it hidden in the tray, and a window hidden partway through that fade comes back visible.
 - Opening the recents menu no longer freezes the window while a folder on a dead share times out. Every folder is checked at once, and one that doesn't answer within a second is left out of that opening.
 - Extract All reads a zip, tar or tgz twice in total instead of once per file, so a large archive extracts in a steady run instead of looking hung. Names that escape the destination or collide on Windows are still refused before anything is written, and a name stored with a doubled slash extracts instead of refusing the archive.
+- File cards open archive contents correctly and copy folder names. Windows menus refuse incomplete selections and support drive roots.
 - Killer script commands such as `amort` run with their own defaults when typed with no options, and every option reaches the script as typed, so `-RetainDays 30` keeps its name and `amort -D` means the script's `-DryRun` instead of PowerShell's `-Debug`. Each command now does exactly what the website's one-liner does: it downloads the latest script to `%TEMP%` and runs it. The copy of the commands that ships with KillerShell loads ahead of one installed from PSGallery, and `peek` is available. When the download fails, the command stops instead of running an older copy left in `%TEMP%`, and a computer where Group Policy sets the execution policy shows no error. Two terminal tabs running the same command at once each run their own copy.
 - About opens at once instead of waiting on the signature check, which can stall for many seconds on a network that drops revocation traffic; the publisher and thumbprint fill in when it finishes.
 - Typing the name or path of another file in the text editor's path box and pressing Enter opens that file in the editor instead of refusing it as already existing, and a bare name such as `.env` means the file beside the open document. A blank untitled document gives its tab to the file; one with text in it keeps its tab and the file opens in a new one.
-- A log or other file that another program still has open for writing, such as a running service's log, opens in the text editor instead of failing because the file is in use.
+- Logs being written by another program open in the editor. An unfinished UTF-8 character no longer garbles the text, and unchanged saves preserve every byte.
 - With Windows set to use Unicode UTF-8 for worldwide language support, a file saved in the older Windows encoding for your region, such as Western European, opens in the text editor instead of being refused as damaged, and saving it as ANSI writes that encoding instead of UTF-8.
 - Switching to one pane and then quickly to two panes no longer leaves the second pane missing while the window acts as if it were open.
 - Closing the last tab in the first pane while two panes are open folds the window back to one pane holding the second pane's tabs, the same as dragging that tab out does, instead of opening a new folder tab in its place.
 - A relative address typed in the address bar, such as `..`, `Downloads` or `\Windows`, opens relative to the folder the tab is showing, and `D:` opens that drive's root, instead of resolving against the folder KillerShell was started from.
+- Search here uses the chosen folder, and keyboard-opened tree menus use the focused item.
 - Pulling a USB drive or losing a share while browsing it moves the pane to This PC instead of leaving a listing of a place that is gone.
 - Opening a file that is already open in the hidden second pane switches to that tab instead of opening the file a second time.
 - Toggling hidden folders in the tree twice in quick succession no longer leaves tree clicks unable to navigate.
@@ -70,11 +73,14 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - A terminal tab closed right after it opens reports its shell's real exit code instead of a made-up 0.
 - The terminal prompt shows the git branch in a folder that became a repository after the prompt first visited it, such as after `git init` or a clone.
 - KillerPivot stores a key typed in capitals as lowercase, refuses a blank `-Name` before writing anything, keeps one `tenants.json.pivot-backup` instead of adding a new backup file on every save, and clears the per-save backups older versions left.
+- Context menus and column choices support the Menu key, and accessibility toggles update their actual state.
 - CPU card titles omit the core and thread counts already shown in their details.
+- Tab overflow preserves literal underscores in names.
 
 ### Changed
 
 - Right-clicking a file or folder opens a card instead of a long list. It names what you clicked with its icon, type, size and date, puts Open, Edit, Cut, Copy, Rename and Delete in a row of buttons, and copies the path, name, folder, matched lines or SHA-256 from one row of chips. The rarer folder commands sit under Folder options, and every shortcut works as before. A selection shows how many items it holds, and empty space names the folder with its full path. Right-clicking a tab opens a card too, with New tab, Move to the other pane, Move to a new window and Close. A terminal's card puts Copy, Paste, Select all, Clear, Open folder and Close in its row of buttons, a folder in the tree or in the saved places gets New tab, Explorer, Terminal, Search and Copy path, and an open document gets Undo, Redo, Cut, Copy, Paste and Save. Button captions too long for their space in a language break at a syllable instead of being cut off.
+- KillerSearch has a roomier form, aligned controls, a footer that adapts to narrow windows, and help that follows Search and Stop.
 - Buttons are flat, without the drop shadow under them.
 - The pane layout is three buttons in the footer, for one pane, side-by-side panes and stacked panes, with the current one lit, instead of a rail button that cycled through them. F10, Ctrl+Alt+Left and Ctrl+Alt+Up work as before.
 - The KillerScripts module no longer keeps its own copy of the scripts, so `Update-KillerScripts` and the `-Offline` switch of `Invoke-KillerScript` are gone; every command downloads the latest script when you run it. The module is now version 1.1.0, and the `%LOCALAPPDATA%\KillerScripts` folder earlier versions filled is no longer used and can be deleted.

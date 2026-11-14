@@ -144,18 +144,16 @@ namespace KillerShell.Shell
             => OpenFolderTabLeft(_active.LaunchProfile?.BrowsePath(_active.CurrentFolder) ?? _active.CurrentFolder);
 
         /// <summary>
-        /// Clear the screen by asking the SHELL to, not by wiping our own buffer.
+        /// Clear scrollback without sending input to the running program.
         /// </summary>
         /// <remarks>
-        /// Same reasoning as the menu row: emptying the buffer ourselves would leave the shell
-        /// believing it had already drawn a prompt, so the next keystroke would paint over
-        /// nothing. cls means the same thing in pwsh, powershell and cmd.
+        /// Keep the visible screen and pending input, matching the card and keyboard shortcut.
         /// </remarks>
         internal void TermClear_Click(object sender, RoutedEventArgs e)
         {
             var term = _active.Term;
             if (term == null) return;
-            term.Send(_active.LaunchProfile?.ClearCommand ?? "cls\r");
+            term.ClearScrollback();
             term.Focus();
         }
 

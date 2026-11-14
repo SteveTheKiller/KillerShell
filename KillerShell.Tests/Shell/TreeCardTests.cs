@@ -1,9 +1,9 @@
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using KillerShell.Shell;
 using Xunit;
@@ -27,7 +27,9 @@ public static class TreeCardScenario
         var window = fixture.Window;
         var tree = (TreeView)window.FindName("FolderTree");
         window.UpdateLayout();
-        if (!tree.IsVisible) window.ToggleTreePanel();
+        var panel = (FrameworkElement)window.FindName("TreePanel");
+        if (panel.ActualWidth < 100) window.ToggleTreePanel();
+        ShellWindowFixture.PumpUntil(() => panel.ActualWidth >= 160);
         TreeViewItem? container = null;
         ShellWindowFixture.PumpUntil(() =>
         {
@@ -39,13 +41,14 @@ public static class TreeCardScenario
         }, diagnostic: () => "tree visible=" + tree.IsVisible + "; items=" + tree.Items.Count);
         var node = (FolderNode)container!.DataContext;
 
-        // The same opening the tree gets from a right-click on that row.
-        var ctor = typeof(ContextMenuEventArgs).GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic)
-            .First(c => c.GetParameters().Select(p => p.ParameterType).SequenceEqual(new[] { typeof(object), typeof(bool) }));
-        var args = (ContextMenuEventArgs)ctor.Invoke([container, true]);
-        args.RoutedEvent = FrameworkElement.ContextMenuOpeningEvent;
-        container.RaiseEvent(args);
-        Assert.False(args.Handled);
+        container.IsSelected = true;
+        container.Focus();
+        InputManager.Current.ProcessInput(new KeyEventArgs(Keyboard.PrimaryDevice,
+            PresentationSource.FromVisual(container), 0, Key.Apps)
+        {
+            RoutedEvent = Keyboard.KeyUpEvent, Source = container
+        });
+        ShellWindowFixture.PumpUntil(() => tree.ContextMenu.IsOpen);
 
         var card = tree.ContextMenu!;
         var head = Assert.Single(card.Items.OfType<MenuItem>(), item => item.Tag as string == "cardhead");

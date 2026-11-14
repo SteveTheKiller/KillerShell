@@ -365,8 +365,17 @@ namespace KillerShell.Shell
         }
 
         // ── Open ─────────────────────────────────────────────────
+        internal Func<string, Services.ShellOpenResult> OpenAssociatedPath { get; set; }
+            = path => Services.ShellOpen.Open(path);
+
         internal void MenuOpen_Click(object sender, RoutedEventArgs e)
         {
+            if (_active.IsBrowsing && !DemoMode)
+            {
+                var entry = MenuRows().FirstOrDefault();
+                if (entry != null) ActivateEntry(entry);
+                return;
+            }
             if (DemoMode)
             {
                 var row = MenuRows().FirstOrDefault();
@@ -385,7 +394,7 @@ namespace KillerShell.Shell
                 return;
             }
 
-            ReportShellOpen(_active, Services.ShellOpen.Open(p!));
+            ReportShellOpen(_active, OpenAssociatedPath(p!));
         }
 
         /// <summary>Puts a declined or refused open on the tab's status line.</summary>
@@ -627,15 +636,27 @@ namespace KillerShell.Shell
         }
 
         // ── The real Windows menu ────────────────────────────────
+        internal Func<Window, string[], bool> ShowWindowsMenu { get; set; } = Services.ShellContextMenu.Show;
+
         internal void MenuShell_Click(object sender, RoutedEventArgs e)
         {
-            var files = MenuFiles().Where(Exists).ToArray();
+            var files = MenuFiles().ToArray();
             if (files.Length == 0) return;
+            if (!Services.ShellContextMenu.SupportsSelection(files))
+            {
+                SetTabStatusKey(_active, "Str_Status_ShellSelectionNeedsOneFolder");
+                return;
+            }
+            if (files.Any(path => !Exists(path)))
+            {
+                SetTabStatusKey(_active, "Str_Status_ShellFailed");
+                return;
+            }
 
             // TrackPopupMenuEx needs the mouse, and the WPF menu still has it at Click time.
             AfterMenuCloses(() =>
             {
-                if (!Services.ShellContextMenu.Show(this, files))
+                if (!ShowWindowsMenu(this, files))
                     SetTabStatusKey(_active, "Str_Status_ShellFailed");
             });
         }

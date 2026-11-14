@@ -444,8 +444,9 @@ namespace KillerShell.Shell
 
         private void FolderTree_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
-            _treeMenuNode = NodeUnder(Mouse.DirectlyOver as DependencyObject)
-                         ?? NodeUnder(e.OriginalSource as DependencyObject);
+            _treeMenuNode = e.CursorLeft < 0 && e.CursorTop < 0
+                ? NodeUnder(Keyboard.FocusedElement as DependencyObject) ?? FolderTree.SelectedItem as FolderNode
+                : NodeUnder(Mouse.DirectlyOver as DependencyObject) ?? NodeUnder(e.OriginalSource as DependencyObject);
 
             // Right-clicking a node selects it first, so the menu and the tree agree about what
             // is being acted on. Guarded, or this would navigate on every right-click.
@@ -548,10 +549,20 @@ namespace KillerShell.Shell
 
         private void SearchInFolder(string path)
         {
+            _titleSearchScope = 0;
+            if (!CanShowListing(_active))
+            {
+                CaptureTab(_active);
+                CreateSearchFromTab(_active, path);
+            }
+            _active.PipeFiles = null;
+            _active.PipeLabel = string.Empty;
+            _active.PipeArgs = null;
             Pane.RootPathBox.Text    = path;
             Pane.ScopePathLabel.Text = path;
             _active.RootPath    = path;
             if (!_searchOpen) ToggleSearchPanel();   // SearchPanel.cs - nothing to type into otherwise
+            else ApplySearchPanel(false);
         }
 
         private void TreeTerminal_Click(object sender, RoutedEventArgs e)

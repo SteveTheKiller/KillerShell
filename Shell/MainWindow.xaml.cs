@@ -1753,7 +1753,7 @@ namespace KillerShell.Shell
         private static readonly string[] WarnKeys =
         [
             "Str_Status_FileOnly", "Str_Status_ClipboardBusy", "Str_Status_ElevationDeclined",
-            "Str_Status_SearchPartial",
+            "Str_Status_SearchPartial", "Str_Status_ShellSelectionNeedsOneFolder",
         ];
 
         private static readonly string[] ErrorKeys =

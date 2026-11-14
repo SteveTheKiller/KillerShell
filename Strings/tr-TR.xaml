@@ -288,7 +288,7 @@
     <sys:String x:Key="Str_Term_Copy">Kopyala</sys:String>
     <sys:String x:Key="Str_Term_Paste">Yapıştır</sys:String>
     <sys:String x:Key="Str_Term_SelectAll">Tümünü seç</sys:String>
-    <sys:String x:Key="Str_Term_Clear">Temizle</sys:String>
+    <sys:String x:Key="Str_Term_Clear">Kaydırma geçmişini temizle</sys:String>
     <sys:String x:Key="Str_Term_NewShell">Yeni terminal</sys:String>
     <sys:String x:Key="Str_Term_OpenFolder">Bu klasörü aç</sys:String>
     <sys:String x:Key="Str_Term_Fonts">Yazı tipleri...</sys:String>
@@ -353,6 +353,7 @@
     <sys:String x:Key="Str_Status_ElevationDeclined">Yükseltme reddedildi</sys:String>
     <sys:String x:Key="Str_Status_FileOnly">Bu komut yalnızca dosyalarda çalışır, klasörlerde değil</sys:String>
     <sys:String x:Key="Str_Status_ShellFailed">Windows bunu açmadı</sys:String>
+    <sys:String x:Key="Str_Status_ShellSelectionNeedsOneFolder">Windows menüsü için aynı klasördeki öğeleri seçin</sys:String>
     <sys:String x:Key="Str_Status_Excluded">{0} hariç tutuluyor - uygulamak için yeniden arayın</sys:String>
     <sys:String x:Key="Str_Status_AlreadyExcluded">{0} zaten hariç tutuluyor</sys:String>
 
@@ -477,7 +478,7 @@
     <sys:String x:Key="Str_TT_TermNew">Yeni terminal  (F8)</sys:String>
     <sys:String x:Key="Str_TT_TermAdmin">Yönetici olarak yeni terminal  (Ctrl+F8)</sys:String>
     <sys:String x:Key="Str_TT_TermFolder">Bu klasörü bir sekmede aç  (Ctrl+Shift+T)</sys:String>
-    <sys:String x:Key="Str_TT_TermClear">Temizle  (Ctrl+Shift+L)</sys:String>
+    <sys:String x:Key="Str_TT_TermClear">Kaydırma geçmişini temizle (Ctrl+Shift+L)</sys:String>
     <sys:String x:Key="Str_TT_TermFonts">Yazı tipleri...  (Ctrl+Shift+,)</sys:String>
 
     <sys:String x:Key="Str_Ed_WrapOn">Sözcük kaydırma açık.</sys:String>
@@ -1063,4 +1064,9 @@
     <sys:String x:Key="Str_Card_Edit">Düzenle</sys:String>
     <sys:String x:Key="Str_Card_Rename">Yeniden adlandır</sys:String>
     <sys:String x:Key="Str_Card_SelectAll">Tümünü seç</sys:String>
+    <sys:String x:Key="Str_Ks_ContextMenu">bağlam menüsünü aç</sys:String>
+    <sys:String x:Key="Str_TT_RemoveSearchTerm">Arama terimini kaldır</sys:String>
+    <sys:String x:Key="Str_TT_RemoveSearchFilter">Filtreyi kaldır</sys:String>
+    <sys:String x:Key="Str_A11y_ColumnHeadings">Sütun başlıkları</sys:String>
+    <sys:String x:Key="Str_A11y_ColumnHeadingsHelp">Görünür sütunları seçmek için Menu (Apps) tuşuna basın.</sys:String>
 </ResourceDictionary>

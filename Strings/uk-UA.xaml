@@ -256,6 +256,7 @@
     <sys:String x:Key="Str_Status_ElevationDeclined">Підвищення прав відхилено</sys:String>
     <sys:String x:Key="Str_Status_FileOnly">Ця команда працює лише з файлами, а не з папками</sys:String>
     <sys:String x:Key="Str_Status_ShellFailed">Windows не змогла це відкрити</sys:String>
+    <sys:String x:Key="Str_Status_ShellSelectionNeedsOneFolder">Для меню Windows виберіть елементи з однієї папки</sys:String>
     <sys:String x:Key="Str_Status_Excluded">Виключення {0} - повторіть пошук, щоб застосувати</sys:String>
     <sys:String x:Key="Str_Status_AlreadyExcluded">{0} уже виключено</sys:String>
     <sys:String x:Key="Str_Menu_Minimize">Згорнути</sys:String>
@@ -419,7 +420,7 @@
     <sys:String x:Key="Str_Term_Copy">Копіювати</sys:String>
     <sys:String x:Key="Str_Term_Paste">Вставити</sys:String>
     <sys:String x:Key="Str_Term_SelectAll">Вибрати все</sys:String>
-    <sys:String x:Key="Str_Term_Clear">Очистити</sys:String>
+    <sys:String x:Key="Str_Term_Clear">Очистити історію прокручування</sys:String>
     <sys:String x:Key="Str_Term_NewShell">Новий термінал</sys:String>
     <sys:String x:Key="Str_Term_OpenFolder">Відкрити папку тут</sys:String>
     <sys:String x:Key="Str_Term_Fonts">Шрифти...</sys:String>
@@ -483,7 +484,7 @@
     <sys:String x:Key="Str_TT_TermNew">Новий термінал  (F8)</sys:String>
     <sys:String x:Key="Str_TT_TermAdmin">Новий термінал від імені адміністратора  (Ctrl+F8)</sys:String>
     <sys:String x:Key="Str_TT_TermFolder">Відкрити цю папку у вкладці  (Ctrl+Shift+T)</sys:String>
-    <sys:String x:Key="Str_TT_TermClear">Очистити  (Ctrl+Shift+L)</sys:String>
+    <sys:String x:Key="Str_TT_TermClear">Очистити історію прокручування (Ctrl+Shift+L)</sys:String>
     <sys:String x:Key="Str_TT_TermFonts">Шрифти...  (Ctrl+Shift+,)</sys:String>
     <sys:String x:Key="Str_TT_EdPath">Клацніть, щоб редагувати - введіть шлях і натисніть Enter, щоб перейменувати/перемістити файл. Введіть наявний файл, щоб відкрити його.</sys:String>
     <sys:String x:Key="Str_Ed_WrapOn">Перенесення слів увімкнено.</sys:String>
@@ -1108,4 +1109,9 @@
     <sys:String x:Key="Str_Card_Edit">Реда&#xAD;гувати</sys:String>
     <sys:String x:Key="Str_Card_Rename">Пере&#xAD;йме&#xAD;нувати</sys:String>
     <sys:String x:Key="Str_Card_SelectAll">Вибрати все</sys:String>
+    <sys:String x:Key="Str_Ks_ContextMenu">відкрити контекстне меню</sys:String>
+    <sys:String x:Key="Str_TT_RemoveSearchTerm">Видалити умову пошуку</sys:String>
+    <sys:String x:Key="Str_TT_RemoveSearchFilter">Видалити фільтр</sys:String>
+    <sys:String x:Key="Str_A11y_ColumnHeadings">Заголовки стовпців</sys:String>
+    <sys:String x:Key="Str_A11y_ColumnHeadingsHelp">Натисніть Menu (Apps), щоб вибрати видимі стовпці.</sys:String>
 </ResourceDictionary>

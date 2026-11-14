@@ -191,6 +191,7 @@
     <sys:String x:Key="Str_Status_ElevationDeclined">昇格が拒否されました</sys:String>
     <sys:String x:Key="Str_Status_FileOnly">このコマンドはファイル専用です (フォルダーには使えません)</sys:String>
     <sys:String x:Key="Str_Status_ShellFailed">Windows がこれを開けませんでした</sys:String>
+    <sys:String x:Key="Str_Status_ShellSelectionNeedsOneFolder">Windows メニューを開くには、同じフォルダー内の項目を選択してください</sys:String>
     <sys:String x:Key="Str_Status_Excluded">{0} を除外します - 反映するには再検索してください</sys:String>
     <sys:String x:Key="Str_Status_AlreadyExcluded">{0} はすでに除外されています</sys:String>
     <sys:String x:Key="Str_Menu_Minimize">最小化</sys:String>
@@ -338,7 +339,7 @@
     <sys:String x:Key="Str_Term_Copy">コピー</sys:String>
     <sys:String x:Key="Str_Term_Paste">貼り付け</sys:String>
     <sys:String x:Key="Str_Term_SelectAll">すべて選択</sys:String>
-    <sys:String x:Key="Str_Term_Clear">クリア</sys:String>
+    <sys:String x:Key="Str_Term_Clear">スクロールバックを消去</sys:String>
     <sys:String x:Key="Str_Term_NewShell">新しいターミナル</sys:String>
     <sys:String x:Key="Str_Term_OpenFolder">このフォルダーを開く</sys:String>
     <sys:String x:Key="Str_Term_Fonts">フォント...</sys:String>
@@ -475,7 +476,7 @@
     <sys:String x:Key="Str_TT_TermNew">新しいターミナル  (F8)</sys:String>
     <sys:String x:Key="Str_TT_TermAdmin">管理者として新しいターミナル  (Ctrl+F8)</sys:String>
     <sys:String x:Key="Str_TT_TermFolder">このフォルダーをタブで開く  (Ctrl+Shift+T)</sys:String>
-    <sys:String x:Key="Str_TT_TermClear">クリア  (Ctrl+Shift+L)</sys:String>
+    <sys:String x:Key="Str_TT_TermClear">スクロールバックを消去 (Ctrl+Shift+L)</sys:String>
     <sys:String x:Key="Str_TT_TermFonts">フォント...  (Ctrl+Shift+,)</sys:String>
 
     <sys:String x:Key="Str_Ed_WrapOn">折り返しオン。</sys:String>
@@ -1059,4 +1060,9 @@
     <sys:String x:Key="Str_Card_Edit">編集</sys:String>
     <sys:String x:Key="Str_Card_Rename">名前の変更</sys:String>
     <sys:String x:Key="Str_Card_SelectAll">すべて選択</sys:String>
+    <sys:String x:Key="Str_Ks_ContextMenu">コンテキスト メニューを開く</sys:String>
+    <sys:String x:Key="Str_TT_RemoveSearchTerm">検索語を削除</sys:String>
+    <sys:String x:Key="Str_TT_RemoveSearchFilter">フィルターを削除</sys:String>
+    <sys:String x:Key="Str_A11y_ColumnHeadings">列見出し</sys:String>
+    <sys:String x:Key="Str_A11y_ColumnHeadingsHelp">Menu (Apps) を押して表示する列を選択します。</sys:String>
 </ResourceDictionary>

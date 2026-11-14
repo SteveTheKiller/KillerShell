@@ -765,6 +765,18 @@ namespace KillerShell
         private void ColGrip_MouseMove(object s, MouseEventArgs e)         => Owner.ColGrip_MouseMove(s, e);
         private void ColGrip_MouseUp(object s, MouseButtonEventArgs e)     => Owner.ColGrip_MouseUp(s, e);
         private void DetailsHeader_MouseRightButtonUp(object s, MouseButtonEventArgs e) => Owner.DetailsHeader_MouseRightButtonUp(s, e);
+        private void DetailsHeader_PreviewKeyDown(object s, KeyEventArgs e)
+        {
+            if (e.Key == Key.Apps && Keyboard.Modifiers == ModifierKeys.None) e.Handled = true;
+        }
+
+        private void DetailsHeader_PreviewKeyUp(object s, KeyEventArgs e)
+        {
+            if (e.Key != Key.Apps || Keyboard.Modifiers != ModifierKeys.None) return;
+            Owner.FocusPane(this);
+            Owner.ShowDetailsColumns(this, (FrameworkElement)s, keyboard: true);
+            e.Handled = true;
+        }
 
         // ── Pipe + export ────────────────────────────────────────
         private void PipeButton_Click(object s, RoutedEventArgs e)         => Owner.PipeButton_Click(s, e);

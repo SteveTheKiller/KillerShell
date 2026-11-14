@@ -55,8 +55,7 @@
                             BorderBrush="{DynamicResource OutlineBtnBrush}"
                             BorderThickness="{DynamicResource ModeButtonBorderThickness}" CornerRadius="{DynamicResource ModeButtonCornerRadius}">
                         <ContentPresenter x:Name="label" HorizontalAlignment="Center"
-                                          VerticalAlignment="Center"
-                                          Effect="{DynamicResource TextStrokeSoft}"/>
+                                          VerticalAlignment="Center"/>
                     </Border>
                         <!-- Raised Win98 push-button bevel; zero-thickness on every other theme. -->
                         <Border IsHitTestVisible="False"

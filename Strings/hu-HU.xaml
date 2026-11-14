@@ -256,6 +256,7 @@
     <sys:String x:Key="Str_Status_ElevationDeclined">A jogosultság-emelés elutasítva</sys:String>
     <sys:String x:Key="Str_Status_FileOnly">Ez a parancs csak fájlokon működik, mappákon nem</sys:String>
     <sys:String x:Key="Str_Status_ShellFailed">A Windows nem nyitja meg</sys:String>
+    <sys:String x:Key="Str_Status_ShellSelectionNeedsOneFolder">A Windows menüjéhez válasszon elemeket ugyanabból a mappából</sys:String>
     <sys:String x:Key="Str_Status_Excluded">{0} kizárása - az alkalmazáshoz futtassa újra a keresést</sys:String>
     <sys:String x:Key="Str_Status_AlreadyExcluded">{0} már ki van zárva</sys:String>
     <sys:String x:Key="Str_Menu_Minimize">Minimalizálás</sys:String>
@@ -419,7 +420,7 @@
     <sys:String x:Key="Str_Term_Copy">Másolás</sys:String>
     <sys:String x:Key="Str_Term_Paste">Beillesztés</sys:String>
     <sys:String x:Key="Str_Term_SelectAll">Válassza ki az összeset</sys:String>
-    <sys:String x:Key="Str_Term_Clear">Törlés</sys:String>
+    <sys:String x:Key="Str_Term_Clear">Visszagörgetési előzmények törlése</sys:String>
     <sys:String x:Key="Str_Term_NewShell">Új terminál</sys:String>
     <sys:String x:Key="Str_Term_OpenFolder">Nyissa meg a mappát itt</sys:String>
     <sys:String x:Key="Str_Term_Fonts">Betűtípusok...</sys:String>
@@ -483,7 +484,7 @@
     <sys:String x:Key="Str_TT_TermNew">Új terminál (F8)</sys:String>
     <sys:String x:Key="Str_TT_TermAdmin">Új terminál rendszergazdaként (Ctrl+F8)</sys:String>
     <sys:String x:Key="Str_TT_TermFolder">Nyissa meg ezt a mappát egy lapon (Ctrl+Shift+T)</sys:String>
-    <sys:String x:Key="Str_TT_TermClear">Törlés (Ctrl+Shift+L)</sys:String>
+    <sys:String x:Key="Str_TT_TermClear">Visszagörgetési előzmények törlése (Ctrl+Shift+L)</sys:String>
     <sys:String x:Key="Str_TT_TermFonts">Betűtípusok... (Ctrl+Shift+,)</sys:String>
     <sys:String x:Key="Str_TT_EdPath">Kattintson a szerkesztéshez - írjon be egy elérési utat, és nyomja meg az Enter billentyűt a fájl átnevezéséhez/áthelyezéséhez. Meglévő fájl megadásával megnyithatja azt.</sys:String>
     <sys:String x:Key="Str_Ed_WrapOn">Szótördelés bekapcsolva.</sys:String>
@@ -1108,4 +1109,9 @@
     <sys:String x:Key="Str_Card_Edit">Szer&#xAD;kesztés</sys:String>
     <sys:String x:Key="Str_Card_Rename">Átnevezés</sys:String>
     <sys:String x:Key="Str_Card_SelectAll">Összes kije&#xAD;lölése</sys:String>
+    <sys:String x:Key="Str_Ks_ContextMenu">helyi menü megnyitása</sys:String>
+    <sys:String x:Key="Str_TT_RemoveSearchTerm">Keresési kifejezés eltávolítása</sys:String>
+    <sys:String x:Key="Str_TT_RemoveSearchFilter">Szűrő eltávolítása</sys:String>
+    <sys:String x:Key="Str_A11y_ColumnHeadings">Oszlopfejlécek</sys:String>
+    <sys:String x:Key="Str_A11y_ColumnHeadingsHelp">A látható oszlopok kiválasztásához nyomja meg a Menu (Apps) billentyűt.</sys:String>
 </ResourceDictionary>

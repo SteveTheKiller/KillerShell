@@ -191,6 +191,7 @@
     <sys:String x:Key="Str_Status_ElevationDeclined">Zvýšení oprávnění odmítnuto</sys:String>
     <sys:String x:Key="Str_Status_FileOnly">Tento příkaz funguje jen na soubory, ne na složky</sys:String>
     <sys:String x:Key="Str_Status_ShellFailed">Windows to nechtěly otevřít</sys:String>
+    <sys:String x:Key="Str_Status_ShellSelectionNeedsOneFolder">Pro nabídku Windows vyberte položky z jedné složky</sys:String>
     <sys:String x:Key="Str_Status_Excluded">Vylučuji {0} - projeví se po novém hledání</sys:String>
     <sys:String x:Key="Str_Status_AlreadyExcluded">{0} je už vyloučeno</sys:String>
     <sys:String x:Key="Str_Menu_Minimize">Minimalizovat</sys:String>
@@ -338,7 +339,7 @@
     <sys:String x:Key="Str_Term_Copy">Kopírovat</sys:String>
     <sys:String x:Key="Str_Term_Paste">Vložit</sys:String>
     <sys:String x:Key="Str_Term_SelectAll">Vybrat vše</sys:String>
-    <sys:String x:Key="Str_Term_Clear">Vymazat</sys:String>
+    <sys:String x:Key="Str_Term_Clear">Vymazat historii terminálu</sys:String>
     <sys:String x:Key="Str_Term_NewShell">Nový terminál</sys:String>
     <sys:String x:Key="Str_Term_OpenFolder">Otevřít tuto složku</sys:String>
     <sys:String x:Key="Str_Term_Fonts">Písma...</sys:String>
@@ -475,7 +476,7 @@
     <sys:String x:Key="Str_TT_TermNew">Nový terminál  (F8)</sys:String>
     <sys:String x:Key="Str_TT_TermAdmin">Nový terminál jako správce  (Ctrl+F8)</sys:String>
     <sys:String x:Key="Str_TT_TermFolder">Otevřít tuto složku na kartě  (Ctrl+Shift+T)</sys:String>
-    <sys:String x:Key="Str_TT_TermClear">Vymazat  (Ctrl+Shift+L)</sys:String>
+    <sys:String x:Key="Str_TT_TermClear">Vymazat historii terminálu (Ctrl+Shift+L)</sys:String>
     <sys:String x:Key="Str_TT_TermFonts">Písma...  (Ctrl+Shift+,)</sys:String>
 
     <sys:String x:Key="Str_Ed_WrapOn">Zalamování řádků zapnuto.</sys:String>
@@ -1061,4 +1062,9 @@
     <sys:String x:Key="Str_Card_Edit">Upravit</sys:String>
     <sys:String x:Key="Str_Card_Rename">Pře&#xAD;jmeno&#xAD;vat</sys:String>
     <sys:String x:Key="Str_Card_SelectAll">Vybrat vše</sys:String>
+    <sys:String x:Key="Str_Ks_ContextMenu">otevřít místní nabídku</sys:String>
+    <sys:String x:Key="Str_TT_RemoveSearchTerm">Odebrat hledaný výraz</sys:String>
+    <sys:String x:Key="Str_TT_RemoveSearchFilter">Odebrat filtr</sys:String>
+    <sys:String x:Key="Str_A11y_ColumnHeadings">Záhlaví sloupců</sys:String>
+    <sys:String x:Key="Str_A11y_ColumnHeadingsHelp">Stisknutím Menu (Apps) vyberte viditelné sloupce.</sys:String>
 </ResourceDictionary>

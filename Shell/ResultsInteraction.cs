@@ -787,13 +787,7 @@ namespace KillerShell.Shell
 
         private void ScopeToFolder(string folder)
         {
-            _active.PipeFiles = null;             // a real folder scope replaces any piped list
-            _active.PipeLabel = string.Empty;
-            _active.PipeArgs  = null;
-            _active.RootPath  = folder;
-
-            Pane.RootPathBox.Text    = folder;
-            Pane.ScopePathLabel.Text = folder;
+            SearchInFolder(folder);
             SetTabStatus(_active, folder);
         }
 

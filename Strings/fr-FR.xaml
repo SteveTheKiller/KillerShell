@@ -288,7 +288,7 @@
     <sys:String x:Key="Str_Term_Copy">Copier</sys:String>
     <sys:String x:Key="Str_Term_Paste">Coller</sys:String>
     <sys:String x:Key="Str_Term_SelectAll">Tout sélectionner</sys:String>
-    <sys:String x:Key="Str_Term_Clear">Effacer</sys:String>
+    <sys:String x:Key="Str_Term_Clear">Effacer l'historique de défilement</sys:String>
     <sys:String x:Key="Str_Term_NewShell">Nouveau terminal</sys:String>
     <sys:String x:Key="Str_Term_OpenFolder">Ouvrir ce dossier</sys:String>
     <sys:String x:Key="Str_Term_Fonts">Polices...</sys:String>
@@ -353,6 +353,7 @@
     <sys:String x:Key="Str_Status_ElevationDeclined">Élévation refusée</sys:String>
     <sys:String x:Key="Str_Status_FileOnly">Cette commande ne fonctionne que sur les fichiers, pas les dossiers</sys:String>
     <sys:String x:Key="Str_Status_ShellFailed">Windows n'a pas voulu ouvrir cela</sys:String>
+    <sys:String x:Key="Str_Status_ShellSelectionNeedsOneFolder">Sélectionnez les éléments d'un même dossier pour le menu Windows</sys:String>
     <sys:String x:Key="Str_Status_Excluded">Exclusion de {0} - relancez la recherche pour l'appliquer</sys:String>
     <sys:String x:Key="Str_Status_AlreadyExcluded">{0} est déjà exclu</sys:String>
 
@@ -477,7 +478,7 @@
     <sys:String x:Key="Str_TT_TermNew">Nouveau terminal  (F8)</sys:String>
     <sys:String x:Key="Str_TT_TermAdmin">Nouveau terminal en tant qu'administrateur  (Ctrl+F8)</sys:String>
     <sys:String x:Key="Str_TT_TermFolder">Ouvrir ce dossier dans un onglet  (Ctrl+Maj+T)</sys:String>
-    <sys:String x:Key="Str_TT_TermClear">Effacer  (Ctrl+Maj+L)</sys:String>
+    <sys:String x:Key="Str_TT_TermClear">Effacer l'historique de défilement (Ctrl+Shift+L)</sys:String>
     <sys:String x:Key="Str_TT_TermFonts">Polices...  (Ctrl+Maj+,)</sys:String>
 
     <sys:String x:Key="Str_Ed_WrapOn">Retour à la ligne activé.</sys:String>
@@ -1063,4 +1064,9 @@
     <sys:String x:Key="Str_Card_Edit">Modifier</sys:String>
     <sys:String x:Key="Str_Card_Rename">Renom&#xAD;mer</sys:String>
     <sys:String x:Key="Str_Card_SelectAll">Tout</sys:String>
+    <sys:String x:Key="Str_Ks_ContextMenu">ouvrir le menu contextuel</sys:String>
+    <sys:String x:Key="Str_TT_RemoveSearchTerm">Supprimer le terme de recherche</sys:String>
+    <sys:String x:Key="Str_TT_RemoveSearchFilter">Supprimer le filtre</sys:String>
+    <sys:String x:Key="Str_A11y_ColumnHeadings">En-têtes de colonnes</sys:String>
+    <sys:String x:Key="Str_A11y_ColumnHeadingsHelp">Appuyez sur Menu (Apps) pour choisir les colonnes visibles.</sys:String>
 </ResourceDictionary>

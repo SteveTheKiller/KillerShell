@@ -244,6 +244,7 @@
   <sys:String x:Key="Str_Status_ElevationDeclined">Đã từ chối cấp quyền quản trị</sys:String>
   <sys:String x:Key="Str_Status_FileOnly">Lệnh đó chỉ dùng được với tệp, không dùng được với thư mục</sys:String>
   <sys:String x:Key="Str_Status_ShellFailed">Windows không thể mở mục đó</sys:String>
+  <sys:String x:Key="Str_Status_ShellSelectionNeedsOneFolder">Chọn các mục trong cùng một thư mục để mở menu Windows</sys:String>
   <sys:String x:Key="Str_Status_Excluded">Đang loại trừ {0}. Hãy chạy lại tìm kiếm để áp dụng</sys:String>
   <sys:String x:Key="Str_Status_AlreadyExcluded">{0} đã được loại trừ</sys:String>
   <sys:String x:Key="Str_Menu_Minimize">Thu nhỏ</sys:String>
@@ -396,7 +397,7 @@
   <sys:String x:Key="Str_Term_Copy">Sao chép</sys:String>
   <sys:String x:Key="Str_Term_Paste">Dán</sys:String>
   <sys:String x:Key="Str_Term_SelectAll">Chọn tất cả</sys:String>
-  <sys:String x:Key="Str_Term_Clear">Xóa</sys:String>
+  <sys:String x:Key="Str_Term_Clear">Xóa lịch sử cuộn</sys:String>
   <sys:String x:Key="Str_Term_NewShell">Cửa sổ dòng lệnh mới</sys:String>
   <sys:String x:Key="Str_Term_OpenFolder">Mở thư mục tại đây</sys:String>
   <sys:String x:Key="Str_Term_Fonts">Phông chữ...</sys:String>
@@ -455,7 +456,7 @@
   <sys:String x:Key="Str_TT_TermNew">Terminal mới  (F8)</sys:String>
   <sys:String x:Key="Str_TT_TermAdmin">Terminal mới với quyền quản trị viên  (Ctrl+F8)</sys:String>
   <sys:String x:Key="Str_TT_TermFolder">Mở thư mục này trong một tab  (Ctrl+Shift+T)</sys:String>
-  <sys:String x:Key="Str_TT_TermClear">Xóa  (Ctrl+Shift+L)</sys:String>
+  <sys:String x:Key="Str_TT_TermClear">Xóa lịch sử cuộn (Ctrl+Shift+L)</sys:String>
   <sys:String x:Key="Str_TT_TermFonts">Phông chữ...  (Ctrl+Shift+,)</sys:String>
   <sys:String x:Key="Str_TT_EdPath">Bấm để chỉnh sửa, nhập đường dẫn rồi nhấn Enter để đổi tên hoặc di chuyển tệp. Nhập một tệp có sẵn để mở tệp đó.</sys:String>
   <sys:String x:Key="Str_Ed_WrapOn">Đã bật ngắt dòng.</sys:String>
@@ -1064,4 +1065,9 @@ Các cài đặt của bạn sẽ không bị xóa.</sys:String>
   <sys:String x:Key="Str_Card_Edit">Chỉnh sửa</sys:String>
   <sys:String x:Key="Str_Card_Rename">Đổi tên</sys:String>
   <sys:String x:Key="Str_Card_SelectAll">Chọn tất cả</sys:String>
+    <sys:String x:Key="Str_Ks_ContextMenu">mở menu ngữ cảnh</sys:String>
+    <sys:String x:Key="Str_TT_RemoveSearchTerm">Xóa cụm từ tìm kiếm</sys:String>
+    <sys:String x:Key="Str_TT_RemoveSearchFilter">Xóa bộ lọc</sys:String>
+    <sys:String x:Key="Str_A11y_ColumnHeadings">Tiêu đề cột</sys:String>
+    <sys:String x:Key="Str_A11y_ColumnHeadingsHelp">Nhấn Menu (Apps) để chọn các cột hiển thị.</sys:String>
 </ResourceDictionary>

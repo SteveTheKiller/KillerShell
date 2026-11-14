@@ -256,6 +256,7 @@
     <sys:String x:Key="Str_Status_ElevationDeclined">Elevation declined</sys:String>
     <sys:String x:Key="Str_Status_FileOnly">That command only works on files, not folders</sys:String>
     <sys:String x:Key="Str_Status_ShellFailed">Windows would not open that</sys:String>
+    <sys:String x:Key="Str_Status_ShellSelectionNeedsOneFolder">Select items from one folder for the Windows menu</sys:String>
     <sys:String x:Key="Str_Status_Excluded">Excluding {0} - run the search again to apply it</sys:String>
     <sys:String x:Key="Str_Status_AlreadyExcluded">{0} is already excluded</sys:String>
     <sys:String x:Key="Str_Menu_Minimize">Minimize</sys:String>
@@ -419,7 +420,7 @@
     <sys:String x:Key="Str_Term_Copy">Copy</sys:String>
     <sys:String x:Key="Str_Term_Paste">Paste</sys:String>
     <sys:String x:Key="Str_Term_SelectAll">Select all</sys:String>
-    <sys:String x:Key="Str_Term_Clear">Clear</sys:String>
+    <sys:String x:Key="Str_Term_Clear">Clear scrollback</sys:String>
     <sys:String x:Key="Str_Term_NewShell">New terminal</sys:String>
     <sys:String x:Key="Str_Term_OpenFolder">Open folder here</sys:String>
     <sys:String x:Key="Str_Term_Fonts">Fonts...</sys:String>
@@ -483,7 +484,7 @@
     <sys:String x:Key="Str_TT_TermNew">New terminal  (F8)</sys:String>
     <sys:String x:Key="Str_TT_TermAdmin">New terminal as administrator  (Ctrl+F8)</sys:String>
     <sys:String x:Key="Str_TT_TermFolder">Open this folder in a tab  (Ctrl+Shift+T)</sys:String>
-    <sys:String x:Key="Str_TT_TermClear">Clear  (Ctrl+Shift+L)</sys:String>
+    <sys:String x:Key="Str_TT_TermClear">Clear scrollback (Ctrl+Shift+L)</sys:String>
     <sys:String x:Key="Str_TT_TermFonts">Fonts...  (Ctrl+Shift+,)</sys:String>
     <sys:String x:Key="Str_TT_EdPath">Click to edit - type a path and press Enter to rename/move the file. Type an existing file to open it.</sys:String>
     <sys:String x:Key="Str_Ed_WrapOn">Word wrap on.</sys:String>
@@ -1108,4 +1109,9 @@
     <sys:String x:Key="Str_Card_Edit">Edit</sys:String>
     <sys:String x:Key="Str_Card_Rename">Rename</sys:String>
     <sys:String x:Key="Str_Card_SelectAll">Select all</sys:String>
+    <sys:String x:Key="Str_Ks_ContextMenu">open the context menu</sys:String>
+    <sys:String x:Key="Str_TT_RemoveSearchTerm">Remove search term</sys:String>
+    <sys:String x:Key="Str_TT_RemoveSearchFilter">Remove filter</sys:String>
+    <sys:String x:Key="Str_A11y_ColumnHeadings">Column headings</sys:String>
+    <sys:String x:Key="Str_A11y_ColumnHeadingsHelp">Press Menu (Apps) to choose visible columns.</sys:String>
 </ResourceDictionary>

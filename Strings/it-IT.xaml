@@ -246,6 +246,7 @@
     <sys:String x:Key="Str_Status_ElevationDeclined">Elevazione rifiutata</sys:String>
     <sys:String x:Key="Str_Status_FileOnly">Quel comando funziona solo sui file, non sulle cartelle</sys:String>
     <sys:String x:Key="Str_Status_ShellFailed">Windows non ha voluto aprirlo</sys:String>
+    <sys:String x:Key="Str_Status_ShellSelectionNeedsOneFolder">Seleziona elementi della stessa cartella per il menu di Windows</sys:String>
     <sys:String x:Key="Str_Status_Excluded">{0} escluso - riesegui la ricerca per applicarlo</sys:String>
     <sys:String x:Key="Str_Status_AlreadyExcluded">{0} è già escluso</sys:String>
     <sys:String x:Key="Str_Menu_Minimize">Riduci a icona</sys:String>
@@ -401,7 +402,7 @@
     <sys:String x:Key="Str_Term_Copy">Copia</sys:String>
     <sys:String x:Key="Str_Term_Paste">Incolla</sys:String>
     <sys:String x:Key="Str_Term_SelectAll">Seleziona tutto</sys:String>
-    <sys:String x:Key="Str_Term_Clear">Pulisci</sys:String>
+    <sys:String x:Key="Str_Term_Clear">Cancella cronologia di scorrimento</sys:String>
     <sys:String x:Key="Str_Term_NewShell">Nuovo terminale</sys:String>
     <sys:String x:Key="Str_Term_OpenFolder">Apri la cartella qui</sys:String>
     <sys:String x:Key="Str_Term_Fonts">Font...</sys:String>
@@ -465,7 +466,7 @@
     <sys:String x:Key="Str_TT_TermNew">Nuovo terminale  (F8)</sys:String>
     <sys:String x:Key="Str_TT_TermAdmin">Nuovo terminale come amministratore  (Ctrl+F8)</sys:String>
     <sys:String x:Key="Str_TT_TermFolder">Apri questa cartella in una scheda  (Ctrl+Shift+T)</sys:String>
-    <sys:String x:Key="Str_TT_TermClear">Pulisci  (Ctrl+Shift+L)</sys:String>
+    <sys:String x:Key="Str_TT_TermClear">Cancella cronologia di scorrimento (Ctrl+Shift+L)</sys:String>
     <sys:String x:Key="Str_TT_TermFonts">Font...  (Ctrl+Shift+,)</sys:String>
     <sys:String x:Key="Str_TT_EdPath">Clicca per modificare - digita un percorso e premi Enter per rinominare/spostare il file. Digita un file esistente per aprirlo.</sys:String>
     <sys:String x:Key="Str_Ed_WrapOn">A capo automatico attivo.</sys:String>
@@ -1071,4 +1072,9 @@
     <sys:String x:Key="Str_Card_Edit">Modifica</sys:String>
     <sys:String x:Key="Str_Card_Rename">Rinomina</sys:String>
     <sys:String x:Key="Str_Card_SelectAll">Seleziona tutto</sys:String>
+    <sys:String x:Key="Str_Ks_ContextMenu">apri il menu contestuale</sys:String>
+    <sys:String x:Key="Str_TT_RemoveSearchTerm">Rimuovi il termine di ricerca</sys:String>
+    <sys:String x:Key="Str_TT_RemoveSearchFilter">Rimuovi il filtro</sys:String>
+    <sys:String x:Key="Str_A11y_ColumnHeadings">Intestazioni delle colonne</sys:String>
+    <sys:String x:Key="Str_A11y_ColumnHeadingsHelp">Premi Menu (Apps) per scegliere le colonne visibili.</sys:String>
 </ResourceDictionary>

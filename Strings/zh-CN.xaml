@@ -288,7 +288,7 @@
     <sys:String x:Key="Str_Term_Copy">复制</sys:String>
     <sys:String x:Key="Str_Term_Paste">粘贴</sys:String>
     <sys:String x:Key="Str_Term_SelectAll">全选</sys:String>
-    <sys:String x:Key="Str_Term_Clear">清屏</sys:String>
+    <sys:String x:Key="Str_Term_Clear">清除回滚历史</sys:String>
     <sys:String x:Key="Str_Term_NewShell">新建终端</sys:String>
     <sys:String x:Key="Str_Term_OpenFolder">打开此文件夹</sys:String>
     <sys:String x:Key="Str_Term_Fonts">字体...</sys:String>
@@ -353,6 +353,7 @@
     <sys:String x:Key="Str_Status_ElevationDeclined">已拒绝提权</sys:String>
     <sys:String x:Key="Str_Status_FileOnly">该命令只能用于文件，不能用于文件夹</sys:String>
     <sys:String x:Key="Str_Status_ShellFailed">Windows 未能打开它</sys:String>
+    <sys:String x:Key="Str_Status_ShellSelectionNeedsOneFolder">请从同一文件夹中选择项目以打开 Windows 菜单</sys:String>
     <sys:String x:Key="Str_Status_Excluded">正在排除 {0} - 重新搜索后生效</sys:String>
     <sys:String x:Key="Str_Status_AlreadyExcluded">{0} 已被排除</sys:String>
 
@@ -477,7 +478,7 @@
     <sys:String x:Key="Str_TT_TermNew">新建终端  (F8)</sys:String>
     <sys:String x:Key="Str_TT_TermAdmin">以管理员身份新建终端  (Ctrl+F8)</sys:String>
     <sys:String x:Key="Str_TT_TermFolder">在标签页中打开此文件夹  (Ctrl+Shift+T)</sys:String>
-    <sys:String x:Key="Str_TT_TermClear">清屏  (Ctrl+Shift+L)</sys:String>
+    <sys:String x:Key="Str_TT_TermClear">清除回滚历史 (Ctrl+Shift+L)</sys:String>
     <sys:String x:Key="Str_TT_TermFonts">字体...  (Ctrl+Shift+,)</sys:String>
 
     <sys:String x:Key="Str_Ed_WrapOn">自动换行已开启。</sys:String>
@@ -1060,4 +1061,9 @@
     <sys:String x:Key="Str_Card_Edit">编辑</sys:String>
     <sys:String x:Key="Str_Card_Rename">重命名</sys:String>
     <sys:String x:Key="Str_Card_SelectAll">全选</sys:String>
+    <sys:String x:Key="Str_Ks_ContextMenu">打开上下文菜单</sys:String>
+    <sys:String x:Key="Str_TT_RemoveSearchTerm">移除搜索词</sys:String>
+    <sys:String x:Key="Str_TT_RemoveSearchFilter">移除过滤器</sys:String>
+    <sys:String x:Key="Str_A11y_ColumnHeadings">列标题</sys:String>
+    <sys:String x:Key="Str_A11y_ColumnHeadingsHelp">按 Menu (Apps) 选择要显示的列。</sys:String>
 </ResourceDictionary>

@@ -20,6 +20,7 @@ public sealed class BrowseStatusTests
     [InlineData("Str_Svc_StopFailed", false, "DangerRed")]
     [InlineData("Str_Svc_StartFailed", false, "DangerRed")]
     [InlineData("Str_Svc_Restarted", false, "OkBrush")]
+    [InlineData("Str_Status_ShellSelectionNeedsOneFolder", false, "WarnBrush")]
     public void FolderStatusDistinguishesLoadingSuccessAndFailure(string? key, bool searching, string expected)
         => Assert.Equal(expected, MainWindow.StatusBrushKey(key, searching));
 

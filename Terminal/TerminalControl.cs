@@ -1090,6 +1090,18 @@ namespace KillerShell.Terminal
             e.Handled = true;
         }
 
+        protected override void OnPreviewKeyUp(KeyEventArgs e)
+        {
+            var key = e.Key == Key.System ? e.SystemKey : e.Key;
+            if (key == Key.Apps && Keyboard.Modifiers == ModifierKeys.None)
+            {
+                ShowMenu(keyboard: true);
+                e.Handled = true;
+                return;
+            }
+            base.OnPreviewKeyUp(e);
+        }
+
         /// <summary>
         /// Chords Windows itself acts on, which the terminal must leave unhandled so the window
         /// receives them. Alt chords are unwrapped from Key.System so Alt+letter reaches the

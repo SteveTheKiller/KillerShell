@@ -248,6 +248,7 @@
     <sys:String x:Key="Str_Status_ElevationDeclined">Құқықты арттырудан бас тартылды</sys:String>
     <sys:String x:Key="Str_Status_FileOnly">Бұл пәрмен тек файлдармен жұмыс істейді, қалталармен емес</sys:String>
     <sys:String x:Key="Str_Status_ShellFailed">Windows оны ашпады</sys:String>
+    <sys:String x:Key="Str_Status_ShellSelectionNeedsOneFolder">Windows мәзірі үшін бір қалтадағы элементтерді таңдаңыз</sys:String>
     <sys:String x:Key="Str_Status_Excluded">{0} шығарылуда - қолдану үшін іздеуді қайта іске қосыңыз</sys:String>
     <sys:String x:Key="Str_Status_AlreadyExcluded">{0} әлдеқашан шығарылған</sys:String>
     <sys:String x:Key="Str_Menu_Minimize">Жию</sys:String>
@@ -403,7 +404,7 @@
     <sys:String x:Key="Str_Term_Copy">Көшіру</sys:String>
     <sys:String x:Key="Str_Term_Paste">Қою</sys:String>
     <sys:String x:Key="Str_Term_SelectAll">Бәрін таңдау</sys:String>
-    <sys:String x:Key="Str_Term_Clear">Тазалау</sys:String>
+    <sys:String x:Key="Str_Term_Clear">Айналдыру тарихын тазалау</sys:String>
     <sys:String x:Key="Str_Term_NewShell">Жаңа терминал</sys:String>
     <sys:String x:Key="Str_Term_OpenFolder">Осы жерде қалта ашу</sys:String>
     <sys:String x:Key="Str_Term_Fonts">Қаріптер...</sys:String>
@@ -467,7 +468,7 @@
     <sys:String x:Key="Str_TT_TermNew">Жаңа терминал  (F8)</sys:String>
     <sys:String x:Key="Str_TT_TermAdmin">Әкімші атынан жаңа терминал  (Ctrl+F8)</sys:String>
     <sys:String x:Key="Str_TT_TermFolder">Осы қалтаны қойындыда ашу  (Ctrl+Shift+T)</sys:String>
-    <sys:String x:Key="Str_TT_TermClear">Тазалау  (Ctrl+Shift+L)</sys:String>
+    <sys:String x:Key="Str_TT_TermClear">Айналдыру тарихын тазалау (Ctrl+Shift+L)</sys:String>
     <sys:String x:Key="Str_TT_TermFonts">Қаріптер...  (Ctrl+Shift+,)</sys:String>
     <sys:String x:Key="Str_TT_EdPath">Өзгерту үшін басыңыз - файлдың атын өзгерту немесе жылжыту үшін жолды теріп, Enter басыңыз. Бар файлды ашу үшін оның атын теріңіз.</sys:String>
     <sys:String x:Key="Str_Ed_WrapOn">Сөз бойынша тасымалдау қосулы.</sys:String>
@@ -1074,4 +1075,9 @@
     <sys:String x:Key="Str_Card_Edit">Өңдеу</sys:String>
     <sys:String x:Key="Str_Card_Rename">Атын өзгерту</sys:String>
     <sys:String x:Key="Str_Card_SelectAll">Бәрін таңдау</sys:String>
+    <sys:String x:Key="Str_Ks_ContextMenu">контекстік мәзірді ашу</sys:String>
+    <sys:String x:Key="Str_TT_RemoveSearchTerm">Іздеу сөзін алып тастау</sys:String>
+    <sys:String x:Key="Str_TT_RemoveSearchFilter">Сүзгіні алып тастау</sys:String>
+    <sys:String x:Key="Str_A11y_ColumnHeadings">Баған тақырыптары</sys:String>
+    <sys:String x:Key="Str_A11y_ColumnHeadingsHelp">Көрінетін бағандарды таңдау үшін Menu (Apps) басыңыз.</sys:String>
 </ResourceDictionary>

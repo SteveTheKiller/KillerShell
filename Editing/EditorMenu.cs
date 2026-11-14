@@ -74,7 +74,15 @@ namespace KillerShell.Editing
                 () => MenuCommand?.Invoke(EditorMenuCommand.GoToLine));
 
             _wrapItem = Row(m, "Str_Ed_OptWrap", Glyph(0x21B5), "Alt+Z",
-                () => MenuCommand?.Invoke(EditorMenuCommand.ToggleWrap));
+                () => { });
+            _wrapItem.IsCheckable = true;
+            RoutedEventHandler updateWrap = (_, _) =>
+            {
+                if (_wrapItem.IsChecked != WordWrap)
+                    MenuCommand?.Invoke(EditorMenuCommand.ToggleWrap);
+            };
+            _wrapItem.Checked += updateWrap;
+            _wrapItem.Unchecked += updateWrap;
 
             m.Items.Add(new Separator());
 

@@ -221,6 +221,7 @@
     <sys:String x:Key="Str_Status_ElevationDeclined">Dvig pravic je zavrnjen</sys:String>
     <sys:String x:Key="Str_Status_FileOnly">Ta ukaz deluje samo za datoteke, ne za mape</sys:String>
     <sys:String x:Key="Str_Status_ShellFailed">Windows tega ni odprl</sys:String>
+    <sys:String x:Key="Str_Status_ShellSelectionNeedsOneFolder">Za meni Windows izberite elemente iz iste mape</sys:String>
     <sys:String x:Key="Str_Status_Excluded">{0} je izključen. Za uveljavitev znova zaženite iskanje</sys:String>
     <sys:String x:Key="Str_Status_AlreadyExcluded">{0} je že izključen</sys:String>
     <sys:String x:Key="Str_Menu_Minimize">Minimiziraj</sys:String>
@@ -354,7 +355,7 @@
     <sys:String x:Key="Str_Term_Copy">Kopiraj</sys:String>
     <sys:String x:Key="Str_Term_Paste">Prilepi</sys:String>
     <sys:String x:Key="Str_Term_SelectAll">Izberi vse</sys:String>
-    <sys:String x:Key="Str_Term_Clear">Počisti</sys:String>
+    <sys:String x:Key="Str_Term_Clear">Počisti zgodovino pomikanja</sys:String>
     <sys:String x:Key="Str_Term_NewShell">Nov terminal</sys:String>
     <sys:String x:Key="Str_Term_OpenFolder">Odpri mapo tukaj</sys:String>
     <sys:String x:Key="Str_Term_Fonts">Pisave...</sys:String>
@@ -408,7 +409,7 @@
     <sys:String x:Key="Str_TT_TermNew">Nov terminal  (F8)</sys:String>
     <sys:String x:Key="Str_TT_TermAdmin">Nov terminal kot skrbnik  (Ctrl+F8)</sys:String>
     <sys:String x:Key="Str_TT_TermFolder">Odpri to mapo v zavihku  (Ctrl+Shift+T)</sys:String>
-    <sys:String x:Key="Str_TT_TermClear">Počisti  (Ctrl+Shift+L)</sys:String>
+    <sys:String x:Key="Str_TT_TermClear">Počisti zgodovino pomikanja (Ctrl+Shift+L)</sys:String>
     <sys:String x:Key="Str_TT_TermFonts">Pisave...  (Ctrl+Shift+,)</sys:String>
     <sys:String x:Key="Str_TT_EdPath">Kliknite za urejanje, vnesite pot in pritisnite Enter za preimenovanje/premik datoteke. Vnesite obstoječo datoteko, da jo odprete.</sys:String>
     <sys:String x:Key="Str_Ed_WrapOn">Prelom vrstic je vklopljen.</sys:String>
@@ -981,4 +982,9 @@ Nastavitve bodo ohranjene.</sys:String>
     <sys:String x:Key="Str_Card_Edit">Uredi</sys:String>
     <sys:String x:Key="Str_Card_Rename">Preimenuj</sys:String>
     <sys:String x:Key="Str_Card_SelectAll">Izberi vse</sys:String>
+    <sys:String x:Key="Str_Ks_ContextMenu">odpri priročni meni</sys:String>
+    <sys:String x:Key="Str_TT_RemoveSearchTerm">Odstrani iskalni izraz</sys:String>
+    <sys:String x:Key="Str_TT_RemoveSearchFilter">Odstrani filter</sys:String>
+    <sys:String x:Key="Str_A11y_ColumnHeadings">Glave stolpcev</sys:String>
+    <sys:String x:Key="Str_A11y_ColumnHeadingsHelp">Pritisnite Menu (Apps), da izberete vidne stolpce.</sys:String>
 </ResourceDictionary>

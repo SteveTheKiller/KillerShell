@@ -32,97 +32,124 @@ namespace KillerShell.Services
         public static bool Show(Window owner, string[] paths)
         {
             if (paths == null || paths.Length == 0) return false;
+            using var session = CreateSession();
+            return Show(new WindowInteropHelper(owner).Handle, paths, session);
+        }
 
-            IntPtr hwnd = new WindowInteropHelper(owner).Handle;
-            if (hwnd == IntPtr.Zero) return false;
+        /// <summary>The native boundary for a single menu, owned and disposed by the caller.</summary>
+        public interface IShellMenuSession : IDisposable
+        {
+            bool TryInitialize(string firstPath);
+            bool TryAddPath(string path);
+            bool Show(IntPtr owner);
+        }
 
-            // One IContextMenu covers one folder, so take the clicked file's folder and only the
-            // paths that share it. A results list spans the whole tree, so a mixed selection
-            // silently narrowing here is better than refusing to open the menu at all.
-            string? dir = Path.GetDirectoryName(paths[0]);
-            if (string.IsNullOrEmpty(dir)) return false;
+        /// <summary>Creates a Windows selection session without opening a menu.</summary>
+        public static IShellMenuSession CreateSession() => new NativeSession();
 
-            var same = new List<string>();
-            foreach (var p in paths)
-                if (string.Equals(Path.GetDirectoryName(p), dir, StringComparison.OrdinalIgnoreCase))
-                    same.Add(p);
-            if (same.Count == 0) return false;
-
-            IShellFolder? desktop = null;
-            IShellFolder? folder  = null;
-            IContextMenu? menu    = null;
-            IntPtr dirPidl = IntPtr.Zero;
-            IntPtr hMenu   = IntPtr.Zero;
-            var children   = new List<IntPtr>();
-
+        /// <summary>Whether one native folder can represent the entire selection.</summary>
+        public static bool SupportsSelection(string[] paths)
+        {
+            if (paths == null || paths.Length == 0) return false;
             try
             {
-                if (SHGetDesktopFolder(out desktop) != 0 || desktop == null) return false;
+                string? parent = Path.GetDirectoryName(paths[0]);
+                // A root has a shell namespace parent even though it has no filesystem parent.
+                if (string.IsNullOrEmpty(parent) && paths.Length != 1) return false;
+                foreach (string path in paths)
+                    if (!string.Equals(Path.GetDirectoryName(path), parent, StringComparison.OrdinalIgnoreCase))
+                        return false;
+                return true;
+            }
+            catch { return false; }
+        }
 
-                uint eaten = 0, attrs = 0;
-                if (desktop.ParseDisplayName(IntPtr.Zero, IntPtr.Zero, dir!, ref eaten, out dirPidl, ref attrs) != 0)
+        /// <summary>Builds one complete selection before asking Windows to display its menu.</summary>
+        public static bool Show(IntPtr owner, string[] paths, IShellMenuSession session)
+        {
+            if (owner == IntPtr.Zero || !SupportsSelection(paths)) return false;
+            try
+            {
+                if (!session.TryInitialize(paths[0])) return false;
+                foreach (string path in paths)
+                    if (!session.TryAddPath(path)) return false;
+                return session.Show(owner);
+            }
+            catch { return false; }
+        }
+
+        private sealed class NativeSession : IShellMenuSession
+        {
+            private IShellFolder? _folder;
+            private IContextMenu? _menu;
+            private IntPtr _parentPidl;
+            private IntPtr _firstChild;
+            private string? _firstPath;
+            private IntPtr _hMenu;
+            private readonly List<IntPtr> _children = new();
+
+            public bool TryInitialize(string firstPath)
+            {
+                if (SHParseDisplayName(firstPath, IntPtr.Zero, out _parentPidl, 0, out _) != 0
+                    || _parentPidl == IntPtr.Zero)
                     return false;
-
-                if (desktop.BindToObject(dirPidl, IntPtr.Zero, IID_IShellFolder, out object bound) != 0)
+                if (SHBindToParent(_parentPidl, ref IID_IShellFolder, out _folder, out _firstChild) != 0)
                     return false;
-                folder = bound as IShellFolder;
-                if (folder == null) return false;
+                _firstPath = firstPath;
+                return _folder != null && _firstChild != IntPtr.Zero;
+            }
 
-                foreach (var p in same)
+            public bool TryAddPath(string path)
+            {
+                if (_folder == null) return false;
+                if (string.Equals(path, _firstPath, StringComparison.OrdinalIgnoreCase))
                 {
-                    eaten = 0; attrs = 0;
-                    if (folder.ParseDisplayName(IntPtr.Zero, IntPtr.Zero, Path.GetFileName(p),
-                                                ref eaten, out IntPtr child, ref attrs) == 0)
-                        children.Add(child);
+                    IntPtr first = ILClone(_firstChild);
+                    if (first == IntPtr.Zero) return false;
+                    _children.Add(first);
+                    return true;
                 }
-                if (children.Count == 0) return false;
+                uint eaten = 0, attrs = 0;
+                int result = _folder.ParseDisplayName(IntPtr.Zero, IntPtr.Zero, Path.GetFileName(path),
+                    ref eaten, out IntPtr child, ref attrs);
+                if (child != IntPtr.Zero) _children.Add(child);
+                return result == 0 && child != IntPtr.Zero;
+            }
 
-                var arr = children.ToArray();
-                if (folder.GetUIObjectOf(hwnd, (uint)arr.Length, arr, IID_IContextMenu, IntPtr.Zero, out object cm) != 0)
-                    return false;
-                menu = cm as IContextMenu;
-                if (menu == null) return false;
-
-                hMenu = CreatePopupMenu();
-                if (hMenu == IntPtr.Zero) return false;
-                menu.QueryContextMenu(hMenu, 0, CmdFirst, CmdLast, CMF_EXPLORE);
-
-                // An empty menu means the shell gave us nothing to show - report it rather than
-                // flashing an empty popup.
-                if (GetMenuItemCount(hMenu) <= 0) return false;
-
-                // TrackPopupMenuEx dismisses itself the moment the owning window is not in the
-                // foreground, which is the documented reason menus "flash and vanish".
-                SetForegroundWindow(hwnd);
-
+            public bool Show(IntPtr owner)
+            {
+                if (_folder == null || _children.Count == 0) return false;
+                if (_folder.GetUIObjectOf(owner, (uint)_children.Count, _children.ToArray(),
+                    IID_IContextMenu, IntPtr.Zero, out object cm) != 0) return false;
+                _menu = cm as IContextMenu;
+                if (_menu == null) return false;
+                _hMenu = CreatePopupMenu();
+                if (_hMenu == IntPtr.Zero) return false;
+                _menu.QueryContextMenu(_hMenu, 0, CmdFirst, CmdLast, CMF_EXPLORE);
+                if (GetMenuItemCount(_hMenu) <= 0) return false;
+                SetForegroundWindow(owner);
                 GetCursorPos(out POINT pt);
-                int chosen = TrackPopupMenuEx(hMenu, TPM_RETURNCMD | TPM_LEFTALIGN | TPM_RIGHTBUTTON,
-                                              pt.X, pt.Y, hwnd, IntPtr.Zero);
-
-                // Zero means dismissed without choosing, which is a normal outcome, not a failure.
+                int chosen = TrackPopupMenuEx(_hMenu, TPM_RETURNCMD | TPM_LEFTALIGN | TPM_RIGHTBUTTON,
+                    pt.X, pt.Y, owner, IntPtr.Zero);
                 if (chosen <= 0) return true;
-
-                // The verb is the command's offset from CmdFirst, passed as a resource-style
-                // integer rather than a string pointer.
                 var info = new CMINVOKECOMMANDINFO
                 {
                     cbSize = Marshal.SizeOf<CMINVOKECOMMANDINFO>(),
-                    hwnd   = hwnd,
+                    hwnd = owner,
                     lpVerb = (IntPtr)(chosen - CmdFirst),
-                    nShow  = SW_SHOWNORMAL,
+                    nShow = SW_SHOWNORMAL,
                 };
-                menu.InvokeCommand(ref info);
+                _menu.InvokeCommand(ref info);
                 return true;
             }
-            catch { return false; }   // a misbehaving shell extension is not ours to fix
-            finally
+
+            public void Dispose()
             {
-                if (hMenu != IntPtr.Zero) DestroyMenu(hMenu);
-                foreach (var c in children) Marshal.FreeCoTaskMem(c);
-                if (dirPidl != IntPtr.Zero) Marshal.FreeCoTaskMem(dirPidl);
-                if (menu != null)    Marshal.ReleaseComObject(menu);
-                if (folder != null)  Marshal.ReleaseComObject(folder);
-                if (desktop != null) Marshal.ReleaseComObject(desktop);
+                if (_hMenu != IntPtr.Zero) DestroyMenu(_hMenu);
+                foreach (var child in _children) Marshal.FreeCoTaskMem(child);
+                if (_parentPidl != IntPtr.Zero) Marshal.FreeCoTaskMem(_parentPidl);
+                if (_menu != null) Marshal.ReleaseComObject(_menu);
+                if (_folder != null) Marshal.ReleaseComObject(_folder);
             }
         }
 
@@ -238,7 +265,15 @@ namespace KillerShell.Services
         }
 
         [DllImport("shell32.dll")]
-        private static extern int SHGetDesktopFolder(out IShellFolder ppshf);
+        private static extern int SHBindToParent(IntPtr pidl, ref Guid riid,
+            [MarshalAs(UnmanagedType.Interface)] out IShellFolder folder, out IntPtr child);
+
+        [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
+        private static extern int SHParseDisplayName(string path, IntPtr bindingContext,
+            out IntPtr pidl, uint attributes, out uint resultAttributes);
+
+        [DllImport("shell32.dll")]
+        private static extern IntPtr ILClone(IntPtr pidl);
 
         [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
         private static extern bool ShellExecuteEx(ref SHELLEXECUTEINFO lpExecInfo);

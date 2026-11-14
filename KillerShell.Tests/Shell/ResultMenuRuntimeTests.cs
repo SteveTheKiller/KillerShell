@@ -42,13 +42,13 @@ public static class ResultMenuScenario
             pane.ResultsList.SelectedItem = folder;
             OpenMenu(pane, true);
             // A folder: the card names it, offers the five verbs that apply to a folder (no Edit),
-            // and the Path and Folder chips (no Name, Lines or SHA-256).
+            // and the Path, Name and Folder chips (no Lines or SHA-256).
             Assert.Equal("Runbooks", HeaderTitle(menu));
             var quick = Tagged(menu.Items, "cardquick");
             var chips = Tagged(menu.Items, "cardcopy");
             Assert.Equal(Visibility.Visible, quick.Visibility);
             Assert.Equal(new[] { "open", "cut", "copy", "rename", "delete" }, Shown(quick));
-            Assert.Equal(new[] { "path", "folder" }, Shown(chips));
+            Assert.Equal(new[] { "path", "name", "folder" }, Shown(chips));
             // A screen reader hears the whole command on a chip, not just "Path".
             Assert.Equal(fixture.Window.FindResource("Str_Menu_CopyPath"),
                 System.Windows.Automation.AutomationProperties.GetName(QuickButton(chips, "path")));

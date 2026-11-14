@@ -788,9 +788,13 @@ namespace KillerShell.Shell
         internal void DetailsHeader_MouseRightButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if (sender is not FrameworkElement el) return;
-            Services.ColumnVisibilityMenu.ShowFor(el, WindowViewSettingKey("ResultsDetails" + PaneKey(Pane)), DetailsColumnEntries(Pane));
+            ShowDetailsColumns(Pane, el);
             e.Handled = true;
         }
+
+        internal void ShowDetailsColumns(FilePane pane, FrameworkElement target, bool keyboard = false)
+            => Services.ColumnVisibilityMenu.ShowFor(target,
+                WindowViewSettingKey("ResultsDetails" + PaneKey(pane)), keyboard, DetailsColumnEntries(pane));
 
         internal void ViewList_Click(object sender, RoutedEventArgs e)    => SetResultsView(0);
         internal void ViewIcons_Click(object sender, RoutedEventArgs e)   => SetResultsView(1);

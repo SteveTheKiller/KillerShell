@@ -60,23 +60,35 @@ namespace KillerShell.Services
         /// - one MenuItem per entry, IsChecked mirroring its current visibility, toggling and
         /// re-persisting it on click.
         /// </summary>
-        internal static void ShowFor(FrameworkElement placementTarget, string settingsKey,
+        internal static void ShowFor(FrameworkElement placementTarget, string settingsKey, bool keyboard,
                                       params Entry[] columns)
         {
+            var previousFocus = Keyboard.FocusedElement as UIElement;
+            var previousRow = FindAncestor<DataGridRow>(previousFocus);
             var menu = new ContextMenu { PlacementTarget = placementTarget, Placement = PlacementMode.Bottom };
             foreach (var c in columns)
             {
-                var entry = c;   // local copy - each Click handler must capture its OWN entry, not the loop variable
+                var entry = c;   // Each handler captures its own entry.
                 var item = new MenuItem { IsCheckable = true, IsChecked = entry.GetVisible() };
                 item.SetResourceReference(HeaderedItemsControl.HeaderProperty, entry.HeaderResourceKey);
-                item.Click += (_, _) =>
+                RoutedEventHandler updateVisibility = (_, _) =>
                 {
-                    bool visible = !entry.GetVisible();
+                    bool visible = item.IsChecked;
                     entry.SetVisible(visible);
                     ThemeManager.SetSetting(SettingKey(settingsKey, entry.Key), visible ? "1" : "0");
                 };
+                item.Checked += updateVisibility;
+                item.Unchecked += updateVisibility;
                 menu.Items.Add(item);
             }
+            placementTarget.ContextMenu = menu;
+            menu.Closed += (_, _) =>
+            {
+                if (ReferenceEquals(placementTarget.ContextMenu, menu)) placementTarget.ContextMenu = null;
+                if (keyboard) placementTarget.Focus();
+                else if (previousFocus is { IsVisible: true, IsEnabled: true, Focusable: true }) previousFocus.Focus();
+                else previousRow?.MoveFocus(new TraversalRequest(FocusNavigationDirection.First));
+            };
             menu.IsOpen = true;
         }
 
@@ -91,6 +103,29 @@ namespace KillerShell.Services
             var entries = BuildEntries(columns);
             RestoreVisibility(settingsKey, entries);
             grid.PreviewMouseRightButtonUp += (_, e) => HandleHeaderRightClick(e, settingsKey, entries);
+            AttachKeyboard(grid, () => settingsKey, () => entries);
+        }
+
+        internal static void AttachKeyboard(DataGrid grid, Func<string> settingsKey, Func<Entry[]> entries)
+        {
+            var style = new Style(typeof(DataGridColumnHeader), grid.ColumnHeaderStyle);
+            style.Setters.Add(new Setter(UIElement.FocusableProperty, true));
+            style.Setters.Add(new Setter(Control.IsTabStopProperty, true));
+            grid.ColumnHeaderStyle = style;
+            grid.PreviewKeyDown += (_, e) =>
+            {
+                if (e.Key != Key.Apps || Keyboard.Modifiers != ModifierKeys.None) return;
+                var header = FindAncestor<DataGridColumnHeader>(e.OriginalSource as DependencyObject);
+                if (header != null && FindAncestor<DataGrid>(header) == grid) e.Handled = true;
+            };
+            grid.PreviewKeyUp += (_, e) =>
+            {
+                if (e.Key != Key.Apps || Keyboard.Modifiers != ModifierKeys.None) return;
+                var header = FindAncestor<DataGridColumnHeader>(e.OriginalSource as DependencyObject);
+                if (header == null || FindAncestor<DataGrid>(header) != grid) return;
+                ShowFor(header, settingsKey(), true, entries());
+                e.Handled = true;
+            };
         }
 
         /// <summary>
@@ -125,7 +160,7 @@ namespace KillerShell.Services
         {
             var header = FindAncestor<DataGridColumnHeader>(e.OriginalSource as DependencyObject);
             if (header == null) return;   // right-click landed on a row, not the header - leave it alone
-            ShowFor(header, settingsKey, entries);
+            ShowFor(header, settingsKey, false, entries);
             e.Handled = true;
         }
 

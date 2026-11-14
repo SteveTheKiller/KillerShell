@@ -505,9 +505,6 @@ namespace KillerShell.Shell
 
                 var tab = t;   // captured per row, not per loop
 
-                // Doubled, because a lone underscore in a MenuItem header is an access-key
-                // marker: "Backup_Nightly.ps1" would draw as "BackupNightly.ps1" with an N
-                // underlined, and file names carry underscores all the time.
                 // A close X at the END of the row, like KillerPDF's recent-documents dropdown, so
                 // a tab can be shut from the list without switching to it first. The header
                 // becomes a DockPanel rather than a string: the title takes the remaining width
@@ -528,10 +525,7 @@ namespace KillerShell.Shell
 
                 var label = new TextBlock
                 {
-                    // Doubled, because a lone underscore in a MenuItem header is an access-key
-                    // marker: "Backup_Nightly.ps1" would draw as "BackupNightly.ps1" with an N
-                    // underlined, and file names carry underscores all the time.
-                    Text = tab.Title.Replace("_", "__"),
+                    Text = tab.Title,
                     VerticalAlignment = VerticalAlignment.Center,
                     TextTrimming = TextTrimming.CharacterEllipsis,
                     // Bold rather than a check mark: IsChecked draws into the Icon slot, which

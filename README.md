@@ -16,7 +16,7 @@ Full how-tos live on the [help page](https://killershell.net/help.html); archite
 - Browse installed WSL distributions, pin Linux folders, and open a terminal in the selected Linux directory
 - Edit text with syntax highlighting, find, go to line, undo/redo, encoding and line-ending preservation, indentation controls, and a dedicated font setting
 - Copy, move, rename, recycle, permanently delete, and drag files to or from Explorer, with asynchronous progress and Replace, Skip, or Keep both collision handling
-- Work with ZIP archives, including empty folders and complete folder-tree drag-out, without changing the original when a rewrite is canceled
+- Browse and extract ZIP, TAR, TAR.GZ, TGZ, and GZ archives; edit ZIP contents without changing the original when a rewrite is canceled
 - Inspect and manage processes and services, including live CPU and memory sorting, filtering, ownership, restart, and elevation where needed
 - Monitor CPU, RAM, disks, networks, and GPUs with live graphs and per-core CPU history
 - Use the built-in Event Viewer, Registry Editor, and Storage Analyzer without leaving the tab strip

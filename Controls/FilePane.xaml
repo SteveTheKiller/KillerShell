@@ -1219,6 +1219,11 @@
                 <Border x:Name="DetailsHeader" DockPanel.Dock="Top" Visibility="Collapsed"
                         Background="{DynamicResource TableHeaderBrush}" BorderBrush="{DynamicResource HeaderLineBrush}"
                         BorderThickness="0,0,0,1"
+                        Focusable="True" KeyboardNavigation.IsTabStop="True"
+                        AutomationProperties.Name="{DynamicResource Str_A11y_ColumnHeadings}"
+                        AutomationProperties.HelpText="{DynamicResource Str_A11y_ColumnHeadingsHelp}"
+                        PreviewKeyDown="DetailsHeader_PreviewKeyDown"
+                        PreviewKeyUp="DetailsHeader_PreviewKeyUp"
                         MouseRightButtonUp="DetailsHeader_MouseRightButtonUp">
                   <Grid>
                   <!-- Its own grain, for the reason the location row above carries one: the
@@ -2211,7 +2216,7 @@
                                 </MenuItem.Header>
                             </MenuItem>
                             <!-- The copy variants, all acting on the whole selection, one entry per line.
-                                 Lines appears only on content matches, Name and SHA-256 only on files. -->
+                                 Lines appears only on content matches, SHA-256 only on files. -->
                             <MenuItem Tag="cardcopy" Style="{StaticResource CardSlot}" Padding="24,6,4,4"
                                       AutomationProperties.Name="{DynamicResource Str_Card_CopyLabel}">
                                 <MenuItem.Header>
@@ -2223,7 +2228,7 @@
                                             <Button Style="{StaticResource CardChip}" CommandParameter="path" Content="{DynamicResource Str_Card_Path}" AutomationProperties.Name="{DynamicResource Str_Menu_CopyPath}">
                                                 <Button.ToolTip><TextBlock><Run Text="{DynamicResource Str_Menu_CopyPath}"/><Run Text="  (Ctrl+Shift+C)"/></TextBlock></Button.ToolTip>
                                             </Button>
-                                            <Button Style="{StaticResource CardChip}" Uid="fileonly" CommandParameter="name" Content="{DynamicResource Str_Card_Name}" AutomationProperties.Name="{DynamicResource Str_Menu_CopyName}">
+                                            <Button Style="{StaticResource CardChip}" Uid="item" CommandParameter="name" Content="{DynamicResource Str_Card_Name}" AutomationProperties.Name="{DynamicResource Str_Menu_CopyName}">
                                                 <Button.ToolTip><TextBlock><Run Text="{DynamicResource Str_Menu_CopyName}"/><Run Text="  (Ctrl+Shift+M)"/></TextBlock></Button.ToolTip>
                                             </Button>
                                             <Button Style="{StaticResource CardChip}" CommandParameter="folder" Content="{DynamicResource Str_Card_Folder}" AutomationProperties.Name="{DynamicResource Str_Menu_CopyFolder}">

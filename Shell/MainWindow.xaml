@@ -209,15 +209,17 @@
                                         <StackPanel x:Name="TitleSearchForm">
                                             <TextBlock x:Name="SearchHeading" Text="KillerSearch" FontFamily="{DynamicResource SearchTitleFont}"
                                                        FontSize="20" Foreground="{DynamicResource PrimaryBrush}" theme:Bevel.Enabled="True"
-                                                       Margin="12,8,12,4"/>
-                                            <Button x:Name="SearchScopeButton" Style="{StaticResource SurfaceButton}" Margin="12,2,12,4"
-                                                    Height="26" Padding="8,2" HorizontalAlignment="Left"
-                                                    HorizontalContentAlignment="Left" Click="SearchScopeButton_Click">
-                                                <StackPanel Orientation="Horizontal">
+                                                       Margin="16,12,16,10"/>
+                                            <Button x:Name="SearchScopeButton" Style="{StaticResource SurfaceButton}" Margin="16,0,16,8"
+                                                    MinHeight="32" Padding="10,4" HorizontalAlignment="Stretch"
+                                                    HorizontalContentAlignment="Stretch" Click="SearchScopeButton_Click"
+                                                    AutomationProperties.Name="{Binding Text, ElementName=SearchScopeLabel}">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                                                     <TextBlock x:Name="SearchScopeIcon" Text="&#xE737;" FontFamily="Segoe MDL2 Assets" Margin="0,0,7,0" VerticalAlignment="Center"/>
-                                                    <TextBlock x:Name="SearchScopeLabel" VerticalAlignment="Center"/>
-                                                    <TextBlock Text="&#xE70D;" FontFamily="Segoe MDL2 Assets" FontSize="9" Margin="10,0,0,0" VerticalAlignment="Center"/>
-                                                </StackPanel>
+                                                    <TextBlock x:Name="SearchScopeLabel" Grid.Column="1" TextWrapping="Wrap" VerticalAlignment="Center"/>
+                                                    <TextBlock Grid.Column="2" Text="&#xE70D;" FontFamily="Segoe MDL2 Assets" FontSize="9" Margin="10,0,0,0" VerticalAlignment="Center"/>
+                                                </Grid>
                                             </Button>
                                             <ContentControl x:Name="TitleSearchContent" HorizontalContentAlignment="Stretch"/>
                                         </StackPanel>
@@ -1112,28 +1114,37 @@
             <!-- Search controls are reparented into the titlebar flyout at startup. -->
             <Grid Grid.Column="5" x:Name="SearchPanel" Visibility="Collapsed">
               <DockPanel Background="Transparent" LastChildFill="True">
-                <Border DockPanel.Dock="Bottom" Padding="12,4,12,10">
-                    <WrapPanel>
+                <Border DockPanel.Dock="Bottom" Padding="16,12,16,16">
+                    <Grid x:Name="SearchActions">
+                        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                         <Button x:Name="SearchButton" Content="{DynamicResource Str_Btn_Search}" Style="{StaticResource OutlineButton}"
-                                MinWidth="90" Height="26" Padding="12,2" Margin="0,0,6,4" Click="Search_Click"/>
+                                MinWidth="90" Height="32" Padding="12,2" Margin="0,0,8,0" Click="Search_Click"
+                                AutomationProperties.Name="{Binding Content, RelativeSource={RelativeSource Self}}"
+                                AutomationProperties.HelpText="{Binding Content, RelativeSource={RelativeSource Self}, StringFormat='{}{0} (Enter)'}"
+                                ToolTip="{Binding Path=(AutomationProperties.HelpText), RelativeSource={RelativeSource Self}}">
+                        </Button>
                         <!-- Push buttons, not toolbar buttons: on 98SE they stand raised at rest like
                              Search beside them. The bevel borders are zero-thickness on other themes. -->
-                        <Grid Margin="0,0,6,4">
-                            <Button Content="+" Width="28" Height="26" Padding="0" FontSize="15"
+                        <Grid x:Name="SearchClearAction" Grid.Column="1" Margin="0,0,8,0">
+                            <Button Content="{DynamicResource Str_Btn_Clear}" Style="{StaticResource SurfaceButton}"
+                                    Background="Transparent" Height="32" Padding="12,2" Click="Clear_Click"
+                                    AutomationProperties.Name="{DynamicResource Str_Ks_Clear}"
+                                    AutomationProperties.HelpText="{Binding Path=(AutomationProperties.Name), RelativeSource={RelativeSource Self}, StringFormat='{}{0} (Ctrl+Shift+L)'}"
+                                    ToolTip="{Binding Path=(AutomationProperties.HelpText), RelativeSource={RelativeSource Self}}"/>
+                            <Border IsHitTestVisible="False" BorderBrush="{DynamicResource BevelLightBrush}" BorderThickness="{DynamicResource BevelLightThickness}"/>
+                            <Border IsHitTestVisible="False" Margin="{DynamicResource BevelInnerMargin}" BorderBrush="{DynamicResource BevelDarkBrush}" BorderThickness="{DynamicResource BevelDarkThickness}"/>
+                            <Border IsHitTestVisible="False" BorderBrush="{DynamicResource BevelOuterDarkBrush}" BorderThickness="{DynamicResource BevelOuterDarkThickness}"/>
+                        </Grid>
+                        <Grid x:Name="SearchNewTabAction" Grid.Column="2">
+                            <Button Content="+" Width="32" Height="32" Padding="0" FontSize="15"
                                     Style="{StaticResource SurfaceButton}" Background="Transparent"
                                     ToolTip="{DynamicResource Str_TT_NewTab}" Click="NewTab_Click"/>
                             <Border IsHitTestVisible="False" BorderBrush="{DynamicResource BevelLightBrush}" BorderThickness="{DynamicResource BevelLightThickness}"/>
                             <Border IsHitTestVisible="False" Margin="{DynamicResource BevelInnerMargin}" BorderBrush="{DynamicResource BevelDarkBrush}" BorderThickness="{DynamicResource BevelDarkThickness}"/>
                             <Border IsHitTestVisible="False" BorderBrush="{DynamicResource BevelOuterDarkBrush}" BorderThickness="{DynamicResource BevelOuterDarkThickness}"/>
                         </Grid>
-                        <Grid Margin="0,0,6,4">
-                            <Button Content="{DynamicResource Str_Btn_Clear}" Style="{StaticResource SurfaceButton}"
-                                    Background="Transparent" Height="26" Padding="10,2" Click="Clear_Click"/>
-                            <Border IsHitTestVisible="False" BorderBrush="{DynamicResource BevelLightBrush}" BorderThickness="{DynamicResource BevelLightThickness}"/>
-                            <Border IsHitTestVisible="False" Margin="{DynamicResource BevelInnerMargin}" BorderBrush="{DynamicResource BevelDarkBrush}" BorderThickness="{DynamicResource BevelDarkThickness}"/>
-                            <Border IsHitTestVisible="False" BorderBrush="{DynamicResource BevelOuterDarkBrush}" BorderThickness="{DynamicResource BevelOuterDarkThickness}"/>
-                        </Grid>
-                    </WrapPanel>
+                    </Grid>
                 </Border>
 
                 <Grid x:Name="SearchSections">
@@ -1142,10 +1153,19 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                <Border x:Name="SearchFiltersSection" Grid.Row="1" Padding="12,4,12,6" VerticalAlignment="Top">
+                <Border x:Name="SearchFiltersSection" Grid.Row="1" Padding="16,8,16,0" VerticalAlignment="Top">
                     <StackPanel>
-                        <TextBlock Text="{DynamicResource Str_Lbl_Filters}" FontFamily="{DynamicResource SearchSectionFont}"
-                                   FontSize="{DynamicResource SearchSectionFontSize}" FontWeight="{DynamicResource SearchSectionFontWeight}" Foreground="{DynamicResource PrimaryBrush}" theme:Bevel.Enabled="True" Margin="0,0,0,6"/>
+                        <Grid x:Name="SearchFiltersHeader" Margin="0,0,0,8">
+                            <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                            <TextBlock x:Name="SearchFiltersHeading" Text="{DynamicResource Str_Lbl_Filters}" FontFamily="{DynamicResource UiFont}"
+                                       FontSize="12" Foreground="{DynamicResource PrimaryBrush}" VerticalAlignment="Center"/>
+                            <Button x:Name="SearchAddFilterButton" Grid.Column="1" Content="{DynamicResource Str_Btn_AddFilter}" Style="{StaticResource SurfaceButton}"
+                                    Background="Transparent" MinHeight="28" Padding="8,3" Click="AddFilter_Click"
+                                    AutomationProperties.Name="{DynamicResource Str_Ks_AddFilter}"
+                                    AutomationProperties.HelpText="{Binding Path=(AutomationProperties.Name), RelativeSource={RelativeSource Self}, StringFormat='{}{0} (Shift+F7)'}"
+                                    ToolTip="{Binding Path=(AutomationProperties.HelpText), RelativeSource={RelativeSource Self}}"/>
+                        </Grid>
 
                         <!-- Filter rows: [field v] on top, [condition toggle][value] below. AND-ed with
                              the terms. The condition is a toggle button with SHORT localized words
@@ -1164,23 +1184,26 @@
                                                         <ColumnDefinition Width="4"/>
                                                         <ColumnDefinition Width="Auto"/>
                                                     </Grid.ColumnDefinitions>
-                                                    <ComboBox Grid.Column="0" HorizontalAlignment="Left" MinWidth="112"
+                                                    <ComboBox Grid.Column="0" HorizontalAlignment="Left" MinWidth="112" Height="32" VerticalContentAlignment="Center"
                                                               SelectedIndex="{Binding FieldIndex, Mode=TwoWay}">
                                                         <ComboBoxItem Content="{DynamicResource Str_Filter_Ext}"/>
                                                         <ComboBoxItem Content="{DynamicResource Str_Filter_Date}"/>
                                                         <ComboBoxItem Content="{DynamicResource Str_Filter_Size}"/>
                                                     </ComboBox>
                                                     <Button Grid.Column="2" Content="&#xE8BB;" FontFamily="Segoe MDL2 Assets" FontSize="12"
-                                                            Style="{StaticResource DangerButton}" Width="26" Height="26" Padding="0"
-                                                            Tag="{Binding}" Click="RemoveFilter_Click"/>
+                                                            Style="{StaticResource DangerButton}" Width="32" Height="32" Padding="0"
+                                                            Tag="{Binding}" Click="RemoveFilter_Click"
+                                                            ToolTip="{DynamicResource Str_TT_RemoveSearchFilter}"
+                                                            AutomationProperties.Name="{DynamicResource Str_TT_RemoveSearchFilter}"/>
                                                 </Grid>
                                                 <Grid>
+                                                    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="74"/>
                                                         <ColumnDefinition Width="6"/>
                                                         <ColumnDefinition Width="*"/>
                                                     </Grid.ColumnDefinitions>
-                                                    <Button Grid.Column="0" Style="{StaticResource ModeButton}" Width="74" Height="26"
+                                                    <Button Grid.Column="0" Style="{StaticResource ModeButton}" Width="74" Height="32"
                                                             Tag="{Binding}" Click="ToggleFilterCondition_Click">
                                                         <TextBlock>
                                                             <TextBlock.Style>
@@ -1233,18 +1256,18 @@
                                                             </TextBlock.Style>
                                                         </TextBlock>
                                                     </Button>
-                                                    <Grid Grid.Column="2">
+                                                    <Grid x:Name="FilterValueHost" Grid.Column="2">
                                                         <Grid.ColumnDefinitions>
                                                             <ColumnDefinition Width="*"/>
                                                             <ColumnDefinition Width="Auto"/>
                                                         </Grid.ColumnDefinitions>
-                                                        <TextBox Grid.ColumnSpan="2" Text="{Binding Text, UpdateSourceTrigger=PropertyChanged}"
+                                                        <TextBox Grid.ColumnSpan="2" Height="32" VerticalContentAlignment="Center" Text="{Binding Text, UpdateSourceTrigger=PropertyChanged}"
                                                                  Visibility="{Binding IsExt, Converter={StaticResource BoolToVis}}"/>
-                                                        <DatePicker Grid.ColumnSpan="2" SelectedDate="{Binding Date, Mode=TwoWay}"
+                                                        <DatePicker Grid.ColumnSpan="2" Height="32" VerticalContentAlignment="Center" SelectedDate="{Binding Date, Mode=TwoWay}"
                                                                     Visibility="{Binding IsDate, Converter={StaticResource BoolToVis}}"/>
-                                                        <TextBox Grid.Column="0" Text="{Binding SizeText, UpdateSourceTrigger=PropertyChanged}"
+                                                        <TextBox Grid.Column="0" Height="32" VerticalContentAlignment="Center" Text="{Binding SizeText, UpdateSourceTrigger=PropertyChanged}"
                                                                  Visibility="{Binding IsSize, Converter={StaticResource BoolToVis}}"/>
-                                                        <ComboBox Grid.Column="1" Width="56" Margin="4,0,0,0" SelectedIndex="{Binding UnitIndex, Mode=TwoWay}"
+                                                        <ComboBox Grid.Column="1" Width="56" Height="32" VerticalContentAlignment="Center" Margin="4,0,0,0" SelectedIndex="{Binding UnitIndex, Mode=TwoWay}"
                                                                   Visibility="{Binding IsSize, Converter={StaticResource BoolToVis}}">
                                                             <ComboBoxItem Content="KB"/>
                                                             <ComboBoxItem Content="MB"/>
@@ -1255,14 +1278,17 @@
                                             </Grid>
                                         </Border>
                                         </Grid>
+                                        <DataTemplate.Triggers>
+                                            <DataTrigger Binding="{Binding Tag, RelativeSource={RelativeSource AncestorType=ItemsControl}}" Value="True">
+                                                <Setter TargetName="FilterValueHost" Property="Grid.Row" Value="1"/>
+                                                <Setter TargetName="FilterValueHost" Property="Grid.Column" Value="0"/>
+                                                <Setter TargetName="FilterValueHost" Property="Grid.ColumnSpan" Value="3"/>
+                                                <Setter TargetName="FilterValueHost" Property="Margin" Value="0,6,0,0"/>
+                                            </DataTrigger>
+                                        </DataTemplate.Triggers>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
-                        <!-- Transparent face, like every other button in this panel. -->
-                        <Button HorizontalAlignment="Left" Content="{DynamicResource Str_Btn_AddFilter}" Style="{StaticResource SurfaceButton}"
-                                Background="Transparent"
-                                Padding="8,3" FontSize="10" Margin="0,2,0,0" Click="AddFilter_Click"/>
-
                         <!-- "advanced" accordion: include/exclude/case collapse out of the way -->
                         <Border Margin="0,6,0,0" Padding="0,4,0,2">
                           <StackPanel>
@@ -1305,27 +1331,39 @@
                     </StackPanel>
                 </Border>
 
-                <Border x:Name="SearchTermsSection" Padding="12,8,12,4" VerticalAlignment="Top">
+                <Border x:Name="SearchTermsSection" Padding="16,4,16,0" VerticalAlignment="Top">
                     <DockPanel LastChildFill="True">
                             <ItemsControl x:Name="TermsList">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate DataType="{x:Type models:TermGroup}">
                                         <Grid Margin="0,0,0,8">
-                                        <Border Background="Transparent" BorderBrush="{DynamicResource InputBorderBrush}"
-                                                BorderThickness="1" CornerRadius="5" Padding="6">
+                                        <Border Background="Transparent" BorderBrush="{DynamicResource InputBorderBrush}" CornerRadius="5">
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="BorderThickness" Value="1"/>
+                                                    <Setter Property="Padding" Value="8"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Items.Count, RelativeSource={RelativeSource AncestorType=ItemsControl}}" Value="1">
+                                                            <Setter Property="BorderThickness" Value="0"/>
+                                                            <Setter Property="Padding" Value="0"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
                                             <Grid>
                                             <StackPanel>
                                                 <!-- Group header: ANY/ALL combiner toggle + remove-group -->
-                                                <Grid Margin="0,0,0,5">
+                                                <Grid Margin="0,0,0,8" MinHeight="28">
                                                     <Button HorizontalAlignment="Left" Content="{Binding ModeLabel, Mode=OneWay}" Style="{StaticResource ModeButton}"
-                                                            Width="44" Height="24" FontSize="10" ToolTip="{Binding ModeTooltip}" Tag="{Binding}" Click="ToggleGroupMode_Click"/>
+                                                            Width="52" Height="28" FontSize="10" ToolTip="{Binding ModeTooltip}" Tag="{Binding}" Click="ToggleGroupMode_Click"/>
                                                 </Grid>
-                                                <ItemsControl ItemsSource="{Binding Terms}">
+                                                <ItemsControl ItemsSource="{Binding Terms}" Tag="{Binding Tag, RelativeSource={RelativeSource AncestorType=ItemsControl}}">
                                                     <ItemsControl.ItemTemplate>
                                                         <DataTemplate DataType="{x:Type models:SearchTerm}">
-                                                            <Grid Margin="0,0,0,4">
+                                                            <Grid Margin="0,0,0,8" MinHeight="32">
+                                                                <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
                                                                 <Grid.ColumnDefinitions>
-                                                                    <ColumnDefinition Width="62"/>
+                                                                    <ColumnDefinition Width="76"/>
                                                                     <ColumnDefinition Width="6"/>
                                                                     <ColumnDefinition Width="*"/>
                                                                     <ColumnDefinition Width="5"/>
@@ -1334,20 +1372,35 @@
                                                                     <ColumnDefinition Width="Auto"/>
                                                                 </Grid.ColumnDefinitions>
                                                                 <Button Grid.Column="0" Content="{Binding ModeName, Mode=OneWay}" Style="{StaticResource ModeButton}"
-                                                                        ToolTip="{Binding ModeTooltip}" Tag="{Binding}" Click="ToggleMode_Click"/>
-                                                                <TextBox Grid.Column="2" Text="{Binding Pattern, UpdateSourceTrigger=PropertyChanged}" ToolTip="{Binding ModeTooltip}"/>
-                                                                <TextBlock Grid.Column="4" Text="{Binding MatchBadge}" Foreground="{DynamicResource PrimaryBrush}"
+                                                                        Width="76" Height="32" ToolTip="{Binding ModeTooltip}" Tag="{Binding}" Click="ToggleMode_Click"/>
+                                                                <TextBox x:Name="PatternTextBox" Grid.Column="2" Height="32" VerticalContentAlignment="Center" Text="{Binding Pattern, UpdateSourceTrigger=PropertyChanged}" ToolTip="{Binding ModeTooltip}"/>
+                                                                <TextBlock x:Name="MatchBadge" Grid.Column="4" Text="{Binding MatchBadge}" Foreground="{DynamicResource PrimaryBrush}"
                                                                            FontFamily="{DynamicResource MonoFont}" FontSize="10" VerticalAlignment="Center"/>
                                                                 <Button Grid.Column="6" Content="&#xE8BB;" FontFamily="Segoe MDL2 Assets" FontSize="12"
-                                                                        Style="{StaticResource DangerButton}" Width="26" Height="26" Padding="0"
-                                                                        Tag="{Binding}" Click="RemoveTerm_Click"/>
+                                                                        Style="{StaticResource DangerButton}" Width="32" Height="32" Padding="0"
+                                                                        Tag="{Binding}" Click="RemoveTerm_Click"
+                                                                        ToolTip="{DynamicResource Str_TT_RemoveSearchTerm}"
+                                                                        AutomationProperties.Name="{DynamicResource Str_TT_RemoveSearchTerm}"/>
                                                             </Grid>
+                                                            <DataTemplate.Triggers>
+                                                                <DataTrigger Binding="{Binding Tag, RelativeSource={RelativeSource AncestorType=ItemsControl}}" Value="True">
+                                                                    <Setter TargetName="PatternTextBox" Property="Grid.Row" Value="1"/>
+                                                                    <Setter TargetName="PatternTextBox" Property="Grid.Column" Value="0"/>
+                                                                    <Setter TargetName="PatternTextBox" Property="Grid.ColumnSpan" Value="7"/>
+                                                                    <Setter TargetName="PatternTextBox" Property="Margin" Value="0,6,0,0"/>
+                                                                    <Setter TargetName="MatchBadge" Property="Grid.Row" Value="2"/>
+                                                                    <Setter TargetName="MatchBadge" Property="Grid.Column" Value="0"/>
+                                                                    <Setter TargetName="MatchBadge" Property="Grid.ColumnSpan" Value="7"/>
+                                                                    <Setter TargetName="MatchBadge" Property="HorizontalAlignment" Value="Right"/>
+                                                                    <Setter TargetName="MatchBadge" Property="Margin" Value="0,4,0,0"/>
+                                                                </DataTrigger>
+                                                            </DataTemplate.Triggers>
                                                         </DataTemplate>
                                                     </ItemsControl.ItemTemplate>
                                                 </ItemsControl>
                                                 <Button HorizontalAlignment="Left" Content="{DynamicResource Str_Btn_AddTerm}" Style="{StaticResource SurfaceButton}"
                                                         Background="Transparent"
-                                                        Padding="8,3" FontSize="10" Margin="0,2,0,0" Tag="{Binding}" Click="AddTerm_Click"/>
+                                                        MinHeight="28" Padding="8,3" Margin="0,0,0,0" ToolTip="{DynamicResource Str_Ks_AddTerm}" Tag="{Binding}" Click="AddTerm_Click"/>
                                             </StackPanel>
                                             </Grid>
                                         </Border>

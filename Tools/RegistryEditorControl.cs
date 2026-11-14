@@ -1202,7 +1202,9 @@ namespace KillerShell.Tools
 
         private void Tree_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
-            var node = NodeUnder(Mouse.DirectlyOver as DependencyObject) ?? _selectedNode;
+            var node = e.CursorLeft < 0 && e.CursorTop < 0
+                ? NodeUnder(Keyboard.FocusedElement as DependencyObject) ?? _selectedNode
+                : NodeUnder(Mouse.DirectlyOver as DependencyObject) ?? _selectedNode;
             if (node == null) { e.Handled = true; return; }
             if (!node.IsSelected) node.IsSelected = true;
 

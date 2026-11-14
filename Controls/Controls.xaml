@@ -88,15 +88,6 @@
                             BorderBrush="{DynamicResource ButtonEdgeBrush}" BorderThickness="0">
                         <Grid>
                             <Border x:Name="tint" CornerRadius="{DynamicResource ControlCornerRadius}" Background="Transparent"/>
-                            <!-- The family stroke sits on a copy UNDER the label. An effect on the label
-                                 itself rasterizes it, which blurs it at rest and snaps it back to
-                                 hinted text on hover. With no stroke (98SE) the copy hides behind
-                                 the label. Ideal grayscale text keeps a large display font smooth, with no
-                                 ClearType fringes on the accent when hover drops the stroke. -->
-                            <ContentPresenter x:Name="stroke" Margin="{TemplateBinding Padding}" IsHitTestVisible="False"
-                                              HorizontalAlignment="Center" VerticalAlignment="Center"
-                                              TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="Grayscale"
-                                              Effect="{DynamicResource TextStroke}"/>
                             <ContentPresenter x:Name="label" Margin="{TemplateBinding Padding}"
                                               HorizontalAlignment="Center" VerticalAlignment="Center"
                                               TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="Grayscale"/>
@@ -116,11 +107,9 @@
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="tint" Property="Background" Value="#2EFFFFFF"/>
-                            <Setter TargetName="stroke" Property="Visibility" Value="Collapsed"/>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
                             <Setter TargetName="tint" Property="Background" Value="#38000000"/>
-                            <Setter TargetName="stroke" Property="Visibility" Value="Collapsed"/>
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter Property="Opacity" Value="0.5"/>
@@ -153,9 +142,7 @@
                     <Border x:Name="borderRing" IsHitTestVisible="False" CornerRadius="{Binding CornerRadius, ElementName=border}" BorderThickness="{Binding BorderThickness, ElementName=border}" BorderBrush="{Binding Background, ElementName=border}" Margin="{Binding Margin, ElementName=border}" Visibility="{Binding Visibility, ElementName=border}" Opacity="{Binding Opacity, ElementName=border}"/><Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
                             CornerRadius="{DynamicResource ControlCornerRadius}" Padding="{TemplateBinding Padding}">
-                        <!-- No stroke effect on the caption: an effect rasterizes the text and blurs it
-                             at rest. PrimaryButton strokes a copy instead, but this template also
-                             carries BareButton's icon content, which cannot appear twice. -->
+                        <!-- Keep captions and icons free of effects so they stay sharp. -->
                         <ContentPresenter x:Name="label" HorizontalAlignment="Center"
                                           VerticalAlignment="Center"/>
                     </Border>
@@ -1058,11 +1045,15 @@
                                      shortcut text starts at the SAME x-offset in every sibling row (a real
                                      column) instead of hugging the right edge of whichever row is widest. -->
                                 <ColumnDefinition Width="Auto" SharedSizeGroup="MenuHeaderCol"/>
-                                <ColumnDefinition Width="Auto" SharedSizeGroup="MenuGestureCol"/>
-                                <!-- Star, with the arrow right-aligned: a menu sized to its rows has no
-                                     spare width, so nothing moves, but a wider host (the note card)
-                                     puts the arrow at the row's edge instead of mid-row. -->
+                                <!-- Star spacer between the header and the shortcut: a menu sized to its
+                                     rows has no spare width, so nothing moves, but a wider host (the
+                                     note card) pushes the shortcut and arrow to the row's right edge
+                                     instead of leaving them mid-row. -->
                                 <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="MenuGestureCol"/>
+                                <!-- Shared, so a row without a submenu still reserves the arrow's width
+                                     and its shortcut lines up with the rows that have one. -->
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="MenuArrowCol"/>
                             </Grid.ColumnDefinitions>
                             <!-- Icon slot: MenuItem.Icon renders in the same 16px gutter the check
                                  glyph uses (MakeMenuItem's glyph parameter fills it with MDL2 icons).
@@ -1080,11 +1071,11 @@
                                        VerticalAlignment="Center" HorizontalAlignment="Left"
                                        Visibility="Collapsed"/>
                             <ContentPresenter Grid.Column="1" ContentSource="Header" VerticalAlignment="Center"/>
-                            <TextBlock x:Name="Gesture" Grid.Column="2" Text="{TemplateBinding InputGestureText}"
+                            <TextBlock x:Name="Gesture" Grid.Column="3" Text="{TemplateBinding InputGestureText}"
                                        Foreground="{DynamicResource MutedTextBrush}" FontSize="11"
                                        VerticalAlignment="Center" Margin="14,0,0,0"/>
                             <!-- submenu arrow for items that have children -->
-                            <TextBlock x:Name="SubArrow" Grid.Column="3" Text="&#xE76C;"
+                            <TextBlock x:Name="SubArrow" Grid.Column="4" Text="&#xE76C;"
                                        FontFamily="Segoe MDL2 Assets" FontSize="8"
                                        Foreground="{DynamicResource MutedTextBrush}"
                                        VerticalAlignment="Center" HorizontalAlignment="Right" Margin="12,0,0,0"
@@ -1457,8 +1448,11 @@
                            swatch row, segmented toggle). Not focusable and never highlighted,
                            so arrow keys walk the real rows and skip it; Tab reaches its buttons.
            CardLabel     - the left label of an inline row ("Color", "Tags"). A slot that holds
-                           one gets Padding="24,..." so its label starts on the same column as
-                           the header text of the ordinary rows (8px padding + 16px gutter).
+                           one gets Padding="8,..." so its label starts on the icon column, the
+                           same edge as the header and the ordinary rows' icons. A field row that
+                           is an ordinary MenuItem (Tags, Group) pulls its header back over the
+                           16px icon gutter with Margin="-16,0,0,0" to land on that edge too.
+                           At 24, past the gutter, the labels sat in from everything else.
            CardQuickButton, CardSwatch, CardSegment - the controls those slots hold.
          Field rows that open a list (Tags, Group) are ordinary MenuItems with a richer Header,
          so their submenus keep the family submenu popup. No new theme keys: every brush here is
@@ -1515,8 +1509,10 @@
                     <Border x:Name="Bd" Background="{TemplateBinding Background}" CornerRadius="{DynamicResource ControlCornerRadius}"
                             Padding="{TemplateBinding Padding}" BorderThickness="1" BorderBrush="Transparent">
                         <StackPanel HorizontalAlignment="Center">
+                            <!-- The glyph in the accent: the strip is the card's one splash of color,
+                                 and the caption under it stays the plain text color. -->
                             <TextBlock x:Name="Glyph" Text="{TemplateBinding Content}" FontFamily="Segoe MDL2 Assets" FontSize="16"
-                                       HorizontalAlignment="Center" Foreground="{DynamicResource TextBrush}"/>
+                                       HorizontalAlignment="Center" Foreground="{DynamicResource PrimaryBrush}"/>
                             <TextBlock x:Name="Caption" Text="{TemplateBinding Tag}" FontSize="11" Margin="0,5,0,0"
                                        HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap"
                                        TextTrimming="CharacterEllipsis" MaxHeight="30"/>
@@ -1580,7 +1576,7 @@
     <!-- One option of a segmented toggle: RadioButtons sharing a GroupName inside a Border
          filled with MenuHoverBrush. The checked option lifts onto the menu surface. -->
     <Style x:Key="CardSegment" TargetType="RadioButton">
-        <Setter Property="Foreground" Value="{DynamicResource MenuTextBrush}"/>
+        <Setter Property="Foreground" Value="{DynamicResource MenuHoverTextBrush}"/>
         <Setter Property="FontSize" Value="12"/>
         <Setter Property="Padding" Value="10,3"/>
         <Setter Property="Cursor" Value="Hand"/>
@@ -1592,13 +1588,19 @@
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
                     <ControlTemplate.Triggers>
+                        <!-- On: lifted onto the menu surface with the accent for its text and edge,
+                             so the current pick reads at a glance. -->
                         <Trigger Property="IsChecked" Value="True">
                             <Setter TargetName="Bd" Property="Background" Value="{DynamicResource MenuBackgroundBrush}"/>
-                            <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource MenuBorderBrush}"/>
-                            <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+                            <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource PrimaryBrush}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource PrimaryBrush}"/>
                         </Trigger>
                         <Trigger Property="IsKeyboardFocused" Value="True">
                             <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource PrimaryBrush}"/>
+                        </Trigger>
+                        <!-- Dimmed like CardQuickButton: a disabled option read as live. -->
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="Bd" Property="Opacity" Value="0.4"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -1607,7 +1609,7 @@
     </Style>
 
     <!-- An independent on/off chip on a card row ("Use for: Templates / Daily notes"). Off is an
-         outline, on takes the hover fill with the text color, so on and off read apart in every
+         outline, on takes the hover fill with its contrast text color, so on and off read apart in every
          theme without a new token. -->
     <Style x:Key="CardToggle" TargetType="ToggleButton">
         <Setter Property="Foreground" Value="{DynamicResource MenuTextBrush}"/>
@@ -1626,12 +1628,19 @@
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource DimTextBrush}"/>
                         </Trigger>
+                        <!-- On: the hover fill with the accent for its edge and text. -->
                         <Trigger Property="IsChecked" Value="True">
                             <Setter TargetName="Bd" Property="Background" Value="{DynamicResource MenuHoverBrush}"/>
-                            <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+                            <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource PrimaryBrush}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource MenuHoverTextBrush}"/>
                         </Trigger>
                         <Trigger Property="IsKeyboardFocused" Value="True">
                             <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource PrimaryBrush}"/>
+                        </Trigger>
+                        <!-- Dimmed like CardQuickButton: the graph's Lock chip on a note not written
+                             yet is disabled, and without this it looked like it would work. -->
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="Bd" Property="Opacity" Value="0.4"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -1911,7 +1920,7 @@
                             <TextBlock x:Name="check" Text="&#xE73E;" FontFamily="Segoe MDL2 Assets"
                                        FontSize="{DynamicResource CheckBoxGlyphSize}"
                                        Foreground="{DynamicResource CheckBoxCheckBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"
-                                       Visibility="Collapsed" Effect="{DynamicResource TextStrokeSoft}"/>
+                                       Visibility="Collapsed"/>
                         </Grid>
                         <ContentPresenter Margin="7,0,0,0" VerticalAlignment="Center"/>
                     </DockPanel>
@@ -1952,15 +1961,10 @@
                             <!-- Light/Yellow: the active or hovered glyph shows the yellow accent with the wordmark's
                                  dark halo behind it, so it reads on white. WordmarkAccentShadowOpacity is 0 on every
                                  other theme, which leaves both extra layers invisible. -->
-                            <TextBlock kl:GlyphInk.Center="True" Text="{TemplateBinding Content}" FontFamily="{TemplateBinding FontFamily}" FontSize="{TemplateBinding FontSize}" TextOptions.TextFormattingMode="Display" TextOptions.TextRenderingMode="ClearType" UseLayoutRounding="True" SnapsToDevicePixels="True" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#D8000000" IsHitTestVisible="False" Opacity="{DynamicResource WordmarkAccentShadowOpacity}"><TextBlock.RenderTransform><TranslateTransform X="1" Y="2"/></TextBlock.RenderTransform><TextBlock.Effect><BlurEffect Radius="3"/></TextBlock.Effect><TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding Tag, RelativeSource={RelativeSource AncestorType=Button}}" Value="on"><Setter Property="Visibility" Value="Visible"/></DataTrigger><DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=Button}}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></TextBlock.Style></TextBlock>
                             <TextBlock kl:GlyphInk.Center="True" Text="{TemplateBinding Content}"
                                        FontFamily="{TemplateBinding FontFamily}"
                                        FontSize="{TemplateBinding FontSize}"
                                        HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <TextBlock.Effect>
-                                    <DropShadowEffect Color="Black" BlurRadius="4" ShadowDepth="2" Direction="270"
-                                                      Opacity="{DynamicResource IconShadowOpacity}"/>
-                                </TextBlock.Effect>
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
                                         <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
@@ -3025,12 +3029,6 @@
                     <Border x:Name="Bd" Background="{TemplateBinding Background}"
                             CornerRadius="{DynamicResource SmallCornerRadius}" Padding="{TemplateBinding Padding}">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <ContentPresenter.Effect>
-                                <!-- IconShadowOpacity is 0 on Light, so the glyph keeps ClearType
-                                     there and only the dark themes get the depth. -->
-                                <DropShadowEffect Color="Black" BlurRadius="4" ShadowDepth="2" Direction="270"
-                                                  Opacity="{DynamicResource IconShadowOpacity}"/>
-                            </ContentPresenter.Effect>
                         </ContentPresenter>
                     </Border>
                     <ControlTemplate.Triggers>
@@ -3071,12 +3069,6 @@
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter Property="Foreground" Value="{DynamicResource DangerRed}"/>
-                            <Setter TargetName="Cp" Property="Effect">
-                                <Setter.Value>
-                                    <DropShadowEffect Color="#000000" BlurRadius="4" ShadowDepth="1"
-                                                      Direction="270" Opacity="0.5"/>
-                                </Setter.Value>
-                            </Setter>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
                             <Setter Property="Foreground" Value="{DynamicResource DangerRed}"/>

@@ -61,9 +61,10 @@ namespace KillerShell.Terminal
         /// commands into a live admin shell is a genuinely bad afternoon. Middle-click still
         /// pastes for anyone who wants the fast path (OnMouseDown).
         /// </remarks>
-        private void ShowMenu()
+        private void ShowMenu(bool keyboard = false)
         {
             _menu ??= BuildMenu();
+            ContextMenu = _menu;
 
             // The header is about where the shell is NOW, so it is filled on every opening.
             if (_cardHead != null)
@@ -81,7 +82,14 @@ namespace KillerShell.Terminal
             _reloadProfileItem?.IsEnabled = ShellKind == TerminalShellKind.PowerShell;
 
             _menu.PlacementTarget = this;
-            _menu.Placement = System.Windows.Controls.Primitives.PlacementMode.MousePoint;
+            _menu.Placement = keyboard
+                ? System.Windows.Controls.Primitives.PlacementMode.Bottom
+                : System.Windows.Controls.Primitives.PlacementMode.MousePoint;
+            _menu.PlacementRectangle = keyboard
+                ? new Rect(LeftInset + _buf.CursorCol * _cellW,
+                    Math.Min((_buf.CursorRow + _scroll) * _cellH, Math.Max(0, ActualHeight - _cellH)),
+                    _cellW, _cellH)
+                : Rect.Empty;
             _menu.IsOpen = true;
         }
 
@@ -90,11 +98,16 @@ namespace KillerShell.Terminal
         // made KillerPDF's release.ps1 PS7-only.
         private static string Glyph(int cp) => ((char)cp).ToString();
 
-        // Clear is the SHELL's job, not ours. Wiping our own buffer would leave the shell
-        // believing it had already drawn a prompt, so the next keystroke would paint over
-        // nothing. Sending the command brings the prompt back the way the shell wants it,
-        // and cls works the same in pwsh, powershell and cmd.
-        private void ClearShell() => Send(ShellKind == TerminalShellKind.Wsl || ShellKind == TerminalShellKind.Custom ? "clear\r" : "cls\r");
+        // Keep the visible screen and cursor intact: only the shell knows which cells
+        // belong to a pending multiline prompt. This action never sends shell input.
+        internal void ClearScrollback()
+        {
+            _buf.ClearScrollback();
+            _scroll = 0;
+            ClearSelection();
+            QueueAutomationChange(text: true);
+            InvalidateVisual();
+        }
 
         /// <summary>
         /// The terminal card: a header naming the shell and its folder, quick buttons for the
@@ -119,7 +132,7 @@ namespace KillerShell.Terminal
             KillerShell.Controls.CardMenus.QuickButton(strip, m, 0xE77F, "Str_Term_Paste", "Str_Term_Paste", "Ctrl+Shift+V", Paste);
             KillerShell.Controls.CardMenus.QuickButton(strip, m, 0xE8B3, "Str_Card_SelectAll", "Str_Term_SelectAll", "Ctrl+Shift+A", SelectAll);
             // The eraser, not MDL2's Clear X: that X is Close, two buttons along.
-            KillerShell.Controls.CardMenus.QuickButton(strip, m, 0xE75C, "Str_Term_Clear", "Str_Term_Clear", "Ctrl+Shift+L", ClearShell);
+            KillerShell.Controls.CardMenus.QuickButton(strip, m, 0xE75C, "Str_Term_Clear", "Str_Term_Clear", "Ctrl+Shift+L", ClearScrollback);
             // The reverse of "open a terminal here": whatever the shell has cd'd to, opened as a
             // folder tab. The buffer tracks the working directory already (OSC 7), so this is
             // free - and after a few minutes of cd-ing around, getting the folder listing to
@@ -196,7 +209,7 @@ namespace KillerShell.Terminal
         {
             if (Keyboard.Modifiers != (ModifierKeys.Control | ModifierKeys.Shift)) return false;
             // Clear is a quick button on the card, not a row, so its chord runs it directly.
-            if (e.Key == Key.L) { ClearShell(); return true; }
+            if (e.Key == Key.L) { ClearScrollback(); return true; }
             string? gesture = e.Key switch
             {
                 Key.OemComma => "Ctrl+Shift+,",

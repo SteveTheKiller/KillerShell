@@ -256,6 +256,7 @@
     <sys:String x:Key="Str_Status_ElevationDeclined">Elevação recusada</sys:String>
     <sys:String x:Key="Str_Status_FileOnly">Esse comando só funciona com arquivos, não com pastas</sys:String>
     <sys:String x:Key="Str_Status_ShellFailed">O Windows não abriu esse item</sys:String>
+    <sys:String x:Key="Str_Status_ShellSelectionNeedsOneFolder">Para abrir o menu do Windows, selecione itens de uma única pasta</sys:String>
     <sys:String x:Key="Str_Status_Excluded">Excluindo {0} - execute a pesquisa novamente para aplicar</sys:String>
     <sys:String x:Key="Str_Status_AlreadyExcluded">{0} já está excluído</sys:String>
     <sys:String x:Key="Str_Menu_Minimize">Minimizar</sys:String>
@@ -419,7 +420,7 @@
     <sys:String x:Key="Str_Term_Copy">Copiar</sys:String>
     <sys:String x:Key="Str_Term_Paste">Colar</sys:String>
     <sys:String x:Key="Str_Term_SelectAll">Selecionar tudo</sys:String>
-    <sys:String x:Key="Str_Term_Clear">Limpar</sys:String>
+    <sys:String x:Key="Str_Term_Clear">Limpar histórico de rolagem</sys:String>
     <sys:String x:Key="Str_Term_NewShell">Novo terminal</sys:String>
     <sys:String x:Key="Str_Term_OpenFolder">Abrir pasta aqui</sys:String>
     <sys:String x:Key="Str_Term_Fonts">Fontes...</sys:String>
@@ -483,7 +484,7 @@
     <sys:String x:Key="Str_TT_TermNew">Novo terminal  (F8)</sys:String>
     <sys:String x:Key="Str_TT_TermAdmin">Novo terminal como administrador  (Ctrl+F8)</sys:String>
     <sys:String x:Key="Str_TT_TermFolder">Abrir esta pasta em uma guia  (Ctrl+Shift+T)</sys:String>
-    <sys:String x:Key="Str_TT_TermClear">Limpar  (Ctrl+Shift+L)</sys:String>
+    <sys:String x:Key="Str_TT_TermClear">Limpar histórico de rolagem (Ctrl+Shift+L)</sys:String>
     <sys:String x:Key="Str_TT_TermFonts">Fontes...  (Ctrl+Shift+,)</sys:String>
     <sys:String x:Key="Str_TT_EdPath">Clique para editar - digite um caminho e pressione Enter para renomear/mover o arquivo. Digite um arquivo existente para abri-lo.</sys:String>
     <sys:String x:Key="Str_Ed_WrapOn">Quebra de linha ativada.</sys:String>
@@ -1108,4 +1109,9 @@
     <sys:String x:Key="Str_Card_Edit">Editar</sys:String>
     <sys:String x:Key="Str_Card_Rename">Renomear</sys:String>
     <sys:String x:Key="Str_Card_SelectAll">Selecionar tudo</sys:String>
+    <sys:String x:Key="Str_Ks_ContextMenu">abrir o menu de contexto</sys:String>
+    <sys:String x:Key="Str_TT_RemoveSearchTerm">Remover termo de pesquisa</sys:String>
+    <sys:String x:Key="Str_TT_RemoveSearchFilter">Remover filtro</sys:String>
+    <sys:String x:Key="Str_A11y_ColumnHeadings">Cabeçalhos das colunas</sys:String>
+    <sys:String x:Key="Str_A11y_ColumnHeadingsHelp">Pressione Menu (Apps) para escolher as colunas visíveis.</sys:String>
 </ResourceDictionary>

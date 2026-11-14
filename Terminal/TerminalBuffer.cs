@@ -125,6 +125,14 @@ namespace KillerShell.Terminal
 
         public int TotalLines => _scrollback.Count + Rows;
 
+        /// <summary>Forget history without changing the screen or the shell's cursor state.</summary>
+        public void ClearScrollback()
+        {
+            if (_scrollback.Count == 0) return;
+            _scrollback.Clear();
+            Version++;
+        }
+
         // ═══════════════════════════════════════════════════════════
         //  RESIZE
         // ═══════════════════════════════════════════════════════════

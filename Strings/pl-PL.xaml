@@ -285,6 +285,7 @@
     <sys:String x:Key="Str_Status_ElevationDeclined">Odmówiono podwyższenia uprawnień</sys:String>
     <sys:String x:Key="Str_Status_FileOnly">To polecenie działa tylko na plikach, nie na folderach</sys:String>
     <sys:String x:Key="Str_Status_ShellFailed">System Windows nie mógł tego otworzyć</sys:String>
+    <sys:String x:Key="Str_Status_ShellSelectionNeedsOneFolder">Aby otworzyć menu Windows, wybierz elementy z jednego folderu</sys:String>
     <sys:String x:Key="Str_Status_Excluded">Wykluczono {0} - uruchom wyszukiwanie ponownie, aby zastosować zmianę</sys:String>
     <sys:String x:Key="Str_Status_AlreadyExcluded">{0} jest już wykluczony</sys:String>
     <sys:String x:Key="Str_Menu_Minimize">Minimalizuj</sys:String>
@@ -417,7 +418,7 @@
     <sys:String x:Key="Str_Term_Copy">Kopiuj</sys:String>
     <sys:String x:Key="Str_Term_Paste">Wklej</sys:String>
     <sys:String x:Key="Str_Term_SelectAll">Zaznacz wszystko</sys:String>
-    <sys:String x:Key="Str_Term_Clear">Wyczyść</sys:String>
+    <sys:String x:Key="Str_Term_Clear">Wyczyść historię przewijania</sys:String>
     <sys:String x:Key="Str_Term_NewShell">Nowy terminal</sys:String>
   <sys:String x:Key="Str_Term_OpenFolder">Otwórz folder tutaj</sys:String>
   <sys:String x:Key="Str_Term_Fonts">Czcionki...</sys:String>
@@ -471,7 +472,7 @@
   <sys:String x:Key="Str_TT_TermNew">Nowy terminal  (F8)</sys:String>
   <sys:String x:Key="Str_TT_TermAdmin">Nowy terminal jako administrator  (Ctrl+F8)</sys:String>
   <sys:String x:Key="Str_TT_TermFolder">Otwórz ten folder na karcie  (Ctrl+Shift+T)</sys:String>
-  <sys:String x:Key="Str_TT_TermClear">Wyczyść  (Ctrl+Shift+L)</sys:String>
+  <sys:String x:Key="Str_TT_TermClear">Wyczyść historię przewijania (Ctrl+Shift+L)</sys:String>
   <sys:String x:Key="Str_TT_TermFonts">Czcionki...  (Ctrl+Shift+,)</sys:String>
   <sys:String x:Key="Str_TT_EdPath">Kliknij, aby edytować - wpisz ścieżkę i naciśnij Enter, aby zmienić nazwę lub przenieść plik. Wpisz istniejący plik, aby go otworzyć.</sys:String>
   <sys:String x:Key="Str_Ed_WrapOn">Zawijanie wierszy włączone.</sys:String>
@@ -977,4 +978,9 @@
   <sys:String x:Key="Str_Card_Edit">Edytuj</sys:String>
   <sys:String x:Key="Str_Card_Rename">Zmień nazwę</sys:String>
   <sys:String x:Key="Str_Card_SelectAll">Zaznacz wszystko</sys:String>
+    <sys:String x:Key="Str_Ks_ContextMenu">otwórz menu kontekstowe</sys:String>
+    <sys:String x:Key="Str_TT_RemoveSearchTerm">Usuń warunek wyszukiwania</sys:String>
+    <sys:String x:Key="Str_TT_RemoveSearchFilter">Usuń filtr</sys:String>
+    <sys:String x:Key="Str_A11y_ColumnHeadings">Nagłówki kolumn</sys:String>
+    <sys:String x:Key="Str_A11y_ColumnHeadingsHelp">Naciśnij Menu (Apps), aby wybrać widoczne kolumny.</sys:String>
 </ResourceDictionary>

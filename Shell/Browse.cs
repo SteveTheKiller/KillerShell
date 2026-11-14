@@ -590,12 +590,12 @@ namespace KillerShell.Shell
                     return;
                 }
                 SetTabStatus(tab, string.Empty);
-                ReportShellOpen(tab, Services.ShellOpen.Open(temp));
+                ReportShellOpen(tab, OpenAssociatedPath(temp));
                 return;
             }
 
             if (File.Exists(r.FilePath))
-                ReportShellOpen(_active, Services.ShellOpen.Open(r.FilePath));
+                ReportShellOpen(_active, OpenAssociatedPath(r.FilePath));
         }
     }
 }

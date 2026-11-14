@@ -288,7 +288,7 @@
     <sys:String x:Key="Str_Term_Copy">কপি করুন</sys:String>
     <sys:String x:Key="Str_Term_Paste">পেস্ট করুন</sys:String>
     <sys:String x:Key="Str_Term_SelectAll">সব নির্বাচন করুন</sys:String>
-    <sys:String x:Key="Str_Term_Clear">পরিষ্কার করুন</sys:String>
+    <sys:String x:Key="Str_Term_Clear">স্ক্রলব্যাক মুছুন</sys:String>
     <sys:String x:Key="Str_Term_NewShell">নতুন টার্মিনাল</sys:String>
     <sys:String x:Key="Str_Term_OpenFolder">এই ফোল্ডার খুলুন</sys:String>
     <sys:String x:Key="Str_Term_Fonts">ফন্ট...</sys:String>
@@ -353,6 +353,7 @@
     <sys:String x:Key="Str_Status_ElevationDeclined">অনুমতি বাড়ানো প্রত্যাখ্যান করা হয়েছে</sys:String>
     <sys:String x:Key="Str_Status_FileOnly">এই কমান্ডটি শুধু ফাইলে কাজ করে, ফোল্ডারে নয়</sys:String>
     <sys:String x:Key="Str_Status_ShellFailed">Windows এটি খুলতে পারেনি</sys:String>
+    <sys:String x:Key="Str_Status_ShellSelectionNeedsOneFolder">Windows মেনুর জন্য একই ফোল্ডারের আইটেম নির্বাচন করুন</sys:String>
     <sys:String x:Key="Str_Status_Excluded">{0} বাদ দেওয়া হচ্ছে - প্রয়োগ করতে আবার সার্চ করুন</sys:String>
     <sys:String x:Key="Str_Status_AlreadyExcluded">{0} ইতিমধ্যেই বাদ দেওয়া আছে</sys:String>
 
@@ -477,7 +478,7 @@
     <sys:String x:Key="Str_TT_TermNew">নতুন টার্মিনাল  (F8)</sys:String>
     <sys:String x:Key="Str_TT_TermAdmin">প্রশাসক হিসেবে নতুন টার্মিনাল  (Ctrl+F8)</sys:String>
     <sys:String x:Key="Str_TT_TermFolder">এই ফোল্ডারটি একটি ট্যাবে খুলুন  (Ctrl+Shift+T)</sys:String>
-    <sys:String x:Key="Str_TT_TermClear">পরিষ্কার করুন  (Ctrl+Shift+L)</sys:String>
+    <sys:String x:Key="Str_TT_TermClear">স্ক্রলব্যাক মুছুন (Ctrl+Shift+L)</sys:String>
     <sys:String x:Key="Str_TT_TermFonts">ফন্ট...  (Ctrl+Shift+,)</sys:String>
 
     <sys:String x:Key="Str_Ed_WrapOn">ওয়ার্ড র‍্যাপ চালু।</sys:String>
@@ -1060,4 +1061,9 @@
     <sys:String x:Key="Str_Card_Edit">সম্পাদনা</sys:String>
     <sys:String x:Key="Str_Card_Rename">নাম পরিবর্তন</sys:String>
     <sys:String x:Key="Str_Card_SelectAll">সব নির্বাচন</sys:String>
+    <sys:String x:Key="Str_Ks_ContextMenu">প্রসঙ্গ মেনু খুলুন</sys:String>
+    <sys:String x:Key="Str_TT_RemoveSearchTerm">সার্চ টার্ম সরান</sys:String>
+    <sys:String x:Key="Str_TT_RemoveSearchFilter">ফিল্টার সরান</sys:String>
+    <sys:String x:Key="Str_A11y_ColumnHeadings">কলামের শিরোনাম</sys:String>
+    <sys:String x:Key="Str_A11y_ColumnHeadingsHelp">দৃশ্যমান কলাম বেছে নিতে Menu (Apps) চাপুন।</sys:String>
 </ResourceDictionary>
