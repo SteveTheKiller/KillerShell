@@ -26,6 +26,47 @@ public sealed class ToolCardTests
     [Fact]
     public Task EventMenuIsACard()
         => RuntimeComponentProcess.Run(nameof(EventCardScenario));
+
+    [Fact]
+    public Task RegistryKeyAndValueMenusAreCards()
+        => RuntimeComponentProcess.Run(nameof(RegistryCardScenario));
+}
+
+public static class RegistryCardScenario
+{
+    public static void Run()
+    {
+        using var fixture = new ShellWindowFixture();
+        MainWindow.DemoMode = true;
+        var window = fixture.Window;
+        var control = new RegistryEditorControl();
+        window.Pane.Tabs.Add(new SearchTab("Registry") { Registry = control });
+        MenuBarTabBlendScenario.SelectTab(window.Pane, window.Pane.Tabs.Last());
+        try
+        {
+            var node = new RegistryNode(@"HKEY_CURRENT_USER\Software\KillerTools", "KillerTools");
+            typeof(RegistryEditorControl).GetMethod("BuildKeyCard", BindingFlags.NonPublic | BindingFlags.Instance)!
+                .Invoke(control, [node]);
+            var card = ToolCardProbe.OpenCard();
+            ToolCardProbe.AssertCard(card, "KillerTools",
+                ToolCardProbe.L("Str_Menu_RegNewKey"), ToolCardProbe.L("Str_Menu_RegRename"),
+                ToolCardProbe.L("Str_Menu_RegDelete"), ToolCardProbe.L("Str_Menu_RegCopyPath"));
+            Assert.Single(card.Items.OfType<MenuItem>(), item => Equals(item.Header, ToolCardProbe.L("Str_Menu_RegNew")));
+            Assert.Single(card.Items.OfType<MenuItem>(), item => Equals(item.Header, ToolCardProbe.L("Str_Menu_RegCopyName")));
+            card.IsOpen = false;
+            ShellWindowFixture.PumpUntil(() => !card.IsOpen);
+
+            var row = new RegistryValueRow("Theme", Microsoft.Win32.RegistryValueKind.String, "Dark");
+            typeof(RegistryEditorControl).GetMethod("BuildValueCard", BindingFlags.NonPublic | BindingFlags.Instance)!
+                .Invoke(control, [node, row]);
+            card = ToolCardProbe.OpenCard();
+            ToolCardProbe.AssertCard(card, "Theme",
+                ToolCardProbe.L("Str_Menu_RegModify"), ToolCardProbe.L("Str_Menu_RegRename"),
+                ToolCardProbe.L("Str_Menu_RegDelete"), ToolCardProbe.L("Str_Menu_RegCopyName"));
+            card.IsOpen = false;
+        }
+        finally { control.Shutdown(); MainWindow.DemoMode = false; }
+    }
 }
 
 public static class EventCardScenario

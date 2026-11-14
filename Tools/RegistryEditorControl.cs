@@ -1207,8 +1207,35 @@ namespace KillerShell.Tools
                 : NodeUnder(Mouse.DirectlyOver as DependencyObject) ?? _selectedNode;
             if (node == null) { e.Handled = true; return; }
             if (!node.IsSelected) node.IsSelected = true;
+            BuildKeyCard(node);
+            e.Handled = true;
+        }
 
-            var menu = new ContextMenu { PlacementTarget = _tree };
+        // The card's header: what it is about in bold, one dim line of detail under it.
+        private static void CardHeader(ContextMenu card, string title, string meta)
+        {
+            var head = KillerShell.Controls.CardMenus.Slot();
+            head.Tag = "cardhead";
+            KillerShell.Controls.CardMenus.SetHeader(head, null, title, meta);
+            card.Items.Add(head);
+        }
+
+        // E710 New, E8AC Rename, E74D Delete, E8C8 the app's Copy, E70F Edit. Every button keeps
+        // its keyboard shortcut in its tooltip.
+        private void BuildKeyCard(RegistryNode node)
+        {
+            var menu = KillerShell.Controls.CardMenus.Card();
+            menu.PlacementTarget = _tree;
+            CardHeader(menu, node.Name, node.FullPath);
+
+            var quick = KillerShell.Controls.CardMenus.QuickStrip(out var strip);
+            quick.Tag = "cardquick";
+            KillerShell.Controls.CardMenus.QuickButton(strip, menu, 0xE710, "Str_Menu_RegNewKey", "Str_Menu_RegNewKey", null, () => CreateNewKey(node));
+            KillerShell.Controls.CardMenus.QuickButton(strip, menu, 0xE8AC, "Str_Card_Rename", "Str_Menu_RegRename", "F2", () => RenameKeyNode(node)).IsEnabled = !node.IsRoot;
+            KillerShell.Controls.CardMenus.QuickButton(strip, menu, 0xE74D, "Str_Card_Delete", "Str_Menu_RegDelete", "Del", () => DeleteKeyWithConfirm(node)).IsEnabled = !node.IsRoot;
+            KillerShell.Controls.CardMenus.QuickButton(strip, menu, 0xE8C8, "Str_Card_Path", "Str_Menu_RegCopyPath", "Ctrl+C",
+                () => CopyToClipboard(node.FullPath, "Str_RegEd_PathCopied"));
+            menu.Items.Add(quick);
 
             var newMenu = new MenuItem();
             newMenu.SetResourceReference(HeaderedItemsControl.HeaderProperty, "Str_Menu_RegNew");
@@ -1223,8 +1250,7 @@ namespace KillerShell.Tools
                 mi.Click += click;
                 newMenu.Items.Add(mi);
             }
-            NewItem("Str_Menu_RegNewKey",          (_, _) => CreateNewKey(node));
-            newMenu.Items.Add(new Separator());
+            // The new value kinds stay in the New submenu; a new key has its own button above.
             NewItem("Str_Menu_RegNewString",       (_, _) => CreateNewValue(node, RegistryValueKind.String));
             NewItem("Str_Menu_RegNewExpandString", (_, _) => CreateNewValue(node, RegistryValueKind.ExpandString));
             NewItem("Str_Menu_RegNewMultiString",  (_, _) => CreateNewValue(node, RegistryValueKind.MultiString));
@@ -1232,38 +1258,35 @@ namespace KillerShell.Tools
             NewItem("Str_Menu_RegNewDWord",        (_, _) => CreateNewValue(node, RegistryValueKind.DWord));
             NewItem("Str_Menu_RegNewQWord",        (_, _) => CreateNewValue(node, RegistryValueKind.QWord));
             menu.Items.Add(newMenu);
-
-            menu.Items.Add(new Separator());
-
-            // E8AC (Segoe MDL2 "Rename"), E74D (Segoe MDL2 "Delete"), E8C8 (the same "Copy" glyph
-            // TerminalMenu.cs/EditorMenu.cs already use elsewhere in this app).
-            AddMenuItem(menu, "Str_Menu_RegRename", 0xE8AC, (_, _) => RenameKeyNode(node), enabled: !node.IsRoot, gesture: "F2");
-            AddMenuItem(menu, "Str_Menu_RegDelete", 0xE74D, (_, _) => DeleteKeyWithConfirm(node), enabled: !node.IsRoot, gesture: "Del");
-            menu.Items.Add(new Separator());
             AddMenuItem(menu, "Str_Menu_RegCopyName", 0xE8C8, (_, _) => CopyToClipboard(node.Name, "Str_RegEd_NameCopied"));
-            AddMenuItem(menu, "Str_Menu_RegCopyPath", 0xE8C8, (_, _) => CopyToClipboard(node.FullPath, "Str_RegEd_PathCopied"), gesture: "Ctrl+C");
 
             menu.IsOpen = true;
-            e.Handled = true;
         }
 
         private void Grid_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
             if (_selectedNode == null || _grid.SelectedItem is not RegistryValueRow row) { e.Handled = true; return; }
+            BuildValueCard(_selectedNode, row);
+            e.Handled = true;
+        }
 
-            var menu = new ContextMenu { PlacementTarget = _grid };
-            var node = _selectedNode;
+        private void BuildValueCard(RegistryNode node, RegistryValueRow row)
+        {
+            var menu = KillerShell.Controls.CardMenus.Card();
+            menu.PlacementTarget = _grid;
+            CardHeader(menu, row.DisplayName, row.KindLabel + " · " + row.DataLabel);
 
-            AddMenuItem(menu, "Str_Menu_RegModify", 0xE70F, (_, _) => ModifyValueRow(node, row), gesture: "Enter");
-            AddMenuItem(menu, "Str_Menu_RegRename", 0xE8AC, (_, _) => RenameValueRow(node, row),
-                enabled: row.Name.Length != 0, gesture: "F2");
-            AddMenuItem(menu, "Str_Menu_RegDelete", 0xE74D, (_, _) => DeleteValueWithConfirm(node, row), gesture: "Del");
-            menu.Items.Add(new Separator());
-            AddMenuItem(menu, "Str_Menu_RegCopyName", 0xE8C8,
-                (_, _) => CopyToClipboard(row.DisplayName, "Str_RegEd_NameCopied"), gesture: "Ctrl+C");
+            var quick = KillerShell.Controls.CardMenus.QuickStrip(out var strip);
+            quick.Tag = "cardquick";
+            KillerShell.Controls.CardMenus.QuickButton(strip, menu, 0xE70F, "Str_Card_Edit", "Str_Menu_RegModify", "Enter", () => ModifyValueRow(node, row));
+            KillerShell.Controls.CardMenus.QuickButton(strip, menu, 0xE8AC, "Str_Card_Rename", "Str_Menu_RegRename", "F2",
+                () => RenameValueRow(node, row)).IsEnabled = row.Name.Length != 0;
+            KillerShell.Controls.CardMenus.QuickButton(strip, menu, 0xE74D, "Str_Card_Delete", "Str_Menu_RegDelete", "Del", () => DeleteValueWithConfirm(node, row));
+            KillerShell.Controls.CardMenus.QuickButton(strip, menu, 0xE8C8, "Str_Card_Name", "Str_Menu_RegCopyName", "Ctrl+C",
+                () => CopyToClipboard(row.DisplayName, "Str_RegEd_NameCopied"));
+            menu.Items.Add(quick);
 
             menu.IsOpen = true;
-            e.Handled = true;
         }
 
         private void Grid_MouseDoubleClick(object sender, MouseButtonEventArgs e)
