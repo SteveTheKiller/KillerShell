@@ -65,7 +65,8 @@ namespace KillerShell.Shell
             // just a row you have to read past every time.
             // All checked at once with one short budget, so a dead share costs the menu a
             // second at most instead of freezing the window until SMB gives up on it.
-            var live = Services.Reachability.Reachable(_recents, Directory.Exists, TimeSpan.FromSeconds(1));
+            var live = Services.SavedBookmarks.Live(_recents,
+                paths => Services.Reachability.Reachable(paths, Directory.Exists, TimeSpan.FromSeconds(1)));
 
             if (live.Count == 0)
             {
