@@ -13,8 +13,34 @@ namespace KillerShell.Tests.Terminal;
 public sealed class PaneLayoutSwitchTests
 {
     [Fact]
+    public Task RapidKeyboardCloseAndReopenKeepsTheSecondPaneVisible()
+        => RuntimeComponentProcess.Run(nameof(RapidPaneToggleScenario));
+
+    [Fact]
     public Task TheFooterSwitchPicksEveryLayoutAndFollowsTheKeyboard()
         => RuntimeComponentProcess.Run(nameof(PaneLayoutSwitchScenario));
+}
+
+public static class RapidPaneToggleScenario
+{
+    public static void Run()
+    {
+        using var fixture = new ShellWindowFixture();
+        var window = fixture.Window;
+        var right = (FilePane)window.FindName("RightPane");
+        window.ToggleDualPane();
+        ShellWindowFixture.PumpUntil(() => right.Active.IsBrowsing && right.ActualWidth > 0);
+
+        // The second key arrives before the closing slide has reached its completion callback.
+        window.ToggleDualPane();
+        window.ToggleDualPane();
+
+        ShellWindowFixture.PumpUntil(() => window.DualPane
+            && right.Visibility == Visibility.Visible && right.ActualWidth > 0,
+            diagnostic: () => "DualPane=" + window.DualPane + "; Visibility=" + right.Visibility
+                + "; Width=" + right.ActualWidth);
+        Assert.Same(right, window.Pane);
+    }
 }
 
 public static class PaneLayoutSwitchScenario

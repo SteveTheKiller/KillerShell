@@ -225,6 +225,7 @@ namespace KillerShell.Shell
         private void OpenSecondPane()
         {
             if (DualPane) return;
+            FinishPendingPaneSlide();
             DualPane = true;
             HookPaneRatio();
 
