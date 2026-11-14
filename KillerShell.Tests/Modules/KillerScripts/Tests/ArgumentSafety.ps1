@@ -3,6 +3,7 @@ $ErrorActionPreference = 'Stop'
 $root = Join-Path $ScratchRoot ('KillerScripts-arguments-' + [guid]::NewGuid().ToString('N'))
 [IO.Directory]::CreateDirectory($root) | Out-Null
 $savedTemp = $env:TEMP
+$savedPolicy = Get-ExecutionPolicy -Scope Process
 # Each command is the website's one-liner: download the latest script to %TEMP% and run it. The
 # fixture points %TEMP% at its own folder and stands in for the download, so nothing leaves the
 # machine. The body has AMORT's shape: a switch first, then a validated int with a default, as a
@@ -33,7 +34,12 @@ try {
         $actual = try { (& $Run) -join "`n" } catch { 'ERROR ' + $_.Exception.Message }
         if ($actual -cne $Expected) { throw "$Label returned '$actual', expected '$Expected'." }
     }
+    Set-ExecutionPolicy RemoteSigned -Scope Process -Force -ErrorAction Stop
     Assert-Run 'A wrapper call with no arguments' 'DryRun=False RetainDays=14 Tag=none Rest=' { Invoke-AMORT }
+    if ((Get-ExecutionPolicy -Scope Process) -ne 'RemoteSigned') {
+        throw 'A killer command changed the process execution policy after returning.'
+    }
+    Write-Output 'PASS a killer command restores the process execution policy'
     Assert-Run 'A direct call with no arguments' 'DryRun=False RetainDays=14 Tag=none Rest=' { Invoke-KillerScript -Name 'AMORT.ps1' }
     Assert-Run 'Named arguments' 'DryRun=True RetainDays=30 Tag=none Rest=' { Invoke-AMORT -RetainDays 30 -DryRun }
     # A colon value passes through. A switch in colon form (-DryRun:$false) does not survive @args
@@ -85,6 +91,24 @@ try {
     if (Test-Path (Join-Path $root 'stale-ran.txt')) { throw 'A failed download ran the stale copy left in %TEMP%.' }
     Write-Output 'PASS a failed download stops the command'
 
+    Microsoft.PowerShell.Security\Set-ExecutionPolicy AllSigned -Scope Process -Force -ErrorAction Stop
+    $savedArgumentBody = $global:KsArgumentFixture
+    $global:KsArgumentFixture = "throw 'execution-policy-fixture-failure'"
+    $executionFailed = $false
+    $executionError = ''
+    try { Invoke-KillerScript AMORT | Out-Null }
+    catch {
+        $executionError = $_.Exception.Message
+        $executionFailed = $executionError -eq 'execution-policy-fixture-failure'
+    }
+    if (-not $executionFailed) { throw "The script failure did not reach the caller: $executionError" }
+    if ((Get-ExecutionPolicy -Scope Process) -ne 'AllSigned') {
+        throw 'A failed killer script did not restore the chosen AllSigned process policy.'
+    }
+    Write-Output 'PASS a failed script restores the chosen AllSigned process policy'
+    $global:KsArgumentFixture = $savedArgumentBody
+    Microsoft.PowerShell.Security\Set-ExecutionPolicy RemoteSigned -Scope Process -Force -ErrorAction Stop
+
     # Where Group Policy pins the execution policy, Set-ExecutionPolicy throws; the command still runs, quietly.
     function global:Set-ExecutionPolicy { throw 'Windows PowerShell updated your execution policy successfully, but the setting is overridden by a policy defined at a more specific scope.' }
     try {
@@ -122,7 +146,9 @@ try {
     $unexported = @($expected | Where-Object { $exported -notcontains $_ })
     if ($unexported.Count) { throw "The module does not export: $($unexported -join ', ')." }
     Write-Output "PASS all $($expected.Count - 2) shipped scripts have a command and match the manifest"
+
 } finally {
+    Microsoft.PowerShell.Security\Set-ExecutionPolicy $savedPolicy -Scope Process -Force -ErrorAction SilentlyContinue
     $env:TEMP = $savedTemp
     Remove-Module KillerScripts -Force -ErrorAction SilentlyContinue
     Remove-Item Function:\global:Invoke-RestMethod

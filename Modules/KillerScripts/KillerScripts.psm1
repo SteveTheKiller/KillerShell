@@ -3,9 +3,9 @@
     KillerScripts
     One command per killer script, for example amort or Invoke-AMORT.
 
-    Each command does exactly what the website's one-liner does: allow scripts for this process,
-    download the latest script from killer-scripts main to %TEMP%, and run it. Every option typed
-    after the command goes to the script as typed.
+    Each command downloads the latest script from killer-scripts main to %TEMP% and runs it.
+    Script execution is allowed for the run, then the previous process policy is restored.
+    Every option typed after the command goes to the script as typed.
 
     Repo: https://github.com/SteveTheKiller/killer-scripts
 #>
@@ -29,13 +29,9 @@ function Enable-KsTls12 {
 }
 
 function Get-KsLatest {
-    # The website's one-liner, minus the run: Bypass for this process, then the latest copy of the
-    # script saved to %TEMP%. Returns the path to run.
+    # Save the latest copy to %TEMP% and return the path to run.
     param([string]$Name)
     $file = if ($Name -like '*.ps1') { $Name } else { "$Name.ps1" }
-    # Where Group Policy pins the execution policy this throws even with SilentlyContinue; the
-    # policy that applies is then the machine's, and the run goes on under it, as the website's does.
-    try { Set-ExecutionPolicy Bypass -Scope Process -Force -ErrorAction Stop } catch { }
     Enable-KsTls12
     # %TEMP%\<SCRIPT>-<process id>.ps1: every terminal tab is its own PowerShell process, so two
     # tabs running the same command at once each run their own copy instead of one of them
@@ -56,7 +52,14 @@ function Invoke-KillerScript {
     # and never reaches the script. Splatting @args from a plain function keeps every option's name.
     param([string]$Name)
     if ([string]::IsNullOrWhiteSpace($Name)) { throw 'KillerScripts: name the script to run, for example Invoke-KillerScript AMORT.' }
-    & (Get-KsLatest $Name) @args
+    $previousPolicy = Get-ExecutionPolicy -Scope Process
+    try {
+        # Group Policy can override this process setting. Keep running under that policy.
+        try { Set-ExecutionPolicy Bypass -Scope Process -Force -ErrorAction Stop } catch { }
+        & (Get-KsLatest $Name) @args
+    } finally {
+        try { Set-ExecutionPolicy $previousPolicy -Scope Process -Force -ErrorAction Stop } catch { }
+    }
 }
 
 function Get-KillerScript {
@@ -111,10 +114,10 @@ if (Test-Path -LiteralPath $shippedManifest) {
         $base = $p.Name -replace '\.ps1$', ''
         $fn   = "Invoke-$base"
         # No param block: a [Parameter()] attribute would make the wrapper advanced, and its common
-        # parameters would take script options ("amort -D" became -Debug). Bound to this module so
-        # it can reach the private Get-KsLatest.
+        # parameters would take script options ("amort -D" became -Debug). The shared invocation
+        # restores the process execution policy after the script finishes or fails.
         Set-Item -Path "function:\$fn" -Value $ExecutionContext.SessionState.Module.NewBoundScriptBlock(
-            [ScriptBlock]::Create("& (Get-KsLatest '$($p.Name)') @args")) -Force
+            [ScriptBlock]::Create("Invoke-KillerScript '$($p.Name)' @args")) -Force
         $script:KsFunctions += $fn
 
         # Use a custom alias where defined, otherwise the lowercase name. Only

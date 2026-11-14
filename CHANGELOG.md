@@ -14,6 +14,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ### Fixed
 
+- Killer script commands restore the terminal's execution policy after the script finishes or fails.
 - A favorite on a share that is offline or a drive that is unplugged stays in its place in the favorites drawer, dimmed, with a tooltip that says it can't be reached, and it lights up again once the folder is back the next time the drawer opens. Before, it disappeared at launch and the next save deleted it for good, and upgrading from a version before 1.5.0 triggered that save on the first launch. KillerShell no longer waits on such a share before its window opens; the drawer checks its favorites in the background.
 - Paste refuses to copy or move a folder into itself or one of its own subfolders, the same way drag and drop already did.
 - Dragging the title bar of the registry, rename, file operation, folder picker, process, service, event and terminal profile dialogs no longer crashes KillerShell when the click arrives after the mouse button is already up.
