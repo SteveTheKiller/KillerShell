@@ -182,10 +182,11 @@ public static class ArchiveEnterScenario
         pane.ResultsList.Focus();
         Keyboard.Focus(pane.ResultsList);
         ShellWindowFixture.PumpUntil(() => pane.ResultsList.IsKeyboardFocusWithin);
-        keybd_event(0x0D, 0, 0, UIntPtr.Zero);
-        keybd_event(0x0D, 0, 2, UIntPtr.Zero);
+        TerminalAppsReleaseScenario.Stroke(fixture.Window, 0x0D, Key.Enter);
         ShellWindowFixture.PumpUntil(() => pane.Active.CurrentFolder == ArchiveProvider.Combine(archive, ""));
-        Assert.Contains(pane.Active.Results, row => row.FileName == "entered.txt");
+        // The folder changes first and the archive's listing lands a moment later.
+        ShellWindowFixture.PumpUntil(() => pane.Active.Results.Any(row => row.FileName == "entered.txt"),
+            diagnostic: () => "rows=" + string.Join(",", pane.Active.Results.Select(row => row.FileName)));
         Assert.Equal(0, associations);
     }
 

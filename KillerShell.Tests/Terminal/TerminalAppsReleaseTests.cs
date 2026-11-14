@@ -75,6 +75,7 @@ public static class TerminalAppsReleaseScenario
         InputManager.Current.PostProcessInput += receipt;
         try
         {
+            TakeForeground(window);
             Assert.True(Owned(GetForegroundWindow()), "Native input requires the test's own foreground process.");
             uint extended = virtualKey == 0x5D ? 1u : 0u;
             keybd_event(virtualKey, 0, extended, UIntPtr.Zero);
@@ -102,7 +103,25 @@ public static class TerminalAppsReleaseScenario
         return handle != IntPtr.Zero && pid == (uint)Process.GetCurrentProcess().Id;
     }
 
+    /// <summary>
+    /// WPF's Activate can report the window active while Windows keeps another program in front
+    /// (its foreground lock), and native keys then go to that program. Windows lets the process
+    /// that sent the last input take the foreground, so a zero-distance mouse move comes first.
+    /// </summary>
+    private static void TakeForeground(Window window)
+    {
+        if (Owned(GetForegroundWindow())) return;
+        var handle = new System.Windows.Interop.WindowInteropHelper(window).Handle;
+        mouse_event(0x0001, 0, 0, 0, UIntPtr.Zero);
+        SetForegroundWindow(handle);
+        window.Activate();
+        ShellWindowFixture.PumpUntil(() => Owned(GetForegroundWindow()),
+            diagnostic: () => "The test window could not take the foreground.");
+    }
+
     [DllImport("user32.dll")] private static extern IntPtr GetForegroundWindow();
+    [DllImport("user32.dll")] private static extern bool SetForegroundWindow(IntPtr handle);
+    [DllImport("user32.dll")] private static extern void mouse_event(uint flags, int dx, int dy, uint data, UIntPtr extra);
     [DllImport("user32.dll")] private static extern uint GetWindowThreadProcessId(IntPtr handle, out uint pid);
     [DllImport("user32.dll")] private static extern void keybd_event(byte key, byte scan, uint flags, UIntPtr extra);
 }

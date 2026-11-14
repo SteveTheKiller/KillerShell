@@ -36,7 +36,9 @@ public static class AddressSentinelAcceptanceScenario
             Environment.CurrentDirectory = fixture.Root;
             File.WriteAllText(Path.Combine(fixture.Root, "cwd-only.txt"), "This file must not be opened.");
             Enter(window, pane, MainWindow.ThisPc);
-            ShellWindowFixture.PumpUntil(() => pane.Active.IsBrowsing && pane.Active.CurrentFolder == MainWindow.ThisPc);
+            ShellWindowFixture.PumpUntil(() => pane.Active.IsBrowsing && pane.Active.CurrentFolder == MainWindow.ThisPc,
+                diagnostic: () => "folder=" + pane.Active.CurrentFolder + "; browsing=" + pane.Active.IsBrowsing
+                    + "; status=" + pane.Active.StatusKey + "; address=" + pane.AddressBox.Text + "; editing=" + pane.AddressBox.IsVisible);
             var tab = pane.Active;
             int tabCount = pane.Tabs.Count;
             foreach (string typed in new[] { "..", "cwd-only.txt" })
@@ -60,6 +62,6 @@ public static class AddressSentinelAcceptanceScenario
             .GetPattern(PatternInterface.Value)).SetValue(typed);
         pane.AddressBox.RaiseEvent(new KeyEventArgs(Keyboard.PrimaryDevice,
             PresentationSource.FromVisual(pane.AddressBox), Environment.TickCount, Key.Enter)
-            { RoutedEvent = Keyboard.PreviewKeyDownEvent });
+            { RoutedEvent = Keyboard.KeyDownEvent });   // the address box commits on KeyDown (AddressBar.cs)
     }
 }

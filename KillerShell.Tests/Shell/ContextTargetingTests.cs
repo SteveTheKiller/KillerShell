@@ -62,8 +62,9 @@ public static class KeyboardRegistryTargetScenario
             Assert.True(SetCursorPos((int)point.X, (int)point.Y));
             System.Windows.Input.Mouse.Synchronize();
             ShellWindowFixture.PumpUntil(() => rowB.IsKeyboardFocusWithin && rowA.IsMouseOver);
-            keybd_event(0x5D, 0, 0, UIntPtr.Zero);
-            keybd_event(0x5D, 0, 2, UIntPtr.Zero);
+            // The Menu key is an extended key: sent without that flag it never reaches the window.
+            // The shared stroke sends it the way the keyboard does and waits for the release.
+            TerminalAppsReleaseScenario.Stroke(window, 0x5D, System.Windows.Input.Key.Apps);
             ContextMenu? menu = null;
             ShellWindowFixture.PumpUntil(() =>
             {
@@ -183,8 +184,7 @@ public static class KeyboardTreeTargetScenario
             diagnostic: () => "active=" + window.IsActive + "; focused=" + rowB.IsKeyboardFocusWithin
                 + "; mouse=" + rowA.IsMouseOver + "; point=" + point + "; header=" + header.ActualWidth + "," + header.ActualHeight
                 + "; over=" + System.Windows.Input.Mouse.DirectlyOver);
-        keybd_event(0x5D, 0, 0, UIntPtr.Zero);
-        keybd_event(0x5D, 0, 2, UIntPtr.Zero);
+        TerminalAppsReleaseScenario.Stroke(window, 0x5D, System.Windows.Input.Key.Apps);
         ShellWindowFixture.PumpUntil(() => tree.ContextMenu.IsOpen);
         try
         {
