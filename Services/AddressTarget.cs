@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using KillerShell.Terminal;
 
@@ -37,10 +38,11 @@ namespace KillerShell.Services
         /// <c>D:</c> is that drive's root, <c>D:work</c> is a folder on its root, and
         /// <c>\Windows</c> is on the tab folder's own drive. Nothing is resolved against
         /// KillerShell's working directory, which is wherever it happened to start. A place
-        /// sentinel such as This PC, or anything with a scheme, is passed through untouched,
-        /// and so is a relative address on a tab that is not showing a real folder.
+        /// sentinel such as This PC, or anything with a scheme, is passed through untouched.
+        /// Relative archive addresses use the path inside the archive. A relative address with
+        /// no folder behind it returns null rather than falling back to the process directory.
         /// </remarks>
-        internal static string ResolveTyped(string typed, string tabFolder)
+        internal static string? ResolveTyped(string typed, string tabFolder)
         {
             try { typed = Environment.ExpandEnvironmentVariables(typed); }
             catch { }
@@ -58,10 +60,30 @@ namespace KillerShell.Services
 
                 bool folderBehind = tabFolder.Length > 0 && !tabFolder.StartsWith(":", StringComparison.Ordinal)
                     && Path.IsPathRooted(tabFolder);
-                if (!folderBehind) return typed;
+                if (!folderBehind) return null;
 
                 if (typed.StartsWith(@"\", StringComparison.Ordinal) || typed.StartsWith("/", StringComparison.Ordinal))
                     return Path.GetFullPath(Path.Combine(Path.GetPathRoot(tabFolder), typed.TrimStart('\\', '/')));
+
+                if (ArchiveProvider.TrySplit(tabFolder, out string archive, out string entry))
+                {
+                    var segments = new List<string>();
+                    string[] parts = (entry + "/" + typed.Replace('\\', '/')).Split('/');
+                    for (int i = 0; i < parts.Length; i++)
+                    {
+                        string segment = parts[i];
+                        if (segment.Length == 0 || segment == ".") continue;
+                        if (segment == "..")
+                        {
+                            if (segments.Count > 0) segments.RemoveAt(segments.Count - 1);
+                            else
+                                return Path.GetFullPath(Path.Combine(Path.GetDirectoryName(archive),
+                                    string.Join("\\", parts, i + 1, parts.Length - i - 1)));
+                        }
+                        else segments.Add(segment);
+                    }
+                    return ArchiveProvider.Combine(archive, string.Join("/", segments));
+                }
                 return Path.GetFullPath(Path.Combine(tabFolder, typed));
             }
             catch { return typed; }

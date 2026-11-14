@@ -51,10 +51,23 @@ namespace KillerShell.Tests.Services
                 AddressTarget.ResolveTyped("%TEMP%", @"C:\Users\x"));
 
         [Theory]
-        [InlineData("Documents", ":ThisPC:")]
         [InlineData(":ThisPC:", @"C:\Users\x")]
         public void APlaceOrAnAddressWithNoFolderBehindItIsLeftAlone(string typed, string tabFolder)
             => Assert.Equal(typed, AddressTarget.ResolveTyped(typed, tabFolder));
+
+        [Theory]
+        [InlineData("..", @"C:\work\src.zip?docs/sub", @"C:\work\src.zip?docs")]
+        [InlineData(@"..\images", @"C:\work\src.zip?docs/sub", @"C:\work\src.zip?docs/images")]
+        [InlineData("./readme", @"C:\work\src.zip?docs", @"C:\work\src.zip?docs/readme")]
+        [InlineData("../..", @"C:\work\src.zip?docs/sub", @"C:\work\src.zip")]
+        [InlineData("../..", @"C:\work\src.zip?docs", @"C:\work")]
+        [InlineData("..", @"C:\work\src.zip", @"C:\work")]
+        [InlineData("../sibling", @"C:\work\src.zip", @"C:\work\sibling")]
+        [InlineData("..", ":ThisPC:", null)]
+        [InlineData("Documents", ":ThisPC:", null)]
+        [InlineData(@"\Windows", ":ThisPC:", null)]
+        public void ARelativeAddressUsesTheTabsVirtualLocationOrIsRefused(string typed, string tabFolder, string? expected)
+            => Assert.Equal(expected, AddressTarget.ResolveTyped(typed, tabFolder));
 
         [Fact]
         public void AFolderIsBrowsed()

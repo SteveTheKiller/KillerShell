@@ -88,8 +88,14 @@ namespace KillerShell.Shell
             // relative address is relative to the folder this tab is showing, not to wherever
             // KillerShell was started (Services/AddressTarget.cs).
             var tab = _active;
-            typed = Services.AddressTarget.ResolveTyped(typed,
+            string? resolved = Services.AddressTarget.ResolveTyped(typed,
                 tab != null && tab.IsBrowsing ? tab.CurrentFolder ?? string.Empty : string.Empty);
+            if (resolved == null)
+            {
+                if (tab != null) SetTabStatusKey(tab, "Str_Status_BadPath", typed);
+                return;
+            }
+            typed = resolved;
 
             // A typed file means "open this", not "show me where it is": text goes to an editor
             // tab, a program or script to a terminal in its folder, anything else to its
