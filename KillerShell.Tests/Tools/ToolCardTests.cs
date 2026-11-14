@@ -34,6 +34,40 @@ public sealed class ToolCardTests
     [Fact]
     public Task StorageMapMenuIsACard()
         => RuntimeComponentProcess.Run(nameof(StorageCardScenario));
+
+    [Fact]
+    public Task PerformanceCardMenuIsACardNamedForItsCard()
+        => RuntimeComponentProcess.Run(nameof(PerformanceCardScenario));
+}
+
+public static class PerformanceCardScenario
+{
+    public static void Run()
+    {
+        using var fixture = new ShellWindowFixture();
+        var window = fixture.Window;
+        window.OpenPerformanceMonitor();
+        ShellWindowFixture.PumpUntil(() => window.Pane.Active?.Perf != null);
+        var control = window.Pane.Active.Perf!;
+        try
+        {
+            var panels = (System.Collections.IList)typeof(PerformanceMonitorControl).GetField("_panelCards", BindingFlags.NonPublic | BindingFlags.Instance)!.GetValue(control)!;
+            ShellWindowFixture.PumpUntil(() => panels.Count > 0);
+            var first = panels[0]!;
+            const BindingFlags member = BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance;
+            string id = (string)(first.GetType().GetProperty("Id", member)?.GetValue(first) ?? first.GetType().GetField("Id", member)!.GetValue(first))!;
+            typeof(PerformanceMonitorControl).GetMethod("ShowCardMenu", BindingFlags.NonPublic | BindingFlags.Instance)!.Invoke(control, [first]);
+            var card = ToolCardProbe.OpenCard();
+            Assert.Same(Application.Current.FindResource("CardMenu"), card.Style);
+            var head = Assert.Single(card.Items.OfType<MenuItem>(), item => item.Tag as string == "cardhead");
+            string title = AutomationProperties.GetName(head);
+            Assert.False(string.IsNullOrWhiteSpace(title));
+            Assert.NotEqual(id, title);
+            Assert.Contains(card.Items.OfType<MenuItem>(), item => Equals(item.Header, ToolCardProbe.L("Str_Perf_ResetLayout")));
+            card.IsOpen = false;
+        }
+        finally { control.Shutdown(); }
+    }
 }
 
 public static class StorageCardScenario

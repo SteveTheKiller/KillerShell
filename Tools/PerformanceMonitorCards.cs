@@ -356,7 +356,16 @@ namespace KillerShell.Tools
 
         private void ShowCardMenu(DashboardCard card)
         {
-            var menu = new ContextMenu { PlacementTarget = card.Frame };
+            var menu = KillerShell.Controls.CardMenus.Card();
+            menu.PlacementTarget = card.Frame;
+            // The card names the dashboard card it acts on with that card's own heading: the
+            // first text in its drag handle that is not an icon glyph ("AMD Ryzen 7", "Network 0").
+            string title = card.Handles.SelectMany(TextsIn)
+                .FirstOrDefault(text => text.Length > 1 && !text.All(ch => ch >= '' && ch <= '')) ?? card.Id;
+            var head = KillerShell.Controls.CardMenus.Slot();
+            head.Tag = "cardhead";
+            KillerShell.Controls.CardMenus.SetHeader(head, null, title, string.Empty);
+            menu.Items.Add(head);
             // E921 and E923: the window's own Minimize and Restore glyphs (MainWindow.xaml,
             // Chrome.cs), because these do the same to a card.
             AddCardMenuItem(menu, card.Folded ? "Str_Menu_Restore" : "Str_Menu_Minimize",
@@ -373,6 +382,14 @@ namespace KillerShell.Tools
             // E777: the app's "start over" glyph, as Processes' Restart uses it.
             AddCardMenuItem(menu, "Str_Perf_ResetLayout", 0xE777, ResetLayout, enabled: !_layout.IsDefault);
             menu.IsOpen = true;
+        }
+
+        private static IEnumerable<string> TextsIn(DependencyObject root)
+        {
+            if (root is TextBlock block && !string.IsNullOrWhiteSpace(block.Text)) yield return block.Text.Trim();
+            int count = root is Visual or System.Windows.Media.Media3D.Visual3D ? VisualTreeHelper.GetChildrenCount(root) : 0;
+            for (int i = 0; i < count; i++)
+                foreach (var text in TextsIn(VisualTreeHelper.GetChild(root, i))) yield return text;
         }
 
         // The icon-in-a-Viewbox row every tool tab's context menu is built from
