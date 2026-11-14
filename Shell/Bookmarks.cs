@@ -437,6 +437,7 @@ namespace KillerShell.Shell
         /// </summary>
         private async void RecheckBookmarks()
         {
+            if (DemoMode) return;
             var rows = _bookmarks.Where(b => !IsPlaceSentinel(b.Path)).ToList();
             if (rows.Count == 0) return;
             var paths = rows.Select(b => b.Path).ToList();
