@@ -8,7 +8,8 @@ namespace KillerShell.Services
     /// Where KillerShell's own modules sit on PSModulePath: FIRST, so the KillerScripts and
     /// KillerPivot that ship with this version are the ones every terminal tab runs, even when an
     /// older copy is installed from PSGallery. PowerShell takes the first folder that has a module,
-    /// and both pwsh and Windows PowerShell keep an inherited path's order at startup.
+    /// and Windows PowerShell keeps the inherited order. PowerShell 7 inserts its standard
+    /// folders at startup, so the terminal startup command restores the bundled root first.
     /// </summary>
     internal static class BundledModulePath
     {

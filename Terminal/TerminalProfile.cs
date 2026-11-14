@@ -57,7 +57,7 @@ namespace KillerShell.Terminal
 
             // KillerShell's own prompt, dot-sourced after the user's $PROFILE has run so it wins
             // in here and nowhere else (MainWindow.PromptArgs, Terminal/PromptScript.cs).
-            // Empty when the prompt is switched off, which leaves the command line as it was.
+            // Module precedence is set inside the session even when the prompt is switched off.
             string prompt = MainWindow.PromptArgs();
             string cmd = exe.EndsWith("cmd.exe", StringComparison.OrdinalIgnoreCase)
                        ? Quote(exe)                          // the ResolveCmd() fallback path

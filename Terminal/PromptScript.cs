@@ -109,8 +109,7 @@ namespace KillerShell.Shell
         //  INJECTION
         // ═══════════════════════════════════════════════════════════
         /// <summary>
-        /// The arguments that dot-source the script, or an empty string when the prompt is
-        /// switched off or the file is missing.
+        /// The PowerShell startup arguments, including module precedence and the optional prompt.
         /// </summary>
         /// <remarks>
         /// -NoExit is what keeps the shell interactive after the command runs; without it
@@ -118,12 +117,17 @@ namespace KillerShell.Shell
         /// </remarks>
         internal static string PromptArgs()
         {
+            // PowerShell 7 inserts its standard module folders ahead of an inherited path.
+            // Restore the bundled root inside the session, even when the prompt is disabled.
+            string modules = "$env:PSModulePath = '" + ModulesRoot().Replace("'", "''") + ";' + $env:PSModulePath; ";
+            string modulesOnly = " -NoExit -Command \"" + modules + "\"";
+
             // Set KS_PROMPT=0 to opt out for good. Checked here rather than in the script so
-            // opting out also skips the unpack and the command line stays clean.
-            if (Environment.GetEnvironmentVariable("KS_PROMPT") == "0") return string.Empty;
+            // opting out also skips unpacking and running the prompt script.
+            if (Environment.GetEnvironmentVariable("KS_PROMPT") == "0") return modulesOnly;
 
             EnsurePromptScript();
-            if (!File.Exists(PromptScriptPath)) return string.Empty;
+            if (!File.Exists(PromptScriptPath)) return modulesOnly;
 
             // Single quotes inside the double-quoted -Command argument, so a path containing a
             // space needs no further escaping. A literal single quote in the path is doubled,
@@ -157,7 +161,7 @@ namespace KillerShell.Shell
                 "try { if ((Get-ExecutionPolicy) -eq 'Restricted') " +
                 "{ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process -Force -ErrorAction Stop } } catch { }; ";
 
-            return " -NoExit -Command \"" + policy + ". '" + safe + "'; " + wrap + "; " + Terminal.TerminalControl.NetworkColorSetup + "\"";
+            return " -NoExit -Command \"" + modules + policy + ". '" + safe + "'; " + wrap + "; " + Terminal.TerminalControl.NetworkColorSetup + "\"";
         }
 
         // ═══════════════════════════════════════════════════════════

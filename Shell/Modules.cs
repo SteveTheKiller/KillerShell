@@ -28,10 +28,10 @@ namespace KillerShell.Shell
         /// </summary>
         /// <remarks>
         /// PSModulePath is set on THIS process, and the pty child inherits our environment block
-        /// (ConPty passes lpEnvironment as null), so every shell opened from here sees it with
-        /// no per-launch plumbing. It is PREPENDED (BundledModulePath): the copies that ship with
-        /// this KillerShell win over any installed from PSGallery, so a launcher fix reaches every
-        /// terminal tab the day KillerShell updates instead of waiting on a gallery publish.
+        /// (ConPty passes lpEnvironment as null), so every shell opened from here inherits it.
+        /// It is prepended here by BundledModulePath and again inside PowerShell by PromptArgs,
+        /// because PowerShell 7 inserts its standard module folders at startup. The bundled
+        /// copies take precedence over installed gallery copies in each terminal session.
         /// </remarks>
         internal static void EnsureBundledModules()
         {
