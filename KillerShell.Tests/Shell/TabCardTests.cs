@@ -1,10 +1,15 @@
+using System;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Controls;
 using System.Windows.Media;
 using KillerShell.Models;
+using KillerShell.Services;
 using KillerShell.Shell;
 using Xunit;
 
@@ -17,6 +22,74 @@ public sealed class TabCardTests
     [Fact]
     public Task ATabsCardNamesItAndMovesItToTheOtherPane()
         => RuntimeComponentProcess.Run(nameof(TabCardScenario));
+
+    [Fact]
+    public Task ABlockedFolderProbeDoesNotDelayTheTabCard()
+        => RuntimeComponentProcess.Run(nameof(TabCardBlockedProbeScenario));
+}
+
+public static class TabCardBlockedProbeScenario
+{
+    public static void Run()
+    {
+        System.IO.Packaging.PackUriHelper.Create(new Uri("application:///"));
+        var app = RuntimeComponentProcess.StartApplication();
+        MainWindow? window = null;
+        using var started = new ManualResetEventSlim();
+        using var release = new ManualResetEventSlim();
+        using var finished = new ManualResetEventSlim();
+        try
+        {
+            ThemeManager.GetSetting = key => key switch
+            {
+                "HomeFolder" => Path.GetTempPath(),
+                "RememberTabs" => "0",
+                "CheckForUpdatesOnStartup" => "0",
+                "CloseToTray" => "0",
+                _ => null,
+            };
+            ThemeManager.Initialize();
+            // The constructor seeds a real tab. Card creation uses its opening handler and
+            // does not need to show a window or activate a popup.
+            window = new MainWindow();
+            var pane = (FilePane)window.FindName("LeftPane");
+            var tab = pane.Active;
+            string blocked = @"\\unavailable-" + Guid.NewGuid().ToString("N") + @"\share";
+            tab.IsBrowsing = true;
+            tab.CurrentFolder = blocked;
+            window.TabIconPathExists = (path, isDirectory) =>
+            {
+                if (path != blocked || !isDirectory)
+                    return isDirectory ? Directory.Exists(path) : File.Exists(path);
+                started.Set();
+                try { release.Wait(TimeSpan.FromSeconds(5)); return false; }
+                finally { finished.Set(); }
+            };
+            var card = new ContextMenu
+            {
+                Tag = "tabcard",
+                PlacementTarget = new Border { DataContext = tab },
+            };
+            var elapsed = Stopwatch.StartNew();
+            window.TabPlacementMenu_Opened(card, new RoutedEventArgs());
+            elapsed.Stop();
+
+            Assert.True(elapsed.ElapsedMilliseconds < 1000,
+                "The tab card waited " + elapsed.ElapsedMilliseconds + " ms for an unavailable folder.");
+            Assert.True(started.Wait(1000), "Card creation did not exercise the filesystem probe.");
+            Assert.False(finished.IsSet, "The filesystem probe must remain blocked while the card is ready.");
+            var head = Assert.Single(card.Items.OfType<MenuItem>(), item => item.Tag as string == "cardhead");
+            var header = Assert.IsType<DockPanel>(head.Header);
+            Assert.IsType<System.Windows.Shapes.Ellipse>(header.Children[0]);
+        }
+        finally
+        {
+            release.Set();
+            if (started.IsSet) finished.Wait(5000);
+            window?.Close();
+            app.Shutdown();
+        }
+    }
 }
 
 public static class TabCardScenario

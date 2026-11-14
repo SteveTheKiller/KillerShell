@@ -28,19 +28,52 @@ public sealed class ReachabilityTests
 
     // A dead share that is still being checked from the last time is not checked again on top
     // of it, so opening the favorites drawer repeatedly does not pile up stuck threads.
-    [Fact]
-    public void AProbeStillRunningIsReusedNotRepeated()
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void AProbeStillRunningIsReusedNotRepeated(bool isDirectory)
     {
         using var release = new ManualResetEventSlim();
         int calls = 0;
         string path = @"\\dead-" + Guid.NewGuid().ToString("N") + @"\share";
         bool Probe(string p) { Interlocked.Increment(ref calls); release.Wait(TimeSpan.FromSeconds(10)); return true; }
 
-        Assert.Empty(Reachability.Reachable(new[] { path }, Probe, TimeSpan.FromMilliseconds(100)));
-        Assert.Empty(Reachability.Reachable(new[] { path }, Probe, TimeSpan.FromMilliseconds(100)));
+        Assert.Empty(Reachability.Reachable(new[] { path }, Probe, TimeSpan.FromMilliseconds(100), isDirectory));
+        Assert.Empty(Reachability.Reachable(new[] { path }, Probe, TimeSpan.FromMilliseconds(100), isDirectory));
         release.Set();
 
         Assert.Equal(1, Volatile.Read(ref calls));
+    }
+
+    [Fact]
+    public void ABlockedDirectoryProbeCannotAnswerAFileProbeForTheSamePath()
+    {
+        using var release = new ManualResetEventSlim();
+        using var started = new ManualResetEventSlim();
+        using var finished = new ManualResetEventSlim();
+        string path = @"\\kind-" + Guid.NewGuid().ToString("N") + @"\share";
+        int fileCalls = 0;
+        try
+        {
+            Assert.Empty(Reachability.Reachable(new[] { path }, _ =>
+            {
+                started.Set();
+                try { release.Wait(TimeSpan.FromSeconds(10)); return false; }
+                finally { finished.Set(); }
+            }, TimeSpan.FromMilliseconds(100)));
+            Assert.True(started.Wait(1000), "The directory probe did not start.");
+
+            bool FileProbe(string _) { Interlocked.Increment(ref fileCalls); return true; }
+            Assert.Equal(new[] { path }, Reachability.Reachable(new[] { path }, FileProbe,
+                TimeSpan.FromSeconds(2), isDirectory: false));
+            Assert.Equal(1, Volatile.Read(ref fileCalls));
+            Assert.False(finished.IsSet, "The directory probe must remain blocked while the file probe answers.");
+        }
+        finally
+        {
+            release.Set();
+            if (started.IsSet) finished.Wait(5000);
+        }
     }
 
     [Fact]

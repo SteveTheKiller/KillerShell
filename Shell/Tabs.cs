@@ -568,6 +568,9 @@ namespace KillerShell.Shell
             menu.IsOpen = true;
         }
 
+        internal Func<string, bool, bool> TabIconPathExists { get; set; } = (path, isDirectory) =>
+            isDirectory ? System.IO.Directory.Exists(path) : System.IO.File.Exists(path);
+
         /// <summary>
         /// A tab's icon for the overflow dropdown. Real shell icons where a real path exists
         /// (a folder or an open document), a plain color swatch otherwise.
@@ -582,10 +585,14 @@ namespace KillerShell.Shell
         /// broken - so this sidesteps font rendering in this spot entirely rather than trying a
         /// fourth variation of a technique that has now failed twice.
         /// </remarks>
-        private static FrameworkElement OverflowRowIcon(SearchTab tab, int size = 16)
+        private FrameworkElement OverflowRowIcon(SearchTab tab, int size = 16)
         {
+            bool Reachable(string path, bool isDirectory) => Services.Reachability.Reachable(
+                new[] { path }, candidate => TabIconPathExists(candidate, isDirectory),
+                TimeSpan.FromMilliseconds(40), isDirectory).Count > 0;
+
             if (tab.IsBrowsing && !string.IsNullOrEmpty(tab.CurrentFolder)
-                && System.IO.Directory.Exists(tab.CurrentFolder))
+                && Reachable(tab.CurrentFolder, true))
             {
                 return new Image
                 {
@@ -594,7 +601,7 @@ namespace KillerShell.Shell
                 };
             }
 
-            if (tab.Editor != null && !tab.Editor.IsUntitled && System.IO.File.Exists(tab.Editor.FilePath))
+            if (tab.Editor != null && !tab.Editor.IsUntitled && Reachable(tab.Editor.FilePath, false))
             {
                 return new Image
                 {
@@ -609,7 +616,7 @@ namespace KillerShell.Shell
             // that path is real and local, and a demo screenshot fabricates everything else
             // about a shell tab specifically to avoid putting anything of THIS machine on screen.
             if (tab.IsTerminal && tab.TermExePath is string exePath && exePath.Length > 0
-                && System.IO.File.Exists(exePath))
+                && Reachable(exePath, false))
             {
                 return new Image
                 {
