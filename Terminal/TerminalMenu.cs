@@ -52,6 +52,15 @@ namespace KillerShell.Terminal
             base.OnMouseRightButtonUp(e);
         }
 
+        // Every other request for the menu (Shift+F10 the shell did not take, a screen reader's
+        // context action) takes the same path as Apps, so the header is current and the card
+        // opens at the caret instead of WPF opening the cached card as it was last left.
+        protected override void OnContextMenuOpening(ContextMenuEventArgs e)
+        {
+            e.Handled = true;
+            ShowMenu(keyboard: true);
+        }
+
         /// <summary>
         /// Open the card at the pointer, building it once.
         /// </summary>
