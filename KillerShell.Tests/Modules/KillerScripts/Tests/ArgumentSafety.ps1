@@ -57,6 +57,12 @@ try {
     Assert-Run 'A direct call with that prefix' 'DryRun=True RetainDays=14 Tag=none Rest=' { Invoke-KillerScript -Name 'AMORT.ps1' -D }
     Assert-Run 'A positional name with that prefix' 'DryRun=True RetainDays=14 Tag=none Rest=' { Invoke-KillerScript AMORT -D }
     Assert-Run 'A dry run with a value after it' 'DryRun=True RetainDays=5 Tag=none Rest=' { Invoke-AMORT -D -R 5 }
+    # A user option that prefixes or equals Invoke-KillerScript's own -Name belongs to the script too: it must never pick the script that downloads.
+    Assert-Run 'A user -N' 'DryRun=False RetainDays=14 Tag=none Rest=-N,foo' { Invoke-AMORT -N foo }
+    Assert-Run 'A user -Na' 'DryRun=False RetainDays=14 Tag=none Rest=-Na,foo' { Invoke-AMORT -Na foo }
+    Assert-Run 'A user -Name' 'DryRun=False RetainDays=14 Tag=none Rest=-Name,foo' { Invoke-AMORT -Name foo }
+    Assert-Run 'The short alias with -Name' 'DryRun=False RetainDays=14 Tag=none Rest=-Name,foo' { amort -Name foo }
+    if ($global:KsDownloads[$global:KsDownloads.Count - 1] -cne 'https://raw.githubusercontent.com/SteveTheKiller/killer-scripts/main/AMORT.ps1') { throw 'A user -Name chose the script to download.' }
     $failed = $false
     try { Invoke-AMORT -RetainDays 0 | Out-Null } catch { $failed = $_.Exception.Message -like '*RetainDays*' }
     if (-not $failed) { throw 'An out-of-range value was not refused by the script itself.' }

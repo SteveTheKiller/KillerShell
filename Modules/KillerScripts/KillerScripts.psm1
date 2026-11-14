@@ -44,22 +44,32 @@ function Get-KsLatest {
     $path
 }
 
+function Invoke-KsScript {
+    # The one runner every command shares. It declares no parameters, so nothing a user types can
+    # bind to it: the script to run arrives in $KsScriptName, set by the caller and read through
+    # PowerShell's dynamic scope, and @args carries every option to the script as typed.
+    if ([string]::IsNullOrWhiteSpace($KsScriptName)) { throw 'KillerScripts: name the script to run, for example Invoke-KillerScript AMORT.' }
+    $previousPolicy = Get-ExecutionPolicy -Scope Process
+    try {
+        # Group Policy can override this process setting. Keep running under that policy.
+        try { Set-ExecutionPolicy Bypass -Scope Process -Force -ErrorAction Stop } catch { }
+        & (Get-KsLatest $KsScriptName) @args
+    } finally {
+        try { Set-ExecutionPolicy $previousPolicy -Scope Process -Force -ErrorAction Stop } catch { }
+    }
+}
+
 function Invoke-KillerScript {
     # Run any killer script by name: Invoke-KillerScript AMORT -DryRun.
     #
     # A plain function on purpose, with no [CmdletBinding()] and no [Parameter()]: either one adds
     # PowerShell's common parameters, and then a short script option such as -D is taken as -Debug
     # and never reaches the script. Splatting @args from a plain function keeps every option's name.
+    # Only this public command takes -Name. The generated commands (amort and the rest) call
+    # Invoke-KsScript instead, so a script option such as -N or -Name is never read as a script name.
     param([string]$Name)
-    if ([string]::IsNullOrWhiteSpace($Name)) { throw 'KillerScripts: name the script to run, for example Invoke-KillerScript AMORT.' }
-    $previousPolicy = Get-ExecutionPolicy -Scope Process
-    try {
-        # Group Policy can override this process setting. Keep running under that policy.
-        try { Set-ExecutionPolicy Bypass -Scope Process -Force -ErrorAction Stop } catch { }
-        & (Get-KsLatest $Name) @args
-    } finally {
-        try { Set-ExecutionPolicy $previousPolicy -Scope Process -Force -ErrorAction Stop } catch { }
-    }
+    $KsScriptName = $Name
+    Invoke-KsScript @args
 }
 
 function Get-KillerScript {
@@ -117,7 +127,7 @@ if (Test-Path -LiteralPath $shippedManifest) {
         # parameters would take script options ("amort -D" became -Debug). The shared invocation
         # restores the process execution policy after the script finishes or fails.
         Set-Item -Path "function:\$fn" -Value $ExecutionContext.SessionState.Module.NewBoundScriptBlock(
-            [ScriptBlock]::Create("Invoke-KillerScript '$($p.Name)' @args")) -Force
+            [ScriptBlock]::Create("`$KsScriptName = '$($p.Name)'; Invoke-KsScript @args")) -Force
         $script:KsFunctions += $fn
 
         # Use a custom alias where defined, otherwise the lowercase name. Only
