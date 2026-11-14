@@ -15,7 +15,8 @@ namespace KillerShell.Shell
 
         private static MenuItem LayoutMenuItem(string label, string shortcut, string geometry, Action action)
         {
-            var icon = new Path { Width = 14, Height = 14, Stretch = Stretch.Uniform,
+            // 12 px, the size of the font glyphs beside it, so the 16 px gutter keeps its gap before the label.
+            var icon = new Path { Width = 12, Height = 12, Stretch = Stretch.Uniform,
                 StrokeThickness = 1, Data = Geometry.Parse(geometry) };
             icon.SetBinding(Shape.StrokeProperty, new Binding("Foreground") {
                 RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(MenuItem), 1) });
