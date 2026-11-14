@@ -108,7 +108,7 @@ public static class TerminalAppsReleaseScenario
     /// (its foreground lock), and native keys then go to that program. Windows lets the process
     /// that sent the last input take the foreground, so a zero-distance mouse move comes first.
     /// </summary>
-    private static void TakeForeground(Window window)
+    internal static void TakeForeground(Window window)
     {
         if (Owned(GetForegroundWindow())) return;
         var handle = new System.Windows.Interop.WindowInteropHelper(window).Handle;

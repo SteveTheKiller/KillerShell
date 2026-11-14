@@ -308,8 +308,15 @@ public static class StorageMenuLifetimeScenario
         return pid == (uint)Process.GetCurrentProcess().Id;
     }
 
+    // Takes the foreground first when Windows left another program in front (see
+    // TerminalAppsReleaseScenario.TakeForeground), then insists on it.
     private static void OwnForeground()
-        => Assert.True(Owned(GetForegroundWindow()), "Native input requires this scenario's foreground process.");
+    {
+        if (!Owned(GetForegroundWindow())
+            && Application.Current?.Windows.OfType<Window>().FirstOrDefault(window => window.IsVisible) is { } shown)
+            KillerShell.Tests.Terminal.TerminalAppsReleaseScenario.TakeForeground(shown);
+        Assert.True(Owned(GetForegroundWindow()), "Native input requires this scenario's foreground process.");
+    }
 
     private static void Key(byte code)
     {
