@@ -89,11 +89,14 @@ public static class EditorGrowingUtf8Scenario
                 Assert.Equal(original, File.ReadAllBytes(path));
                 editor.Document.Insert(0, "edited ");
                 Assert.False(editor.SaveFile(out saveError, out _));
-                Assert.Contains("UTF-8", saveError);
+                string expected = KillerShell.Shell.MainWindow.LocStatic("Str_Ed_IncompleteSnapshot");
+                Assert.NotEqual("Str_Ed_IncompleteSnapshot", expected);
+                Assert.Equal(expected, saveError);
                 Assert.Equal(original, File.ReadAllBytes(path));
                 editor.Undo();
                 editor.SetEncoding(new UnicodeEncoding(false, true));
                 Assert.False(editor.SaveFile(out saveError, out _));
+                Assert.Equal(expected, saveError);
                 Assert.Equal(original, File.ReadAllBytes(path));
                 Console.WriteLine("tail=" + tail.Length + " preserved_sha256=" + VerifiedFile.Sha256(original));
             }

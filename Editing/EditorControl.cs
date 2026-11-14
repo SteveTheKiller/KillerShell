@@ -378,7 +378,7 @@ namespace KillerShell.Editing
                 // unchanged save; edits must wait for a reload with the complete character.
                 if (!string.Equals(text, _incompleteUtf8Text, StringComparison.Ordinal)
                     || !SameEncoding(encoding, _savedEncoding))
-                    throw new InvalidOperationException(string.Format(MainWindow.LocStatic("Str_Ed_BadEncoding"), "UTF-8"));
+                    throw new InvalidOperationException(MainWindow.LocStatic("Str_Ed_IncompleteSnapshot"));
                 return (byte[])_incompleteUtf8Bytes.Clone();
             }
             byte[] preamble = encoding.GetPreamble();

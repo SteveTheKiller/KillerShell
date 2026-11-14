@@ -372,6 +372,7 @@
     <sys:String x:Key="Str_Menu_Edit">Uredi</sys:String>
     <sys:String x:Key="Str_Ed_TooBig">{0} je prevelik za urejanje ({1} MB).</sys:String>
     <sys:String x:Key="Str_Ed_BadEncoding">bajti niso veljavno besedilo {0}. Datoteka ni bila spremenjena.</sys:String>
+    <sys:String x:Key="Str_Ed_IncompleteSnapshot">datoteka se je ob odpiranju še zapisovala. Pred shranjevanjem jo znova naložite.</sys:String>
     <sys:String x:Key="Str_Ed_LossyEncoding">Izbrano kodiranje ne podpira vseh znakov v tem besedilu. Izberite UTF-8 in znova shranite.</sys:String>
     <sys:String x:Key="Str_TT_EdSave">Shrani  (Ctrl+S)</sys:String>
     <sys:String x:Key="Str_TT_EdUndo">Razveljavi  (Ctrl+Z)</sys:String>
