@@ -36,7 +36,19 @@ public static class TreeRefreshScrollScenario
         var panel = (FrameworkElement)window.FindName("TreePanel");
         if (panel.ActualWidth < 100) window.ToggleTreePanel();
         ShellWindowFixture.PumpUntil(() => panel.ActualWidth >= 160);
-        _ = window.RevealInTree(fixture.Root);
+        // The open folder sits under 80 siblings of its own, so the tree has room to scroll on any
+        // machine. A tree that is short on its own (one drive, a shallow profile) would otherwise
+        // never scroll far enough to tell a jump from staying put.
+        for (int i = 0; i < 80; i++) System.IO.Directory.CreateDirectory(System.IO.Path.Combine(fixture.Root, "f" + i.ToString("00")));
+        string open = System.IO.Directory.CreateDirectory(System.IO.Path.Combine(fixture.Root, "zz-open")).FullName;
+        // The fixture sits under the profile's temp folder, and AppData is hidden: the tree only
+        // reaches it with hidden folders shown (the settings here are the fixture's own).
+        if (!MainWindow.TreeShowHidden) window.ToggleTreeHidden();
+        ShellWindowFixture.PumpUntil(() => MainWindow.TreeShowHidden);
+        var navigate = typeof(MainWindow).GetMethod("NavigateTo", BindingFlags.NonPublic | BindingFlags.Instance)!;
+        navigate.Invoke(window, [open, true, false, false]);
+        ShellWindowFixture.PumpUntil(() => window.Pane.Active.StatusKey == "Str_Status_Listed");
+        _ = window.RevealInTree(open);
         ScrollViewer? scroller = null;
         ShellWindowFixture.PumpUntil(() =>
         {
@@ -51,8 +63,7 @@ public static class TreeRefreshScrollScenario
         window.UpdateLayout();
         ShellWindowFixture.PumpUntil(() => Math.Abs(scroller.VerticalOffset - target) < 1);
 
-        typeof(MainWindow).GetMethod("NavigateTo", BindingFlags.NonPublic | BindingFlags.Instance)!
-            .Invoke(window, [fixture.Root, false, true, true]);
+        navigate.Invoke(window, [open, false, true, true]);
         ShellWindowFixture.PumpUntil(() => window.Pane.Active.StatusKey == "Str_Status_Listed");
         for (int i = 0; i < 10; i++) ShellWindowFixture.PumpUntil(() => true);
         Assert.True(Math.Abs(scroller.VerticalOffset - target) < 1,
