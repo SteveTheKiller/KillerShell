@@ -553,6 +553,41 @@ namespace KillerShell.Shell
             UpdateFavoriteStar();
         }
 
+        // ── The star on a folder's card ──────────────────────────
+        // Same toggle as the location bar's star, for the folder the card is about. The click is
+        // handled here so the card stays open: a card's own button handlers close it first.
+        internal System.Windows.Controls.Primitives.ToggleButton? CardFavoriteStar(string? path)
+        {
+            if (string.IsNullOrEmpty(path) || Services.ArchiveProvider.TrySplit(path!, out _, out _)) return null;
+            var star = new System.Windows.Controls.Primitives.ToggleButton();
+            star.SetResourceReference(StyleProperty, "CardFavoriteStar");
+            bool syncing = false;
+            void Sync()
+            {
+                syncing = true;
+                bool on = IsBookmarked(path);
+                star.IsChecked = on;
+                string key = on ? "Str_Menu_RemoveFavorite" : "Str_Menu_AddFavorite";
+                star.SetResourceReference(ToolTipProperty, key);
+                System.Windows.Automation.AutomationProperties.SetName(star, Loc(key));
+                syncing = false;
+            }
+            Sync();
+            // Checked and Unchecked rather than Click: a screen reader's toggle never raises Click.
+            // Sync afterwards puts the star back if the folder could not be saved.
+            RoutedEventHandler changed = (_, _) =>
+            {
+                if (syncing) return;
+                if (star.IsChecked == true) AddBookmark(path);
+                else RemoveBookmark(path);
+                Sync();
+            };
+            star.Checked += changed;
+            star.Unchecked += changed;
+            star.Click += (_, e) => e.Handled = true;
+            return star;
+        }
+
         // ── The star in the location bar ─────────────────────────
         // Browser convention: it reflects and toggles wherever you currently are. Filled when
         // this folder is saved, outline when not.

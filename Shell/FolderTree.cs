@@ -475,6 +475,8 @@ namespace KillerShell.Shell
             };
             Controls.CardMenus.SetHeader(TreeCardHead, icon.Source == null ? null : icon,
                                          _treeMenuNode.NameLabel, _treeMenuNode.Path);
+            if (TreeCardHead.Header is FrameworkElement treeHeader && CardFavoriteStar(_treeMenuNode.Path) is { } star)
+                Controls.CardMenus.AddTrailing(treeHeader, star);
 
             // Read fresh on every open rather than bound once - the same convention
             // ColumnVisibilityMenu and the CPU tile's per-core toggle follow, and it keeps the

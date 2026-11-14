@@ -64,6 +64,17 @@ namespace KillerShell.Controls
             return header;
         }
 
+        /// <summary>
+        /// Put a control at the top right of a card header (the folder star). Docked before the text,
+        /// which fills what is left, so a long name trims instead of running under it.
+        /// </summary>
+        internal static void AddTrailing(FrameworkElement header, FrameworkElement element)
+        {
+            if (header is not DockPanel dock) return;
+            DockPanel.SetDock(element, Dock.Right);
+            dock.Children.Insert(0, element);
+        }
+
         /// <summary>Fill a header slot, naming the slot itself so a screen reader hears it.</summary>
         internal static void SetHeader(MenuItem slot, FrameworkElement? icon, string title, string meta)
         {

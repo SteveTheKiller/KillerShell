@@ -211,6 +211,12 @@ namespace KillerShell.Shell
             }
             header.Children.Add(text);
             System.Windows.Automation.AutomationProperties.SetName(header, title);
+
+            // Folders only: one folder row, or empty space in a folder being browsed.
+            string? starFolder = rows.Count == 1 ? (rows[0].IsDirectory ? rows[0].FilePath : null)
+                               : rows.Count == 0 && _active.IsBrowsing && !IsThisPc(_active.CurrentFolder) ? _active.CurrentFolder
+                               : null;
+            if (CardFavoriteStar(starFolder) is { } star) Controls.CardMenus.AddTrailing(header, star);
             return header;
         }
 
