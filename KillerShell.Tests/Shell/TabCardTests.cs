@@ -26,6 +26,64 @@ public sealed class TabCardTests
     [Fact]
     public Task ABlockedFolderProbeDoesNotDelayTheTabCard()
         => RuntimeComponentProcess.Run(nameof(TabCardBlockedProbeScenario));
+
+    [Fact]
+    public Task TheOverflowDropdownDoesNotWaitOnReachabilityProbes()
+        => RuntimeComponentProcess.Run(nameof(TabOverflowBlockedProbeScenario));
+}
+
+public static class TabOverflowBlockedProbeScenario
+{
+    public static void Run()
+    {
+        System.IO.Packaging.PackUriHelper.Create(new Uri("application:///"));
+        var app = RuntimeComponentProcess.StartApplication();
+        MainWindow? window = null;
+        using var release = new ManualResetEventSlim();
+        try
+        {
+            ThemeManager.GetSetting = key => key switch
+            {
+                "HomeFolder" => Path.GetTempPath(),
+                "RememberTabs" => "0",
+                "CheckForUpdatesOnStartup" => "0",
+                "CloseToTray" => "0",
+                _ => null,
+            };
+            ThemeManager.Initialize();
+            window = new MainWindow();
+            var pane = (FilePane)window.FindName("LeftPane");
+            window.TabIconPathExists = (_, _) => { release.Wait(TimeSpan.FromSeconds(10)); return false; };
+
+            pane.Tabs.Clear();
+            string unique = Guid.NewGuid().ToString("N");
+            for (int i = 0; i < 20; i++)
+            {
+                var tab = new SearchTab("tab " + i)
+                {
+                    IsBrowsing = true,
+                    CurrentFolder = @"\\unavailable-" + unique + @"\share" + i,
+                    IsStripVisible = false,
+                };
+                pane.Tabs.Add(tab);
+            }
+
+            var elapsed = Stopwatch.StartNew();
+            var menu = window.BuildTabOverflowMenu(pane);
+            elapsed.Stop();
+
+            Assert.Equal(20, menu.Items.OfType<MenuItem>().Count());
+            Assert.True(elapsed.ElapsedMilliseconds < 100,
+                "The overflow dropdown waited " + elapsed.ElapsedMilliseconds + " ms on reachability probes.");
+            Assert.All(menu.Items.OfType<MenuItem>(), item => Assert.IsType<System.Windows.Shapes.Ellipse>(item.Icon));
+        }
+        finally
+        {
+            release.Set();
+            window?.Close();
+            app.Shutdown();
+        }
+    }
 }
 
 public static class TabCardBlockedProbeScenario

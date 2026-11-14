@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using KillerShell.Models;
@@ -493,11 +495,23 @@ namespace KillerShell.Shell
         {
             FocusPane(p);   // Panes.cs - the click already did this, but the menu acts on p
 
+            var menu = BuildTabOverflowMenu(p);
+            menu.IsOpen = true;
+        }
+
+        /// <summary>
+        /// The overflow list for this pane, not yet open. Rows are built with their neutral icon
+        /// at once; whether a real shell icon applies is settled off the UI thread afterwards
+        /// (ResolveOverflowIcons), so a dead network path never holds the dropdown back.
+        /// </summary>
+        internal ContextMenu BuildTabOverflowMenu(FilePane p)
+        {
             var menu = new ContextMenu
             {
                 Placement       = System.Windows.Controls.Primitives.PlacementMode.Bottom,
                 PlacementTarget = p.TabOverflowBtn,
             };
+            var pending = new List<(MenuItem Item, SearchTab Tab, int Size)>();
 
             foreach (var t in p.Tabs)
             {
@@ -541,8 +555,9 @@ namespace KillerShell.Shell
                 var item = new MenuItem
                 {
                     Header = row,
-                    Icon = OverflowRowIcon(tab)   // below
+                    Icon = NeutralTabIcon(tab, 16)   // below
                 };
+                pending.Add((item, tab, 16));
 
                 var capturedTab = tab;
                 closeBtn.Click += (s, e) =>
@@ -559,7 +574,62 @@ namespace KillerShell.Shell
                 menu.Items.Add(item);
             }
 
-            menu.IsOpen = true;
+            ResolveOverflowIcons(pending);
+            return menu;
+        }
+
+        /// <summary>
+        /// Swaps each row's neutral icon for the real shell icon once its path is known to be
+        /// reachable. The probes run on a background thread under one budget; the rows are
+        /// updated back on the UI thread.
+        /// </summary>
+        private void ResolveOverflowIcons(List<(MenuItem Item, SearchTab Tab, int Size)> rows)
+        {
+            var work = new List<(MenuItem Item, int Size, List<(string Path, bool IsDirectory)> Candidates)>();
+            foreach (var (item, tab, size) in rows)
+            {
+                var candidates = IconCandidates(tab);
+                if (candidates.Count > 0) work.Add((item, size, candidates));
+            }
+            if (work.Count == 0) return;
+
+            var probe = TabIconPathExists;
+            var dispatcher = Dispatcher;
+            _ = Task.Run(() =>
+            {
+                var dirs = Services.Reachability.Reachable(
+                    work.SelectMany(w => w.Candidates).Where(c => c.IsDirectory).Select(c => c.Path).Distinct(StringComparer.OrdinalIgnoreCase),
+                    path => probe(path, true), TimeSpan.FromSeconds(2), true);
+                var files = Services.Reachability.Reachable(
+                    work.SelectMany(w => w.Candidates).Where(c => !c.IsDirectory).Select(c => c.Path).Distinct(StringComparer.OrdinalIgnoreCase),
+                    path => probe(path, false), TimeSpan.FromSeconds(2), false);
+                var liveDirs = new HashSet<string>(dirs, StringComparer.OrdinalIgnoreCase);
+                var liveFiles = new HashSet<string>(files, StringComparer.OrdinalIgnoreCase);
+
+                var swaps = new List<(MenuItem Item, string Path, bool IsDirectory, int Size)>();
+                foreach (var w in work)
+                    foreach (var c in w.Candidates)
+                        if (c.IsDirectory ? liveDirs.Contains(c.Path) : liveFiles.Contains(c.Path))
+                        {
+                            swaps.Add((w.Item, c.Path, c.IsDirectory, w.Size));
+                            break;
+                        }
+                if (swaps.Count == 0) return;
+
+                try
+                {
+                    dispatcher.BeginInvoke(new Action(() =>
+                    {
+                        foreach (var (item, path, isDirectory, size) in swaps)
+                            item.Icon = new Image
+                            {
+                                Width = size, Height = size,
+                                Source = Services.IconCache.For(path, size, isDirectory: isDirectory),
+                            };
+                    }));
+                }
+                catch (Exception ex) when (ex is InvalidOperationException or TaskCanceledException) { }
+            });
         }
 
         internal Func<string, bool, bool> TabIconPathExists { get; set; } = (path, isDirectory) =>
@@ -581,44 +651,47 @@ namespace KillerShell.Shell
         /// </remarks>
         private FrameworkElement OverflowRowIcon(SearchTab tab, int size = 16)
         {
-            bool Reachable(string path, bool isDirectory) => Services.Reachability.Reachable(
-                new[] { path }, candidate => TabIconPathExists(candidate, isDirectory),
-                TimeSpan.FromMilliseconds(40), isDirectory).Count > 0;
-
-            if (tab.IsBrowsing && !string.IsNullOrEmpty(tab.CurrentFolder)
-                && Reachable(tab.CurrentFolder, true))
+            foreach (var (path, isDirectory) in IconCandidates(tab))
             {
-                return new Image
-                {
-                    Width = size, Height = size,
-                    Source = Services.IconCache.For(tab.CurrentFolder, size, isDirectory: true),
-                };
+                bool reachable = Services.Reachability.Reachable(
+                    new[] { path }, candidate => TabIconPathExists(candidate, isDirectory),
+                    TimeSpan.FromMilliseconds(40), isDirectory).Count > 0;
+                if (reachable)
+                    return new Image
+                    {
+                        Width = size, Height = size,
+                        Source = Services.IconCache.For(path, size, isDirectory: isDirectory),
+                    };
             }
+            return NeutralTabIcon(tab, size);
+        }
 
-            if (tab.Editor != null && !tab.Editor.IsUntitled && Reachable(tab.Editor.FilePath, false))
-            {
-                return new Image
-                {
-                    Width = size, Height = size,
-                    Source = Services.IconCache.For(tab.Editor.FilePath, size),
-                };
-            }
+        /// <summary>
+        /// The paths whose own shell icon could stand for this tab, best first: the folder a
+        /// browsing tab shows, an open document, a shell's exe.
+        /// </summary>
+        /// <remarks>
+        /// A shell tab gets the SYSTEM's own PowerShell/cmd icon - the exact exe TermExePath
+        /// names (TerminalProfile.ExePath, set alongside Term in TerminalTabs.cs) - rather
+        /// than an app-drawn glyph. Unset in demo mode on purpose (CreateDemoTerminalTab):
+        /// that path is real and local, and a demo screenshot fabricates everything else
+        /// about a shell tab specifically to avoid putting anything of THIS machine on screen.
+        /// </remarks>
+        private static List<(string Path, bool IsDirectory)> IconCandidates(SearchTab tab)
+        {
+            var found = new List<(string, bool)>();
+            if (tab.IsBrowsing && !string.IsNullOrEmpty(tab.CurrentFolder))
+                found.Add((tab.CurrentFolder, true));
+            if (tab.Editor != null && !tab.Editor.IsUntitled)
+                found.Add((tab.Editor.FilePath, false));
+            if (tab.IsTerminal && tab.TermExePath is string exePath && exePath.Length > 0)
+                found.Add((exePath, false));
+            return found;
+        }
 
-            // A shell tab gets the SYSTEM's own PowerShell/cmd icon - the exact exe TermExePath
-            // names (TerminalProfile.ExePath, set alongside Term in TerminalTabs.cs) - rather
-            // than an app-drawn glyph. Unset in demo mode on purpose (CreateDemoTerminalTab):
-            // that path is real and local, and a demo screenshot fabricates everything else
-            // about a shell tab specifically to avoid putting anything of THIS machine on screen.
-            if (tab.IsTerminal && tab.TermExePath is string exePath && exePath.Length > 0
-                && Reachable(exePath, false))
-            {
-                return new Image
-                {
-                    Width = size, Height = size,
-                    Source = Services.IconCache.For(exePath, size),
-                };
-            }
-
+        /// <summary>The icon a row wears before, or without, a real shell icon.</summary>
+        private FrameworkElement NeutralTabIcon(SearchTab tab, int size)
+        {
             // Match the visible tab and the folder tree: Storage Analyzer is a disk tool, so its
             // overflow row uses the same theme-aware drive artwork rather than a status dot.
             if (tab.IsStorageAnalyzer)
