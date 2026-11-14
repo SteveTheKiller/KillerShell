@@ -55,7 +55,7 @@ The app itself also takes these switches: `--new-window` (a window of its own), 
 
 <table>
 <tr>
-<td width="50%"><img src="shell-landing/screenshots/02.png" alt="Stacked panes with invoice search results and the file menu above Pictures, with a photo previewed in the details panel"><br><sub>Stack two panes, each with its own tabs and view, and preview the selected file in the details panel.</sub></td>
+<td width="50%"><img src="shell-landing/screenshots/02.png" alt="Stacked panes with invoice search results and the file card above Pictures, with a photo previewed in the details panel"><br><sub>Stack two panes, each with its own tabs and view, and preview the selected file in the details panel.</sub></td>
 <td width="50%"><img src="shell-landing/screenshots/04.png" alt="Processes beside Registry Editor in side-by-side panes"><br><sub>Open Processes, Services and Registry Editor as tabs, side by side with anything else.</sub></td>
 </tr>
 </table>

@@ -290,7 +290,7 @@ html[data-theme="light"] .blurb h3, html[data-theme="light"] .feature-card h3 { 
   // placeholder until at least one loads. Drop real screenshots into screenshots/ to populate it.
   var descriptions = [
     "KillerShell stacked panes: a PowerShell script in the editor above Pictures thumbnails, with the selected photo in the details panel.",
-    "KillerShell stacked panes: invoice search results with the file menu open, above Pictures with a photo previewed in the details panel on the right.",
+    "KillerShell stacked panes: invoice search results with the file card open, above Pictures with a photo previewed in the details panel on the right.",
     "KillerShell Cyanotic theme at 125% app size: searching within earlier results in the details view, above a PowerShell script open in the editor, with the folder tree on the right.",
     "KillerShell side-by-side panes: Processes on the left and Registry Editor on the right, with fabricated demo data.",
     "KillerShell Event Viewer listing application events, with the folder tree on the right.",
@@ -359,7 +359,7 @@ html[data-theme="light"] .blurb h3, html[data-theme="light"] .feature-card h3 { 
 
   for (var i = 1; i <= MAX; i++) {
     (function (n) {
-      var src = 'screenshots/' + (n < 10 ? '0' + n : '' + n) + '.png?v=1.5.2-1';
+      var src = 'screenshots/' + (n < 10 ? '0' + n : '' + n) + '.png?v=1.6.0-1';
       var img = new Image();
       img.onload = function () {
         if (empty) { empty.remove(); empty = null; }
