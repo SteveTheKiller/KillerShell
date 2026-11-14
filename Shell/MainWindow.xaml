@@ -572,6 +572,9 @@
                             </ListBox.OpacityMask>
                             <ListBox.ItemContainerStyle>
                                 <Style TargetType="ListBoxItem">
+                                    <!-- The Apps key and Shift+F10 open the menu of the focused item,
+                                         which is this container; the card lives on the row inside it. -->
+                                    <EventSetter Event="ContextMenuOpening" Handler="BookmarkItem_ContextMenuOpening"/>
                                     <Setter Property="AutomationProperties.Name" Value="{Binding NameLabel}"/>
                                     <Setter Property="Padding" Value="0"/>
                                     <Setter Property="Margin" Value="0"/>

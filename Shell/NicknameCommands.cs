@@ -95,6 +95,19 @@ namespace KillerShell.Shell
         }
 
         // The saved-place menu lives in the row template, so it is set up per row as it opens.
+        // Keyboard opening on a focused place: WPF raises ContextMenuOpening on the list item, which
+        // has no menu of its own, so hand it to the row's card and anchor that card to the row.
+        private void BookmarkItem_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+            if (e.Handled || !ReferenceEquals(e.OriginalSource, sender) || sender is not System.Windows.Controls.ListBoxItem item) return;
+            if (FindDescendant<System.Windows.Controls.Border>(item) is not { ContextMenu: { } card } row) return;
+            e.Handled = true;
+            BookmarkRow_ContextMenuOpening(row, e);
+            card.PlacementTarget = row;
+            card.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
+            card.IsOpen = true;
+        }
+
         private void BookmarkRow_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
             if (sender is not FrameworkElement { DataContext: Bookmark b } row) return;
