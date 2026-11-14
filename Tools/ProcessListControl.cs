@@ -1226,7 +1226,7 @@ namespace KillerShell.Tools
             menu.Items.Add(quick);
 
             // E946: the information glyph. Enter on the row opens the same dialog.
-            AddMenuItem(menu, "Str_Proc_DetailsTitle", ((char)0xE946).ToString(), (_, _) => OpenProcessDetails(), gesture: "Enter");
+            AddMenuItem(menu, "Str_Proc_DetailsTitle", ((char)0xE946).ToString(), (_, _) => OpenProcessDetails(p), gesture: "Enter");
             menu.IsOpen = true;
         }
 
@@ -1254,7 +1254,7 @@ namespace KillerShell.Tools
                 () => RestartServiceWithConfirm(s)).IsEnabled = s.IsRunning && s.CanStop;
             menu.Items.Add(quick);
 
-            AddMenuItem(menu, "Str_Svc_DetailsTitle", ((char)0xE946).ToString(), (_, _) => OpenServiceDetails(), gesture: "Enter");
+            AddMenuItem(menu, "Str_Svc_DetailsTitle", ((char)0xE946).ToString(), (_, _) => OpenServiceDetails(s), gesture: "Enter");
             menu.IsOpen = true;
         }
 
@@ -1269,23 +1269,26 @@ namespace KillerShell.Tools
             else OpenServiceDetails();
         }
 
-        private void OpenProcessDetails()
+        // The card passes the row it was built for, so a refresh that moves or drops the selection
+        // while the card is open cannot send Details to another row. A row that has left the list
+        // (the process exited) opens on its own instead of falling back to the first row.
+        private void OpenProcessDetails(ProcessInfo? row = null)
         {
-            if (_grid.SelectedItem is not ProcessInfo entry) return;
+            if ((row ?? _grid.SelectedItem) is not ProcessInfo entry) return;
             var ordered = _procView.Cast<ProcessInfo>().ToList();
             int index = ordered.IndexOf(entry);
-            if (index < 0) index = 0;
+            if (index < 0) { ordered = new List<ProcessInfo> { entry }; index = 0; }
 
             var dlg = new ProcessDetailsDialog(ordered, index) { Owner = Window.GetWindow(this) };
             dlg.ShowDialog();
         }
 
-        private void OpenServiceDetails()
+        private void OpenServiceDetails(ServiceInfo? row = null)
         {
-            if (_grid.SelectedItem is not ServiceInfo entry) return;
+            if ((row ?? _grid.SelectedItem) is not ServiceInfo entry) return;
             var ordered = _svcView.Cast<ServiceInfo>().ToList();
             int index = ordered.IndexOf(entry);
-            if (index < 0) index = 0;
+            if (index < 0) { ordered = new List<ServiceInfo> { entry }; index = 0; }
 
             var dlg = new ServiceDetailsDialog(ordered, index) { Owner = Window.GetWindow(this) };
             dlg.ShowDialog();

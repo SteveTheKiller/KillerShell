@@ -354,6 +354,11 @@ namespace KillerShell.Tools
 
         private void SaveLayout() => Services.ThemeManager.SetSetting(LayoutSetting, _layout.Serialize());
 
+        // Icon glyphs sit in the Private Use Area. Written as numbers, because editors and tools
+        // drop or rewrite those characters when they appear literally in source.
+        private const char FirstIconGlyph = (char)0xE000;
+        private const char LastIconGlyph = (char)0xF8FF;
+
         private void ShowCardMenu(DashboardCard card)
         {
             var menu = KillerShell.Controls.CardMenus.Card();
@@ -361,7 +366,7 @@ namespace KillerShell.Tools
             // The card names the dashboard card it acts on with that card's own heading: the
             // first text in its drag handle that is not an icon glyph ("AMD Ryzen 7", "Network 0").
             string title = card.Handles.SelectMany(TextsIn)
-                .FirstOrDefault(text => text.Length > 1 && !text.All(ch => ch >= '' && ch <= '')) ?? card.Id;
+                .FirstOrDefault(text => text.Length > 1 && !text.All(ch => ch >= FirstIconGlyph && ch <= LastIconGlyph)) ?? card.Id;
             var head = KillerShell.Controls.CardMenus.Slot();
             head.Tag = "cardhead";
             KillerShell.Controls.CardMenus.SetHeader(head, null, title, string.Empty);
