@@ -2,6 +2,7 @@ param(
     [string]$Source = (Join-Path $PSScriptRoot '..\Shell\ShortcutsOverlay.cs'),
     [string]$StringsDirectory = (Join-Path $PSScriptRoot '..\Strings'),
     [string]$Output = (Join-Path $PSScriptRoot 'shortcuts.generated.js'),
+    [string]$HelpPage = (Join-Path $PSScriptRoot 'help.html'),
     [switch]$Check
 )
 
@@ -63,10 +64,41 @@ $metaJson = $meta | ConvertTo-Json -Depth 4 -Compress
 $content = "/* Generated from Shell/ShortcutsOverlay.cs and every Strings dictionary. */`nwindow.KS_SHORTCUTS=$json;`nwindow.KS_SHORTCUT_META=$metaJson;`n"
 $content = $content.Replace("'", '\u0027').Replace('<', '\u003c').Replace('>', '\u003e').Replace('&', '\u0026')
 if ($content.IndexOf([char]0x2013) -ge 0 -or $content.IndexOf([char]0x2014) -ge 0) { throw 'Prohibited dash in generated content' }
+# The help page's no-script fallback: the same English list help.html's script draws, so a reader
+# without JavaScript (or a crawler) sees every current binding instead of a hand-kept copy.
+function HtmlText([string]$text) { [Net.WebUtility]::HtmlEncode($text) }
+$scopeOrder = 'Global','Files','Terminal','Editor','Processes','Events','Registry','Storage'
+$categoryOrder = 'Search','Nav','Tabs','View','File','Edit','Help'
+$fallback = [Text.StringBuilder]::new()
+foreach ($scope in $scopeOrder) {
+    $scoped = @($rows | Where-Object { $_.scope -eq $scope -and $_.keys })
+    if (!$scoped.Count) { continue }
+    [void]$fallback.Append("`n<h3 class=`"kbd-scope`">$(HtmlText $meta.scopes[$scope].en)</h3>`n<div class=`"kbd-cols`">`n<div class=`"kbd-col`">`n")
+    foreach ($category in $categoryOrder) {
+        $grouped = @($scoped | Where-Object { $_.category -eq $category })
+        if (!$grouped.Count) { continue }
+        [void]$fallback.Append("`n<div class=`"kbd-group`"><h4>$(HtmlText $meta.categories[$category].en.ToUpperInvariant())</h4>`n")
+        foreach ($binding in $grouped) {
+            [void]$fallback.Append("<div class=`"kbd-row`"><span class=`"k`">$(HtmlText $binding.keys)</span><span class=`"d`">$(HtmlText $binding.label.en)</span></div>`n")
+        }
+        [void]$fallback.Append("</div>`n")
+    }
+    [void]$fallback.Append("`n</div>`n</div>`n")
+}
+$helpText = [IO.File]::ReadAllText((Resolve-Path $HelpPage))
+$markers = [regex]'(?s)(<!-- shortcuts:begin[^>]*-->)(.*?)(<!-- shortcuts:end -->)'
+if (!$markers.IsMatch($helpText)) { throw "The shortcut markers are missing from $HelpPage" }
+$newline = if ($helpText.Contains("`r`n")) { "`r`n" } else { "`n" }
+$block = ($fallback.ToString() + "`n").Replace("`n", $newline)
+$helpUpdated = $markers.Replace($helpText, { param($m) $m.Groups[1].Value + $block + $m.Groups[3].Value }, 1)
+if ($helpUpdated.IndexOf([char]0x2013) -ge 0 -or $helpUpdated.IndexOf([char]0x2014) -ge 0) { throw 'Prohibited dash in the help page' }
+
 if ($Check) {
     if (!(Test-Path -LiteralPath $Output) -or [IO.File]::ReadAllText($Output) -cne $content) { throw 'Generated shortcuts are stale. Run generate-shortcuts.ps1' }
-    Write-Host "Generated shortcuts are current ($($rows.Count) rows, $($localeFiles.Count) locales)"
+    if ($helpUpdated -cne $helpText) { throw 'The help page shortcut list is stale. Run generate-shortcuts.ps1' }
+    Write-Host "Generated shortcuts are current ($($rows.Count) rows, $($localeFiles.Count) locales, help fallback included)"
 } else {
     [IO.File]::WriteAllText($Output, $content, [Text.UTF8Encoding]::new($false))
-    Write-Host "Generated $($rows.Count) shortcut rows -> $Output"
+    if ($helpUpdated -cne $helpText) { [IO.File]::WriteAllText((Resolve-Path $HelpPage), $helpUpdated, [Text.UTF8Encoding]::new($false)) }
+    Write-Host "Generated $($rows.Count) shortcut rows -> $Output and the help page fallback"
 }
