@@ -285,7 +285,9 @@ namespace KillerShell.Shell
             // The tree is rooted AT the drives, so This PC is above everything it can show and
             // there is nothing to reveal.
             // The tree shows directories, and nothing inside an archive is one.
-            if (!thisPc && !archive) _ = RevealInTree(folder);
+            // A re-list of the folder already on screen is not a move: the tree already shows it,
+            // and revealing it again scrolled the tree back to it while you were scrolled away.
+            if (!thisPc && !archive && !relisting) _ = RevealInTree(folder);
         }
 
         // ── Archives as folders ──────────────────────────────────
