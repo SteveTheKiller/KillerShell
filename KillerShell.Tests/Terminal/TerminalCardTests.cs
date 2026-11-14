@@ -26,7 +26,9 @@ public sealed class TerminalCardTests
                 Assert.Single(menu.Items.OfType<MenuItem>(), item => (string?)item.Tag == "cardhead");
                 var quick = Assert.Single(menu.Items.OfType<MenuItem>(), item => (string?)item.Tag == "cardquick");
                 var buttons = TabCardScenario.Buttons(quick);
-                Assert.Equal(6, buttons.Count);
+                // Copy, Paste, Select all, Clear scrollback and Open folder. Close is not on the card:
+                // a lone X read as "close this menu" and ended a running shell (Ctrl+W still closes).
+                Assert.Equal(5, buttons.Count);
 
                 // Open folder is a button now, and it still asks the window to open the folder.
                 buttons[4].RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent));
