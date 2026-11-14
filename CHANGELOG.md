@@ -59,6 +59,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Copy SHA-256 reports to the tab that asked for it, even when you switch tabs while a large file is hashing.
 - An HTML export says it was exported when the file was written but no browser could open it.
 - The disk and network tiles on the Performance tab show a dash when their counters can't be read, instead of a steady 0, and a machine with performance counters switched off says so.
+- Storage menus follow the current selection and do not reopen from unrelated toolbar or footer areas.
 - Closing a Storage tab right after clicking a square no longer writes that tab's summary into the status bar five seconds later.
 - The Storage scan progress line counts folders and files in the interface language.
 - Archive error messages, including names that collide on Windows, appear in the interface language.

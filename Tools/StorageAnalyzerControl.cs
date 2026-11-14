@@ -401,6 +401,12 @@ namespace KillerShell.Tools
 
             if (Keyboard.FocusedElement is TextBox) return;
 
+            if (plain && e.Key == Key.Apps)
+            {
+                e.Handled = true;
+                return;
+            }
+
             // The menu's other verbs on the selected rectangle: Shift+Enter opens it in a new tab,
             // F6 shows it in Explorer (the results list's key for that), Ctrl+Shift+C copies its
             // path (Windows' Copy as path).
@@ -465,6 +471,23 @@ namespace KillerShell.Tools
 
                 default: return;   // not ours - let it bubble
             }
+            e.Handled = true;
+        }
+
+        protected override void OnPreviewKeyUp(KeyEventArgs e)
+        {
+            if (e.Key == Key.Apps && _keyboardModifiers() == ModifierKeys.None
+                && Keyboard.FocusedElement is not TextBox)
+            {
+                ShowMapMenu(_selected, keyboard: true);
+                e.Handled = true;
+                return;
+            }
+            base.OnPreviewKeyUp(e);
+        }
+
+        protected override void OnContextMenuOpening(ContextMenuEventArgs e)
+        {
             e.Handled = true;
         }
 
@@ -1372,7 +1395,11 @@ namespace KillerShell.Tools
         {
             var n = NodeAt(e.GetPosition(_map));
             if (n != null) SelectNode(n);
+            ShowMapMenu(n, keyboard: false);
+        }
 
+        private void ShowMapMenu(FsNode? n, bool keyboard)
+        {
             var menu = new ContextMenu();
 
             if (n != null)
@@ -1442,6 +1469,13 @@ namespace KillerShell.Tools
             }
 
             menu.PlacementTarget = _map;
+            menu.Placement = keyboard
+                ? System.Windows.Controls.Primitives.PlacementMode.Bottom
+                : System.Windows.Controls.Primitives.PlacementMode.MousePoint;
+            if (keyboard)
+                menu.PlacementRectangle = n != null && n.Gen == _gen && n.Rect.Width > 0
+                    ? n.Rect : new Rect(_map.RenderSize);
+            if (keyboard) menu.Closed += (_, _) => Focus();
             menu.IsOpen = true;
         }
 
