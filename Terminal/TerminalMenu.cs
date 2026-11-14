@@ -138,10 +138,10 @@ namespace KillerShell.Terminal
             {
                 if (CopySelection()) ClearSelection();
             });
-            KillerShell.Controls.CardMenus.QuickButton(strip, m, 0xE77F, "Str_Term_Paste", "Str_Term_Paste", "Ctrl+Shift+V", Paste);
+            KillerShell.Controls.CardMenus.QuickButton(strip, m, 0xE77F, "Str_Card_Paste", "Str_Term_Paste", "Ctrl+Shift+V", Paste);
             KillerShell.Controls.CardMenus.QuickButton(strip, m, 0xE8B3, "Str_Card_SelectAll", "Str_Term_SelectAll", "Ctrl+Shift+A", SelectAll);
             // The eraser, not MDL2's Clear X: that X is Close, two buttons along.
-            KillerShell.Controls.CardMenus.QuickButton(strip, m, 0xE75C, "Str_Term_Clear", "Str_Term_Clear", "Ctrl+Shift+L", ClearScrollback);
+            KillerShell.Controls.CardMenus.QuickButton(strip, m, 0xE75C, "Str_Card_Clear", "Str_Term_Clear", "Ctrl+Shift+L", ClearScrollback);
             // The reverse of "open a terminal here": whatever the shell has cd'd to, opened as a
             // folder tab. The buffer tracks the working directory already (OSC 7), so this is
             // free - and after a few minutes of cd-ing around, getting the folder listing to

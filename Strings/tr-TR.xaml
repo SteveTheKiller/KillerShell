@@ -479,7 +479,7 @@
     <sys:String x:Key="Str_TT_TermNew">Yeni terminal  (F8)</sys:String>
     <sys:String x:Key="Str_TT_TermAdmin">Yönetici olarak yeni terminal  (Ctrl+F8)</sys:String>
     <sys:String x:Key="Str_TT_TermFolder">Bu klasörü bir sekmede aç  (Ctrl+Shift+T)</sys:String>
-    <sys:String x:Key="Str_TT_TermClear">Kaydırma geçmişini temizle (Ctrl+Shift+L)</sys:String>
+    <sys:String x:Key="Str_TT_TermClear">Kaydırma geçmişini temizle  (Ctrl+Shift+L)</sys:String>
     <sys:String x:Key="Str_TT_TermFonts">Yazı tipleri...  (Ctrl+Shift+,)</sys:String>
 
     <sys:String x:Key="Str_Ed_WrapOn">Sözcük kaydırma açık.</sys:String>
@@ -1065,6 +1065,8 @@
     <sys:String x:Key="Str_Card_Edit">Düzenle</sys:String>
     <sys:String x:Key="Str_Card_Rename">Yeniden adlandır</sys:String>
     <sys:String x:Key="Str_Card_SelectAll">Tümünü seç</sys:String>
+    <sys:String x:Key="Str_Card_Paste">Yapıştır</sys:String>
+    <sys:String x:Key="Str_Card_Clear">Geçmişi temizle</sys:String>
     <sys:String x:Key="Str_Ks_ContextMenu">bağlam menüsünü aç</sys:String>
     <sys:String x:Key="Str_TT_RemoveSearchTerm">Arama terimini kaldır</sys:String>
     <sys:String x:Key="Str_TT_RemoveSearchFilter">Filtreyi kaldır</sys:String>

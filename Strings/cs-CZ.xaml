@@ -477,7 +477,7 @@
     <sys:String x:Key="Str_TT_TermNew">Nový terminál  (F8)</sys:String>
     <sys:String x:Key="Str_TT_TermAdmin">Nový terminál jako správce  (Ctrl+F8)</sys:String>
     <sys:String x:Key="Str_TT_TermFolder">Otevřít tuto složku na kartě  (Ctrl+Shift+T)</sys:String>
-    <sys:String x:Key="Str_TT_TermClear">Vymazat historii terminálu (Ctrl+Shift+L)</sys:String>
+    <sys:String x:Key="Str_TT_TermClear">Vymazat historii terminálu  (Ctrl+Shift+L)</sys:String>
     <sys:String x:Key="Str_TT_TermFonts">Písma...  (Ctrl+Shift+,)</sys:String>
 
     <sys:String x:Key="Str_Ed_WrapOn">Zalamování řádků zapnuto.</sys:String>
@@ -1063,6 +1063,8 @@
     <sys:String x:Key="Str_Card_Edit">Upravit</sys:String>
     <sys:String x:Key="Str_Card_Rename">Pře&#xAD;jmeno&#xAD;vat</sys:String>
     <sys:String x:Key="Str_Card_SelectAll">Vybrat vše</sys:String>
+    <sys:String x:Key="Str_Card_Paste">Vložit</sys:String>
+    <sys:String x:Key="Str_Card_Clear">Vymazat historii</sys:String>
     <sys:String x:Key="Str_Ks_ContextMenu">otevřít místní nabídku</sys:String>
     <sys:String x:Key="Str_TT_RemoveSearchTerm">Odebrat hledaný výraz</sys:String>
     <sys:String x:Key="Str_TT_RemoveSearchFilter">Odebrat filtr</sys:String>

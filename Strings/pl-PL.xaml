@@ -473,7 +473,7 @@
   <sys:String x:Key="Str_TT_TermNew">Nowy terminal  (F8)</sys:String>
   <sys:String x:Key="Str_TT_TermAdmin">Nowy terminal jako administrator  (Ctrl+F8)</sys:String>
   <sys:String x:Key="Str_TT_TermFolder">Otwórz ten folder na karcie  (Ctrl+Shift+T)</sys:String>
-  <sys:String x:Key="Str_TT_TermClear">Wyczyść historię przewijania (Ctrl+Shift+L)</sys:String>
+  <sys:String x:Key="Str_TT_TermClear">Wyczyść historię przewijania  (Ctrl+Shift+L)</sys:String>
   <sys:String x:Key="Str_TT_TermFonts">Czcionki...  (Ctrl+Shift+,)</sys:String>
   <sys:String x:Key="Str_TT_EdPath">Kliknij, aby edytować - wpisz ścieżkę i naciśnij Enter, aby zmienić nazwę lub przenieść plik. Wpisz istniejący plik, aby go otworzyć.</sys:String>
   <sys:String x:Key="Str_Ed_WrapOn">Zawijanie wierszy włączone.</sys:String>
@@ -979,6 +979,8 @@
   <sys:String x:Key="Str_Card_Edit">Edytuj</sys:String>
   <sys:String x:Key="Str_Card_Rename">Zmień nazwę</sys:String>
   <sys:String x:Key="Str_Card_SelectAll">Zaznacz wszystko</sys:String>
+  <sys:String x:Key="Str_Card_Paste">Wklej</sys:String>
+  <sys:String x:Key="Str_Card_Clear">Wyczyść historię</sys:String>
     <sys:String x:Key="Str_Ks_ContextMenu">otwórz menu kontekstowe</sys:String>
     <sys:String x:Key="Str_TT_RemoveSearchTerm">Usuń warunek wyszukiwania</sys:String>
     <sys:String x:Key="Str_TT_RemoveSearchFilter">Usuń filtr</sys:String>

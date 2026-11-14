@@ -485,7 +485,7 @@
     <sys:String x:Key="Str_TT_TermNew">Ny terminal  (F8)</sys:String>
     <sys:String x:Key="Str_TT_TermAdmin">Ny terminal som administrator  (Ctrl+F8)</sys:String>
     <sys:String x:Key="Str_TT_TermFolder">Åpne denne mappen i en fane  (Ctrl+Shift+T)</sys:String>
-    <sys:String x:Key="Str_TT_TermClear">Tøm rullehistorikk (Ctrl+Shift+L)</sys:String>
+    <sys:String x:Key="Str_TT_TermClear">Tøm rullehistorikk  (Ctrl+Shift+L)</sys:String>
     <sys:String x:Key="Str_TT_TermFonts">Skrifttyper...  (Ctrl+Shift+,)</sys:String>
     <sys:String x:Key="Str_TT_EdPath">Klikk for å redigere - skriv en sti og trykk Enter for å gi filen nytt navn eller flytte den. Skriv en eksisterende fil for å åpne den.</sys:String>
     <sys:String x:Key="Str_Ed_WrapOn">Tekstbryting på.</sys:String>
@@ -1110,6 +1110,8 @@
     <sys:String x:Key="Str_Card_Edit">Rediger</sys:String>
     <sys:String x:Key="Str_Card_Rename">Gi nytt navn</sys:String>
     <sys:String x:Key="Str_Card_SelectAll">Merk alt</sys:String>
+    <sys:String x:Key="Str_Card_Paste">Lim inn</sys:String>
+    <sys:String x:Key="Str_Card_Clear">Tøm historikk</sys:String>
     <sys:String x:Key="Str_Ks_ContextMenu">åpne hurtigmenyen</sys:String>
     <sys:String x:Key="Str_TT_RemoveSearchTerm">Fjern søkeord</sys:String>
     <sys:String x:Key="Str_TT_RemoveSearchFilter">Fjern filter</sys:String>

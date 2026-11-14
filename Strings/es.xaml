@@ -479,7 +479,7 @@
     <sys:String x:Key="Str_TT_TermNew">Nueva terminal  (F8)</sys:String>
     <sys:String x:Key="Str_TT_TermAdmin">Nueva terminal como administrador  (Ctrl+F8)</sys:String>
     <sys:String x:Key="Str_TT_TermFolder">Abrir esta carpeta en una pestaña  (Ctrl+Mayús+T)</sys:String>
-    <sys:String x:Key="Str_TT_TermClear">Borrar historial de desplazamiento (Ctrl+Shift+L)</sys:String>
+    <sys:String x:Key="Str_TT_TermClear">Borrar historial de desplazamiento  (Ctrl+Mayús+L)</sys:String>
     <sys:String x:Key="Str_TT_TermFonts">Fuentes...  (Ctrl+Mayús+,)</sys:String>
 
     <sys:String x:Key="Str_Ed_WrapOn">Ajuste de línea activado.</sys:String>
@@ -1065,6 +1065,8 @@
     <sys:String x:Key="Str_Card_Edit">Editar</sys:String>
     <sys:String x:Key="Str_Card_Rename">Renom&#xAD;brar</sys:String>
     <sys:String x:Key="Str_Card_SelectAll">Todo</sys:String>
+    <sys:String x:Key="Str_Card_Paste">Pegar</sys:String>
+    <sys:String x:Key="Str_Card_Clear">Borrar historial</sys:String>
     <sys:String x:Key="Str_Ks_ContextMenu">abrir el menú contextual</sys:String>
     <sys:String x:Key="Str_TT_RemoveSearchTerm">Quitar término de búsqueda</sys:String>
     <sys:String x:Key="Str_TT_RemoveSearchFilter">Quitar filtro</sys:String>

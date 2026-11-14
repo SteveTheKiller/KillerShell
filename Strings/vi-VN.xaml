@@ -457,7 +457,7 @@
   <sys:String x:Key="Str_TT_TermNew">Terminal mới  (F8)</sys:String>
   <sys:String x:Key="Str_TT_TermAdmin">Terminal mới với quyền quản trị viên  (Ctrl+F8)</sys:String>
   <sys:String x:Key="Str_TT_TermFolder">Mở thư mục này trong một tab  (Ctrl+Shift+T)</sys:String>
-  <sys:String x:Key="Str_TT_TermClear">Xóa lịch sử cuộn (Ctrl+Shift+L)</sys:String>
+  <sys:String x:Key="Str_TT_TermClear">Xóa lịch sử cuộn  (Ctrl+Shift+L)</sys:String>
   <sys:String x:Key="Str_TT_TermFonts">Phông chữ...  (Ctrl+Shift+,)</sys:String>
   <sys:String x:Key="Str_TT_EdPath">Bấm để chỉnh sửa, nhập đường dẫn rồi nhấn Enter để đổi tên hoặc di chuyển tệp. Nhập một tệp có sẵn để mở tệp đó.</sys:String>
   <sys:String x:Key="Str_Ed_WrapOn">Đã bật ngắt dòng.</sys:String>
@@ -1066,6 +1066,8 @@ Các cài đặt của bạn sẽ không bị xóa.</sys:String>
   <sys:String x:Key="Str_Card_Edit">Chỉnh sửa</sys:String>
   <sys:String x:Key="Str_Card_Rename">Đổi tên</sys:String>
   <sys:String x:Key="Str_Card_SelectAll">Chọn tất cả</sys:String>
+  <sys:String x:Key="Str_Card_Paste">Dán</sys:String>
+  <sys:String x:Key="Str_Card_Clear">Xóa lịch sử cuộn</sys:String>
     <sys:String x:Key="Str_Ks_ContextMenu">mở menu ngữ cảnh</sys:String>
     <sys:String x:Key="Str_TT_RemoveSearchTerm">Xóa cụm từ tìm kiếm</sys:String>
     <sys:String x:Key="Str_TT_RemoveSearchFilter">Xóa bộ lọc</sys:String>

@@ -485,7 +485,7 @@
     <sys:String x:Key="Str_TT_TermNew">New terminal  (F8)</sys:String>
     <sys:String x:Key="Str_TT_TermAdmin">New terminal as administrator  (Ctrl+F8)</sys:String>
     <sys:String x:Key="Str_TT_TermFolder">Open this folder in a tab  (Ctrl+Shift+T)</sys:String>
-    <sys:String x:Key="Str_TT_TermClear">Clear scrollback (Ctrl+Shift+L)</sys:String>
+    <sys:String x:Key="Str_TT_TermClear">Clear scrollback  (Ctrl+Shift+L)</sys:String>
     <sys:String x:Key="Str_TT_TermFonts">Fonts...  (Ctrl+Shift+,)</sys:String>
     <sys:String x:Key="Str_TT_EdPath">Click to edit - type a path and press Enter to rename/move the file. Type an existing file to open it.</sys:String>
     <sys:String x:Key="Str_Ed_WrapOn">Word wrap on.</sys:String>
@@ -1110,6 +1110,8 @@
     <sys:String x:Key="Str_Card_Edit">Edit</sys:String>
     <sys:String x:Key="Str_Card_Rename">Rename</sys:String>
     <sys:String x:Key="Str_Card_SelectAll">Select all</sys:String>
+    <sys:String x:Key="Str_Card_Paste">Paste</sys:String>
+    <sys:String x:Key="Str_Card_Clear">Clear scrollback</sys:String>
     <sys:String x:Key="Str_Ks_ContextMenu">open the context menu</sys:String>
     <sys:String x:Key="Str_TT_RemoveSearchTerm">Remove search term</sys:String>
     <sys:String x:Key="Str_TT_RemoveSearchFilter">Remove filter</sys:String>

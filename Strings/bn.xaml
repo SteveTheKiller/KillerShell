@@ -479,7 +479,7 @@
     <sys:String x:Key="Str_TT_TermNew">নতুন টার্মিনাল  (F8)</sys:String>
     <sys:String x:Key="Str_TT_TermAdmin">প্রশাসক হিসেবে নতুন টার্মিনাল  (Ctrl+F8)</sys:String>
     <sys:String x:Key="Str_TT_TermFolder">এই ফোল্ডারটি একটি ট্যাবে খুলুন  (Ctrl+Shift+T)</sys:String>
-    <sys:String x:Key="Str_TT_TermClear">স্ক্রলব্যাক মুছুন (Ctrl+Shift+L)</sys:String>
+    <sys:String x:Key="Str_TT_TermClear">স্ক্রলব্যাক মুছুন  (Ctrl+Shift+L)</sys:String>
     <sys:String x:Key="Str_TT_TermFonts">ফন্ট...  (Ctrl+Shift+,)</sys:String>
 
     <sys:String x:Key="Str_Ed_WrapOn">ওয়ার্ড র‍্যাপ চালু।</sys:String>
@@ -1062,6 +1062,8 @@
     <sys:String x:Key="Str_Card_Edit">সম্পাদনা</sys:String>
     <sys:String x:Key="Str_Card_Rename">নাম পরিবর্তন</sys:String>
     <sys:String x:Key="Str_Card_SelectAll">সব নির্বাচন</sys:String>
+    <sys:String x:Key="Str_Card_Paste">পেস্ট করুন</sys:String>
+    <sys:String x:Key="Str_Card_Clear">স্ক্রলব্যাক মুছুন</sys:String>
     <sys:String x:Key="Str_Ks_ContextMenu">প্রসঙ্গ মেনু খুলুন</sys:String>
     <sys:String x:Key="Str_TT_RemoveSearchTerm">সার্চ টার্ম সরান</sys:String>
     <sys:String x:Key="Str_TT_RemoveSearchFilter">ফিল্টার সরান</sys:String>

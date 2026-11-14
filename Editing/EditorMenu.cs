@@ -59,7 +59,7 @@ namespace KillerShell.Editing
             _redoButton = KillerShell.Controls.CardMenus.QuickButton(strip, m, 0xE7A6, "Str_Card_Redo", "Str_Ed_Redo", "Ctrl+Y", () => Redo());
             _cutButton  = KillerShell.Controls.CardMenus.QuickButton(strip, m, 0xE8C6, "Str_Card_Cut",  "Str_Ed_Cut",  "Ctrl+X", Cut);
             _copyButton = KillerShell.Controls.CardMenus.QuickButton(strip, m, 0xE8C8, "Str_Card_Copy", "Str_Ed_Copy", "Ctrl+C", Copy);
-            KillerShell.Controls.CardMenus.QuickButton(strip, m, 0xE77F, "Str_Ed_Paste", "Str_Ed_Paste", "Ctrl+V", Paste);
+            KillerShell.Controls.CardMenus.QuickButton(strip, m, 0xE77F, "Str_Card_Paste", "Str_Ed_Paste", "Ctrl+V", Paste);
             // Captions are the card's own short keys (Str_Card_*), hyphenated where a word is too
             // wide for a sixth of the card; the tooltip and the screen reader get the full name.
             // Save belongs to the WINDOW - it owns the bar that reports it - so it is raised.

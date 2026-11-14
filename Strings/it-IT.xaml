@@ -467,7 +467,7 @@
     <sys:String x:Key="Str_TT_TermNew">Nuovo terminale  (F8)</sys:String>
     <sys:String x:Key="Str_TT_TermAdmin">Nuovo terminale come amministratore  (Ctrl+F8)</sys:String>
     <sys:String x:Key="Str_TT_TermFolder">Apri questa cartella in una scheda  (Ctrl+Shift+T)</sys:String>
-    <sys:String x:Key="Str_TT_TermClear">Cancella cronologia di scorrimento (Ctrl+Shift+L)</sys:String>
+    <sys:String x:Key="Str_TT_TermClear">Cancella cronologia di scorrimento  (Ctrl+Shift+L)</sys:String>
     <sys:String x:Key="Str_TT_TermFonts">Font...  (Ctrl+Shift+,)</sys:String>
     <sys:String x:Key="Str_TT_EdPath">Clicca per modificare - digita un percorso e premi Enter per rinominare/spostare il file. Digita un file esistente per aprirlo.</sys:String>
     <sys:String x:Key="Str_Ed_WrapOn">A capo automatico attivo.</sys:String>
@@ -1073,6 +1073,8 @@
     <sys:String x:Key="Str_Card_Edit">Modifica</sys:String>
     <sys:String x:Key="Str_Card_Rename">Rinomina</sys:String>
     <sys:String x:Key="Str_Card_SelectAll">Seleziona tutto</sys:String>
+    <sys:String x:Key="Str_Card_Paste">Incolla</sys:String>
+    <sys:String x:Key="Str_Card_Clear">Cancella cronologia</sys:String>
     <sys:String x:Key="Str_Ks_ContextMenu">apri il menu contestuale</sys:String>
     <sys:String x:Key="Str_TT_RemoveSearchTerm">Rimuovi il termine di ricerca</sys:String>
     <sys:String x:Key="Str_TT_RemoveSearchFilter">Rimuovi il filtro</sys:String>

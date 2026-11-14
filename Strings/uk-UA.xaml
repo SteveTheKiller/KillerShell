@@ -485,7 +485,7 @@
     <sys:String x:Key="Str_TT_TermNew">Новий термінал  (F8)</sys:String>
     <sys:String x:Key="Str_TT_TermAdmin">Новий термінал від імені адміністратора  (Ctrl+F8)</sys:String>
     <sys:String x:Key="Str_TT_TermFolder">Відкрити цю папку у вкладці  (Ctrl+Shift+T)</sys:String>
-    <sys:String x:Key="Str_TT_TermClear">Очистити історію прокручування (Ctrl+Shift+L)</sys:String>
+    <sys:String x:Key="Str_TT_TermClear">Очистити історію прокручування  (Ctrl+Shift+L)</sys:String>
     <sys:String x:Key="Str_TT_TermFonts">Шрифти...  (Ctrl+Shift+,)</sys:String>
     <sys:String x:Key="Str_TT_EdPath">Клацніть, щоб редагувати - введіть шлях і натисніть Enter, щоб перейменувати/перемістити файл. Введіть наявний файл, щоб відкрити його.</sys:String>
     <sys:String x:Key="Str_Ed_WrapOn">Перенесення слів увімкнено.</sys:String>
@@ -1110,6 +1110,8 @@
     <sys:String x:Key="Str_Card_Edit">Реда&#xAD;гувати</sys:String>
     <sys:String x:Key="Str_Card_Rename">Пере&#xAD;йме&#xAD;нувати</sys:String>
     <sys:String x:Key="Str_Card_SelectAll">Вибрати все</sys:String>
+    <sys:String x:Key="Str_Card_Paste">Вставити</sys:String>
+    <sys:String x:Key="Str_Card_Clear">Очистити історію</sys:String>
     <sys:String x:Key="Str_Ks_ContextMenu">відкрити контекстне меню</sys:String>
     <sys:String x:Key="Str_TT_RemoveSearchTerm">Видалити умову пошуку</sys:String>
     <sys:String x:Key="Str_TT_RemoveSearchFilter">Видалити фільтр</sys:String>

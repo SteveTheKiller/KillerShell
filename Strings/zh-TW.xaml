@@ -479,7 +479,7 @@
     <sys:String x:Key="Str_TT_TermNew">新增終端機  (F8)</sys:String>
     <sys:String x:Key="Str_TT_TermAdmin">以系統管理員身分新增終端機  (Ctrl+F8)</sys:String>
     <sys:String x:Key="Str_TT_TermFolder">在分頁中開啟此資料夾  (Ctrl+Shift+T)</sys:String>
-    <sys:String x:Key="Str_TT_TermClear">清除回捲記錄 (Ctrl+Shift+L)</sys:String>
+    <sys:String x:Key="Str_TT_TermClear">清除回捲記錄  (Ctrl+Shift+L)</sys:String>
     <sys:String x:Key="Str_TT_TermFonts">字型...  (Ctrl+Shift+,)</sys:String>
 
     <sys:String x:Key="Str_Ed_WrapOn">自動換行已開啟。</sys:String>
@@ -1062,6 +1062,8 @@
     <sys:String x:Key="Str_Card_Edit">編輯</sys:String>
     <sys:String x:Key="Str_Card_Rename">重新命名</sys:String>
     <sys:String x:Key="Str_Card_SelectAll">全選</sys:String>
+    <sys:String x:Key="Str_Card_Paste">貼上</sys:String>
+    <sys:String x:Key="Str_Card_Clear">清除回捲記錄</sys:String>
     <sys:String x:Key="Str_Ks_ContextMenu">開啟快顯功能表</sys:String>
     <sys:String x:Key="Str_TT_RemoveSearchTerm">移除搜尋詞</sys:String>
     <sys:String x:Key="Str_TT_RemoveSearchFilter">移除篩選器</sys:String>
