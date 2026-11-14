@@ -1460,7 +1460,7 @@
     <!-- 404 wide is a 360 card: the template's shadow halo takes 22 off each side. One fixed width
          so the swatch row (ten colors and the picker) and six quick buttons always fit. -->
     <Style x:Key="CardMenu" TargetType="ContextMenu" BasedOn="{StaticResource {x:Type ContextMenu}}">
-        <Setter Property="MinWidth" Value="404"/>
+        <Setter Property="MinWidth" Value="280"/>
         <Setter Property="MaxWidth" Value="404"/>
         <Setter Property="Padding" Value="6"/>
         <Setter Property="KeyboardNavigation.TabNavigation" Value="Cycle"/>
