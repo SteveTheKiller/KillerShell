@@ -1685,7 +1685,7 @@
                  height could fix that - the cell was not short because of its own numbers, it was
                  short because its PARENT refused to give it the row's height. The inner content
                  keeps its own VerticalAlignment="Center" below, so the text still centers. -->
-            <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Stretch" Margin="0,0,16,0">
+            <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Stretch">
                 <!-- A Win98 status cell is SUNKEN: dark along the top and left, light along the
                      bottom and right. Only the dark half was here, which drew half a box round
                      the version text. Both are zero-thickness elsewhere. -->
@@ -1700,8 +1700,8 @@
                                 Margin="{DynamicResource FooterCellPadding}">
                 <TextBlock x:Name="VersionLabel" Opacity="0.75" Text="v0.99" Foreground="{DynamicResource TextFooter}" FontFamily="{DynamicResource BrandSansFont}" FontSize="16" TextOptions.TextFormattingMode="Ideal" VerticalAlignment="Center" Margin="0,0,12,0"
                            Cursor="Hand" ToolTip="{DynamicResource Str_TT_About}" MouseLeftButtonUp="VersionLabel_Click"/>
-                <!-- 20px trailing margin keeps the copyright clear of the corner grip (family standard) -->
-                <TextBlock Opacity="0.75" FontSize="16" TextOptions.TextFormattingMode="Ideal" VerticalAlignment="Center" FontFamily="{DynamicResource BrandSansFont}" Margin="0,0,20,0">
+                <!-- 25px trailing margin ends the copyright 8px before the corner grip (family standard) -->
+                <TextBlock Opacity="0.75" FontSize="16" TextOptions.TextFormattingMode="Ideal" VerticalAlignment="Center" FontFamily="{DynamicResource BrandSansFont}" Margin="0,0,25,0">
                     <Run Text="&#x00A9; 2026 " Foreground="{DynamicResource TextFooter}"/>
                     <Hyperlink NavigateUri="https://thekiller.net" RequestNavigate="Hyperlink_RequestNavigate" Foreground="{DynamicResource TextFooter}" TextDecorations="None">
                         <Run Text="Steve the Killer"/>
@@ -1735,7 +1735,7 @@
                  order that makes the ridge read as raised. -->
             <Canvas x:Name="ResizeGripLines" Grid.ColumnSpan="3" Width="13" Height="13"
                     Visibility="{DynamicResource GripLinesVisibility}"
-                    HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,3,3"
+                    HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,4,4"
                     Background="Transparent" Cursor="SizeNWSE"
                     SnapsToDevicePixels="True"
                     MouseLeftButtonDown="ResizeGrip_MouseDown">

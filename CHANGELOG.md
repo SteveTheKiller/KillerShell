@@ -4,6 +4,14 @@ All notable changes to KillerShell are documented here.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.1] - Unreleased
+
+1.6.1 keeps the footer's copyright the same distance from the corner grip as every other Killer app.
+
+### Changed
+
+- The copyright at the right end of the footer ends 8 px before the corner grip, the same gap in every Killer app.
+
 ## [1.6.0] - 2026-11-14
 
 1.6.0 turns the right-click menus into cards with quick buttons, puts the pane layouts in the footer, makes exported search results, saved size filters and on-screen dates read the same on every Windows region, fixes dialog crashes, lost favorites and slow archive extraction, makes every killer script command work like the website's one-liner, and makes updates and the file pickers recover from more failures.
