@@ -481,7 +481,13 @@ namespace KillerShell.Shell
 
         internal void MenuCopyName_Click(object sender, RoutedEventArgs e)
         {
-            var names = MenuFiles().Select(Path.GetFileName).ToList();
+            var names = MenuRows().Select(row =>
+            {
+                string name = Path.GetFileName(row.FilePath);
+                if (!string.IsNullOrEmpty(name)) return name;
+                return !string.IsNullOrWhiteSpace(row.FileName) ? row.FileName
+                    : row.FilePath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            }).Where(name => !string.IsNullOrWhiteSpace(name)).ToList();
             if (names.Count == 0) return;
             PutOnClipboard(string.Join(Environment.NewLine, names),
                            "Str_Status_Copied", names.Count.ToString("N0"));
