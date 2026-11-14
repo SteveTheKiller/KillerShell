@@ -133,7 +133,12 @@ namespace KillerShell.Shell
         {
             if (tab.Editor != null) return tab.Editor.IsUntitled ? string.Empty : tab.Editor.FilePath;
             if (tab.HasSearch && !string.IsNullOrEmpty(tab.QueryLabel)) return tab.QueryLabel;
-            return tab.Term != null || tab.IsBrowsing ? tab.CurrentFolder : string.Empty;
+            if (tab.Term == null && !tab.IsBrowsing) return string.Empty;
+            string folder = tab.CurrentFolder;
+            if (IsPlaceSentinel(folder)) return string.Empty;
+            return ArchiveProvider.TrySplit(folder, out string archive, out string entry) && entry.Length > 0
+                ? archive + "\\" + entry.Replace('/', '\\')
+                : folder;
         }
 
         private void ApplyTabPlacementChrome(FilePane pane)
