@@ -82,14 +82,32 @@ namespace KillerShell.Services
                 menu.Items.Add(item);
             }
             placementTarget.ContextMenu = menu;
-            menu.Closed += (_, _) =>
+            // WPF does not always raise Closed: toggling a file-list column re-lays the header out
+            // while the menu closes, and the popup goes away without the event. So the cleanup also
+            // runs when IsOpen turns false, once, whichever arrives first.
+            bool cleaned = false;
+            var isOpen = System.ComponentModel.DependencyPropertyDescriptor.FromProperty(ContextMenu.IsOpenProperty, typeof(ContextMenu));
+            EventHandler? openChanged = null;
+            void CleanUp()
             {
+                if (cleaned) return;
+                cleaned = true;
+                isOpen.RemoveValueChanged(menu, openChanged);
                 if (ReferenceEquals(placementTarget.ContextMenu, menu)) placementTarget.ContextMenu = null;
                 if (keyboard) placementTarget.Focus();
                 else if (previousFocus is { IsVisible: true, IsEnabled: true, Focusable: true }) previousFocus.Focus();
                 else previousRow?.MoveFocus(new TraversalRequest(FocusNavigationDirection.First));
+            }
+            // Deferred: IsOpen turns false before the popup hands keyboard focus back, so restoring
+            // focus right away would be undone by the closing popup.
+            openChanged = (_, _) =>
+            {
+                if (!menu.IsOpen)
+                    menu.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Input, new Action(CleanUp));
             };
+            menu.Closed += (_, _) => CleanUp();
             menu.IsOpen = true;
+            isOpen.AddValueChanged(menu, openChanged);
         }
 
         /// <summary>

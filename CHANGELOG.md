@@ -74,7 +74,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - A terminal tab closed right after it opens reports its shell's real exit code instead of a made-up 0.
 - The terminal prompt shows the git branch in a folder that became a repository after the prompt first visited it, such as after `git init` or a clone.
 - KillerPivot stores a key typed in capitals as lowercase, refuses a blank `-Name` before writing anything, keeps one `tenants.json.pivot-backup` instead of adding a new backup file on every save, and clears the per-save backups older versions left.
-- Context menus and column choices support the Menu key, and accessibility toggles update their actual state. A saved place opens its card from the keyboard too, a grid column header shows when it has keyboard focus, and the terminal's card opens at the caret with its current folder however it is asked for.
+- Context menus and column choices support the Menu key, and accessibility toggles update their actual state. A saved place opens its card from the keyboard too, a grid column header shows when it has keyboard focus, the column chooser closes cleanly after a column is toggled, and the terminal's card opens at the caret with its current folder however it is asked for.
 - CPU card titles omit the core and thread counts already shown in their details.
 - Tab overflow preserves literal underscores in names.
 

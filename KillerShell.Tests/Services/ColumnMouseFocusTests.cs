@@ -105,7 +105,7 @@ public static class ProcessColumnMouseFocusScenario
             MouseButton.Right) { RoutedEvent = Mouse.PreviewMouseUpEvent });
         var menu = header.ContextMenu;
         Assert.NotNull(menu);
-        ShellWindowFixture.PumpUntil(() => menu.IsOpen);
+        ShellWindowFixture.PumpUntil(() => menu is { IsOpen: true, IsVisible: true });
         var column = menu.Items.OfType<MenuItem>().First();
         ((IInvokeProvider)UIElementAutomationPeer.CreatePeerForElement(column)
             .GetPattern(PatternInterface.Invoke)).Invoke();
@@ -144,7 +144,9 @@ public static class FileColumnMouseFocusScenario
             MouseButton.Right) { RoutedEvent = UIElement.MouseRightButtonUpEvent });
         var menu = header.ContextMenu;
         Assert.NotNull(menu);
-        ShellWindowFixture.PumpUntil(() => menu.IsOpen);
+        // Wait until the chooser is on screen, as the Apps-key scenario does: a menu closed before
+        // WPF has shown it never raises Closed, which is not something a user can do.
+        ShellWindowFixture.PumpUntil(() => menu is { IsOpen: true, IsVisible: true });
         var size = menu.Items.OfType<MenuItem>().Single(item =>
             Equals(item.Header, window.FindResource("Str_Col_Size")));
         ((IInvokeProvider)UIElementAutomationPeer.CreatePeerForElement(size)
