@@ -544,7 +544,7 @@ namespace KillerShell.Tools
                     "General", "svchost (812,S,0) SRUJet: The database engine started a new instance (0).",
                     "Classic", "WKS-DEMO01", "SYSTEM", "812", "-", "-", "184261", "Info", DemoEventXml("Application", 326, "ESENT")),
                 new("Application", "Information", DemoNow.AddMinutes(-18), "KillerShell", 1,
-                    "None", "KillerShell 1.1.0 started for user Demo.",
+                    "None", "KillerShell " + typeof(EventViewerControl).Assembly.GetName().Version?.ToString(3) + " started for user Demo.",
                     "Classic", "WKS-DEMO01", "Demo", "5116", "-", "-", "184268", "Info", DemoEventXml("Application", 1, "KillerShell")),
 
                 new("Application", "Error", DemoNow.AddHours(-12).AddMinutes(-22), ".NET Runtime", 1026,
