@@ -6,10 +6,11 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ## [1.6.1] - Unreleased
 
-1.6.1 keeps the footer's copyright the same distance from the corner grip as every other Killer app and fixes the version in the demo Event Viewer.
+1.6.1 keeps the footer's copyright the same distance from the corner grip as every other Killer app, clears the status line after opening a PowerShell profile and fixes the version in the demo Event Viewer.
 
 ### Fixed
 
+- Opening a PowerShell profile clears the "Asking PowerShell where its profile is" status once the profile opens, instead of leaving it on the footer.
 - The demo Event Viewer's KillerShell startup event names the running version instead of 1.1.0.
 
 ### Changed

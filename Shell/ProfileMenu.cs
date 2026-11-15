@@ -91,14 +91,21 @@ namespace KillerShell.Shell
         /// </remarks>
         private void OpenProfile(ShellHost host)
         {
-            SetTabStatusKey(_active, "Str_Prof_Asking", host.Name);
+            // Held, not re-read: OpenForEditing makes the editor tab active, and the asking line
+            // belongs to the tab it was written on.
+            var tab = _active;
+            SetTabStatusKey(tab, "Str_Prof_Asking", host.Name);
 
             string path = ShellProfiles.PathFor(host);
             if (path.Length == 0)
             {
-                SetTabStatusKey(_active, "Str_Prof_Failed", host.Name);
+                SetTabStatusKey(tab, "Str_Prof_Failed", host.Name);
                 return;
             }
+
+            // The answer came back, so the asking line is done. Left in place it sat on that
+            // tab's footer until something else happened to write over it.
+            SetTabStatusKey(tab, "Str_Status_Ready");
 
             // OpenForEditing creates a missing file, which is the normal case here: on a machine
             // nobody has customized PowerShell on, $PROFILE does not exist at all (EditorTabs.cs).
