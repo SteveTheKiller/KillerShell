@@ -32,6 +32,11 @@
 
   <!-- The test project lives inside this folder. Keep its sources and outputs out of the
        application's SDK default globs. -->
+  <!-- Kit files (Shell/About.cs) rely on this as a global using, as the other family apps do. -->
+  <ItemGroup>
+    <Using Include="System.Collections.Generic" />
+  </ItemGroup>
+
   <ItemGroup>
     <Compile Remove="KillerShell.Tests\**\*.cs" />
     <EmbeddedResource Remove="KillerShell.Tests\**\*" />

@@ -247,12 +247,13 @@ namespace KillerFamily.Shell
         /// </summary>
         internal bool Notify(string title, string text)
         {
-            if (!_iconShown || _disposed) return false;
+            // A kept icon beside an open window is not the window in the tray.
+            if (!InTray || _disposed) return false;
             var d = Data(NIF_INFO);
             d.szInfoTitle = title.Length > 63 ? title[..63] : title;
             d.szInfo = text.Length > 255 ? text[..255] : text;
             d.dwInfoFlags = NIIF_INFO | NIIF_NOSOUND;
-            return Shell_NotifyIcon(NIM_MODIFY, ref d);
+            return _notifyIcon?.Invoke(NIM_MODIFY) ?? Shell_NotifyIcon(NIM_MODIFY, ref d);
         }
 
         /// <summary>True while the window is hidden and its tray icon is showing.</summary>
@@ -298,7 +299,9 @@ namespace KillerFamily.Shell
 
         private void ShowMenu()
         {
-            var menu = new ContextMenu();
+            // The tray card: the app's name over its rows, each with an icon.
+            var menu = KillerFamily.Controls.CardBuilder.Menu(240);
+            menu.Items.Add(KillerFamily.Controls.CardBuilder.Header(_appName));
             AnchorToPointer(menu);
             foreach (var item in _items)
             {
@@ -307,9 +310,9 @@ namespace KillerFamily.Shell
                 menu.Items.Add(row);
             }
             if (_items.Count > 0) menu.Items.Add(new Separator());
-            var open = new MenuItem { Header = string.Format(_loc("Str_Tray_Open"), _appName), FontWeight = FontWeights.SemiBold };
+            var open = new MenuItem { Header = string.Format(_loc("Str_Tray_Open"), _appName), FontWeight = FontWeights.SemiBold, Icon = Glyph(0xE8A7) };
             open.Click += (_, _) => ShowWindow();
-            var exit = new MenuItem { Header = _loc("Str_Tray_Exit") };
+            var exit = new MenuItem { Header = _loc("Str_Tray_Exit"), Icon = Glyph(0xE7E8) };
             exit.Click += (_, _) => Exit();
             menu.Items.Add(open);
             menu.Items.Add(new Separator());
@@ -317,6 +320,14 @@ namespace KillerFamily.Shell
             // The hidden owner must be in front, or the menu does not close when clicking away.
             SetForegroundWindow(_source.Handle);
             menu.IsOpen = true;
+        }
+
+        // A row icon in the kit's MenuIcon style, so the file needs no app's glyph helper.
+        private static TextBlock Glyph(int codepoint)
+        {
+            var icon = new TextBlock { Text = char.ConvertFromUtf32(codepoint) };
+            icon.SetResourceReference(FrameworkElement.StyleProperty, "MenuIcon");
+            return icon;
         }
 
         /// <summary>
