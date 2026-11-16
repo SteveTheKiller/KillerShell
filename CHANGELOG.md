@@ -10,6 +10,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ### Fixed
 
+- The Mourning theme highlights selections in its original peach with dark text again, instead of pink.
 - Opening a PowerShell profile clears the "Asking PowerShell where its profile is" status once the profile opens, instead of leaving it on the footer.
 - The demo Event Viewer's KillerShell startup event names the running version instead of 1.1.0.
 
