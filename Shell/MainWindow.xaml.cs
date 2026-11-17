@@ -37,6 +37,7 @@ namespace KillerShell.Shell
         public MainWindow()
         {
             InitializeComponent();
+            Controls.ThemeMotif.SetSecondPane(RightPane, true);
             _tray = KillerFamily.Shell.CloseToTray.Attach(this, Services.AppInfo.DisplayName, Loc,
                 () => !IsTaskWindow && Features.About.AboutController.CloseToTrayEnabled, ConfirmShutdown);
             new KillerFamily.Accessibility.OverlayFocus(this)

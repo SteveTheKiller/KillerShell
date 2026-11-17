@@ -832,6 +832,7 @@
     <sys:String x:Key="Str_Theme_Sepulchre">陵墓</sys:String>
     <sys:String x:Key="Str_Theme_Delirium">谵妄</sys:String>
     <sys:String x:Key="Str_Theme_Malaise">倦怠</sys:String>
+    <sys:String x:Key="Str_Theme_TrashPolka">Trash Polka</sys:String>
 
     <sys:String x:Key="Str_Menu_OpenInNewTab">在新标签页中打开</sys:String>
     <sys:String x:Key="Str_Ks_TreeHidden">在树中显示或隐藏隐藏项目和点文件夹</sys:String>

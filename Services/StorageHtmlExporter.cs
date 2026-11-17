@@ -23,6 +23,7 @@ namespace KillerShell.Services
         [
             ("dark", "Dark", "Dark"), ("light", "Light", "Light"),
             ("black", "Black", "Black"), ("98se", "98SE", "98SE"),
+            ("trashpolka", "Trash Polka", "TrashPolka"),
             ("blood", "Blood", "Blood"), ("greed", "Greed", "Greed"),
             ("cyanotic", "Cyanotic", "Cyanotic"), ("ectoplasm", "Ectoplasm", "Ectoplasm"),
             ("decay", "Decay", "Decay"), ("mourning", "Mourning", "Mourning"),

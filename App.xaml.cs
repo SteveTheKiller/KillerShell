@@ -282,6 +282,8 @@ namespace KillerShell
             // ThemeManager.ThemeKey. Has to be set before Initialize, which is what reads it.
             Services.ThemeManager.Elevated = AppMainWindow.IsElevated;
 
+            // Trash Polka's background ink on every dialog, picker and flyout, not just the main window.
+            Controls.ThemeMotif.EnableForAllWindows();
             Services.ThemeManager.Initialize();    // restore saved theme before the window is built
             KillerFamily.Layout.ShortcutHints.Initialize(GetSetting, SetSetting);
             Services.FilmGrain.Initialize();       // then the Film Grain choice, which outranks it

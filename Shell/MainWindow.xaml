@@ -55,7 +55,8 @@
                  WindowFramePadding is 0 and this paints BackgroundBrush at exactly the window's
                  own bounds - identical to the Window Background under it, including the five
                  full-window gradient themes, so nothing moves anywhere else. -->
-            <Border Margin="{DynamicResource WindowFramePadding}" Background="{DynamicResource BackgroundBrush}"/>
+            <Border Margin="{DynamicResource WindowFramePadding}" Background="{DynamicResource BackgroundBrush}"
+                icons:ThemeMotif.Part="Chrome" icons:ThemeMotif.BaseBrush="BackgroundBrush"/>
             <!-- Named so Elevation.cs can repaint the OUTERMOST ring in the accent on an admin
                  window: on 98SE the elevation signal is the window's own edge line, not an
                  overlay ring inside the client. -->
@@ -95,7 +96,8 @@
         <!-- ZIndex 1 so the wordmark's drips can hang into the top of the row below. -->
         <Grid Grid.Row="0" Height="{DynamicResource TitleBarHeight}" Panel.ZIndex="1"
               Margin="{DynamicResource TitleBarBleed}"
-              Background="{DynamicResource TitleBarBrush}">
+              Background="{DynamicResource TitleBarBrush}"
+              icons:ThemeMotif.Part="Chrome" icons:ThemeMotif.BaseBrush="TitleBarBrush">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
@@ -995,6 +997,11 @@
                                                  GroupName="ThemeGroup"
                                                  Style="{StaticResource ThemeRadio}"
                                                  Checked="Theme98SERadio_Checked"/>
+                                    <RadioButton x:Name="ThemeTrashPolkaRadio"
+                                                 Content="{DynamicResource Str_Theme_TrashPolka}"
+                                                 GroupName="ThemeGroup"
+                                                 Style="{StaticResource ThemeRadio}"
+                                                 Checked="ThemeTrashPolkaRadio_Checked"/>
                                     <RadioButton x:Name="ThemeBloodRadio"
                                                  Content="{DynamicResource Str_Theme_Blood}"
                                                  GroupName="ThemeGroup"

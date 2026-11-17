@@ -835,6 +835,7 @@
     <sys:String x:Key="Str_Theme_Sepulchre">Grabmal</sys:String>
     <sys:String x:Key="Str_Theme_Delirium">Delirium</sys:String>
     <sys:String x:Key="Str_Theme_Malaise">Unwohlsein</sys:String>
+    <sys:String x:Key="Str_Theme_TrashPolka">Trash Polka</sys:String>
 
     <sys:String x:Key="Str_Menu_OpenInNewTab">In neuem Tab öffnen</sys:String>
     <sys:String x:Key="Str_Ks_TreeHidden">ausgeblendete Elemente und Punktordner im Baum ein- oder ausblenden</sys:String>

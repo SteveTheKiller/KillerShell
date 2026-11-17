@@ -2110,6 +2110,7 @@
                      shared with the terminal screen), and the sunken WHITE list well on 98SE. -->
 
                 <Border IsHitTestVisible="False" Background="{DynamicResource ListPaneBrush}"
+                        kc:ThemeMotif.Part="Window" kc:ThemeMotif.BaseBrush="ListPaneBrush"
                         Visibility="{Binding Visibility, ElementName=ResultsList}"/>
                 <!-- Recessed list bevel - brushes CROSSED against the thicknesses so it reads as
                      sunken, not raised. Nothing on any theme but 98SE. -->

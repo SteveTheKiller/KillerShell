@@ -831,6 +831,7 @@
     <sys:String x:Key="Str_Theme_Sepulchre">セパルカー</sys:String>
     <sys:String x:Key="Str_Theme_Delirium">デリリウム</sys:String>
     <sys:String x:Key="Str_Theme_Malaise">マレーズ</sys:String>
+    <sys:String x:Key="Str_Theme_TrashPolka">Trash Polka</sys:String>
 
     <sys:String x:Key="Str_Menu_OpenInNewTab">新しいタブで開く</sys:String>
     <sys:String x:Key="Str_Ks_TreeHidden">ツリーの隠し項目とドットフォルダーの表示を切り替える</sys:String>

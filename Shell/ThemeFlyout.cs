@@ -21,6 +21,7 @@ namespace KillerShell.Shell
         private void ThemeLightRadio_Checked(object sender, RoutedEventArgs e)     => SelectTheme(Theme.Light);
         private void ThemeHCRadio_Checked(object sender, RoutedEventArgs e)        => SelectTheme(Theme.Black);
         private void Theme98SERadio_Checked(object sender, RoutedEventArgs e)      => SelectTheme(Theme.SE98);
+        private void ThemeTrashPolkaRadio_Checked(object sender, RoutedEventArgs e) => SelectTheme(Theme.TrashPolka);
         private void ThemeBloodRadio_Checked(object sender, RoutedEventArgs e)     => SelectTheme(Theme.Blood);
         private void ThemeGreedRadio_Checked(object sender, RoutedEventArgs e)     => SelectTheme(Theme.Greed);
         private void ThemeCyanoticRadio_Checked(object sender, RoutedEventArgs e)  => SelectTheme(Theme.Cyanotic);
@@ -307,6 +308,7 @@ namespace KillerShell.Shell
             ThemeLightRadio.IsChecked     = cur == Theme.Light;
             ThemeHCRadio.IsChecked        = cur == Theme.Black;
             Theme98SERadio.IsChecked      = cur == Theme.SE98;
+            ThemeTrashPolkaRadio.IsChecked = cur == Theme.TrashPolka;
             ThemeBloodRadio.IsChecked     = cur == Theme.Blood;
             ThemeGreedRadio.IsChecked     = cur == Theme.Greed;
             ThemeCyanoticRadio.IsChecked  = cur == Theme.Cyanotic;
@@ -336,12 +338,17 @@ namespace KillerShell.Shell
         private static readonly (Accent Accent, string Hex)[] SE98StripColors =
             [(Accent.Blue, "#000080"), (Accent.Teal, "#008080"), (Accent.Green, "#006000"),
              (Accent.Orange, "#A05000"), (Accent.Yellow, "#EAD900"), (Accent.Red, "#800000"), (Accent.Purple, "#5A376E"), (Accent.Magenta, "#750052")];
+        // Blood, Ember, Ochre, Moss, Teal, Cobalt, Violet, Rose.
+        private static readonly (Accent Accent, string Hex)[] TrashPolkaStripColors =
+            [(Accent.Red, "#D7263D"), (Accent.Orange, "#EE7B22"), (Accent.Yellow, "#D9A21B"), (Accent.Green, "#7A9A3A"),
+             (Accent.Teal, "#1E9A96"), (Accent.Blue, "#3A6FD0"), (Accent.Purple, "#8A4CC2"), (Accent.Magenta, "#E4588E")];
 
         private static (Accent Accent, string Hex)[] StripColorsFor(Theme family) => family switch
         {
             Theme.Light => LightStripColors,
             Theme.Black => BlackStripColors,
             Theme.SE98 => SE98StripColors,
+            Theme.TrashPolka => TrashPolkaStripColors,
             _ => DarkStripColors,
         };
 
@@ -364,7 +371,8 @@ namespace KillerShell.Shell
                 brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(flatHex));
             else
             {
-                string path = accent == Accent.Green
+                // The accent a family bakes into its base palette has no overlay of its own.
+                string path = accent.ToString() == ThemeAccentRules.BakedAccent(family.ToString())
                     ? $"Themes/{family}.xaml"
                     : $"Themes/Accents/{family}/{accent}.xaml";
                 var palette = new ResourceDictionary
@@ -436,7 +444,7 @@ namespace KillerShell.Shell
         private void UpdateAccentStrip(bool animate)
         {
             var current = ThemeManager.Current;
-            bool show = current is Theme.Dark or Theme.Light or Theme.Black or Theme.SE98;
+            bool show = ThemeManager.SupportsAccents(current);
             if (show)
             {
                 if (animate && _stripOpen && _stripFamily != current)

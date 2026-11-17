@@ -20,7 +20,7 @@ public sealed class PerformanceGraphBrushesTests
     {
         string themes = Path.Combine(RepoRoot(), "Themes");
         var files = Directory.GetFiles(themes, "*.xaml");
-        Assert.Equal(13, files.Length);
+        Assert.Equal(14, files.Length);
         foreach (string file in files)
             OnSta(() =>
             {
