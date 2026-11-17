@@ -6,7 +6,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ## [1.6.1] - Unreleased
 
-1.6.1 keeps the footer's copyright the same distance from the corner grip as every other Killer app, clears the status line after opening a PowerShell profile and fixes the version in the demo Event Viewer.
+1.6.1 adds the Trash Polka theme, keeps the footer's copyright the same distance from the corner grip as every other Killer app, clears the status line after opening a PowerShell profile and fixes the version in the demo Event Viewer.
 
 ### Fixed
 
@@ -17,6 +17,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 ### Changed
 
 - The copyright at the right end of the footer ends 8 px before the corner grip, the same gap in every Killer app.
+
+### Added
+
+- Trash Polka, a new theme under 98SE: black with a tattoo-style ink background in your accent color, from eight accents with Blood red as the default. Under a Windows high contrast theme the ink steps aside for the system colors.
 
 ## [1.6.0] - 2026-11-14
 

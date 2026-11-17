@@ -1029,7 +1029,7 @@
                                                  Checked="ThemeDecayRadio_Checked"/>
                                     <!-- Last four in KillerNotes' picker order: Malaise, Sepulchre,
                                          Delirium, Mourning. There is no logic to it, but the two
-                                         apps listing the same thirteen themes in different orders
+                                         apps listing the same fourteen themes in different orders
                                          is worse than an arbitrary order shared by both.
                                          Note this is NOT the enum's order, which
                                          KillerNotes also keeps separate - the enum is persistence,

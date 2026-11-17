@@ -11,7 +11,7 @@ using KillerShell.Models;
 namespace KillerShell.Services
 {
     // Styled, interactive HTML report - mirrors the KillerScan exporter: an embedded
-    // thirteen-theme switcher + accent picker and click-to-sort columns. One compact table
+    // fourteen-theme switcher + accent picker and click-to-sort columns. One compact table
     // row per file; content hits expand inline.
     //
     // The report opens in the theme, accent, and LANGUAGE the app was in at export

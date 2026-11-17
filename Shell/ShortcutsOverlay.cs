@@ -30,7 +30,7 @@ namespace KillerShell.Shell
     //   Cat   = what KIND of action it is: Search / Nav / Tabs / View / File / Edit / Help.
     //           A category's color is a theme brush (KsCat* in Themes/*.xaml) shared with the
     //           keyboard's keycap borders and bars, so a group reads the same in both views.
-    //           Adding a category costs a KsCat* brush in thirteen themes and a Str_Ks_Cat*
+    //           Adding a category costs a KsCat* brush in fourteen themes and a Str_Ks_Cat*
     //           string in ten locale files, which is why the list is short and stays short.
     //
     //   Scope = WHERE the binding applies: everywhere, or inside one applet. This window is
