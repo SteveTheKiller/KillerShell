@@ -163,22 +163,24 @@ public static class TabCardScenario
         ShellWindowFixture.PumpUntil(() => left.Tabs.Count == 2 && left.Tabs[1].IsBrowsing);
         var tab = left.Tabs[1];
 
-        // One pane: the card names the tab, offers New tab, New window and Close (no Other pane),
-        // and a folder tab can pipe its rows.
+        // One pane: the card names the tab, its tiles keep their places with Other pane dimmed, a
+        // folder tab can pipe its rows, and the strip placement tiles follow.
         var card = OpenCard(window, left, tab);
         var head = Tagged(card, "cardhead");
         Assert.Equal(tab.Title, AutomationProperties.GetName(head));
-        Assert.Equal(3, Buttons(Tagged(card, "cardquick")).Count(b => b.Visibility == Visibility.Visible));
-        Assert.Contains(card.Items.OfType<MenuItem>(), item => item.Tag as string == "pipe");
-        Assert.Contains(card.Items.OfType<MenuItem>(), item => item.InputGestureText == "Alt+Shift+Down");
+        Assert.Equal(new[] { "newtab", "otherpane", "newwindow", "pipe", "close", "tabstop", "tabsbottom" },
+            KillerShell.Controls.CardMenus.Buttons(card).Select(b => b.CommandParameter as string).ToArray());
+        Assert.False(KillerShell.Controls.CardMenus.TileButton(card, "otherpane")!.IsEnabled);
+        Assert.True(KillerShell.Controls.CardMenus.TileButton(card, "pipe")!.IsEnabled);
+        Assert.Equal("Alt+Shift+Down", AutomationProperties.GetAcceleratorKey(KillerShell.Controls.CardMenus.TileButton(card, "tabsbottom")!));
 
         // Two panes: Other pane appears and moves the tab across.
         window.ToggleDualPane();
         ShellWindowFixture.PumpUntil(() => right.Active != null && right.Active.IsBrowsing);
         window.FocusPane(left);
         card = OpenCard(window, left, tab);
-        var move = Assert.Single(Buttons(Tagged(card, "cardquick")), b => (string?)b.CommandParameter == "otherpane");
-        Assert.Equal(Visibility.Visible, move.Visibility);
+        var move = KillerShell.Controls.CardMenus.TileButton(card, "otherpane")!;
+        Assert.True(move.IsEnabled);
         move.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent));
         ShellWindowFixture.PumpUntil(() => right.Tabs.Contains(tab) && !left.Tabs.Contains(tab),
             diagnostic: () => "left=" + left.Tabs.Count + "; right=" + right.Tabs.Count);

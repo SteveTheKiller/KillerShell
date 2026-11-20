@@ -407,7 +407,7 @@ namespace KillerShell.Tools
             {
                 string brushKey = i < tile.FieldBrushKeys.Length ? tile.FieldBrushKeys[i] : "MonitorTextBrush";
                 var field = BuildField(tile.FieldLabelKeys[i], brushKey, out var valueBlock);
-                field.Margin = new Thickness(0, 0, 12, 6);
+                field.Margin = new Thickness(0, 0, 12, 4);
                 fields.Children.Add(field);
                 tile.FieldValueBlocks[i] = valueBlock;
             }

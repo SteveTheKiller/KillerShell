@@ -936,8 +936,8 @@ namespace KillerShell.Tools
             if (_grid.SelectedItem is not EventLogEntryInfo entry) { e.Handled = true; return; }
 
             // The card: the source as its name, then level, event ID and time, the way a tech
-            // reads an event aloud. Its three commands are buttons, each with its shortcut.
-            var menu = KillerShell.Controls.CardMenus.Card();
+            // reads an event aloud. Its three commands are tiles, each with its shortcut.
+            var menu = KillerShell.Controls.CardMenus.TileCard();
             menu.PlacementTarget = _grid;
             var head = KillerShell.Controls.CardMenus.Slot();
             head.Tag = "cardhead";
@@ -946,16 +946,17 @@ namespace KillerShell.Tools
                     .Where(part => !string.IsNullOrWhiteSpace(part))));
             menu.Items.Add(head);
 
-            var quick = KillerShell.Controls.CardMenus.QuickStrip(out var strip);
-            quick.Tag = "cardquick";
+            KillerShell.Controls.CardMenus.WatchKeyboardStart(menu);
             // E8C8: MDL2's Copy, the glyph every copy action in the app uses. E946: information,
             // for the details dialog Enter and a double-click open.
-            KillerShell.Controls.CardMenus.QuickButton(strip, menu, 0xE8C8, "Str_Menu_EvtCopyMessage", "Str_Menu_EvtCopyMessage", "Ctrl+Shift+C",
-                () => CopyToClipboard(entry.Message, "Str_Evt_MessageCopied"));
-            KillerShell.Controls.CardMenus.QuickButton(strip, menu, 0xE8C8, "Str_Menu_EvtCopyDetails", "Str_Menu_EvtCopyDetails", "Ctrl+C",
-                () => CopyToClipboard(FormatDetails(entry), "Str_Evt_DetailsCopied"));
-            KillerShell.Controls.CardMenus.QuickButton(strip, menu, 0xE946, "Str_Evt_DetailsTitle", "Str_Evt_DetailsTitle", "Enter", OpenDetails);
-            menu.Items.Add(quick);
+            menu.Items.Add(KillerShell.Controls.CardMenus.Tiles(menu,
+            [
+                KillerShell.Controls.CardMenus.Tile("copymessage", 0xE8C8, "Str_Menu_EvtCopyMessage", null, "Ctrl+Shift+C",
+                    () => CopyToClipboard(entry.Message, "Str_Evt_MessageCopied")),
+                KillerShell.Controls.CardMenus.Tile("copydetails", 0xE8C8, "Str_Menu_EvtCopyDetails", null, "Ctrl+C",
+                    () => CopyToClipboard(FormatDetails(entry), "Str_Evt_DetailsCopied")),
+                KillerShell.Controls.CardMenus.Tile("details", 0xE946, "Str_Evt_DetailsTitle", null, "Enter", OpenDetails),
+            ]));
 
             menu.IsOpen = true;
             e.Handled = true;

@@ -29,6 +29,8 @@
     <sys:String x:Key="Str_Theme_Decay">Bomlás</sys:String>
     <sys:String x:Key="Str_Theme_Mourning">Gyász</sys:String>
     <sys:String x:Key="Str_Theme_FilmGrain">Filmszemcse</sys:String>
+    <sys:String x:Key="Str_Key_Alt">Alt</sys:String>
+    <sys:String x:Key="Str_Key_Shift">Shift</sys:String>
     <sys:String x:Key="Str_Theme_Sepulchre">Sír</sys:String>
     <sys:String x:Key="Str_Theme_Delirium">Delírium</sys:String>
     <sys:String x:Key="Str_Theme_Malaise">Rosszullét</sys:String>
@@ -1119,4 +1121,27 @@
     <sys:String x:Key="Str_TT_RemoveSearchFilter">Szűrő eltávolítása</sys:String>
     <sys:String x:Key="Str_A11y_ColumnHeadings">Oszlopfejlécek</sys:String>
     <sys:String x:Key="Str_A11y_ColumnHeadingsHelp">A látható oszlopok kiválasztásához nyomja meg a Menu (Apps) billentyűt.</sys:String>
+    <!-- Text box menu and the file pickers' New folder button (KillerUI kit). -->
+    <sys:String x:Key="Str_Ctx_Cut">Kivágás</sys:String>
+    <sys:String x:Key="Str_Ctx_Copy">Másolás</sys:String>
+    <sys:String x:Key="Str_Ctx_Paste">Beillesztés</sys:String>
+    <sys:String x:Key="Str_Ctx_SelectAll">Válassza ki az összeset</sys:String>
+    <sys:String x:Key="Str_TT_NewFolder">Új mappa (Ctrl+Shift+N)</sys:String>
+    <sys:String x:Key="Str_FD_NewFolder">Új mappa</sys:String>
+    <sys:String x:Key="Str_FD_FolderEmpty">Adjon nevet a mappának.</sys:String>
+    <sys:String x:Key="Str_FD_FolderInvalid">A mappa neve nem tartalmazhatja a következő karakterek egyikét sem: \ / : * ? " &lt; &gt; |</sys:String>
+    <sys:String x:Key="Str_FD_FolderReserved">Ezt a nevet a Windows fenntartja. Válasszon másikat.</sys:String>
+    <sys:String x:Key="Str_FD_FolderTrailing">A mappa neve nem végződhet ponttal vagy szóközzel.</sys:String>
+    <sys:String x:Key="Str_FD_FolderTooLong">Ez a név túl hosszú. Legfeljebb 255 karaktert használjon.</sys:String>
+    <sys:String x:Key="Str_FD_FolderExists">Itt már van ilyen nevű mappa vagy fájl.</sys:String>
+    <sys:String x:Key="Str_FD_FolderFailed">A mappát nem sikerült létrehozni:</sys:String>
+    <!-- Tile cards (Controls/CardMenus.cs): the customize pencil, its drawer, and the file card's copy flyout. -->
+    <sys:String x:Key="Str_Card_Customize">Kártya testreszabása</sys:String>
+    <sys:String x:Key="Str_Card_EditDone">Kész</sys:String>
+    <sys:String x:Key="Str_Card_EditReset">Alapértelmezés visszaállítása</sys:String>
+    <sys:String x:Key="Str_Card_EditResetShort">Visszaállítás</sys:String>
+    <sys:String x:Key="Str_Card_Hidden">Rejtett</sys:String>
+    <sys:String x:Key="Str_Card_HiddenHint">Húzzon ide egy csempét az elrejtéséhez</sys:String>
+    <sys:String x:Key="Str_Card_AlwaysShown">Mindig látható</sys:String>
+    <sys:String x:Key="Str_Card_CopyAs">Másolás mint</sys:String>
 </ResourceDictionary>

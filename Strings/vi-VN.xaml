@@ -26,6 +26,8 @@
   <sys:String x:Key="Str_Theme_Decay">Mục rữa</sys:String>
   <sys:String x:Key="Str_Theme_Mourning">Tang tóc</sys:String>
   <sys:String x:Key="Str_Theme_FilmGrain">Hạt phim</sys:String>
+  <sys:String x:Key="Str_Key_Alt">Alt</sys:String>
+  <sys:String x:Key="Str_Key_Shift">Shift</sys:String>
   <sys:String x:Key="Str_Theme_Sepulchre">Hầm mộ</sys:String>
   <sys:String x:Key="Str_Theme_Delirium">Mê sảng</sys:String>
   <sys:String x:Key="Str_Theme_Malaise">Uể oải</sys:String>
@@ -1075,4 +1077,27 @@ Các cài đặt của bạn sẽ không bị xóa.</sys:String>
     <sys:String x:Key="Str_TT_RemoveSearchFilter">Xóa bộ lọc</sys:String>
     <sys:String x:Key="Str_A11y_ColumnHeadings">Tiêu đề cột</sys:String>
     <sys:String x:Key="Str_A11y_ColumnHeadingsHelp">Nhấn Menu (Apps) để chọn các cột hiển thị.</sys:String>
+    <!-- Text box menu and the file pickers' New folder button (KillerUI kit). -->
+    <sys:String x:Key="Str_Ctx_Cut">Cắt</sys:String>
+    <sys:String x:Key="Str_Ctx_Copy">Sao chép</sys:String>
+    <sys:String x:Key="Str_Ctx_Paste">Dán</sys:String>
+    <sys:String x:Key="Str_Ctx_SelectAll">Chọn tất cả</sys:String>
+    <sys:String x:Key="Str_TT_NewFolder">Thư mục mới (Ctrl+Shift+N)</sys:String>
+    <sys:String x:Key="Str_FD_NewFolder">Thư mục mới</sys:String>
+    <sys:String x:Key="Str_FD_FolderEmpty">Hãy nhập tên cho thư mục.</sys:String>
+    <sys:String x:Key="Str_FD_FolderInvalid">Tên thư mục không được chứa bất kỳ ký tự nào sau đây: \ / : * ? " &lt; &gt; |</sys:String>
+    <sys:String x:Key="Str_FD_FolderReserved">Windows đã dành riêng tên này. Hãy chọn tên khác.</sys:String>
+    <sys:String x:Key="Str_FD_FolderTrailing">Tên thư mục không được kết thúc bằng dấu chấm hoặc dấu cách.</sys:String>
+    <sys:String x:Key="Str_FD_FolderTooLong">Tên này quá dài. Hãy dùng tối đa 255 ký tự.</sys:String>
+    <sys:String x:Key="Str_FD_FolderExists">Ở đây đã có thư mục hoặc tệp với tên này.</sys:String>
+    <sys:String x:Key="Str_FD_FolderFailed">Không thể tạo thư mục:</sys:String>
+    <!-- Tile cards (Controls/CardMenus.cs): the customize pencil, its drawer, and the file card's copy flyout. -->
+    <sys:String x:Key="Str_Card_Customize">Tùy chỉnh thẻ này</sys:String>
+    <sys:String x:Key="Str_Card_EditDone">Xong</sys:String>
+    <sys:String x:Key="Str_Card_EditReset">Đặt lại mặc định</sys:String>
+    <sys:String x:Key="Str_Card_EditResetShort">Đặt lại</sys:String>
+    <sys:String x:Key="Str_Card_Hidden">Đã ẩn</sys:String>
+    <sys:String x:Key="Str_Card_HiddenHint">Kéo một ô vào đây để ẩn</sys:String>
+    <sys:String x:Key="Str_Card_AlwaysShown">Luôn hiển thị</sys:String>
+    <sys:String x:Key="Str_Card_CopyAs">Sao chép dạng</sys:String>
 </ResourceDictionary>

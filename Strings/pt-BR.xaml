@@ -29,6 +29,8 @@
     <sys:String x:Key="Str_Theme_Decay">Decadência</sys:String>
     <sys:String x:Key="Str_Theme_Mourning">Luto</sys:String>
     <sys:String x:Key="Str_Theme_FilmGrain">Granulação de filme</sys:String>
+    <sys:String x:Key="Str_Key_Alt">Alt</sys:String>
+    <sys:String x:Key="Str_Key_Shift">Shift</sys:String>
     <sys:String x:Key="Str_Theme_Sepulchre">Sepulcro</sys:String>
     <sys:String x:Key="Str_Theme_Delirium">Delírio</sys:String>
     <sys:String x:Key="Str_Theme_Malaise">Mal-estar</sys:String>
@@ -1119,4 +1121,27 @@
     <sys:String x:Key="Str_TT_RemoveSearchFilter">Remover filtro</sys:String>
     <sys:String x:Key="Str_A11y_ColumnHeadings">Cabeçalhos das colunas</sys:String>
     <sys:String x:Key="Str_A11y_ColumnHeadingsHelp">Pressione Menu (Apps) para escolher as colunas visíveis.</sys:String>
+    <!-- Text box menu and the file pickers' New folder button (KillerUI kit). -->
+    <sys:String x:Key="Str_Ctx_Cut">Recortar</sys:String>
+    <sys:String x:Key="Str_Ctx_Copy">Copiar</sys:String>
+    <sys:String x:Key="Str_Ctx_Paste">Colar</sys:String>
+    <sys:String x:Key="Str_Ctx_SelectAll">Selecionar tudo</sys:String>
+    <sys:String x:Key="Str_TT_NewFolder">Nova pasta (Ctrl+Shift+N)</sys:String>
+    <sys:String x:Key="Str_FD_NewFolder">Nova pasta</sys:String>
+    <sys:String x:Key="Str_FD_FolderEmpty">Digite um nome para a pasta.</sys:String>
+    <sys:String x:Key="Str_FD_FolderInvalid">O nome de uma pasta não pode conter nenhum destes caracteres: \ / : * ? " &lt; &gt; |</sys:String>
+    <sys:String x:Key="Str_FD_FolderReserved">O Windows reserva esse nome. Escolha outro.</sys:String>
+    <sys:String x:Key="Str_FD_FolderTrailing">O nome de uma pasta não pode terminar com ponto ou espaço.</sys:String>
+    <sys:String x:Key="Str_FD_FolderTooLong">Esse nome é muito longo. Use no máximo 255 caracteres.</sys:String>
+    <sys:String x:Key="Str_FD_FolderExists">Já existe uma pasta ou um arquivo com esse nome aqui.</sys:String>
+    <sys:String x:Key="Str_FD_FolderFailed">Não foi possível criar a pasta:</sys:String>
+    <!-- Tile cards (Controls/CardMenus.cs): the customize pencil, its drawer, and the file card's copy flyout. -->
+    <sys:String x:Key="Str_Card_Customize">Personalizar este cartão</sys:String>
+    <sys:String x:Key="Str_Card_EditDone">Concluído</sys:String>
+    <sys:String x:Key="Str_Card_EditReset">Restaurar padrão</sys:String>
+    <sys:String x:Key="Str_Card_EditResetShort">Redefinir</sys:String>
+    <sys:String x:Key="Str_Card_Hidden">Ocultos</sys:String>
+    <sys:String x:Key="Str_Card_HiddenHint">Arraste um bloco para cá para ocultá-lo</sys:String>
+    <sys:String x:Key="Str_Card_AlwaysShown">Sempre exibido</sys:String>
+    <sys:String x:Key="Str_Card_CopyAs">Copiar como</sys:String>
 </ResourceDictionary>

@@ -362,24 +362,26 @@ namespace KillerShell.Tools
             return panel;
         }
 
-        private static StackPanel BuildField(string labelKey, string valueBrushKey, out TextBlock valueBlock)
+        private static WrapPanel BuildField(string labelKey, string valueBrushKey, out TextBlock valueBlock)
         {
-            var label = new TextBlock { FontSize = 10 };
+            // Label and value share a line, bottom-aligned so the two sizes sit on one baseline.
+            var label = new TextBlock { FontSize = 10, Margin = new Thickness(0, 0, 6, 1), VerticalAlignment = VerticalAlignment.Bottom };
             label.SetResourceReference(TextBlock.FontFamilyProperty, "MonoFont");
             label.SetResourceReference(TextBlock.ForegroundProperty, "MonitorMutedBrush");
             label.SetResourceReference(TextBlock.TextProperty, labelKey);
 
-            var value = new TextBlock { FontSize = 12, Margin = new Thickness(0, 2, 0, 0), Text = "-" };
+            var value = new TextBlock { FontSize = 12, Text = "-", VerticalAlignment = VerticalAlignment.Bottom };
             value.SetResourceReference(TextBlock.FontFamilyProperty, "MonoFont");
             value.SetResourceReference(TextBlock.ForegroundProperty, valueBrushKey);
 
-            // No MinWidth (the UniformGrid's equal thirds size the cells) and only a whisker of
-            // bottom margin - the strip is the last thing in the card and rides the body inset.
-            var stack = new StackPanel { Margin = new Thickness(0, 0, 12, 2) };
-            stack.Children.Add(label);
-            stack.Children.Add(value);
+            // A WrapPanel, so the value drops under its label only when the cell is too narrow
+            // for both. No MinWidth (the UniformGrid's equal columns size the cells) and only a
+            // whisker of bottom margin, since the strip is the last thing in the card.
+            var row = new WrapPanel { Margin = new Thickness(0, 0, 12, 2) };
+            row.Children.Add(label);
+            row.Children.Add(value);
             valueBlock = value;
-            return stack;
+            return row;
         }
 
         // ═══════════════════════════════════════════════════════════

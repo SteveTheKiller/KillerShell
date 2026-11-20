@@ -457,34 +457,60 @@ namespace KillerShell.Shell
 
             if (_treeMenuNode == null || _treeMenuNode.IsGroup) { e.Handled = true; return; }
 
-            _treeMenuItem ??= FolderTree.ContextMenu?.Items.OfType<MenuItem>()
-                                          .FirstOrDefault(m => (m.Tag as string) == "fav");
-            _treeMenuItem?.Header = Loc(IsBookmarked(_treeMenuNode.Path)
-                ? "Str_Menu_RemoveFavorite"
-                : "Str_Menu_AddFavorite");
-
-            SyncNicknameMenu(FolderTree.ContextMenu, _treeMenuNode.Path);   // NicknameCommands.cs
+            if (FolderTree.ContextMenu is not { } card) return;
+            string path = _treeMenuNode.Path;
+            Controls.CardMenus.Prepare(card);
 
             // The card names the folder it acts on, so a right-click two rows off the one you
             // meant shows up before anything runs. The tree draws its icons at 16; the header
             // asks the cache for a real 32 rather than stretching that one.
-            var icon = new Image
-            {
-                Source = Services.IconCache.For(_treeMenuNode.Path, 32, isDirectory: true),
-                Width = 32, Height = 32,
-            };
-            Controls.CardMenus.SetHeader(TreeCardHead, icon.Source == null ? null : icon,
-                                         _treeMenuNode.NameLabel, _treeMenuNode.Path);
-            if (TreeCardHead.Header is FrameworkElement treeHeader && CardFavoriteStar(_treeMenuNode.Path) is { } star)
-                Controls.CardMenus.AddTrailing(treeHeader, star);
-
-            // Read fresh on every open rather than bound once - the same convention
-            // ColumnVisibilityMenu and the CPU tile's per-core toggle follow, and it keeps the
-            // tick right when Ctrl+Shift+H flipped it from the keyboard.
-            TreeHiddenItem.IsChecked = TreeShowHidden;
+            var icon = new Image { Source = Services.IconCache.For(path, 32, isDirectory: true), Width = 32, Height = 32 };
+            var header = Controls.CardMenus.Header(icon.Source == null ? null : icon, _treeMenuNode.NameLabel, path);
+            if (CardFavoriteStar(path) is { } star) Controls.CardMenus.AddTrailing(header, star);
+            card.Items.Add(Controls.CardMenus.HeaderSlot(card, header));
+            card.Items.Add(TreeCardTiles(card, path));
         }
 
-        private MenuItem? _treeMenuItem;
+        // The tile grid is kept and reused while what it shows is the same: the commands read the
+        // folder the card opened on when they run, so only the header is new on each opening.
+        private (string Signature, MenuItem Slot)? _treeTiles;
+
+        private MenuItem TreeCardTiles(ContextMenu card, string path)
+        {
+            bool favorite = IsBookmarked(path);
+            bool nicknamed = Services.Nicknames.Get(path).Length > 0;
+            string signature = string.Join("|", favorite, nicknamed, TreeShowHidden, Loc("Str_Card_Actions"));
+            if (_treeTiles is { } kept && kept.Signature == signature) return kept.Slot;
+
+            // Every command runs once the card has closed: Search here puts the caret in the search
+            // box, and a closing menu hands focus back to the tree.
+            KillerFamily.Controls.CardTile Tile(string id, int glyph, string captionKey, string? shownKey, string? keys,
+                Action<object, RoutedEventArgs> handler, bool enabled = true, bool? on = null)
+                => Controls.CardMenus.Tile(id, glyph, captionKey, shownKey, keys,
+                    () => AfterMenuCloses(() => handler(this, new RoutedEventArgs())), enabled, on);   // ResultsMenu.cs
+
+            var slot = Controls.CardMenus.Tiles(card,
+            [
+                // "Open in new tab", not Str_Tab_New ("new search"): this opens the node in a NEW TAB.
+                Tile("newtab", 0xE710, "Str_Menu_OpenInNewTab", "Str_Card_NewTab", "Ctrl+Enter", TreeOpenNewTab_Click),
+                Tile("explorer", 0xE838, "Str_Menu_ShowExplorer", "Str_Card_Explorer", "F6", TreeShowInExplorer_Click),
+                Tile("search", 0xE721, "Str_Menu_SearchHere", "Str_Card_Search", "F3", TreeSearchHere_Click),
+                Tile("terminal", 0xE756, "Str_Menu_OpenTerminal", "Str_Card_Terminal", "F8", TreeTerminal_Click),
+                Tile("terminaladmin", 0xE7EF, "Str_Menu_OpenTerminalAdmin", null, "Ctrl+F8", TreeTerminalAdmin_Click),
+                Tile("analyze", 0xEDA2, "Str_Menu_AnalyzeStorage", null, "Shift+F4", TreeAnalyze_Click),
+                // E8C8 (Copy, two documents), not E71B (Link, a chain).
+                Tile("copypath", 0xE8C8, "Str_Menu_CopyPath", "Str_Card_Path", "Ctrl+Shift+C", TreeCopyPath_Click),
+                Tile("fav", favorite ? 0xE735 : 0xE734, favorite ? "Str_Menu_RemoveFavorite" : "Str_Menu_AddFavorite", null, "Ctrl+D", TreeFavorite_Click),
+                // The tree's OWN hidden switch, not the listing's Ctrl+H (KeyCommands.cs Alt+H).
+                Tile("hidden", 0xE7B3, "Str_Menu_TreeShowHidden", null, "Alt+H", TreeHidden_Click, on: TreeShowHidden),
+                Tile("nick", 0xE8EC, nicknamed ? "Str_Menu_ChangeNickname" : "Str_Menu_AddNickname", null, "Alt+N", TreeNickname_Click),
+                Tile("nickdel", 0xE738, "Str_Menu_RemoveNickname", null, "Alt+Shift+N", TreeNicknameRemove_Click, nicknamed),
+                Tile("properties", 0xE946, "Str_Menu_Properties", null, "Alt+Enter", TreeProperties_Click),
+                Tile("shellmenu", 0xE712, "Str_Menu_ShellMenu", null, "Shift+F10", TreeShellMenu_Click),
+            ]);
+            _treeTiles = (signature, slot);
+            return slot;
+        }
 
         private static FolderNode? NodeUnder(DependencyObject? d)
         {
@@ -499,30 +525,6 @@ namespace KillerShell.Shell
         }
 
         private string? TreeMenuPath() => _treeMenuNode?.Path;
-
-        /// <summary>
-        /// The tree card's quick buttons, told apart by CommandParameter. The card closes first and
-        /// the command runs once it has, because three of them move focus: Search here puts the
-        /// caret in the search box, and a closing menu hands focus back to the tree.
-        /// </summary>
-        private void TreeCard_ButtonClick(object sender, RoutedEventArgs e)
-        {
-            if (e.OriginalSource is not System.Windows.Controls.Primitives.ButtonBase button
-                || button.CommandParameter is not string command) return;
-            Action<object, RoutedEventArgs>? run = command switch
-            {
-                "newtab"   => TreeOpenNewTab_Click,
-                "explorer" => TreeShowInExplorer_Click,
-                "terminal" => TreeTerminal_Click,
-                "search"   => TreeSearchHere_Click,
-                "copypath" => TreeCopyPath_Click,
-                _ => null,
-            };
-            if (run == null) return;
-            e.Handled = true;
-            if (sender is ContextMenu card) card.IsOpen = false;
-            AfterMenuCloses(() => run(button, new RoutedEventArgs()));   // ResultsMenu.cs
-        }
 
         private void TreeOpenNewTab_Click(object sender, RoutedEventArgs e)
         {

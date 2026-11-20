@@ -56,8 +56,7 @@ public static class MixedParentMenuScenario
         fixture.Window.ShowWindowsMenu = (_, _) => { nativeCalls++; return true; };
         FileCommandCard.Open(pane);
         var menu = pane.ResultsList.ContextMenu;
-        Assert.Single(menu.Items.OfType<MenuItem>(), item => (string?)item.Tag == "shellmenu")
-            .RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+        FileCommandCard.Click(pane, "shellmenu");
         menu.IsOpen = false;
         ShellWindowFixture.PumpUntil(() => nativeCalls > 0 || pane.Active.StatusKey == "Str_Status_ShellSelectionNeedsOneFolder");
         Assert.Equal("Str_Status_ShellSelectionNeedsOneFolder", pane.Active.StatusKey);
@@ -80,10 +79,9 @@ public static class FolderCopyNameScenario
             pane.Active.Results.Add(folder);
             pane.ResultsList.SelectedItem = folder;
             FileCommandCard.Open(pane);
-            var name = FileCommandCard.Button(pane, "name");
-            Assert.Equal(Visibility.Visible, name.Visibility);
+            Assert.True(FileCommandCard.Offers(pane, "name"));
             touched = true;
-            name.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+            FileCommandCard.Click(pane, "name");
             Assert.Equal("Runbooks", Clipboard.GetText());
         }
         finally
@@ -113,8 +111,7 @@ public static class MissingSelectionMenuScenario
         fixture.Window.ShowWindowsMenu = (_, _) => { nativeCalls++; return true; };
         FileCommandCard.Open(pane);
         var menu = pane.ResultsList.ContextMenu;
-        var command = Assert.Single(menu.Items.OfType<MenuItem>(), item => (string?)item.Tag == "shellmenu");
-        command.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+        FileCommandCard.Click(pane, "shellmenu");
         menu.IsOpen = false;
         ShellWindowFixture.PumpUntil(() => nativeCalls > 0 || pane.Active.StatusKey == "Str_Status_ShellFailed");
         Assert.Equal(0, nativeCalls);
@@ -198,16 +195,24 @@ internal static class FileCommandCard
         ShellWindowFixture.PumpUntil(() => pane.ResultsList.ContextMenu.IsOpen);
     }
 
+    /// <summary>A tile on the file card, by its command name.</summary>
     internal static Button Button(FilePane pane, string command)
+        => Assert.IsType<Button>(Command(pane, command));
+
+    /// <summary>A command on the file card by name: a tile, or a row on one of its flyout tiles.</summary>
+    internal static FrameworkElement Command(FilePane pane, string command)
+        => Assert.Single(KillerShell.Controls.CardMenus.Commands(pane.ResultsList.ContextMenu),
+            element => (element is Button button ? button.CommandParameter : element.Tag) as string == command);
+
+    /// <summary>Whether the file card offers the command at all.</summary>
+    internal static bool Offers(FilePane pane, string command)
+        => KillerShell.Controls.CardMenus.Commands(pane.ResultsList.ContextMenu)
+            .Any(element => (element is Button button ? button.CommandParameter : element.Tag) as string == command);
+
+    /// <summary>Runs a file card command the way a click does.</summary>
+    internal static void Click(FilePane pane, string command)
     {
-        var buttons = new System.Collections.Generic.List<Button>();
-        void Walk(object node)
-        {
-            if (node is Button button) { buttons.Add(button); return; }
-            if (node is DependencyObject dependency)
-                foreach (object child in LogicalTreeHelper.GetChildren(dependency)) Walk(child);
-        }
-        foreach (MenuItem slot in pane.ResultsList.ContextMenu.Items.OfType<MenuItem>()) Walk(slot.Header);
-        return Assert.Single(buttons, button => (string?)button.CommandParameter == command);
+        var element = Command(pane, command);
+        element.RaiseEvent(new RoutedEventArgs(element is MenuItem ? MenuItem.ClickEvent : ButtonBase.ClickEvent));
     }
 }

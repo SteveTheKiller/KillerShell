@@ -8,6 +8,7 @@ using System.Windows.Automation;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
+using KillerShell.Controls;
 using KillerShell.Models;
 using KillerShell.Shell;
 using KillerShell.Tools;
@@ -36,8 +37,31 @@ public sealed class ToolCardTests
         => RuntimeComponentProcess.Run(nameof(StorageCardScenario));
 
     [Fact]
+    public Task DetailsLayoutMenuIsATileCardWithTheLayoutInUseLit()
+        => RuntimeComponentProcess.Run(nameof(DetailsLayoutCardScenario));
+
+    [Fact]
     public Task PerformanceCardMenuIsACardNamedForItsCard()
         => RuntimeComponentProcess.Run(nameof(PerformanceCardScenario));
+}
+
+public static class DetailsLayoutCardScenario
+{
+    public static void Run()
+    {
+        using var fixture = new ShellWindowFixture();
+        var pane = (FilePane)fixture.Window.FindName("LeftPane");
+        var menu = pane.DetailsPaneBtn.ContextMenu;
+        menu.RaiseEvent(new RoutedEventArgs(ContextMenu.OpenedEvent, menu));
+        Assert.Same(Application.Current.FindResource("CardMenu"), menu.Style);
+        Assert.Equal(new[] { "detailsbottom", "detailsright", "detailsoff" },
+            CardMenus.Buttons(menu).Select(b => b.CommandParameter).OfType<string>().ToArray());
+        // A second opening rebuilds the card rather than stacking another grid on it.
+        menu.RaiseEvent(new RoutedEventArgs(ContextMenu.OpenedEvent, menu));
+        Assert.Single(menu.Items.OfType<MenuItem>(), item => item.Tag as string == "cardtiles");
+        CardMenus.TileButton(menu, "detailsoff")!.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+        ShellWindowFixture.PumpUntil(() => !pane.DetailsPaneOpen);
+    }
 }
 
 public static class PerformanceCardScenario
@@ -63,7 +87,8 @@ public static class PerformanceCardScenario
             string title = AutomationProperties.GetName(head);
             Assert.False(string.IsNullOrWhiteSpace(title));
             Assert.NotEqual(id, title);
-            Assert.Contains(card.Items.OfType<MenuItem>(), item => Equals(item.Header, ToolCardProbe.L("Str_Perf_ResetLayout")));
+            Assert.Equal(new[] { "fold", "onecolumn", "twocolumns", "resetlayout" },
+                CardMenus.Buttons(card).Select(b => b.CommandParameter).OfType<string>().ToArray());
             card.IsOpen = false;
         }
         finally { control.Shutdown(); }
@@ -94,10 +119,8 @@ public static class StorageCardScenario
             typeof(StorageAnalyzerControl).GetMethod("ShowMapMenu", BindingFlags.NonPublic | BindingFlags.Instance)!
                 .Invoke(control, [big, false]);
             var card = ToolCardProbe.OpenCard();
-            ToolCardProbe.AssertCard(card, "Big",
-                ToolCardProbe.L("Str_Storage_OpenInTab"), ToolCardProbe.L("Str_Storage_RevealExplorer"),
-                ToolCardProbe.L("Str_Storage_CopyPath"), ToolCardProbe.L("Str_Storage_Delete"));
-            Assert.Contains(card.Items.OfType<MenuItem>(), item => item.IsCheckable);
+            ToolCardProbe.AssertCard(card, "Big", "opentab", "explorer", "copypath", "bytype", "byfolder", "rescan");
+            ToolCardProbe.AssertHeaderDelete(card);
             card.IsOpen = false;
         }
         finally { control.Shutdown(); }
@@ -120,11 +143,8 @@ public static class RegistryCardScenario
             typeof(RegistryEditorControl).GetMethod("BuildKeyCard", BindingFlags.NonPublic | BindingFlags.Instance)!
                 .Invoke(control, [node]);
             var card = ToolCardProbe.OpenCard();
-            ToolCardProbe.AssertCard(card, "KillerTools",
-                ToolCardProbe.L("Str_Menu_RegNewKey"), ToolCardProbe.L("Str_Menu_RegRename"),
-                ToolCardProbe.L("Str_Menu_RegDelete"), ToolCardProbe.L("Str_Menu_RegCopyPath"));
-            Assert.Single(card.Items.OfType<MenuItem>(), item => Equals(item.Header, ToolCardProbe.L("Str_Menu_RegNew")));
-            Assert.Single(card.Items.OfType<MenuItem>(), item => Equals(item.Header, ToolCardProbe.L("Str_Menu_RegCopyName")));
+            ToolCardProbe.AssertCard(card, "KillerTools", "newkey", "newvalue", "rename", "copypath", "copyname");
+            ToolCardProbe.AssertHeaderDelete(card);
             card.IsOpen = false;
             ShellWindowFixture.PumpUntil(() => !card.IsOpen);
 
@@ -132,13 +152,8 @@ public static class RegistryCardScenario
             typeof(RegistryEditorControl).GetMethod("BuildValueCard", BindingFlags.NonPublic | BindingFlags.Instance)!
                 .Invoke(control, [node, row]);
             card = ToolCardProbe.OpenCard();
-            ToolCardProbe.AssertCard(card, "Theme",
-                ToolCardProbe.L("Str_Menu_RegModify"), ToolCardProbe.L("Str_Menu_RegRename"),
-                ToolCardProbe.L("Str_Menu_RegDelete"), ToolCardProbe.L("Str_Menu_RegCopyName"));
-            // The value card ends on its buttons, so the strip's bottom rule would only double
-            // the card's own edge. The key card has rows under its strip and keeps the rule.
-            var valueStrip = (Border)card.Items.OfType<MenuItem>().Single(item => item.Tag as string == "cardquick").Header;
-            Assert.Equal(0, valueStrip.BorderThickness.Bottom);
+            ToolCardProbe.AssertCard(card, "Theme", "modify", "rename", "copyname");
+            ToolCardProbe.AssertHeaderDelete(card);
             card.IsOpen = false;
         }
         finally { control.Shutdown(); MainWindow.DemoMode = false; }
@@ -166,9 +181,7 @@ public static class EventCardScenario
             args.RoutedEvent = FrameworkElement.ContextMenuOpeningEvent;
             grid.RaiseEvent(args);
             var card = ToolCardProbe.OpenCard();
-            ToolCardProbe.AssertCard(card, entry.Source,
-                ToolCardProbe.L("Str_Menu_EvtCopyMessage"), ToolCardProbe.L("Str_Menu_EvtCopyDetails"),
-                ToolCardProbe.L("Str_Evt_DetailsTitle"));
+            ToolCardProbe.AssertCard(card, entry.Source, "copymessage", "copydetails", "details");
             card.IsOpen = false;
         }
         finally { control.Shutdown(); MainWindow.DemoMode = false; }
@@ -178,7 +191,7 @@ public static class EventCardScenario
 public static class ToolCardProbe
 {
     // The card a builder opened: the kit's CardMenu style, a header slot naming the row, and a
-    // quick row whose buttons are named for the given commands in order.
+    // tile grid whose tiles carry the given command names in order.
     public static ContextMenu OpenCard()
     {
         ContextMenu? found = null;
@@ -189,15 +202,18 @@ public static class ToolCardProbe
         return found!;
     }
 
-    public static void AssertCard(ContextMenu card, string title, params string[] quickNames)
+    public static void AssertCard(ContextMenu card, string title, params string[] tileIds)
     {
         Assert.Same(Application.Current.FindResource("CardMenu"), card.Style);
         var head = Assert.Single(card.Items.OfType<MenuItem>(), item => item.Tag as string == "cardhead");
         Assert.Equal(title, AutomationProperties.GetName(head));
-        var quick = Assert.Single(card.Items.OfType<MenuItem>(), item => item.Tag as string == "cardquick");
-        var strip = Assert.IsType<UniformGrid>(((Border)quick.Header).Child);
-        Assert.Equal(quickNames, strip.Children.OfType<FrameworkElement>().Select(b => AutomationProperties.GetName(b)).ToArray());
+        Assert.Single(card.Items.OfType<MenuItem>(), item => item.Tag as string == "cardtiles");
+        Assert.Equal(tileIds, CardMenus.Buttons(card).Select(b => b.CommandParameter).OfType<string>().ToArray());
     }
+
+    // Delete sits at the header's right end, named for the command, never as a tile.
+    public static void AssertHeaderDelete(ContextMenu card) =>
+        Assert.Single(CardMenus.Buttons(card), b => Equals(b.Tag, CardMenus.HeaderDeleteTag));
 
     public static IEnumerable<DependencyObject> Descendants(DependencyObject root)
     {
@@ -227,11 +243,7 @@ public static class ProcessServiceCardScenario
             typeof(ProcessListControl).GetMethod("BuildProcessContextMenu", BindingFlags.NonPublic | BindingFlags.Instance)!
                 .Invoke(control, [process]);
             var card = ToolCardProbe.OpenCard();
-            ToolCardProbe.AssertCard(card, "notepad.exe",
-                ToolCardProbe.L("Str_Menu_ProcOpenLocation"), ToolCardProbe.L("Str_Menu_ProcKill"),
-                ToolCardProbe.L("Str_Menu_ProcRestart"), ToolCardProbe.L("Str_Menu_ProcRunAsAdmin"));
-            Assert.Single(card.Items.OfType<MenuItem>(), item => item.InputGestureText == "Enter"
-                && Equals(item.Header, ToolCardProbe.L("Str_Proc_DetailsTitle")));
+            ToolCardProbe.AssertCard(card, "notepad.exe", "location", "restart", "asadmin", "details", "kill");
             card.IsOpen = false;
             ShellWindowFixture.PumpUntil(() => !card.IsOpen);
 
@@ -239,11 +251,7 @@ public static class ProcessServiceCardScenario
             typeof(ProcessListControl).GetMethod("BuildServiceContextMenu", BindingFlags.NonPublic | BindingFlags.Instance)!
                 .Invoke(control, [service]);
             card = ToolCardProbe.OpenCard();
-            ToolCardProbe.AssertCard(card, "Print Spooler",
-                ToolCardProbe.L("Str_Menu_ProcOpenLocation"), ToolCardProbe.L("Str_Menu_SvcStart"),
-                ToolCardProbe.L("Str_Menu_SvcStop"), ToolCardProbe.L("Str_Menu_ProcRestart"));
-            Assert.Single(card.Items.OfType<MenuItem>(), item => item.InputGestureText == "Enter"
-                && Equals(item.Header, ToolCardProbe.L("Str_Svc_DetailsTitle")));
+            ToolCardProbe.AssertCard(card, "Print Spooler", "location", "details", "start", "restart", "stop");
             card.IsOpen = false;
         }
         finally { control.Shutdown(); }

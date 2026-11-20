@@ -26,9 +26,9 @@ public sealed class EditorCardTests
                 var menu = editor.ContextMenu!;
 
                 var head = Assert.Single(menu.Items.OfType<MenuItem>(), item => (string?)item.Tag == "cardhead");
-                var quick = Assert.Single(menu.Items.OfType<MenuItem>(), item => (string?)item.Tag == "cardquick");
-                var buttons = TabCardScenario.Buttons(quick);
-                Assert.Equal(6, buttons.Count);
+                Button Tile(string id) => KillerShell.Controls.CardMenus.TileButton(menu, id)!;
+                var ids = KillerShell.Controls.CardMenus.Buttons(menu).Select(b => b.CommandParameter as string).ToArray();
+                Assert.Equal(new[] { "undo", "redo", "save", "cut", "copy", "paste", "selectall", "find", "goto", "wrap", "settings", "closetab" }, ids);
 
                 // With no source the card opens without a header; with one it names the file.
                 menu.RaiseEvent(new RoutedEventArgs(ContextMenu.OpenedEvent));
@@ -39,23 +39,24 @@ public sealed class EditorCardTests
                 Assert.Equal("notes.txt", AutomationProperties.GetName(head));
 
                 // A fresh document has nothing to undo, redo, cut or copy; Paste and Save stay lit.
-                Assert.Equal(new[] { false, false, false, false, true, true }, buttons.Select(b => b.IsEnabled).ToArray());
+                Assert.Equal(new[] { false, false, false, false, true, true },
+                    new[] { "undo", "redo", "cut", "copy", "paste", "save" }.Select(id => Tile(id).IsEnabled).ToArray());
 
                 // With a selection and an edit behind it, the four come back.
                 editor.Document.Text = "hello world";
                 editor.Select(0, 5);
                 menu.RaiseEvent(new RoutedEventArgs(ContextMenu.OpenedEvent));
-                Assert.True(buttons[0].IsEnabled, "Undo");
-                Assert.True(buttons[2].IsEnabled, "Cut");
-                Assert.True(buttons[3].IsEnabled, "Copy");
+                Assert.True(Tile("undo").IsEnabled, "Undo");
+                Assert.True(Tile("cut").IsEnabled, "Cut");
+                Assert.True(Tile("copy").IsEnabled, "Copy");
 
                 // Save is the window's to carry out, so the button raises it.
-                buttons[5].RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent));
+                Tile("save").RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent));
                 Assert.Equal(EditorMenuCommand.Save, raised);
 
-                // The rows that stayed rows keep their gestures.
-                foreach (var gesture in new[] { "Ctrl+A", "Ctrl+F", "Ctrl+G", "Alt+Z", "Ctrl+W" })
-                    Assert.Single(menu.Items.OfType<MenuItem>(), item => item.InputGestureText == gesture);
+                // Every tile with a shortcut shows it.
+                foreach (var (id, gesture) in new[] { ("selectall", "Ctrl+A"), ("find", "Ctrl+F"), ("goto", "Ctrl+G"), ("wrap", "Alt+Z"), ("closetab", "Ctrl+W") })
+                    Assert.Equal(gesture, AutomationProperties.GetAcceleratorKey(Tile(id)));
             }
             catch (Exception ex) { failure = ex; }
         });

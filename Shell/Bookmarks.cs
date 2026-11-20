@@ -763,33 +763,6 @@ namespace KillerShell.Shell
             => !t.IsTerminal && !t.IsEditor && !t.IsProcessList && !t.IsEventViewer
             && !t.IsPerformanceMonitor && !t.IsRegistryEditor && !t.IsStorageAnalyzer;
 
-        /// <summary>
-        /// The saved place card's quick buttons, the tree card's five verbs on the place's path
-        /// (FolderTree.cs). The card closes first and the verb runs once it has, for the same
-        /// reason as the tree: Search here moves focus into the search box.
-        /// </summary>
-        private void BookmarkCard_ButtonClick(object sender, RoutedEventArgs e)
-        {
-            if (e.OriginalSource is not System.Windows.Controls.Primitives.ButtonBase button
-                || button.CommandParameter is not string command
-                || sender is not ContextMenu card
-                || (card.DataContext ?? (card.PlacementTarget as FrameworkElement)?.DataContext) is not Bookmark b) return;
-            string path = b.Path;
-            Action? run = command switch
-            {
-                "newtab"   => () => OpenFolderInNewTab(path),
-                "explorer" => () => ShowFolderInExplorer(path),
-                "terminal" => () => OpenShell(Terminal.TerminalProfileStore.ForFolder(path), path),
-                "search"   => () => SearchInFolder(path),
-                "copypath" => () => PutOnClipboard(path, "Str_Status_Copied", "1"),   // ResultsMenu.cs
-                _ => null,
-            };
-            if (run == null) return;
-            e.Handled = true;
-            card.IsOpen = false;
-            AfterMenuCloses(run);   // ResultsMenu.cs
-        }
-
         private void BookmarkTerminalAdmin_Click(object sender, RoutedEventArgs e)
         {
             if (sender is FrameworkElement fe && fe.DataContext is Bookmark b)
@@ -815,15 +788,6 @@ namespace KillerShell.Shell
                 if (!Services.ShellContextMenu.ShowProperties(b.Path))
                     SetTabStatusKey(_active, "Str_Status_ShellFailed");
             });
-        }
-
-        // Remove. The panel carries no buttons of its own, so the row's context menu is the
-        // only way out - matches how the results list resolves a right-click to what is under
-        // the pointer.
-        private void BookmarkRemove_Click(object sender, RoutedEventArgs e)
-        {
-            if (sender is FrameworkElement fe && fe.DataContext is Bookmark b)
-                RemoveBookmark(b.Path);
         }
 
         // ── Reorder (drag) ──────────────────────────────────────────

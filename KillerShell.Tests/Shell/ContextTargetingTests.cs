@@ -75,11 +75,8 @@ public static class KeyboardRegistryTargetScenario
             try
             {
                 copied = true;
-                // Copy path is a button on the key's card, named for the command.
-                var quick = menu!.Items.OfType<MenuItem>().Single(item => item.Tag as string == "cardquick");
-                var copyPath = ((System.Windows.Controls.Primitives.UniformGrid)((Border)quick.Header).Child).Children
-                    .OfType<Button>().Single(button => Equals(System.Windows.Automation.AutomationProperties.GetName(button),
-                        app.FindResource("Str_Menu_RegCopyPath")));
+                // Copy path is a tile on the key's card, found by its command name.
+                var copyPath = KillerShell.Controls.CardMenus.TileButton(menu!, "copypath")!;
                 copyPath.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent));
                 Assert.Equal("HKEY_LOCAL_MACHINE", Clipboard.GetText());
                 Assert.Same(b, tree.SelectedItem);

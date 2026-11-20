@@ -345,89 +345,10 @@
                              already say the right thing (FolderTree.cs). On the TreeView itself,
                              not the item template - see the results list for why. -->
                         <TreeView.ContextMenu>
-                            <!-- The tree card: the folder's icon, name and path up top, the
-                                 everyday verbs as a row of buttons, and the rest as rows. The
-                                 header is filled as the card opens (FolderTree.cs), and every
-                                 button is a gesture the tree already has, named in its tooltip. -->
-                            <ContextMenu Style="{StaticResource CardMenu}" ButtonBase.Click="TreeCard_ButtonClick">
-                                <MenuItem x:Name="TreeCardHead" Tag="cardhead" Style="{StaticResource CardSlot}"/>
-                                <MenuItem Tag="cardquick" Style="{StaticResource CardSlot}" Padding="0"
-                                          AutomationProperties.Name="{DynamicResource Str_Card_Actions}">
-                                    <MenuItem.Header>
-                                        <Border BorderBrush="{DynamicResource MenuBorderBrush}" BorderThickness="0,1" Padding="2,4">
-                                            <UniformGrid Rows="1">
-                                                <!-- "Open in new tab", not Str_Tab_New ("new search"): this
-                                                     opens the node in a NEW TAB, and the old label was left
-                                                     over from when every tab was a search. -->
-                                                <Button Style="{StaticResource CardQuickButton}" CommandParameter="newtab"
-                                                        Content="&#xE710;" Tag="{DynamicResource Str_Card_NewTab}"
-                                                        AutomationProperties.Name="{DynamicResource Str_Menu_OpenInNewTab}">
-                                                    <Button.ToolTip><TextBlock><Run Text="{DynamicResource Str_Menu_OpenInNewTab}"/><Run Text="  (Ctrl+Enter)"/></TextBlock></Button.ToolTip>
-                                                </Button>
-                                                <Button Style="{StaticResource CardQuickButton}" CommandParameter="explorer"
-                                                        Content="&#xE838;" Tag="{DynamicResource Str_Card_Explorer}"
-                                                        AutomationProperties.Name="{DynamicResource Str_Menu_ShowExplorer}">
-                                                    <Button.ToolTip><TextBlock><Run Text="{DynamicResource Str_Menu_ShowExplorer}"/><Run Text="  (F6)"/></TextBlock></Button.ToolTip>
-                                                </Button>
-                                                <Button Style="{StaticResource CardQuickButton}" CommandParameter="terminal"
-                                                        Content="&#xE756;" Tag="{DynamicResource Str_Card_Terminal}"
-                                                        AutomationProperties.Name="{DynamicResource Str_Menu_OpenTerminal}">
-                                                    <Button.ToolTip><TextBlock><Run Text="{DynamicResource Str_Menu_OpenTerminal}"/><Run Text="  (F8)"/></TextBlock></Button.ToolTip>
-                                                </Button>
-                                                <Button Style="{StaticResource CardQuickButton}" CommandParameter="search"
-                                                        Content="&#xE721;" Tag="{DynamicResource Str_Card_Search}"
-                                                        AutomationProperties.Name="{DynamicResource Str_Menu_SearchHere}">
-                                                    <Button.ToolTip><TextBlock><Run Text="{DynamicResource Str_Menu_SearchHere}"/><Run Text="  (F3)"/></TextBlock></Button.ToolTip>
-                                                </Button>
-                                                <!-- E8C8 (Copy, two documents), not E71B (Link, a chain). -->
-                                                <Button Style="{StaticResource CardQuickButton}" CommandParameter="copypath"
-                                                        Content="&#xE8C8;" Tag="{DynamicResource Str_Card_Path}"
-                                                        AutomationProperties.Name="{DynamicResource Str_Menu_CopyPath}">
-                                                    <Button.ToolTip><TextBlock><Run Text="{DynamicResource Str_Menu_CopyPath}"/><Run Text="  (Ctrl+Shift+C)"/></TextBlock></Button.ToolTip>
-                                                </Button>
-                                            </UniformGrid>
-                                        </Border>
-                                    </MenuItem.Header>
-                                </MenuItem>
-                                <!-- The admin terminal and the Storage Analyzer aimed at this
-                                     folder. A folder is a folder wherever it is shown, so the
-                                     tree, the places and the listing all offer the same verbs. -->
-                                <MenuItem Header="{DynamicResource Str_Menu_OpenTerminalAdmin}" Click="TreeTerminalAdmin_Click" InputGestureText="Ctrl+F8">
-                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE7EF;"/></MenuItem.Icon>
-                                </MenuItem>
-                                <MenuItem Header="{DynamicResource Str_Menu_AnalyzeStorage}" Click="TreeAnalyze_Click" InputGestureText="Shift+F4">
-                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xEDA2;"/></MenuItem.Icon>
-                                </MenuItem>
-                                <Separator/>
-                                <!-- The tree's OWN hidden switch, not the listing's Ctrl+H. Checked
-                                     state is set as the menu opens (FolderTree.cs
-                                     FolderTree_ContextMenuOpening) rather than bound, matching how
-                                     the favorite row below flips its own header. -->
-                                <!-- Alt+H (KeyCommands.cs): Ctrl+Shift+H, the obvious pick, is
-                                     Copy SHA-256, and Ctrl+H is the listing's own hidden switch. -->
-                                <MenuItem x:Name="TreeHiddenItem" IsCheckable="True"
-                                          Header="{DynamicResource Str_Menu_TreeShowHidden}"
-                                          Click="TreeHidden_Click" InputGestureText="Alt+H"/>
-                                <Separator/>
-                                <MenuItem Tag="fav" Header="{DynamicResource Str_Menu_AddFavorite}" Click="TreeFavorite_Click" InputGestureText="Ctrl+D">
-                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE734;"/></MenuItem.Icon>
-                                </MenuItem>
-                                <!-- Nickname rows: header and visibility are set as the menu opens
-                                     (NicknameCommands.cs SyncNicknameMenu), found by Tag. -->
-                                <MenuItem Tag="nick" Header="{DynamicResource Str_Menu_AddNickname}" Click="TreeNickname_Click" InputGestureText="Alt+N">
-                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE8EC;"/></MenuItem.Icon>
-                                </MenuItem>
-                                <MenuItem Tag="nickdel" Header="{DynamicResource Str_Menu_RemoveNickname}" Click="TreeNicknameRemove_Click" InputGestureText="Alt+Shift+N">
-                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE738;"/></MenuItem.Icon>
-                                </MenuItem>
-                                <Separator/>
-                                <MenuItem Header="{DynamicResource Str_Menu_Properties}" Click="TreeProperties_Click" InputGestureText="Alt+Enter">
-                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE946;"/></MenuItem.Icon>
-                                </MenuItem>
-                                <MenuItem Header="{DynamicResource Str_Menu_ShellMenu}" Click="TreeShellMenu_Click" InputGestureText="Shift+F10">
-                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE712;"/></MenuItem.Icon>
-                                </MenuItem>
-                            </ContextMenu>
+                            <!-- The tree card: the folder's icon, name and path up top, then every
+                                 command as a tile with its shortcut. Built as it opens
+                                 (FolderTree.cs FolderTree_ContextMenuOpening). -->
+                            <ContextMenu Style="{StaticResource CardMenu}"/>
                         </TreeView.ContextMenu>
                         <TreeView.ItemsPanel>
                             <ItemsPanelTemplate><icons:FolderTreeItemsPanel/></ItemsPanelTemplate>
@@ -629,72 +550,11 @@
                                         <Border.ContextMenu>
                                             <!-- The saved place card: the same folder card the tree
                                                  shows, because a folder is a folder wherever it is
-                                                 listed. The header is filled per row as the card opens
+                                                 listed. Built per row as it opens
                                                  (NicknameCommands.cs BookmarkRow_ContextMenuOpening).
-                                                 No gestures in the tooltips: the tree's keys act on
-                                                 the tree, and the places list has none of its own. -->
-                                            <ContextMenu Style="{StaticResource CardMenu}" ButtonBase.Click="BookmarkCard_ButtonClick">
-                                                <MenuItem Tag="cardhead" Style="{StaticResource CardSlot}"/>
-                                                <MenuItem Tag="cardquick" Style="{StaticResource CardSlot}" Padding="0"
-                                                          AutomationProperties.Name="{DynamicResource Str_Card_Actions}">
-                                                    <MenuItem.Header>
-                                                        <Border BorderBrush="{DynamicResource MenuBorderBrush}" BorderThickness="0,1" Padding="2,4">
-                                                            <UniformGrid Rows="1">
-                                                                <Button Style="{StaticResource CardQuickButton}" CommandParameter="newtab"
-                                                                        Content="&#xE710;" Tag="{DynamicResource Str_Card_NewTab}"
-                                                                        AutomationProperties.Name="{DynamicResource Str_Menu_OpenInNewTab}"
-                                                                        ToolTip="{DynamicResource Str_Menu_OpenInNewTab}"/>
-                                                                <Button Style="{StaticResource CardQuickButton}" CommandParameter="explorer"
-                                                                        Content="&#xE838;" Tag="{DynamicResource Str_Card_Explorer}"
-                                                                        AutomationProperties.Name="{DynamicResource Str_Menu_ShowExplorer}"
-                                                                        ToolTip="{DynamicResource Str_Menu_ShowExplorer}"/>
-                                                                <Button Style="{StaticResource CardQuickButton}" CommandParameter="terminal"
-                                                                        Content="&#xE756;" Tag="{DynamicResource Str_Card_Terminal}"
-                                                                        AutomationProperties.Name="{DynamicResource Str_Menu_OpenTerminal}"
-                                                                        ToolTip="{DynamicResource Str_Menu_OpenTerminal}"/>
-                                                                <Button Style="{StaticResource CardQuickButton}" CommandParameter="search"
-                                                                        Content="&#xE721;" Tag="{DynamicResource Str_Card_Search}"
-                                                                        AutomationProperties.Name="{DynamicResource Str_Menu_SearchHere}"
-                                                                        ToolTip="{DynamicResource Str_Menu_SearchHere}"/>
-                                                                <Button Style="{StaticResource CardQuickButton}" CommandParameter="copypath"
-                                                                        Content="&#xE8C8;" Tag="{DynamicResource Str_Card_Path}"
-                                                                        AutomationProperties.Name="{DynamicResource Str_Menu_CopyPath}"
-                                                                        ToolTip="{DynamicResource Str_Menu_CopyPath}"/>
-                                                            </UniformGrid>
-                                                        </Border>
-                                                    </MenuItem.Header>
-                                                </MenuItem>
-                                                <MenuItem Header="{DynamicResource Str_Menu_OpenTerminalAdmin}"
-                                                          Click="BookmarkTerminalAdmin_Click">
-                                                    <!-- E7EF (admin shield), not the plain E756 both
-                                                         rows used to carry - two identical icons on
-                                                         two different actions is a menu that reads
-                                                         as one repeated item. -->
-                                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE7EF;"/></MenuItem.Icon>
-                                                </MenuItem>
-                                                <MenuItem Header="{DynamicResource Str_Menu_AnalyzeStorage}"
-                                                          Click="BookmarkAnalyze_Click">
-                                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xEDA2;"/></MenuItem.Icon>
-                                                </MenuItem>
-                                                <Separator/>
-                                                <MenuItem Tag="nick" Header="{DynamicResource Str_Menu_AddNickname}"
-                                                          Click="BookmarkNickname_Click">
-                                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE8EC;"/></MenuItem.Icon>
-                                                </MenuItem>
-                                                <MenuItem Tag="nickdel" Header="{DynamicResource Str_Menu_RemoveNickname}"
-                                                          Click="BookmarkNicknameRemove_Click">
-                                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE738;"/></MenuItem.Icon>
-                                                </MenuItem>
-                                                <Separator/>
-                                                <MenuItem Header="{DynamicResource Str_Menu_Properties}"
-                                                          Click="BookmarkProperties_Click">
-                                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE946;"/></MenuItem.Icon>
-                                                </MenuItem>
-                                                <MenuItem Tag="remove" Header="{DynamicResource Str_Menu_RemoveFavorite}"
-                                                          Click="BookmarkRemove_Click">
-                                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE738;"/></MenuItem.Icon>
-                                                </MenuItem>
-                                            </ContextMenu>
+                                                 No shortcuts: the tree's keys act on the tree, and the
+                                                 places list has none of its own. -->
+                                            <ContextMenu Style="{StaticResource CardMenu}"/>
                                         </Border.ContextMenu>
                                         <StackPanel Orientation="Horizontal">
                                             <!-- 20 drawn, 16 measured - see the tree's own icon

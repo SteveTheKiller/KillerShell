@@ -22,8 +22,8 @@ namespace KillerShell.Terminal
 
         private ContextMenu? _menu;
         private MenuItem? _cardHead;
-        private Button? _copyButton;
-        private MenuItem? _reloadProfileItem;
+        // The language the card was built in: its captions are plain text, so a language switch rebuilds it.
+        private string? _menuLanguage;
         internal TerminalShellKind ShellKind { get; set; } = TerminalShellKind.PowerShell;
         internal event Action<MenuItem>? LaunchSubmenuOpening;
 
@@ -72,7 +72,11 @@ namespace KillerShell.Terminal
         /// </remarks>
         private void ShowMenu(bool keyboard = false)
         {
-            _menu ??= BuildMenu();
+            if (_menu == null || _menuLanguage != KillerShell.Controls.CardMenus.Loc("Str_Card_Actions"))
+            {
+                _menu = BuildMenu();
+                _menuLanguage = KillerShell.Controls.CardMenus.Loc("Str_Card_Actions");
+            }
             ContextMenu = _menu;
 
             // The header is about where the shell is NOW, so it is filled on every opening.
@@ -85,10 +89,14 @@ namespace KillerShell.Terminal
 
             // Copy is the one button whose availability changes: with no selection there is
             // nothing to copy, and a lit button that does nothing is worse than a dim one.
-            _copyButton?.IsEnabled = _hasSelection;
-            // cmd.exe has no PowerShell $PROFILE. The same menu belongs to both terminal skins,
-            // so keep the row visible for discovery but make its scope honest.
-            _reloadProfileItem?.IsEnabled = ShellKind == TerminalShellKind.PowerShell;
+            KillerShell.Controls.CardMenus.SetTile(_menu, "copy", _hasSelection);
+            // cmd.exe has no PowerShell $PROFILE. The same card belongs to both terminal skins,
+            // so the tiles stay in place for discovery, dimmed where they do not apply.
+            bool prompt = ShellKind is TerminalShellKind.PowerShell or TerminalShellKind.Wsl;
+            KillerShell.Controls.CardMenus.SetTile(_menu, "editprompt", prompt);
+            KillerShell.Controls.CardMenus.SetTile(_menu, "resetprompt", prompt);
+            KillerShell.Controls.CardMenus.SetTile(_menu, "reloadprofile", ShellKind == TerminalShellKind.PowerShell);
+            KillerShell.Controls.CardMenus.SetTile(_menu, "profile", ShellKind == TerminalShellKind.PowerShell);
 
             _menu.PlacementTarget = this;
             _menu.Placement = keyboard
@@ -119,95 +127,51 @@ namespace KillerShell.Terminal
         }
 
         /// <summary>
-        /// The terminal card: a header naming the shell and its folder, quick buttons for the
-        /// everyday verbs, then the shell, font, prompt and profile rows.
+        /// The terminal card: a header naming the shell and its folder, then the commands as tiles, each with its
+        /// shortcut. New shell and Edit profile open their lists beside the card.
         /// </summary>
         private ContextMenu BuildMenu()
         {
-            var m = KillerShell.Controls.CardMenus.Card();
+            var m = KillerShell.Controls.CardMenus.TileCard();
 
             _cardHead = KillerShell.Controls.CardMenus.Slot();
             _cardHead.Tag = "cardhead";
             m.Items.Add(_cardHead);
+            KillerShell.Controls.CardMenus.WatchKeyboardStart(m);
 
-            // Every quick button is a gesture that already exists on the keyboard, named with it
-            // in its tooltip, so the card is a way to DISCOVER them.
-            var quick = KillerShell.Controls.CardMenus.QuickStrip(out var strip);
-            quick.Tag = "cardquick";
-            _copyButton = KillerShell.Controls.CardMenus.QuickButton(strip, m, 0xE8C8, "Str_Card_Copy", "Str_Term_Copy", "Ctrl+Shift+C", () =>
-            {
-                if (CopySelection()) ClearSelection();
-            });
-            KillerShell.Controls.CardMenus.QuickButton(strip, m, 0xE77F, "Str_Card_Paste", "Str_Term_Paste", "Ctrl+Shift+V", Paste);
-            KillerShell.Controls.CardMenus.QuickButton(strip, m, 0xE8B3, "Str_Card_SelectAll", "Str_Term_SelectAll", "Ctrl+Shift+A", SelectAll);
-            // The eraser, not MDL2's Clear X: that X is Close, two buttons along.
-            KillerShell.Controls.CardMenus.QuickButton(strip, m, 0xE75C, "Str_Card_Clear", "Str_Term_Clear", "Ctrl+Shift+L", ClearScrollback);
-            // The reverse of "open a terminal here": whatever the shell has cd'd to, opened as a
-            // folder tab. The buffer tracks the working directory already (OSC 7), so this is
-            // free - and after a few minutes of cd-ing around, getting the folder listing to
-            // follow is otherwise a copy of the path and a paste into the address bar.
-            KillerShell.Controls.CardMenus.QuickButton(strip, m, 0xE8B7, "Str_Card_Folder", "Str_Term_OpenFolder", "Ctrl+Shift+T",
-                () => MenuCommand?.Invoke(TerminalMenuCommand.OpenFolder));
-            // No Close here: a lone X on a card reads as "close this menu", and one click on it
-            // ended a running shell. Ctrl+W and the tab's own close button close the terminal.
-            // No separator under the strip: its own bottom rule is that line already.
-            m.Items.Add(quick);
-
-            var launches = new MenuItem { InputGestureText = "F8" };
-            launches.SetResourceReference(HeaderedItemsControl.HeaderProperty, "Str_Term_NewShell");
-            var launchIcon = new Glyph { Text = Glyph(0xE756) };
-            launchIcon.SetResourceReference(FrameworkElement.StyleProperty, "MenuGlyph");
-            launches.Icon = launchIcon;
-            m.Items.Add(launches);
-            launches.Items.Add(new MenuItem());
-            launches.SubmenuOpened += (_, _) => LaunchSubmenuOpening?.Invoke(launches);
-
-            Row(m, "Str_Term_Fonts", Glyph(0xE8D2), "Ctrl+Shift+,",
-                () => MenuCommand?.Invoke(TerminalMenuCommand.Fonts));
-
-            m.Items.Add(new Separator());
-
-            // The prompt is a SCRIPT the user owns, not a setting, so the menu opens the file
-            // rather than a dialog of checkboxes over it - anything a dialog could offer, the
-            // file already does, and better. Reset is next to it because a script you are
-            // encouraged to edit needs a way back.
-            var editPrompt = Row(m, "Str_Term_EditPrompt", Glyph(0xE70F), "Ctrl+Shift+E",
-                () => MenuCommand?.Invoke(TerminalMenuCommand.EditPrompt));
-            editPrompt.IsEnabled = ShellKind is TerminalShellKind.PowerShell or TerminalShellKind.Wsl;
-
-            var resetPrompt = Row(m, "Str_Term_ResetPrompt", Glyph(0xE777), "Ctrl+Shift+R",
-                () => MenuCommand?.Invoke(TerminalMenuCommand.ResetPrompt));
-            resetPrompt.IsEnabled = ShellKind is TerminalShellKind.PowerShell or TerminalShellKind.Wsl;
-
-            // Run inside THIS shell rather than starting a helper process. PowerShell 7 and
-            // Windows PowerShell then each resolve their own $PROFILE, and any output, success,
-            // or error stays in the terminal where the user asked for the reload.
-            _reloadProfileItem = Row(m, "Str_Prof_Reload", Glyph(0xE895), "Ctrl+Shift+Q", () =>
-                // Doubled apostrophes: the text lands inside a single-quoted PowerShell string, and
-                // several locales spell this message with one.
-                Send("try { . $PROFILE; Write-Host '"
-                     + Shell.MainWindow.LocStatic("Str_Term_ProfileReloaded").Replace("'", "''")
-                     + "' -ForegroundColor Green } catch { Write-Error $_ }\r"));
-            _reloadProfileItem.IsEnabled = ShellKind == TerminalShellKind.PowerShell;
-
-            // The user's $PROFILE, which is a DIFFERENT file from the prompt above it and a far
-            // more common thing to want: the prompt script is ours and only runs in here, while
-            // the profile is theirs and runs in every shell they open anywhere.
-            //
-            // A submenu because the two PowerShell hosts do not share one, and picking the wrong
-            // one is most of the "why is my profile not loading" in the world. Its rows arrive
-            // as it opens; the placeholder child is only what makes WPF draw the arrow and fire
-            // SubmenuOpened at all, and it is replaced before it can be seen.
-            var profile = new MenuItem { InputGestureText = "Ctrl+,", IsEnabled = ShellKind == TerminalShellKind.PowerShell };
-            profile.SetResourceReference(HeaderedItemsControl.HeaderProperty, "Str_Prof_Edit");
-
-            var profileIcon = new Glyph { Text = Glyph(0xE70F) };
-            profileIcon.SetResourceReference(FrameworkElement.StyleProperty, "MenuGlyph");
-            profile.Icon = profileIcon;
-
-            profile.Items.Add(new MenuItem());
-            profile.SubmenuOpened += (_, _) => ProfileSubmenuOpening?.Invoke(profile);
-            m.Items.Add(profile);
+            m.Items.Add(KillerShell.Controls.CardMenus.Tiles(m,
+            [
+                KillerShell.Controls.CardMenus.Tile("copy", 0xE8C8, "Str_Term_Copy", "Str_Card_Copy", "Ctrl+Shift+C", () =>
+                {
+                    if (CopySelection()) ClearSelection();
+                }),
+                KillerShell.Controls.CardMenus.Tile("paste", 0xE77F, "Str_Term_Paste", "Str_Card_Paste", "Ctrl+Shift+V", Paste),
+                KillerShell.Controls.CardMenus.Tile("selectall", 0xE8B3, "Str_Term_SelectAll", "Str_Card_SelectAll", "Ctrl+Shift+A", SelectAll),
+                // The eraser, not MDL2's Clear X: an X on a card reads as Close.
+                KillerShell.Controls.CardMenus.Tile("clear", 0xE75C, "Str_Term_Clear", "Str_Card_Clear", "Ctrl+Shift+L", ClearScrollback),
+                // The reverse of "open a terminal here": whatever the shell has cd'd to, opened as a
+                // folder tab. The buffer tracks the working directory already (OSC 7).
+                KillerShell.Controls.CardMenus.Tile("folder", 0xE8B7, "Str_Term_OpenFolder", "Str_Card_Folder", "Ctrl+Shift+T",
+                    () => MenuCommand?.Invoke(TerminalMenuCommand.OpenFolder)),
+                // No Close here: one click on it ended a running shell. Ctrl+W and the tab's own
+                // close button close the terminal.
+                KillerShell.Controls.CardMenus.LiveFlyout(m, "newshell", Glyph(0xE756), KillerShell.Controls.CardMenus.Loc("Str_Term_NewShell"), "F8",
+                    holder => LaunchSubmenuOpening?.Invoke(holder)),
+            ],
+            [
+                KillerShell.Controls.CardMenus.Tile("fonts", 0xE8D2, "Str_Term_Fonts", null, "Ctrl+Shift+,", () => RunMenuCommand(Key.OemComma)),
+                // The prompt is a SCRIPT the user owns, not a setting, so the card opens the file.
+                // Reset is next to it because a script you are encouraged to edit needs a way back.
+                KillerShell.Controls.CardMenus.Tile("editprompt", 0xE70F, "Str_Term_EditPrompt", null, "Ctrl+Shift+E", () => RunMenuCommand(Key.E)),
+                KillerShell.Controls.CardMenus.Tile("resetprompt", 0xE777, "Str_Term_ResetPrompt", null, "Ctrl+Shift+R", () => RunMenuCommand(Key.R)),
+                // Run inside THIS shell rather than starting a helper process, so each PowerShell
+                // resolves its own $PROFILE and the output stays where the user asked.
+                KillerShell.Controls.CardMenus.Tile("reloadprofile", 0xE895, "Str_Prof_Reload", null, "Ctrl+Shift+Q", () => RunMenuCommand(Key.Q)),
+                // The user's $PROFILE, a different file from the prompt. A list, because the two
+                // PowerShell hosts do not share one (ProfileMenu.cs fills it).
+                KillerShell.Controls.CardMenus.LiveFlyout(m, "profile", Glyph(0xE70F), KillerShell.Controls.CardMenus.Loc("Str_Prof_Edit"), "Ctrl+,",
+                    holder => ProfileSubmenuOpening?.Invoke(holder)),
+            ]));
 
             return m;
         }
@@ -215,41 +179,33 @@ namespace KillerShell.Terminal
         internal bool HandleMenuShortcut(KeyEventArgs e)
         {
             if (Keyboard.Modifiers != (ModifierKeys.Control | ModifierKeys.Shift)) return false;
-            // Clear is a quick button on the card, not a row, so its chord runs it directly.
+            // Clear is a tile on the card, so its chord runs it directly.
             if (e.Key == Key.L) { ClearScrollback(); return true; }
-            string? gesture = e.Key switch
-            {
-                Key.OemComma => "Ctrl+Shift+,",
-                Key.E => "Ctrl+Shift+E",
-                Key.R => "Ctrl+Shift+R",
-                Key.Q => "Ctrl+Shift+Q",
-                _ => null,
-            };
-            if (gesture == null) return false;
-            _menu ??= BuildMenu();
-            foreach (var entry in _menu.Items)
-                if (entry is MenuItem item && item.InputGestureText == gesture)
-                {
-                    if (item.IsEnabled && (e.Key != Key.Q || ShellKind == TerminalShellKind.PowerShell))
-                        item.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
-                    return true;
-                }
-            return false;
+            return e.Key is Key.OemComma or Key.E or Key.R or Key.Q && RunMenuCommand(e.Key);
         }
 
-        /// <summary>Build a menu row whose label follows the active language.</summary>
-        private static MenuItem Row(ContextMenu m, string key, string glyph, string? gesture, Action go)
+        /// <summary>
+        /// The card's chorded commands, shared by the tiles and the keyboard, so the two never drift apart.
+        /// A command the shell cannot carry out does nothing but still counts as handled.
+        /// </summary>
+        private bool RunMenuCommand(Key key)
         {
-            var item = new MenuItem { InputGestureText = gesture ?? string.Empty };
-            item.SetResourceReference(HeaderedItemsControl.HeaderProperty, key);
-
-            var icon = new Glyph { Text = glyph };
-            icon.SetResourceReference(FrameworkElement.StyleProperty, "MenuGlyph");
-            item.Icon = icon;
-
-            item.Click += (_, _) => go();
-            m.Items.Add(item);
-            return item;
+            bool prompt = ShellKind is TerminalShellKind.PowerShell or TerminalShellKind.Wsl;
+            switch (key)
+            {
+                case Key.OemComma: MenuCommand?.Invoke(TerminalMenuCommand.Fonts); return true;
+                case Key.E: if (prompt) MenuCommand?.Invoke(TerminalMenuCommand.EditPrompt); return true;
+                case Key.R: if (prompt) MenuCommand?.Invoke(TerminalMenuCommand.ResetPrompt); return true;
+                case Key.Q:
+                    // Doubled apostrophes: the text lands inside a single-quoted PowerShell string, and
+                    // several locales spell this message with one.
+                    if (ShellKind == TerminalShellKind.PowerShell)
+                        Send("try { . $PROFILE; Write-Host '"
+                             + Shell.MainWindow.LocStatic("Str_Term_ProfileReloaded").Replace("'", "''")
+                             + "' -ForegroundColor Green } catch { Write-Error $_ }\r");
+                    return true;
+                default: return false;
+            }
         }
     }
 

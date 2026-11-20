@@ -131,11 +131,10 @@ public static class MixedCopyNameScenario
             pane.ResultsList.SelectedItems.Add(folder);
             pane.ResultsList.SelectedItems.Add(file);
             FileCommandCard.Open(pane);
-            var name = FileCommandCard.Button(pane, "name");
-            Assert.Equal(Visibility.Visible, name.Visibility);
-            Assert.Equal(Visibility.Collapsed, FileCommandCard.Button(pane, "hash").Visibility);
+            Assert.True(FileCommandCard.Offers(pane, "name"));
+            Assert.False(FileCommandCard.Offers(pane, "hash"));
             touched = true;
-            name.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+            FileCommandCard.Click(pane, "name");
             Assert.Equal("Runbooks" + Environment.NewLine + "readme.txt", Clipboard.GetText());
         }
         finally { if (touched) FileCommandCard.RestoreClipboard(previous); }

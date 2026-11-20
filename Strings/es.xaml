@@ -832,6 +832,8 @@
     <sys:String x:Key="Str_Theme_Decay">Descomposición</sys:String>
     <sys:String x:Key="Str_Theme_Mourning">Luto</sys:String>
     <sys:String x:Key="Str_Theme_FilmGrain">Grano de película</sys:String>
+    <sys:String x:Key="Str_Key_Alt">Alt</sys:String>
+    <sys:String x:Key="Str_Key_Shift">Mayús</sys:String>
     <sys:String x:Key="Str_Theme_Sepulchre">Sepulcro</sys:String>
     <sys:String x:Key="Str_Theme_Delirium">Delirio</sys:String>
     <sys:String x:Key="Str_Theme_Malaise">Malestar</sys:String>
@@ -1074,4 +1076,27 @@
     <sys:String x:Key="Str_TT_RemoveSearchFilter">Quitar filtro</sys:String>
     <sys:String x:Key="Str_A11y_ColumnHeadings">Encabezados de columna</sys:String>
     <sys:String x:Key="Str_A11y_ColumnHeadingsHelp">Pulsa Menu (Apps) para elegir las columnas visibles.</sys:String>
+    <!-- Text box menu and the file pickers' New folder button (KillerUI kit). -->
+    <sys:String x:Key="Str_Ctx_Cut">Cortar</sys:String>
+    <sys:String x:Key="Str_Ctx_Copy">Copiar</sys:String>
+    <sys:String x:Key="Str_Ctx_Paste">Pegar</sys:String>
+    <sys:String x:Key="Str_Ctx_SelectAll">Seleccionar todo</sys:String>
+    <sys:String x:Key="Str_TT_NewFolder">Nueva carpeta (Ctrl+Mayús+N)</sys:String>
+    <sys:String x:Key="Str_FD_NewFolder">Nueva carpeta</sys:String>
+    <sys:String x:Key="Str_FD_FolderEmpty">Escribe un nombre para la carpeta.</sys:String>
+    <sys:String x:Key="Str_FD_FolderInvalid">El nombre de una carpeta no puede contener ninguno de estos caracteres: \ / : * ? " &lt; &gt; |</sys:String>
+    <sys:String x:Key="Str_FD_FolderReserved">Windows reserva ese nombre. Elige otro.</sys:String>
+    <sys:String x:Key="Str_FD_FolderTrailing">El nombre de una carpeta no puede terminar en un punto ni en un espacio.</sys:String>
+    <sys:String x:Key="Str_FD_FolderTooLong">Ese nombre es demasiado largo. Usa 255 caracteres como máximo.</sys:String>
+    <sys:String x:Key="Str_FD_FolderExists">Aquí ya hay una carpeta o un archivo con ese nombre.</sys:String>
+    <sys:String x:Key="Str_FD_FolderFailed">No se pudo crear la carpeta:</sys:String>
+    <!-- Tile cards (Controls/CardMenus.cs): the customize pencil, its drawer, and the file card's copy flyout. -->
+    <sys:String x:Key="Str_Card_Customize">Personalizar esta tarjeta</sys:String>
+    <sys:String x:Key="Str_Card_EditDone">Listo</sys:String>
+    <sys:String x:Key="Str_Card_EditReset">Restablecer valores predeterminados</sys:String>
+    <sys:String x:Key="Str_Card_EditResetShort">Restablecer</sys:String>
+    <sys:String x:Key="Str_Card_Hidden">Ocultos</sys:String>
+    <sys:String x:Key="Str_Card_HiddenHint">Arrastra un mosaico aquí para ocultarlo</sys:String>
+    <sys:String x:Key="Str_Card_AlwaysShown">Siempre visible</sys:String>
+    <sys:String x:Key="Str_Card_CopyAs">Copiar como</sys:String>
 </ResourceDictionary>

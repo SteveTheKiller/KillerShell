@@ -28,6 +28,8 @@
     <sys:String x:Key="Str_Theme_Decay">Ыдырау</sys:String>
     <sys:String x:Key="Str_Theme_Mourning">Аза</sys:String>
     <sys:String x:Key="Str_Theme_FilmGrain">Пленка түйіршігі</sys:String>
+    <sys:String x:Key="Str_Key_Alt">Alt</sys:String>
+    <sys:String x:Key="Str_Key_Shift">Shift</sys:String>
     <sys:String x:Key="Str_Theme_Sepulchre">Кесене</sys:String>
     <sys:String x:Key="Str_Theme_Delirium">Сандырақ</sys:String>
     <sys:String x:Key="Str_Theme_Malaise">Науқастық</sys:String>
@@ -1085,4 +1087,27 @@
     <sys:String x:Key="Str_TT_RemoveSearchFilter">Сүзгіні алып тастау</sys:String>
     <sys:String x:Key="Str_A11y_ColumnHeadings">Баған тақырыптары</sys:String>
     <sys:String x:Key="Str_A11y_ColumnHeadingsHelp">Көрінетін бағандарды таңдау үшін Menu (Apps) басыңыз.</sys:String>
+    <!-- Text box menu and the file pickers' New folder button (KillerUI kit). -->
+    <sys:String x:Key="Str_Ctx_Cut">Қиып алу</sys:String>
+    <sys:String x:Key="Str_Ctx_Copy">Көшіру</sys:String>
+    <sys:String x:Key="Str_Ctx_Paste">Қою</sys:String>
+    <sys:String x:Key="Str_Ctx_SelectAll">Бәрін таңдау</sys:String>
+    <sys:String x:Key="Str_TT_NewFolder">Жаңа қалта (Ctrl+Shift+N)</sys:String>
+    <sys:String x:Key="Str_FD_NewFolder">Жаңа қалта</sys:String>
+    <sys:String x:Key="Str_FD_FolderEmpty">Қалтаның атауын енгізіңіз.</sys:String>
+    <sys:String x:Key="Str_FD_FolderInvalid">Қалта атауында мына таңбалардың ешқайсысы болмауы керек: \ / : * ? " &lt; &gt; |</sys:String>
+    <sys:String x:Key="Str_FD_FolderReserved">Бұл атауды Windows сақтап қойған. Басқасын таңдаңыз.</sys:String>
+    <sys:String x:Key="Str_FD_FolderTrailing">Қалта атауы нүктемен немесе бос орынмен аяқталмауы керек.</sys:String>
+    <sys:String x:Key="Str_FD_FolderTooLong">Бұл атау тым ұзын. Ең көбі 255 таңба пайдаланыңыз.</sys:String>
+    <sys:String x:Key="Str_FD_FolderExists">Мұнда мұндай атаумен қалта немесе файл бұрыннан бар.</sys:String>
+    <sys:String x:Key="Str_FD_FolderFailed">Қалтаны жасау мүмкін болмады:</sys:String>
+    <!-- Tile cards (Controls/CardMenus.cs): the customize pencil, its drawer, and the file card's copy flyout. -->
+    <sys:String x:Key="Str_Card_Customize">Бұл картаны баптау</sys:String>
+    <sys:String x:Key="Str_Card_EditDone">Дайын</sys:String>
+    <sys:String x:Key="Str_Card_EditReset">Әдепкіге қайтару</sys:String>
+    <sys:String x:Key="Str_Card_EditResetShort">Қалпына келтіру</sys:String>
+    <sys:String x:Key="Str_Card_Hidden">Жасырын</sys:String>
+    <sys:String x:Key="Str_Card_HiddenHint">Жасыру үшін тақтаны осында сүйреңіз</sys:String>
+    <sys:String x:Key="Str_Card_AlwaysShown">Әрқашан көрсетіледі</sys:String>
+    <sys:String x:Key="Str_Card_CopyAs">Келесі ретінде көшіру</sys:String>
 </ResourceDictionary>

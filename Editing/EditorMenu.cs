@@ -24,8 +24,8 @@ namespace KillerShell.Editing
         /// <summary>Raised for rows the WINDOW owns: it has the tabs and the settings, not us.</summary>
         internal event Action<EditorMenuCommand>? MenuCommand;
 
-        private MenuItem? _wrapItem;
-        private Button? _undoButton, _redoButton, _cutButton, _copyButton;
+        // The language the card was built in: its captions are plain text, so a language switch rebuilds it.
+        private string? _menuLanguage;
 
         /// <summary>
         /// What the card's header shows: an icon, the file's name and its folder. Supplied by the
@@ -33,100 +33,74 @@ namespace KillerShell.Editing
         /// </summary>
         internal Func<(FrameworkElement? Icon, string Title, string Meta)>? CardHeaderSource { get; set; }
 
-        // Glyphs as codepoints, never literal private-use characters: these files stay BOM-less
-        // UTF-8 with zero non-ASCII bytes, and typing one directly is what made KillerPDF's
-        // release.ps1 PS7-only.
-        private static string Glyph(int cp) => ((char)cp).ToString();
-
         /// <summary>
-        /// The document card: a header naming the file, the six everyday edits as a row of
-        /// buttons, then Find, Go to line, wrap, settings and close as rows.
+        /// The document card: a header naming the file, then every command as a tile with its shortcut. Built once;
+        /// what applies is set as it opens.
         /// </summary>
         private void BuildMenu()
         {
-            var m = KillerShell.Controls.CardMenus.Card();
+            var m = KillerShell.Controls.CardMenus.TileCard();
 
             var cardHead = KillerShell.Controls.CardMenus.Slot();
             cardHead.Tag = "cardhead";
             m.Items.Add(cardHead);
+            KillerShell.Controls.CardMenus.WatchKeyboardStart(m);
 
-            // Wrapped rather than passed as method groups: both return a bool saying whether
-            // there was anything to undo, and the button already knows there was - the card
-            // dims them otherwise.
-            var quick = KillerShell.Controls.CardMenus.QuickStrip(out var strip);
-            quick.Tag = "cardquick";
-            _undoButton = KillerShell.Controls.CardMenus.QuickButton(strip, m, 0xE7A7, "Str_Card_Undo", "Str_Ed_Undo", "Ctrl+Z", () => Undo());
-            _redoButton = KillerShell.Controls.CardMenus.QuickButton(strip, m, 0xE7A6, "Str_Card_Redo", "Str_Ed_Redo", "Ctrl+Y", () => Redo());
-            _cutButton  = KillerShell.Controls.CardMenus.QuickButton(strip, m, 0xE8C6, "Str_Card_Cut",  "Str_Ed_Cut",  "Ctrl+X", Cut);
-            _copyButton = KillerShell.Controls.CardMenus.QuickButton(strip, m, 0xE8C8, "Str_Card_Copy", "Str_Ed_Copy", "Ctrl+C", Copy);
-            KillerShell.Controls.CardMenus.QuickButton(strip, m, 0xE77F, "Str_Card_Paste", "Str_Ed_Paste", "Ctrl+V", Paste);
-            // Captions are the card's own short keys (Str_Card_*), hyphenated where a word is too
-            // wide for a sixth of the card; the tooltip and the screen reader get the full name.
-            // Save belongs to the WINDOW - it owns the bar that reports it - so it is raised.
-            KillerShell.Controls.CardMenus.QuickButton(strip, m, 0xE74E, "Str_Card_Save", "Str_Ed_Save", "Ctrl+S",
-                () => MenuCommand?.Invoke(EditorMenuCommand.Save));
-            // No separator under the strip: its own bottom rule is that line already.
-            m.Items.Add(quick);
+            // Undo and Redo are wrapped rather than passed as method groups: both return whether there
+            // was anything to undo, and the tile is dimmed otherwise. Save, Go to line, wrap, settings
+            // and close belong to the WINDOW, which owns the bar and the tabs, so they are raised.
+            m.Items.Add(KillerShell.Controls.CardMenus.Tiles(m,
+            [
+                KillerShell.Controls.CardMenus.Tile("undo", 0xE7A7, "Str_Ed_Undo", "Str_Card_Undo", "Ctrl+Z", () => Undo()),
+                KillerShell.Controls.CardMenus.Tile("redo", 0xE7A6, "Str_Ed_Redo", "Str_Card_Redo", "Ctrl+Y", () => Redo()),
+                KillerShell.Controls.CardMenus.Tile("save", 0xE74E, "Str_Ed_Save", "Str_Card_Save", "Ctrl+S",
+                    () => MenuCommand?.Invoke(EditorMenuCommand.Save)),
+                KillerShell.Controls.CardMenus.Tile("cut", 0xE8C6, "Str_Ed_Cut", "Str_Card_Cut", "Ctrl+X", Cut),
+                KillerShell.Controls.CardMenus.Tile("copy", 0xE8C8, "Str_Ed_Copy", "Str_Card_Copy", "Ctrl+C", Copy),
+                KillerShell.Controls.CardMenus.Tile("paste", 0xE77F, "Str_Ed_Paste", "Str_Card_Paste", "Ctrl+V", Paste),
+                KillerShell.Controls.CardMenus.Tile("selectall", 0xE8B3, "Str_Ed_SelectAll", "Str_Card_SelectAll", "Ctrl+A", SelectAll),
+                KillerShell.Controls.CardMenus.Tile("find", 0xE721, "Str_Ed_Find", null, "Ctrl+F", () => Find.Open()),
+                KillerShell.Controls.CardMenus.Tile("goto", 0xE8A1, "Str_Ed_Goto", null, "Ctrl+G",
+                    () => MenuCommand?.Invoke(EditorMenuCommand.GoToLine)),
+                KillerShell.Controls.CardMenus.Tile("wrap", 0x21B5, "Str_Ed_OptWrap", null, "Alt+Z",
+                    () => MenuCommand?.Invoke(EditorMenuCommand.ToggleWrap), on: WordWrap),
+                KillerShell.Controls.CardMenus.Tile("settings", 0xE713, "Str_Ed_Settings", null, null,
+                    () => MenuCommand?.Invoke(EditorMenuCommand.Settings)),
+                KillerShell.Controls.CardMenus.Tile("closetab", 0xE8BB, "Str_Ed_CloseTab", null, "Ctrl+W",
+                    () => MenuCommand?.Invoke(EditorMenuCommand.CloseTab)),
+            ]));
 
-            Row(m, "Str_Ed_SelectAll", Glyph(0xE8B3), "Ctrl+A", SelectAll);
-            Row(m, "Str_Ed_Find", Glyph(0xE721), "Ctrl+F", () => Find.Open());
-            Row(m, "Str_Ed_Goto", Glyph(0xE8A1), "Ctrl+G",
-                () => MenuCommand?.Invoke(EditorMenuCommand.GoToLine));
-
-            _wrapItem = Row(m, "Str_Ed_OptWrap", Glyph(0x21B5), "Alt+Z",
-                () => { });
-            _wrapItem.IsCheckable = true;
-            RoutedEventHandler updateWrap = (_, _) =>
-            {
-                if (_wrapItem.IsChecked != WordWrap)
-                    MenuCommand?.Invoke(EditorMenuCommand.ToggleWrap);
-            };
-            _wrapItem.Checked += updateWrap;
-            _wrapItem.Unchecked += updateWrap;
-
-            m.Items.Add(new Separator());
-
-            Row(m, "Str_Ed_Settings", Glyph(0xE713), null,
-                () => MenuCommand?.Invoke(EditorMenuCommand.Settings));
-            Row(m, "Str_Ed_CloseTab", Glyph(0xE8BB), "Ctrl+W",
-                () => MenuCommand?.Invoke(EditorMenuCommand.CloseTab));
-
-            // Availability is decided as it OPENS, not once at build time: a lit button that
-            // does nothing is worse than a dim one, and all four of these change every
-            // keystroke. The header is about the file as it is NOW, saved under a new name or
-            // not, so it is filled on every opening too.
+            // Availability is decided as it OPENS, not once at build time: a lit tile that does nothing
+            // is worse than a dim one, and these change every keystroke. The header is about the file as
+            // it is NOW, saved under a new name or not, so it is filled on every opening too.
             m.Opened += (_, _) =>
             {
                 var source = CardHeaderSource?.Invoke();
                 cardHead.Visibility = source.HasValue ? Visibility.Visible : Visibility.Collapsed;
                 if (source is { } head) KillerShell.Controls.CardMenus.SetHeader(cardHead, head.Icon, head.Title, head.Meta);
 
-                _undoButton?.IsEnabled = CanUndo;
-                _redoButton?.IsEnabled = CanRedo;
-                _cutButton?.IsEnabled  = TextArea.Selection?.Length > 0;
-                _copyButton?.IsEnabled = TextArea.Selection?.Length > 0;
-                _wrapItem?.IsChecked = WordWrap;
+                bool selected = TextArea.Selection?.Length > 0;
+                KillerShell.Controls.CardMenus.SetTile(m, "undo", CanUndo);
+                KillerShell.Controls.CardMenus.SetTile(m, "redo", CanRedo);
+                KillerShell.Controls.CardMenus.SetTile(m, "cut", selected);
+                KillerShell.Controls.CardMenus.SetTile(m, "copy", selected);
+                KillerShell.Controls.CardMenus.SetTile(m, "wrap", true, WordWrap);
             };
 
             ContextMenu = m;
+            _menuLanguage = KillerShell.Controls.CardMenus.Loc("Str_Card_Actions");
         }
 
-        /// <summary>
-        /// One row. The header is a resource reference so a language switch repaints the menu in
-        /// place, the same as every other menu in the app.
-        /// </summary>
-        private static MenuItem Row(ContextMenu m, string key, string glyph, string? gesture, Action go)
+        /// <summary>Rebuilds the card when the language changed since it was built.</summary>
+        protected override void OnContextMenuOpening(ContextMenuEventArgs e)
         {
-            var item = new MenuItem { InputGestureText = gesture ?? string.Empty };
-            item.SetResourceReference(HeaderedItemsControl.HeaderProperty, key);
+            RefreshMenuLanguage();
+            base.OnContextMenuOpening(e);
+        }
 
-            var icon = new Glyph { Text = glyph };
-            icon.SetResourceReference(FrameworkElement.StyleProperty, "MenuGlyph");
-            item.Icon = icon;
-
-            item.Click += (_, _) => go();
-            m.Items.Add(item);
-            return item;
+        private void RefreshMenuLanguage()
+        {
+            if (_menuLanguage != KillerShell.Controls.CardMenus.Loc("Str_Card_Actions")) BuildMenu();
         }
     }
 

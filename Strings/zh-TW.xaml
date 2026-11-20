@@ -829,6 +829,8 @@
     <sys:String x:Key="Str_Theme_Decay">腐朽</sys:String>
     <sys:String x:Key="Str_Theme_Mourning">哀悼</sys:String>
     <sys:String x:Key="Str_Theme_FilmGrain">底片顆粒</sys:String>
+    <sys:String x:Key="Str_Key_Alt">Alt</sys:String>
+    <sys:String x:Key="Str_Key_Shift">Shift</sys:String>
     <sys:String x:Key="Str_Theme_Sepulchre">陵墓</sys:String>
     <sys:String x:Key="Str_Theme_Delirium">譫妄</sys:String>
     <sys:String x:Key="Str_Theme_Malaise">倦怠</sys:String>
@@ -1071,4 +1073,27 @@
     <sys:String x:Key="Str_TT_RemoveSearchFilter">移除篩選器</sys:String>
     <sys:String x:Key="Str_A11y_ColumnHeadings">欄位標題</sys:String>
     <sys:String x:Key="Str_A11y_ColumnHeadingsHelp">按 Menu (Apps) 選擇要顯示的欄位。</sys:String>
+    <!-- Text box menu and the file pickers' New folder button (KillerUI kit). -->
+    <sys:String x:Key="Str_Ctx_Cut">剪下</sys:String>
+    <sys:String x:Key="Str_Ctx_Copy">複製</sys:String>
+    <sys:String x:Key="Str_Ctx_Paste">貼上</sys:String>
+    <sys:String x:Key="Str_Ctx_SelectAll">全選</sys:String>
+    <sys:String x:Key="Str_TT_NewFolder">新增資料夾 (Ctrl+Shift+N)</sys:String>
+    <sys:String x:Key="Str_FD_NewFolder">新增資料夾</sys:String>
+    <sys:String x:Key="Str_FD_FolderEmpty">請輸入資料夾名稱。</sys:String>
+    <sys:String x:Key="Str_FD_FolderInvalid">資料夾名稱不能包含下列任何字元：\ / : * ? " &lt; &gt; |</sys:String>
+    <sys:String x:Key="Str_FD_FolderReserved">該名稱是 Windows 保留名稱。請選擇其他名稱。</sys:String>
+    <sys:String x:Key="Str_FD_FolderTrailing">資料夾名稱不能以句點或空格結尾。</sys:String>
+    <sys:String x:Key="Str_FD_FolderTooLong">該名稱太長。請使用不超過 255 個字元的名稱。</sys:String>
+    <sys:String x:Key="Str_FD_FolderExists">此處已有同名的資料夾或檔案。</sys:String>
+    <sys:String x:Key="Str_FD_FolderFailed">無法建立資料夾：</sys:String>
+    <!-- Tile cards (Controls/CardMenus.cs): the customize pencil, its drawer, and the file card's copy flyout. -->
+    <sys:String x:Key="Str_Card_Customize">自訂此卡片</sys:String>
+    <sys:String x:Key="Str_Card_EditDone">完成</sys:String>
+    <sys:String x:Key="Str_Card_EditReset">還原為預設</sys:String>
+    <sys:String x:Key="Str_Card_EditResetShort">重設</sys:String>
+    <sys:String x:Key="Str_Card_Hidden">已隱藏</sys:String>
+    <sys:String x:Key="Str_Card_HiddenHint">將圖格拖曳到此處即可隱藏</sys:String>
+    <sys:String x:Key="Str_Card_AlwaysShown">一律顯示</sys:String>
+    <sys:String x:Key="Str_Card_CopyAs">複製為</sys:String>
 </ResourceDictionary>

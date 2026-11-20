@@ -133,6 +133,9 @@ namespace KillerShell.Shell
             catch { menuRoot = null; menuGhost = null; }
 
             swap();
+            // Trash Polka composes a new accent's ink on worker threads (Controls/ThemeMotif.cs). Wait
+            // for those pieces here, under the ghost, so the fade never reveals the old ink or none.
+            Controls.ThemeMotif.FinishComposes();
 
             if (ghost == null)
             {
@@ -319,7 +322,8 @@ namespace KillerShell.Shell
             ThemeDeliriumRadio.IsChecked  = cur == Theme.Delirium;
             ThemeMalaiseRadio.IsChecked   = cur == Theme.Malaise;
             FilmGrainCheck.IsChecked      = FilmGrain.Enabled;
-            FilmGrainCheck.ToolTip        = KillerFamily.Layout.ShortcutHints.WithHint(Loc("Str_Theme_FilmGrain"), "Alt+Shift+G");
+            FilmGrainCheck.ToolTip        = KillerFamily.Layout.ShortcutHints.WithHint(Loc("Str_Theme_FilmGrain"),
+                Loc("Str_Key_Alt") + "+" + Loc("Str_Key_Shift") + "+G");   // German reads Alt+Umschalt+G
             if (ThemeFlyout.IsOpen) RingAccentStrip();
         }
 

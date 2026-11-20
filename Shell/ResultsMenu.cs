@@ -86,81 +86,150 @@ namespace KillerShell.Shell
                 Pane.ResultsList.SelectedItems.Add(_menuSeed);
             }
 
-            // One item covers both directions, so its header has to be decided per opening.
-            //
-            // Found by Tag rather than x:Name: the menu is declared inside ListBox.Resources, and
-            // XAML does not generate fields for elements inside a resource. Resolve from the
-            // active pane each time, since each pane has its own menu instance.
-            var menuItems = Pane.ResultsList.ContextMenu is { } open ? ResultMenuItems(open.Items).ToList() : [];
-            var favorite = menuItems.FirstOrDefault(m => (m.Tag as string) == "fav");
-
-            favorite?.Header = Loc(IsBookmarked(MenuFolder())
-                ? "Str_Menu_RemoveFavorite"
-                : "Str_Menu_AddFavorite");
-
-            // "More Windows options" needs an actual file or folder under the pointer - it opens
-            // the real shell menu FOR that item, and has nothing to be about over empty pane
-            // space. Right-clicking empty space used to still show it, and clicking it there
-            // either silently did nothing or, worse, acted on whatever was left selected from
-            // before (2026-08-03).
-            var shellMenu = menuItems.FirstOrDefault(m => (m.Tag as string) == "shellmenu");
-            shellMenu?.Visibility = seed != null && !DemoMode ? Visibility.Visible : Visibility.Collapsed;
-
-            // Same rule for the nickname rows: they belong to the item under the pointer.
-            SyncNicknameMenu(Pane.ResultsList.ContextMenu, seed?.FilePath);   // NicknameCommands.cs
-
-            SyncArchiveMenu(Pane.ResultsList.ContextMenu, seed != null);
-            SyncResultMenuRelevance(Pane.ResultsList.ContextMenu, seed != null);
+            if (Pane.ResultsList.ContextMenu is { } card) FillResultCard(card, seed != null);
         }
 
-        private void SyncResultMenuRelevance(ContextMenu? menu, bool onItem)
+        /// <summary>
+        /// The file card, the family tile card (Controls/CardMenus.cs): what was right-clicked in the
+        /// header, with Delete at its right end for an item, then three-across tiles, most used first.
+        /// A tile that does not apply to this selection keeps its place, dimmed. The copy variants and
+        /// the archive verbs are flyout tiles. Every tile runs the same handler the old rows ran, so
+        /// the selection rules and status messages are unchanged. Built per opening: what applies
+        /// depends on the selection, and the card is a handful of buttons.
+        /// </summary>
+        private void FillResultCard(ContextMenu card, bool onItem)
         {
-            if (menu == null) return;
+            Controls.CardMenus.Prepare(card);
             var rows = onItem ? MenuRows() : [];
             bool filesOnly = rows.Count > 0 && rows.All(row => !row.IsDirectory);
             bool lines = filesOnly && rows.Any(row => row.Matches.Any(match => match.Lines.Count > 0));
-            bool? Relevant(string? role) => role switch
+            bool browsing = _active.IsBrowsing;
+            string? folder = MenuFolder();
+            bool favorite = IsBookmarked(folder);
+
+            KillerFamily.Controls.CardTile Tile(string id, string glyph, string captionKey, string? shownKey, string? keys,
+                Action<object, RoutedEventArgs> handler, bool enabled = true)
+                => new(glyph, Loc(captionKey), keys, () => handler(this, new RoutedEventArgs()), false, enabled)
+                   { Id = id, Shown = shownKey == null ? null : Loc(shownKey) };
+
+            var header = ResultCardHeader(rows);
+            card.Items.Add(onItem
+                ? Controls.CardMenus.HeaderSlot(card, header, Loc("Str_Menu_Delete"), "Delete", () => MenuDelete_Click(this, new RoutedEventArgs()))
+                : Controls.CardMenus.HeaderSlot(card, header));
+
+            var folderVerbs = new[]
             {
-                "item" or "cardquick" or "cardcopy" => onItem,
-                "fileonly" => filesOnly,
-                "matchedlines" => lines,
-                "background" => !onItem && _active.IsBrowsing,
-                _ => null,
+                Tile("explorer", "\uE838", "Str_Menu_ShowExplorer", "Str_Card_Explorer", "F6", MenuShowInExplorer_Click, onItem),
+                Tile("terminal", "\uE756", "Str_Menu_OpenTerminal", "Str_Card_Terminal", "F8", MenuTerminal_Click, folder != null),
+                Tile("search", "\uE721", "Str_Menu_SearchHere", "Str_Card_Search", "F3", MenuSearchHere_Click, folder != null),
             };
-            foreach (var item in ResultMenuItems(menu.Items))
+            var folderMore = new[]
             {
-                if ((item.Tag as string) == "cardhead")
-                {
-                    // The name goes on the slot itself: a panel has no automation peer, so a
-                    // screen reader only hears what the card is about from the MenuItem.
-                    var header = ResultCardHeader(rows);
-                    item.Header = header;
-                    System.Windows.Automation.AutomationProperties.SetName(item,
-                        System.Windows.Automation.AutomationProperties.GetName(header));
-                }
-                if (Relevant(item.Tag as string) is bool show) item.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
+                Tile("terminaladmin", "\uE7EF", "Str_Menu_OpenTerminalAdmin", null, "Ctrl+F8", MenuTerminalAdmin_Click, folder != null),
+                Tile("analyze", "\uEDA2", "Str_Menu_AnalyzeStorage", null, "Shift+F4", MenuAnalyze_Click, folder != null),
+                Tile("exclude", "\uE738", "Str_Menu_ExcludeFolder", null, "Ctrl+Shift+E", MenuExcludeFolder_Click, folder != null),
+                Tile("fav", favorite ? "\uE735" : "\uE734", favorite ? "Str_Menu_RemoveFavorite" : "Str_Menu_AddFavorite", null, "Ctrl+D",
+                    MenuFavorite_Click, folder != null),
+            };
+            var create = new[]
+            {
+                Tile("paste", "\uE77F", "Str_Menu_Paste", "Str_Card_Paste", "Ctrl+V", MenuPaste_Click, browsing),
+                Tile("newfolder", "\uE8F4", "Str_Menu_NewFolder", null, "Ctrl+Shift+N", MenuNewFolder_Click, browsing),
+            };
 
-                // The card's quick buttons and copy chips follow the same rules as the rows; their
-                // role rides in Uid, because Tag is the caption on a quick button.
-                foreach (var button in CardButtons(item))
-                    if (Relevant(button.Uid) is bool on) button.Visibility = on ? Visibility.Visible : Visibility.Collapsed;
+            if (!onItem)
+            {
+                // Empty space in a folder: the card names the folder, and its own verbs lead.
+                card.Items.Add(Controls.CardMenus.Tiles(card, create, folderVerbs.Skip(1), folderMore));
+                return;
             }
-            TrimResultMenuSeparators(menu.Items);
+
+            var copyRows = new List<object>
+            {
+                Controls.CardMenus.FlyoutRow(Loc("Str_Menu_CopyPath"), "Ctrl+Shift+C", "\uE8C8", MenuCopyPath_Click, "path"),
+                Controls.CardMenus.FlyoutRow(Loc("Str_Menu_CopyName"), "Ctrl+Shift+M", "\uE8C8", MenuCopyName_Click, "name"),
+                Controls.CardMenus.FlyoutRow(Loc("Str_Menu_CopyFolder"), "Ctrl+Shift+D", "\uE8C8", MenuCopyFolder_Click, "folder"),
+            };
+            if (lines) copyRows.Add(Controls.CardMenus.FlyoutRow(Loc("Str_Menu_CopyLines"), "Ctrl+Shift+Y", "\uE8C8", MenuCopyLines_Click, "lines"));
+            if (filesOnly) copyRows.Add(Controls.CardMenus.FlyoutRow(Loc("Str_Menu_CopyHash"), "Ctrl+Shift+H", "\uE8C8", MenuCopyHash_Click, "hash"));
+
+            // Archive verbs (ArchiveEdit.cs) where they do something: Compress for real files and
+            // folders, Extract when every selected row is a readable archive. The rows name the
+            // archive or folder they will create, so each says where things land.
+            var archiveRows = new List<object>();
+            var archives = MenuArchives();
+            var diskItems = MenuDiskItems();
+            if (diskItems.Count > 0)
+                foreach (var (tag, extension, keys) in new[] { ("zip", ".zip", "Alt+Z"), ("tar", ".tar", (string?)null), ("targz", ".tar.gz", null) })
+                    archiveRows.Add(Controls.CardMenus.FlyoutRow(string.Format(Loc("Str_Menu_AddToArchive"), ArchiveOutputName(diskItems[0], extension)),
+                        keys, "\uF012", MenuCompress_Click, tag));
+            if (archives.Count > 0 && archives.Count == MenuFiles().Count)
+            {
+                archiveRows.Add(Controls.CardMenus.FlyoutRow(Loc("Str_Menu_ExtractHere"), "Alt+X", "\uE8B7", MenuExtractHere_Click, "unziphere"));
+                string name = archives.Count == 1 ? ArchiveStem(archives[0]) + "\\" : "*\\";
+                archiveRows.Add(Controls.CardMenus.FlyoutRow(string.Format(Loc("Str_Menu_ExtractTo"), name), "Alt+Shift+X", "\uE8DA", MenuExtractTo_Click, "unzipto"));
+            }
+
+            // A nickname belongs to the one item under the pointer (NicknameCommands.cs).
+            string? seedPath = _menuSeed?.FilePath;
+            bool nicknamed = !string.IsNullOrEmpty(seedPath) && Services.Nicknames.Get(seedPath!).Length > 0;
+
+            // The tile grid is the costly part of an opening, and it only changes when what applies
+            // changes, so a grid built for the same answers is put back instead of built again. The
+            // tiles' commands read the selection when they run, so a kept grid acts on the new one.
+            string signature = string.Join("|", filesOnly, lines, browsing, folder != null, favorite, nicknamed,
+                string.IsNullOrEmpty(seedPath), DemoMode, System.Globalization.CultureInfo.CurrentUICulture.Name,
+                Services.ThemeManager.GetSetting("Card.Results.Hidden"),
+                string.Join(";", copyRows.OfType<MenuItem>().Select(row => row.Tag)),
+                string.Join(";", archiveRows.OfType<MenuItem>().Select(row => row.Tag)));
+            if (_resultTiles.TryGetValue(card, out var kept) && kept.Signature == signature)
+            {
+                // The archive rows name the archive they make, so the kept rows take the new names.
+                foreach (var (old, fresh) in kept.ArchiveRows.Zip(archiveRows.OfType<MenuItem>(), (a, b) => (a, b)))
+                    old.Header = fresh.Header;
+                card.Items.Add(kept.Slot);
+                return;
+            }
+            var tiles = Controls.CardMenus.EditableTiles(card, "Results",
+                locked: ["open", "copy"],
+                spares: ["openadmin", "paste", "newfolder", "terminaladmin", "analyze", "exclude", "fav", "nick", "nickdel", "archive"],
+                [
+                    Tile("open", "\uE8E5", "Str_Btn_Open", null, "Enter", MenuOpen_Click),
+                    // Edit opens the file in a TAB rather than through its association, which is the
+                    // point on a script: opening a .ps1 the normal way runs it (MenuEdit_Click).
+                    Tile("edit", "\uE70F", "Str_Menu_Edit", "Str_Card_Edit", "F7", MenuEdit_Click, filesOnly),
+                    Tile("openwith", "\uE7AC", "Str_Menu_OpenWith", null, "Ctrl+Shift+O", MenuOpenWith_Click, filesOnly),
+                    Tile("openadmin", "\uE7EF", "Str_Menu_OpenAdmin", null, "Ctrl+Shift+Enter", MenuOpenAdmin_Click, filesOnly),
+                ],
+                [
+                    Tile("cut", "\uE8C6", "Str_Menu_Cut", "Str_Card_Cut", "Ctrl+X", MenuCut_Click),
+                    Tile("copy", "\uE8C8", "Str_Menu_Copy", "Str_Card_Copy", "Ctrl+C", MenuCopy_Click),
+                    Controls.CardMenus.Flyout("copyas", "\uE8C8", Loc("Str_Card_CopyAs"), null, copyRows),
+                    Tile("rename", "\uE8AC", "Str_Menu_Rename", "Str_Card_Rename", "F2", MenuRename_Click),
+                ],
+                create,
+                folderVerbs,
+                folderMore,
+                [
+                    Tile("nick", "\uE8EC", nicknamed ? "Str_Menu_ChangeNickname" : "Str_Menu_AddNickname", null, "Alt+N",
+                        MenuNickname_Click, !string.IsNullOrEmpty(seedPath)),
+                    Tile("nickdel", "\uE738", "Str_Menu_RemoveNickname", null, "Alt+Shift+N", MenuNicknameRemove_Click, nicknamed),
+                    Controls.CardMenus.Flyout("archive", "\uF012", Loc("Str_Menu_ArchiveOptions"), null, archiveRows),
+                ],
+                [
+                    Tile("properties", "\uE946", "Str_Menu_Properties", null, "Alt+Enter", MenuProperties_Click),
+                    // The real Windows menu needs a real item under the pointer: it opens FOR that item.
+                    Tile("shellmenu", "\uE712", "Str_Menu_ShellMenu", null, "Shift+F10", MenuShell_Click, !DemoMode),
+                ]);
+            _resultTiles.Remove(card);
+            _resultTiles.Add(card, new ResultTiles(signature, tiles, archiveRows.OfType<MenuItem>().ToList()));
+            card.Items.Add(tiles);
         }
 
-        /// <summary>The buttons inside a card slot's header (the quick strip, the copy chips).</summary>
-        private static IEnumerable<System.Windows.Controls.Primitives.ButtonBase> CardButtons(MenuItem slot)
-        {
-            if ((slot.Tag as string) is not ("cardquick" or "cardcopy") || slot.Header is not DependencyObject root) yield break;
-            var pending = new Stack<object>();
-            pending.Push(root);
-            while (pending.Count > 0)
-            {
-                if (pending.Pop() is not DependencyObject node) continue;
-                if (node is System.Windows.Controls.Primitives.ButtonBase button) { yield return button; continue; }
-                foreach (var child in LogicalTreeHelper.GetChildren(node)) pending.Push(child);
-            }
-        }
+        private sealed record ResultTiles(string Signature, MenuItem Slot, List<MenuItem> ArchiveRows);
+
+        // One kept tile grid per pane's card (FillResultCard).
+        private readonly System.Runtime.CompilerServices.ConditionalWeakTable<ContextMenu, ResultTiles> _resultTiles = new();
 
         /// <summary>
         /// The card's header: what the menu is about. One row shows its icon, name and type, size and
@@ -218,100 +287,6 @@ namespace KillerShell.Shell
                                : null;
             if (CardFavoriteStar(starFolder) is { } star) Controls.CardMenus.AddTrailing(header, star);
             return header;
-        }
-
-        /// <summary>
-        /// A quick button or copy chip on the card: close the card, then run the same handler the
-        /// row for that command runs, so the selection rules and status messages are unchanged.
-        /// </summary>
-        internal void ResultCard_ButtonClick(object sender, RoutedEventArgs e)
-        {
-            if (e.OriginalSource is not System.Windows.Controls.Primitives.ButtonBase button
-                || button.CommandParameter is not string command) return;
-            Action<object, RoutedEventArgs>? run = command switch
-            {
-                "open"   => MenuOpen_Click,
-                "edit"   => MenuEdit_Click,
-                "cut"    => MenuCut_Click,
-                "copy"   => MenuCopy_Click,
-                "rename" => MenuRename_Click,
-                "delete" => MenuDelete_Click,
-                "path"   => MenuCopyPath_Click,
-                "name"   => MenuCopyName_Click,
-                "folder" => MenuCopyFolder_Click,
-                "lines"  => MenuCopyLines_Click,
-                "hash"   => MenuCopyHash_Click,
-                _ => null,
-            };
-            if (run == null) return;
-            e.Handled = true;
-            if (sender is ContextMenu card) card.IsOpen = false;
-            run(button, new RoutedEventArgs());
-        }
-
-        private static IEnumerable<MenuItem> ResultMenuItems(ItemCollection items)
-        {
-            foreach (var item in items.OfType<MenuItem>())
-            {
-                yield return item;
-                foreach (var child in ResultMenuItems(item.Items)) yield return child;
-            }
-        }
-
-        private static void TrimResultMenuSeparators(ItemCollection items)
-        {
-            bool hasItem = false;
-            Separator? pending = null;
-            foreach (var item in items.OfType<FrameworkElement>())
-            {
-                if (item is Separator separator)
-                {
-                    separator.Visibility = Visibility.Collapsed;
-                    if (hasItem) pending = separator;
-                }
-                else if (item is MenuItem command && command.Visibility == Visibility.Visible)
-                {
-                    if (pending != null) pending.Visibility = Visibility.Visible;
-                    pending = null;
-                    hasItem = true;
-                    TrimResultMenuSeparators(command.Items);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Shows the archive rows only where they do something (ArchiveEdit.cs): Compress for
-        /// real files and folders, Extract when every selected row is a readable archive. The
-        /// Extract to header names the folder it will create, so the row says where things land.
-        /// </summary>
-        private void SyncArchiveMenu(ContextMenu? menu, bool onItem)
-        {
-            if (menu == null) return;
-            var items = ResultMenuItems(menu.Items).ToList();
-            MenuItem? Row(string tag) => items.FirstOrDefault(m => (m.Tag as string) == tag);
-
-            var archives = onItem ? MenuArchives() : [];
-            bool extract = archives.Count > 0 && archives.Count == MenuFiles().Count;
-            // One pass over the selection: each call checks every row on disk.
-            var diskItems = onItem ? MenuDiskItems() : [];
-            bool compress = diskItems.Count > 0;
-
-            Row("unziphere")?.Visibility = extract  ? Visibility.Visible : Visibility.Collapsed;
-            Row("unzipto")?.Visibility   = extract  ? Visibility.Visible : Visibility.Collapsed;
-            Row("archiveoptions")?.Visibility = compress || extract ? Visibility.Visible : Visibility.Collapsed;
-
-            foreach (var format in new[] { ("zip", ".zip"), ("tar", ".tar"), ("targz", ".tar.gz") })
-                if (Row(format.Item1) is MenuItem create)
-                {
-                    create.Visibility = compress ? Visibility.Visible : Visibility.Collapsed;
-                    if (compress) create.Header = string.Format(Loc("Str_Menu_AddToArchive"), ArchiveOutputName(diskItems[0], format.Item2));
-                }
-
-            if (extract && Row("unzipto") is MenuItem to)
-            {
-                string name = archives.Count == 1 ? ArchiveStem(archives[0]) + "\\" : "*\\";
-                to.Header = string.Format(Loc("Str_Menu_ExtractTo"), name);
-            }
         }
 
         // ── Shells ───────────────────────────────────────────────

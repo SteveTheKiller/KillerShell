@@ -828,6 +828,8 @@
     <sys:String x:Key="Str_Theme_Decay">ディケイ</sys:String>
     <sys:String x:Key="Str_Theme_Mourning">モーニング</sys:String>
     <sys:String x:Key="Str_Theme_FilmGrain">フィルムグレイン</sys:String>
+    <sys:String x:Key="Str_Key_Alt">Alt</sys:String>
+    <sys:String x:Key="Str_Key_Shift">Shift</sys:String>
     <sys:String x:Key="Str_Theme_Sepulchre">セパルカー</sys:String>
     <sys:String x:Key="Str_Theme_Delirium">デリリウム</sys:String>
     <sys:String x:Key="Str_Theme_Malaise">マレーズ</sys:String>
@@ -1070,4 +1072,27 @@
     <sys:String x:Key="Str_TT_RemoveSearchFilter">フィルターを削除</sys:String>
     <sys:String x:Key="Str_A11y_ColumnHeadings">列見出し</sys:String>
     <sys:String x:Key="Str_A11y_ColumnHeadingsHelp">Menu (Apps) を押して表示する列を選択します。</sys:String>
+    <!-- Text box menu and the file pickers' New folder button (KillerUI kit). -->
+    <sys:String x:Key="Str_Ctx_Cut">切り取り</sys:String>
+    <sys:String x:Key="Str_Ctx_Copy">コピー</sys:String>
+    <sys:String x:Key="Str_Ctx_Paste">貼り付け</sys:String>
+    <sys:String x:Key="Str_Ctx_SelectAll">すべて選択</sys:String>
+    <sys:String x:Key="Str_TT_NewFolder">新しいフォルダー (Ctrl+Shift+N)</sys:String>
+    <sys:String x:Key="Str_FD_NewFolder">新しいフォルダー</sys:String>
+    <sys:String x:Key="Str_FD_FolderEmpty">フォルダーの名前を入力してください。</sys:String>
+    <sys:String x:Key="Str_FD_FolderInvalid">フォルダー名には次の文字を使用できません: \ / : * ? " &lt; &gt; |</sys:String>
+    <sys:String x:Key="Str_FD_FolderReserved">この名前は Windows で予約されています。別の名前を指定してください。</sys:String>
+    <sys:String x:Key="Str_FD_FolderTrailing">フォルダー名の末尾にピリオドまたはスペースは使用できません。</sys:String>
+    <sys:String x:Key="Str_FD_FolderTooLong">名前が長すぎます。255 文字以内にしてください。</sys:String>
+    <sys:String x:Key="Str_FD_FolderExists">同じ名前のフォルダーまたはファイルが既にあります。</sys:String>
+    <sys:String x:Key="Str_FD_FolderFailed">フォルダーを作成できませんでした:</sys:String>
+    <!-- Tile cards (Controls/CardMenus.cs): the customize pencil, its drawer, and the file card's copy flyout. -->
+    <sys:String x:Key="Str_Card_Customize">このカードをカスタマイズ</sys:String>
+    <sys:String x:Key="Str_Card_EditDone">完了</sys:String>
+    <sys:String x:Key="Str_Card_EditReset">既定に戻す</sys:String>
+    <sys:String x:Key="Str_Card_EditResetShort">リセット</sys:String>
+    <sys:String x:Key="Str_Card_Hidden">非表示</sys:String>
+    <sys:String x:Key="Str_Card_HiddenHint">非表示にするにはタイルをここにドラッグ</sys:String>
+    <sys:String x:Key="Str_Card_AlwaysShown">常に表示</sys:String>
+    <sys:String x:Key="Str_Card_CopyAs">形式を選んでコピー</sys:String>
 </ResourceDictionary>

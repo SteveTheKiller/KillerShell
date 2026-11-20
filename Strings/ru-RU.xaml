@@ -28,6 +28,8 @@
     <sys:String x:Key="Str_Theme_Decay">Распад</sys:String>
     <sys:String x:Key="Str_Theme_Mourning">Траур</sys:String>
     <sys:String x:Key="Str_Theme_FilmGrain">Зернистость плёнки</sys:String>
+    <sys:String x:Key="Str_Key_Alt">Alt</sys:String>
+    <sys:String x:Key="Str_Key_Shift">Shift</sys:String>
     <sys:String x:Key="Str_Theme_Sepulchre">Склеп</sys:String>
     <sys:String x:Key="Str_Theme_Delirium">Бред</sys:String>
     <sys:String x:Key="Str_Theme_Malaise">Недомогание</sys:String>
@@ -1085,4 +1087,27 @@
     <sys:String x:Key="Str_TT_RemoveSearchFilter">Удалить фильтр</sys:String>
     <sys:String x:Key="Str_A11y_ColumnHeadings">Заголовки столбцов</sys:String>
     <sys:String x:Key="Str_A11y_ColumnHeadingsHelp">Нажмите Menu (Apps), чтобы выбрать видимые столбцы.</sys:String>
+    <!-- Text box menu and the file pickers' New folder button (KillerUI kit). -->
+    <sys:String x:Key="Str_Ctx_Cut">Вырезать</sys:String>
+    <sys:String x:Key="Str_Ctx_Copy">Копировать</sys:String>
+    <sys:String x:Key="Str_Ctx_Paste">Вставить</sys:String>
+    <sys:String x:Key="Str_Ctx_SelectAll">Выделить всё</sys:String>
+    <sys:String x:Key="Str_TT_NewFolder">Новая папка (Ctrl+Shift+N)</sys:String>
+    <sys:String x:Key="Str_FD_NewFolder">Новая папка</sys:String>
+    <sys:String x:Key="Str_FD_FolderEmpty">Введите имя папки.</sys:String>
+    <sys:String x:Key="Str_FD_FolderInvalid">Имя папки не может содержать ни один из следующих символов: \ / : * ? " &lt; &gt; |</sys:String>
+    <sys:String x:Key="Str_FD_FolderReserved">Это имя зарезервировано в Windows. Выберите другое.</sys:String>
+    <sys:String x:Key="Str_FD_FolderTrailing">Имя папки не может заканчиваться точкой или пробелом.</sys:String>
+    <sys:String x:Key="Str_FD_FolderTooLong">Это имя слишком длинное. Используйте не более 255 символов.</sys:String>
+    <sys:String x:Key="Str_FD_FolderExists">Здесь уже есть папка или файл с таким именем.</sys:String>
+    <sys:String x:Key="Str_FD_FolderFailed">Не удалось создать папку:</sys:String>
+    <!-- Tile cards (Controls/CardMenus.cs): the customize pencil, its drawer, and the file card's copy flyout. -->
+    <sys:String x:Key="Str_Card_Customize">Настроить эту карточку</sys:String>
+    <sys:String x:Key="Str_Card_EditDone">Готово</sys:String>
+    <sys:String x:Key="Str_Card_EditReset">Сбросить по умолчанию</sys:String>
+    <sys:String x:Key="Str_Card_EditResetShort">Сбросить</sys:String>
+    <sys:String x:Key="Str_Card_Hidden">Скрытые</sys:String>
+    <sys:String x:Key="Str_Card_HiddenHint">Перетащите плитку сюда, чтобы скрыть её</sys:String>
+    <sys:String x:Key="Str_Card_AlwaysShown">Всегда видно</sys:String>
+    <sys:String x:Key="Str_Card_CopyAs">Копировать как</sys:String>
 </ResourceDictionary>

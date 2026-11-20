@@ -1167,25 +1167,6 @@ namespace KillerShell.Tools
             e.Handled = true;
         }
 
-        /// <summary>Shared MenuItem-builder shape, used by both the process and the service
-        /// context menus - same icon-in-a-Viewbox pattern EventViewerControl's own menu uses,
-        /// with an added InputGestureText parameter so the local keyboard shortcut (see
-        /// Grid_PreviewKeyDown) shows up right-aligned on the row, the same column KillerPDF's
-        /// own MenuItems use for their shortcuts (Controls/Controls.xaml).</summary>
-        private static MenuItem AddMenuItem(ContextMenu menu, string headerKey, string glyph,
-                                            RoutedEventHandler click, bool enabled = true, string gesture = "")
-        {
-            var item = new MenuItem { IsEnabled = enabled, InputGestureText = gesture };
-            item.SetResourceReference(HeaderedItemsControl.HeaderProperty, headerKey);
-            var icon = new Glyph { Text = glyph };
-            icon.SetResourceReference(FrameworkElement.StyleProperty, "MenuGlyph");
-            var iconBox = new Viewbox { Width = 14, Height = 14, Stretch = Stretch.Uniform, Child = icon };
-            item.Icon = iconBox;
-            item.Click += click;
-            menu.Items.Add(item);
-            return item;
-        }
-
         // The card's header: the program's own icon when it has a file, its name, and one dim line
         // of what tells rows apart.
         private static MenuItem CardHeader(ContextMenu card, string path, string title, string meta)
@@ -1206,55 +1187,56 @@ namespace KillerShell.Tools
         // command keeps its keyboard shortcut in its tooltip, as every card's buttons do.
         private void BuildProcessContextMenu(ProcessInfo p)
         {
-            var menu = KillerShell.Controls.CardMenus.Card();
+            var menu = KillerShell.Controls.CardMenus.TileCard();
             menu.PlacementTarget = _grid;
             CardHeader(menu, p.HasPath ? p.Path : string.Empty, p.Name,
                 string.Join(" · ", new[] { KillerShell.Shell.MainWindow.LocStatic("Str_Col_ProcPid") + " " + p.Pid, p.User, p.MemoryLabel }
                     .Where(part => !string.IsNullOrWhiteSpace(part))));
+            KillerShell.Controls.CardMenus.WatchKeyboardStart(menu);
 
-            var quick = KillerShell.Controls.CardMenus.QuickStrip(out var strip);
-            quick.Tag = "cardquick";
-            KillerShell.Controls.CardMenus.QuickButton(strip, menu, 0xE838, "Str_Card_Folder", "Str_Menu_ProcOpenLocation", "Ctrl+O", () =>
-            {
-                if (p.HasPath) OpenFileLocationRequested?.Invoke(System.IO.Path.GetDirectoryName(p.Path) ?? string.Empty);
-            }).IsEnabled = p.HasPath;
-            KillerShell.Controls.CardMenus.QuickButton(strip, menu, 0xE711, "Str_Menu_ProcKill", "Str_Menu_ProcKill", "Del", () => KillWithConfirm(p));
-            KillerShell.Controls.CardMenus.QuickButton(strip, menu, 0xE777, "Str_Menu_ProcRestart", "Str_Menu_ProcRestart", "Ctrl+R",
-                () => RestartProcess(p, elevated: false)).IsEnabled = p.HasPath;
-            KillerShell.Controls.CardMenus.QuickButton(strip, menu, 0xE7EF, "Str_Card_AsAdmin", "Str_Menu_ProcRunAsAdmin", "Ctrl+Shift+A",
-                () => RestartProcess(p, elevated: true)).IsEnabled = p.HasPath;
-            menu.Items.Add(quick);
-
-            // E946: the information glyph. Enter on the row opens the same dialog.
-            AddMenuItem(menu, "Str_Proc_DetailsTitle", ((char)0xE946).ToString(), (_, _) => OpenProcessDetails(p), gesture: "Enter");
+            menu.Items.Add(KillerShell.Controls.CardMenus.Tiles(menu,
+            [
+                KillerShell.Controls.CardMenus.Tile("location", 0xE838, "Str_Menu_ProcOpenLocation", "Str_Card_Folder", "Ctrl+O", () =>
+                {
+                    if (p.HasPath) OpenFileLocationRequested?.Invoke(System.IO.Path.GetDirectoryName(p.Path) ?? string.Empty);
+                }, p.HasPath),
+                KillerShell.Controls.CardMenus.Tile("restart", 0xE777, "Str_Menu_ProcRestart", null, "Ctrl+R",
+                    () => RestartProcess(p, elevated: false), p.HasPath),
+                KillerShell.Controls.CardMenus.Tile("asadmin", 0xE7EF, "Str_Menu_ProcRunAsAdmin", "Str_Card_AsAdmin", "Ctrl+Shift+A",
+                    () => RestartProcess(p, elevated: true), p.HasPath),
+                // E946: the information glyph. Enter on the row opens the same dialog.
+                KillerShell.Controls.CardMenus.Tile("details", 0xE946, "Str_Proc_DetailsTitle", null, "Enter", () => OpenProcessDetails(p)),
+                // Destructive last.
+                KillerShell.Controls.CardMenus.Tile("kill", 0xE711, "Str_Menu_ProcKill", null, "Del", () => KillWithConfirm(p)),
+            ]));
             menu.IsOpen = true;
         }
 
         private void BuildServiceContextMenu(ServiceInfo s)
         {
-            var menu = KillerShell.Controls.CardMenus.Card();
+            var menu = KillerShell.Controls.CardMenus.TileCard();
             menu.PlacementTarget = _grid;
             string exe = s.HasPath ? Services.ProcessListLogic.ExtractExePath(s.Path) : string.Empty;
             CardHeader(menu, exe, string.IsNullOrEmpty(s.DisplayName) ? s.Name : s.DisplayName,
                 string.Join(" · ", new[] { s.Name, s.Status, s.StartupType }.Where(part => !string.IsNullOrWhiteSpace(part))));
+            KillerShell.Controls.CardMenus.WatchKeyboardStart(menu);
 
-            var quick = KillerShell.Controls.CardMenus.QuickStrip(out var strip);
-            quick.Tag = "cardquick";
-            KillerShell.Controls.CardMenus.QuickButton(strip, menu, 0xE838, "Str_Card_Folder", "Str_Menu_ProcOpenLocation", "Ctrl+O", () =>
-            {
-                if (s.HasPath) OpenFileLocationRequested?.Invoke(System.IO.Path.GetDirectoryName(exe) ?? string.Empty);
-            }).IsEnabled = s.HasPath;
             // Start is off while the service runs; Stop and Restart need it running and stoppable,
             // the same rule ServiceController.CanStop gives Windows.
-            KillerShell.Controls.CardMenus.QuickButton(strip, menu, 0xE768, "Str_Menu_SvcStart", "Str_Menu_SvcStart", "Ctrl+S",
-                () => StartServiceWithConfirm(s)).IsEnabled = !s.IsRunning;
-            KillerShell.Controls.CardMenus.QuickButton(strip, menu, 0xE71A, "Str_Menu_SvcStop", "Str_Menu_SvcStop", "Del",
-                () => StopServiceWithConfirm(s)).IsEnabled = s.IsRunning && s.CanStop;
-            KillerShell.Controls.CardMenus.QuickButton(strip, menu, 0xE777, "Str_Menu_ProcRestart", "Str_Menu_ProcRestart", "Ctrl+R",
-                () => RestartServiceWithConfirm(s)).IsEnabled = s.IsRunning && s.CanStop;
-            menu.Items.Add(quick);
-
-            AddMenuItem(menu, "Str_Svc_DetailsTitle", ((char)0xE946).ToString(), (_, _) => OpenServiceDetails(s), gesture: "Enter");
+            menu.Items.Add(KillerShell.Controls.CardMenus.Tiles(menu,
+            [
+                KillerShell.Controls.CardMenus.Tile("location", 0xE838, "Str_Menu_ProcOpenLocation", "Str_Card_Folder", "Ctrl+O", () =>
+                {
+                    if (s.HasPath) OpenFileLocationRequested?.Invoke(System.IO.Path.GetDirectoryName(exe) ?? string.Empty);
+                }, s.HasPath),
+                KillerShell.Controls.CardMenus.Tile("details", 0xE946, "Str_Svc_DetailsTitle", null, "Enter", () => OpenServiceDetails(s)),
+                KillerShell.Controls.CardMenus.Tile("start", 0xE768, "Str_Menu_SvcStart", null, "Ctrl+S",
+                    () => StartServiceWithConfirm(s), !s.IsRunning),
+                KillerShell.Controls.CardMenus.Tile("restart", 0xE777, "Str_Menu_ProcRestart", null, "Ctrl+R",
+                    () => RestartServiceWithConfirm(s), s.IsRunning && s.CanStop),
+                KillerShell.Controls.CardMenus.Tile("stop", 0xE71A, "Str_Menu_SvcStop", null, "Del",
+                    () => StopServiceWithConfirm(s), s.IsRunning && s.CanStop),
+            ]));
             menu.IsOpen = true;
         }
 

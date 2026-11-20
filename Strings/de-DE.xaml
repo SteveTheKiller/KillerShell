@@ -832,6 +832,8 @@
     <sys:String x:Key="Str_Theme_Decay">Verfall</sys:String>
     <sys:String x:Key="Str_Theme_Mourning">Trauer</sys:String>
     <sys:String x:Key="Str_Theme_FilmGrain">Filmkorn</sys:String>
+    <sys:String x:Key="Str_Key_Alt">Alt</sys:String>
+    <sys:String x:Key="Str_Key_Shift">Umschalt</sys:String>
     <sys:String x:Key="Str_Theme_Sepulchre">Grabmal</sys:String>
     <sys:String x:Key="Str_Theme_Delirium">Delirium</sys:String>
     <sys:String x:Key="Str_Theme_Malaise">Unwohlsein</sys:String>
@@ -1074,4 +1076,27 @@
     <sys:String x:Key="Str_TT_RemoveSearchFilter">Filter entfernen</sys:String>
     <sys:String x:Key="Str_A11y_ColumnHeadings">Spaltenüberschriften</sys:String>
     <sys:String x:Key="Str_A11y_ColumnHeadingsHelp">Drücken Sie die Menütaste (Apps), um die sichtbaren Spalten auszuwählen.</sys:String>
+    <!-- Text box menu and the file pickers' New folder button (KillerUI kit). -->
+    <sys:String x:Key="Str_Ctx_Cut">Ausschneiden</sys:String>
+    <sys:String x:Key="Str_Ctx_Copy">Kopieren</sys:String>
+    <sys:String x:Key="Str_Ctx_Paste">Einfügen</sys:String>
+    <sys:String x:Key="Str_Ctx_SelectAll">Alles auswählen</sys:String>
+    <sys:String x:Key="Str_TT_NewFolder">Neuer Ordner (Strg+Umschalt+N)</sys:String>
+    <sys:String x:Key="Str_FD_NewFolder">Neuer Ordner</sys:String>
+    <sys:String x:Key="Str_FD_FolderEmpty">Geben Sie einen Namen für den Ordner ein.</sys:String>
+    <sys:String x:Key="Str_FD_FolderInvalid">Ein Ordnername darf keines der folgenden Zeichen enthalten: \ / : * ? " &lt; &gt; |</sys:String>
+    <sys:String x:Key="Str_FD_FolderReserved">Dieser Name ist unter Windows reserviert. Wählen Sie einen anderen.</sys:String>
+    <sys:String x:Key="Str_FD_FolderTrailing">Ein Ordnername darf nicht mit einem Punkt oder einem Leerzeichen enden.</sys:String>
+    <sys:String x:Key="Str_FD_FolderTooLong">Dieser Name ist zu lang. Verwenden Sie höchstens 255 Zeichen.</sys:String>
+    <sys:String x:Key="Str_FD_FolderExists">Hier gibt es bereits einen Ordner oder eine Datei mit diesem Namen.</sys:String>
+    <sys:String x:Key="Str_FD_FolderFailed">Der Ordner konnte nicht erstellt werden:</sys:String>
+    <!-- Tile cards (Controls/CardMenus.cs): the customize pencil, its drawer, and the file card's copy flyout. -->
+    <sys:String x:Key="Str_Card_Customize">Diese Karte anpassen</sys:String>
+    <sys:String x:Key="Str_Card_EditDone">Fertig</sys:String>
+    <sys:String x:Key="Str_Card_EditReset">Auf Standard zurücksetzen</sys:String>
+    <sys:String x:Key="Str_Card_EditResetShort">Zurücksetzen</sys:String>
+    <sys:String x:Key="Str_Card_Hidden">Ausgeblendet</sys:String>
+    <sys:String x:Key="Str_Card_HiddenHint">Kachel hierher ziehen, um sie auszublenden</sys:String>
+    <sys:String x:Key="Str_Card_AlwaysShown">Immer sichtbar</sys:String>
+    <sys:String x:Key="Str_Card_CopyAs">Kopieren als</sys:String>
 </ResourceDictionary>

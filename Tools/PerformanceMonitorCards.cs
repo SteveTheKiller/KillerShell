@@ -361,7 +361,7 @@ namespace KillerShell.Tools
 
         private void ShowCardMenu(DashboardCard card)
         {
-            var menu = KillerShell.Controls.CardMenus.Card();
+            var menu = KillerShell.Controls.CardMenus.TileCard();
             menu.PlacementTarget = card.Frame;
             // The card names the dashboard card it acts on with that card's own heading: the
             // first text in its drag handle that is not an icon glyph ("AMD Ryzen 7", "Network 0").
@@ -371,21 +371,26 @@ namespace KillerShell.Tools
             head.Tag = "cardhead";
             KillerShell.Controls.CardMenus.SetHeader(head, null, title, string.Empty);
             menu.Items.Add(head);
-            // E921 and E923: the window's own Minimize and Restore glyphs (MainWindow.xaml,
-            // Chrome.cs), because these do the same to a card.
-            AddCardMenuItem(menu, card.Folded ? "Str_Menu_Restore" : "Str_Menu_Minimize",
-                card.Folded ? 0xE923 : 0xE921, () => SetCardFolded(card, !card.Folded));
-            menu.Items.Add(new Separator());
-            // The top strip is always one row, so only the panels below it choose a width.
-            if (card.Area == Services.DashboardLayout.Panels)
+            KillerShell.Controls.CardMenus.WatchKeyboardStart(menu);
+            // The top strip is always one row, so only the panels below it choose a width; on a strip
+            // card the two width tiles stay in place, dimmed.
+            bool panel = card.Area == Services.DashboardLayout.Panels;
+            bool wide = panel && _layout.IsWide(card.Area, card.Id);
+            menu.Items.Add(KillerShell.Controls.CardMenus.Tiles(menu, new[]
             {
-                bool wide = _layout.IsWide(card.Area, card.Id);
-                AddWidthMenuItem(menu, "Str_Perf_OneColumn", OneColumnIcon, !wide, () => SetCardWide(card, false));
-                AddWidthMenuItem(menu, "Str_Perf_TwoColumns", TwoColumnsIcon, wide, () => SetCardWide(card, true));
-                menu.Items.Add(new Separator());
-            }
-            // E777: the app's "start over" glyph, as Processes' Restart uses it.
-            AddCardMenuItem(menu, "Str_Perf_ResetLayout", 0xE777, ResetLayout, enabled: !_layout.IsDefault);
+                // E921 and E923: the window's own Minimize and Restore glyphs (MainWindow.xaml,
+                // Chrome.cs), because these do the same to a card.
+                KillerShell.Controls.CardMenus.Tile("fold", card.Folded ? 0xE923 : 0xE921,
+                    card.Folded ? "Str_Menu_Restore" : "Str_Menu_Minimize", null, null, () => SetCardFolded(card, !card.Folded)),
+                KillerShell.Controls.CardMenus.Tile("onecolumn", 0xE739, "Str_Perf_OneColumn", null, null,
+                    () => { if (wide) SetCardWide(card, false); }, panel, on: panel && !wide),
+                KillerShell.Controls.CardMenus.Tile("twocolumns", 0xE8A9, "Str_Perf_TwoColumns", null, null,
+                    () => { if (!wide) SetCardWide(card, true); }, panel, on: wide),
+            }, new[]
+            {
+                // E777: the app's "start over" glyph, as Processes' Restart uses it.
+                KillerShell.Controls.CardMenus.Tile("resetlayout", 0xE777, "Str_Perf_ResetLayout", null, null, ResetLayout, !_layout.IsDefault),
+            }));
             menu.IsOpen = true;
         }
 
@@ -395,38 +400,6 @@ namespace KillerShell.Tools
             int count = root is Visual or System.Windows.Media.Media3D.Visual3D ? VisualTreeHelper.GetChildrenCount(root) : 0;
             for (int i = 0; i < count; i++)
                 foreach (var text in TextsIn(VisualTreeHelper.GetChild(root, i))) yield return text;
-        }
-
-        // The icon-in-a-Viewbox row every tool tab's context menu is built from
-        // (ProcessListControl.AddMenuItem). Neither action has a shortcut to show.
-        private static void AddCardMenuItem(ContextMenu menu, string headerKey, int glyph, Action click, bool enabled = true)
-        {
-            var item = new MenuItem { IsEnabled = enabled };
-            item.SetResourceReference(HeaderedItemsControl.HeaderProperty, headerKey);
-            var icon = new Glyph { Text = ((char)glyph).ToString() };
-            icon.SetResourceReference(FrameworkElement.StyleProperty, "MenuGlyph");
-            item.Icon = new Viewbox { Width = 14, Height = 14, Stretch = Stretch.Uniform, Child = icon };
-            item.Click += (_, _) => click();
-            menu.Items.Add(item);
-        }
-
-        // The footer's own pane layout shapes (MainWindow.xaml PaneOneBtn, PaneLeftRightBtn): one
-        // frame for one column, two frames side by side for two.
-        private const string OneColumnIcon = "M0,0 H14 V14 H0 Z";
-        private const string TwoColumnsIcon = "M0,0 H6 V14 H0 Z M8,0 H14 V14 H8 Z";
-
-        /// <summary>One of the pair that sets a card's width. The checkmark takes the icon's
-        /// place in the family template's reserved gutter while it is the card's width.</summary>
-        private static void AddWidthMenuItem(ContextMenu menu, string headerKey, string geometry, bool chosen, Action click)
-        {
-            var icon = new System.Windows.Shapes.Path { Width = 12, Height = 12, Stretch = Stretch.Uniform,
-                StrokeThickness = 1, Data = Geometry.Parse(geometry) };
-            icon.SetBinding(System.Windows.Shapes.Shape.StrokeProperty, new System.Windows.Data.Binding("Foreground")
-                { RelativeSource = new System.Windows.Data.RelativeSource(System.Windows.Data.RelativeSourceMode.FindAncestor, typeof(MenuItem), 1) });
-            var item = new MenuItem { Icon = icon, IsCheckable = true, IsChecked = chosen };
-            item.SetResourceReference(HeaderedItemsControl.HeaderProperty, headerKey);
-            item.Click += (_, _) => { if (!chosen) click(); };
-            menu.Items.Add(item);
         }
 
         // ═══════════════════════════════════════════════════════════

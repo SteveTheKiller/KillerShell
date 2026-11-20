@@ -1400,53 +1400,40 @@ namespace KillerShell.Tools
 
         private void ShowMapMenu(FsNode? n, bool keyboard)
         {
-            var menu = KillerShell.Controls.CardMenus.Card();
+            var menu = KillerShell.Controls.CardMenus.TileCard();
+            string? path = n == null ? null : FullPath(n);
 
             if (n != null)
             {
-                string path = FullPath(n);
-
-                // The card names the item with its icon and size; the full path is the dim line.
-                var head = KillerShell.Controls.CardMenus.Slot();
-                head.Tag = "cardhead";
-                var source = Services.IconCache.For(path, 32, isDirectory: n.IsDir);
+                // The card names the item with its icon and size; the full path is the dim line,
+                // and Delete (to the Recycle Bin) sits at the header's right end.
+                var source = Services.IconCache.For(path!, 32, isDirectory: n.IsDir);
                 var icon = source == null ? null : new Image { Source = source, Width = 32, Height = 32 };
-                KillerShell.Controls.CardMenus.SetHeader(head, icon, n.Name + "  " + FormatSize(n.Size), path);
-                System.Windows.Automation.AutomationProperties.SetName(head, n.Name);
-                menu.Items.Add(head);
-
-                // E8DA open, E838 the family's "show me where this lives" folder, E8C8 Copy and
-                // E74D Delete, each with its shortcut in the tooltip.
-                var quick = KillerShell.Controls.CardMenus.QuickStrip(out var strip);
-                quick.Tag = "cardquick";
-                KillerShell.Controls.CardMenus.QuickButton(strip, menu, 0xE8DA, "Str_Card_NewTab", "Str_Storage_OpenInTab", "Shift+Enter", () => OpenNodeInTab(n));
-                KillerShell.Controls.CardMenus.QuickButton(strip, menu, 0xE838, "Str_Card_Explorer", "Str_Storage_RevealExplorer", "F6", () => RevealNode(n));
-                KillerShell.Controls.CardMenus.QuickButton(strip, menu, 0xE8C8, "Str_Card_Path", "Str_Storage_CopyPath", "Ctrl+Shift+C", () => CopyNodePath(n));
-                KillerShell.Controls.CardMenus.QuickButton(strip, menu, 0xE74D, "Str_Card_Delete", "Str_Storage_Delete", "Del",
-                    () => RecycleNode(n, path)).IsEnabled = MayRecycle(n);
-                menu.Items.Add(quick);
+                var header = KillerShell.Controls.CardMenus.Header(icon, n.Name + "  " + FormatSize(n.Size), path!);
+                System.Windows.Automation.AutomationProperties.SetName(header, n.Name);
+                menu.Items.Add(KillerShell.Controls.CardMenus.HeaderSlot(menu, header,
+                    KillerShell.Controls.CardMenus.Loc("Str_Storage_Delete"), "Del", () => RecycleNode(n, path!), MayRecycle(n)));
             }
+            else KillerShell.Controls.CardMenus.WatchKeyboardStart(menu);
 
-            // The color-mode toggle lives here per the design decision - checked radios, so the
-            // current mode is visible at a glance.
-            // C flips between the two, so both rows carry it.
-            var byType = new MenuItem { IsCheckable = true, IsChecked = !_colorByFolder, InputGestureText = "C" };
-            byType.SetResourceReference(HeaderedItemsControl.HeaderProperty, "Str_Storage_ColorByType");
-            byType.Click += (_, _) => SetColorMode(byFolder: false);
-            menu.Items.Add(byType);
-
-            var byFolder = new MenuItem { IsCheckable = true, IsChecked = _colorByFolder, InputGestureText = "C" };
-            byFolder.SetResourceReference(HeaderedItemsControl.HeaderProperty, "Str_Storage_ColorByFolder");
-            byFolder.Click += (_, _) => SetColorMode(byFolder: true);
-            menu.Items.Add(byFolder);
-
-            if (_root != null)
-            {
-                menu.Items.Add(new Separator());
-                var rescan = MakeItem("Str_Storage_Rescan", 0xE72C, "F5");
-                rescan.Click += (_, _) => { if (!_scanning) StartScan(); };
-                menu.Items.Add(rescan);
-            }
+            // E8DA open, E838 the family's "show me where this lives" folder, E8C8 Copy. The two
+            // color modes are on/off tiles, so the current one shows at a glance; C flips between
+            // them, so both carry it. Tiles for an item stay in place, dimmed, on empty space.
+            menu.Items.Add(KillerShell.Controls.CardMenus.Tiles(menu,
+            [
+                KillerShell.Controls.CardMenus.Tile("opentab", 0xE8DA, "Str_Storage_OpenInTab", "Str_Card_NewTab", "Shift+Enter",
+                    () => { if (n != null) OpenNodeInTab(n); }, n != null),
+                KillerShell.Controls.CardMenus.Tile("explorer", 0xE838, "Str_Storage_RevealExplorer", "Str_Card_Explorer", "F6",
+                    () => { if (n != null) RevealNode(n); }, n != null),
+                KillerShell.Controls.CardMenus.Tile("copypath", 0xE8C8, "Str_Storage_CopyPath", "Str_Card_Path", "Ctrl+Shift+C",
+                    () => { if (n != null) CopyNodePath(n); }, n != null),
+                KillerShell.Controls.CardMenus.Tile("bytype", 0xE8FD, "Str_Storage_ColorByType", null, "C",
+                    () => SetColorMode(byFolder: false), on: !_colorByFolder),
+                KillerShell.Controls.CardMenus.Tile("byfolder", 0xE8B7, "Str_Storage_ColorByFolder", null, "C",
+                    () => SetColorMode(byFolder: true), on: _colorByFolder),
+                KillerShell.Controls.CardMenus.Tile("rescan", 0xE72C, "Str_Storage_Rescan", null, "F5",
+                    () => { if (!_scanning) StartScan(); }, _root != null),
+            ]));
 
             menu.PlacementTarget = _map;
             menu.Placement = keyboard
@@ -1479,16 +1466,6 @@ namespace KillerShell.Tools
         private void CopyNodePath(FsNode n)
         {
             try { Clipboard.SetText(FullPath(n)); } catch { }
-        }
-
-        private static MenuItem MakeItem(string headerKey, int glyph, string gesture)
-        {
-            var item = new MenuItem { InputGestureText = gesture };
-            item.SetResourceReference(HeaderedItemsControl.HeaderProperty, headerKey);
-            var icon = new Glyph { Text = ((char)glyph).ToString() };
-            icon.SetResourceReference(FrameworkElement.StyleProperty, "MenuGlyph");
-            item.Icon = icon;
-            return item;
         }
 
         private void SetColorMode(bool byFolder)

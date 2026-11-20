@@ -13,29 +13,20 @@ namespace KillerShell.Shell
         private const string DetailsRightIcon = "M0,0 H14 V14 H0 Z M10,0 V14";
         private const string DetailsOffIcon = "M0,0 H14 V14 H0 Z M2,2 L12,12";
 
-        private static MenuItem LayoutMenuItem(string label, string shortcut, string geometry, Action action)
-        {
-            // 12 px, the size of the font glyphs beside it, so the 16 px gutter keeps its gap before the label.
-            var icon = new Path { Width = 12, Height = 12, Stretch = Stretch.Uniform,
-                StrokeThickness = 1, Data = Geometry.Parse(geometry) };
-            icon.SetBinding(Shape.StrokeProperty, new Binding("Foreground") {
-                RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(MenuItem), 1) });
-            var item = new MenuItem { InputGestureText = shortcut, Icon = icon };
-            item.SetResourceReference(HeaderedItemsControl.HeaderProperty, label);
-            item.Click += (_, _) => action();
-            return item;
-        }
-
         private void PopulateDetailsPaneMenu(FilePane pane)
         {
-            var menu = pane.DetailsPaneBtn.ContextMenu;
-            menu.Items.Clear();
-            menu.Items.Add(LayoutMenuItem("Str_Layout_DetailsBottom", "Ctrl+Alt+Down", DetailsBottomIcon,
-                () => SetDetailsPanePosition(pane, 1)));
-            menu.Items.Add(LayoutMenuItem("Str_Layout_DetailsRight", "Ctrl+Alt+Right", DetailsRightIcon,
-                () => SetDetailsPanePosition(pane, 2)));
-            menu.Items.Add(LayoutMenuItem("Str_Layout_DetailsOff", "Ctrl+Alt+0", DetailsOffIcon,
-                () => SetDetailsPanePosition(pane, 0)));
+            // A small strip card, rebuilt on each opening so the layout in use is the lit tile.
+            var menu = Controls.CardMenus.Prepare(pane.DetailsPaneBtn.ContextMenu);
+            Controls.CardMenus.WatchKeyboardStart(menu);
+            menu.Items.Add(Controls.CardMenus.Tiles(menu, new[]
+            {
+                Controls.CardMenus.Tile("detailsbottom", 0xE74B, "Str_Layout_DetailsBottom", null, "Ctrl+Alt+Down",
+                    () => SetDetailsPanePosition(pane, 1), on: pane.DetailsPaneOpen && !pane.DetailsPaneOnRight),
+                Controls.CardMenus.Tile("detailsright", 0xE72A, "Str_Layout_DetailsRight", null, "Ctrl+Alt+Right",
+                    () => SetDetailsPanePosition(pane, 2), on: pane.DetailsPaneOpen && pane.DetailsPaneOnRight),
+                Controls.CardMenus.Tile("detailsoff", 0xE711, "Str_Layout_DetailsOff", null, "Ctrl+Alt+0",
+                    () => SetDetailsPanePosition(pane, 0), on: !pane.DetailsPaneOpen),
+            }));
         }
 
         private static void UpdateDetailsPaneButton(FilePane pane)

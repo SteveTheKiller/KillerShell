@@ -29,6 +29,8 @@
     <sys:String x:Key="Str_Theme_Decay">Тлін</sys:String>
     <sys:String x:Key="Str_Theme_Mourning">Жалоба</sys:String>
     <sys:String x:Key="Str_Theme_FilmGrain">Зернистість плівки</sys:String>
+    <sys:String x:Key="Str_Key_Alt">Alt</sys:String>
+    <sys:String x:Key="Str_Key_Shift">Shift</sys:String>
     <sys:String x:Key="Str_Theme_Sepulchre">Гробниця</sys:String>
     <sys:String x:Key="Str_Theme_Delirium">Марення</sys:String>
     <sys:String x:Key="Str_Theme_Malaise">Нездужання</sys:String>
@@ -1119,4 +1121,27 @@
     <sys:String x:Key="Str_TT_RemoveSearchFilter">Видалити фільтр</sys:String>
     <sys:String x:Key="Str_A11y_ColumnHeadings">Заголовки стовпців</sys:String>
     <sys:String x:Key="Str_A11y_ColumnHeadingsHelp">Натисніть Menu (Apps), щоб вибрати видимі стовпці.</sys:String>
+    <!-- Text box menu and the file pickers' New folder button (KillerUI kit). -->
+    <sys:String x:Key="Str_Ctx_Cut">Вирізати</sys:String>
+    <sys:String x:Key="Str_Ctx_Copy">Копіювати</sys:String>
+    <sys:String x:Key="Str_Ctx_Paste">Вставити</sys:String>
+    <sys:String x:Key="Str_Ctx_SelectAll">Вибрати все</sys:String>
+    <sys:String x:Key="Str_TT_NewFolder">Нова папка (Ctrl+Shift+N)</sys:String>
+    <sys:String x:Key="Str_FD_NewFolder">Нова папка</sys:String>
+    <sys:String x:Key="Str_FD_FolderEmpty">Введіть назву папки.</sys:String>
+    <sys:String x:Key="Str_FD_FolderInvalid">Назва папки не може містити жодного з таких символів: \ / : * ? " &lt; &gt; |</sys:String>
+    <sys:String x:Key="Str_FD_FolderReserved">Цю назву зарезервовано в Windows. Виберіть іншу.</sys:String>
+    <sys:String x:Key="Str_FD_FolderTrailing">Назва папки не може закінчуватися крапкою або пробілом.</sys:String>
+    <sys:String x:Key="Str_FD_FolderTooLong">Ця назва задовга. Використовуйте не більше 255 символів.</sys:String>
+    <sys:String x:Key="Str_FD_FolderExists">Тут уже є папка або файл із такою назвою.</sys:String>
+    <sys:String x:Key="Str_FD_FolderFailed">Не вдалося створити папку:</sys:String>
+    <!-- Tile cards (Controls/CardMenus.cs): the customize pencil, its drawer, and the file card's copy flyout. -->
+    <sys:String x:Key="Str_Card_Customize">Налаштувати цю картку</sys:String>
+    <sys:String x:Key="Str_Card_EditDone">Готово</sys:String>
+    <sys:String x:Key="Str_Card_EditReset">Скинути до типових</sys:String>
+    <sys:String x:Key="Str_Card_EditResetShort">Скинути</sys:String>
+    <sys:String x:Key="Str_Card_Hidden">Приховані</sys:String>
+    <sys:String x:Key="Str_Card_HiddenHint">Перетягніть плитку сюди, щоб приховати її</sys:String>
+    <sys:String x:Key="Str_Card_AlwaysShown">Завжди показано</sys:String>
+    <sys:String x:Key="Str_Card_CopyAs">Копіювати як</sys:String>
 </ResourceDictionary>

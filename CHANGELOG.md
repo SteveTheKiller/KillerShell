@@ -6,20 +6,32 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ## [1.6.1] - Unreleased
 
-1.6.1 adds the Trash Polka theme, keeps the footer's copyright the same distance from the corner grip as every other Killer app, clears the status line after opening a PowerShell profile and fixes the version in the demo Event Viewer.
+1.6.1 adds the Trash Polka theme, turns the right-click cards into tiles that open quickly and show every shortcut, tightens update signature checks, keeps the footer's copyright the same distance from the corner grip as every other Killer app, clears the status line after opening a PowerShell profile and fixes the version in the demo Event Viewer.
+
+### Security
+
+- Updates check the installer's signer more strictly, the install lock can only be taken by the user who installs, and an update only accepts a release tag in the expected shape.
 
 ### Fixed
 
+- Right-clicking a file opens its card quickly again, even on folders with hundreds of files.
+- The Performance Monitor shows each reading's label and value on one line, so the counters no longer crowd the bottom of the card.
 - The Mourning theme highlights selections in its original peach with dark text again, instead of pink.
 - Opening a PowerShell profile clears the "Asking PowerShell where its profile is" status once the profile opens, instead of leaving it on the footer.
 - The demo Event Viewer's KillerShell startup event names the running version instead of 1.1.0.
 
 ### Changed
 
+- The file and folder right-click card shows its commands as tiles, each with its keyboard shortcut. Delete sits in the card's header, the copy variants are under Copy as, and the archive verbs are under one tile.
+- The tab, terminal, document, folder tree and saved place cards show their commands as tiles too, as do the Process List, Services, Event Viewer, Registry Editor, Storage Analyzer and Performance Monitor cards. A command that does not apply stays in its place, dimmed, and a card for one thing keeps its Delete in the header.
+- The sidebar side and details pane layout choices are small tile cards with the choice in use lit, and right-clicking a menu bar shows Hide menu bar as a tile with Alt+M under it.
+- Shared Killer app controls, themes and dialogs are updated to the current family versions.
 - The copyright at the right end of the footer ends 8 px before the corner grip, the same gap in every Killer app.
 
 ### Added
 
+- The file card can be customized: the pencil in its corner moves tiles between the card and a Hidden drawer, and Reset brings back the default.
+- The file picker has a New folder button that checks the name before it creates the folder.
 - Trash Polka, a new theme under 98SE: black with a tattoo-style ink background in your accent color, from eight accents with Blood red as the default. Under a Windows high contrast theme the ink steps aside for the system colors.
 
 ## [1.6.0] - 2026-11-14

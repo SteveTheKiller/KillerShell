@@ -87,76 +87,25 @@ namespace KillerShell.Shell
                 hint.HorizontalAlignment = side;
         }
 
-        // The rail's right-click menu: which side the tree docks to. Its buttons keep their own.
+        // The rail's right-click card: which side the tree docks to. Its buttons keep their own.
         private void Rail_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
             for (var node = e.OriginalSource as DependencyObject; node != null && !ReferenceEquals(node, sender);
                  node = node is Visual ? VisualTreeHelper.GetParent(node) : LogicalTreeHelper.GetParent(node))
                 if (node is ButtonBase) return;
 
-            var menu = new ContextMenu();
-            // A centered caption over the choices, not a disabled row: a MenuItem header sits in
-            // the text column after the icon gutter, which left it hanging off-center.
-            var caption = new TextBlock
+            // A small strip card: one checked tile per side, the one in use lit, with the kit's side glyphs
+            // (SidebarSide.TileGlyph: MDL2 DockLeft and DockRight).
+            var menu = Controls.CardMenus.TileCard();
+            Controls.CardMenus.WatchKeyboardStart(menu);
+            menu.Items.Add(Controls.CardMenus.Tiles(menu, new[]
             {
-                Text = Loc("Str_Sidebar"),
-                HorizontalAlignment = HorizontalAlignment.Center,
-                Margin = new Thickness(0, 4, 0, 4),
-            };
-            caption.SetResourceReference(TextBlock.ForegroundProperty, "MutedTextBrush");
-            caption.SetResourceReference(TextBlock.FontFamilyProperty, "MenuFontFamily");
-            caption.SetResourceReference(TextBlock.FontSizeProperty, "MenuFontSize");
-            var header = new MenuItem { Header = caption, Focusable = false, IsHitTestVisible = false, IsEnabled = false };
-            header.SetResourceReference(FrameworkElement.StyleProperty, "PanelMenuItem");
-            menu.Items.Add(header);
-            foreach (bool right in new[] { false, true })
-            {
-                var item = new MenuItem
-                {
-                    Header = Loc(right ? "Str_Sidebar_Right" : "Str_Sidebar_Left"),
-                    IsCheckable = true,
-                    IsChecked = right == _treeRight,
-                    InputGestureText = right ? "Alt+Shift+Right" : "Alt+Shift+Left",
-                    Icon = PaneSideIcon(right ? Dock.Right : Dock.Left),
-                };
-                item.Click += (_, _) => SelectTreeSide(right);
-                menu.Items.Add(item);
-            }
+                Controls.CardMenus.Tile("treeleft", 0xE90C, "Str_Sidebar_Left", null, "Alt+Shift+Left", () => SelectTreeSide(false), on: !_treeRight),
+                Controls.CardMenus.Tile("treeright", 0xE90D, "Str_Sidebar_Right", null, "Alt+Shift+Right", () => SelectTreeSide(true), on: _treeRight),
+            }));
             menu.PlacementTarget = (UIElement)sender;
             menu.IsOpen = true;
             e.Handled = true;
         }
-
-        /// <summary>
-        /// A small window with its sidebar shaded on the given side, the icon for a side menu's
-        /// items. Drawn in the item's text color, read the way a glyph icon reads it, so it
-        /// follows the highlight; a checked item shows its checkmark in this slot instead.
-        /// </summary>
-        private static FrameworkElement PaneSideIcon(Dock side)
-        {
-            var frame = new Border { BorderThickness = new Thickness(1) };
-            frame.SetBinding(Border.BorderBrushProperty, InheritedForeground());
-            bool across = side == Dock.Top || side == Dock.Bottom;
-            var bar = new Border
-            {
-                Width = across ? double.NaN : 3,
-                Height = across ? 3 : double.NaN,
-                HorizontalAlignment = side == Dock.Right ? HorizontalAlignment.Right
-                                    : side == Dock.Left ? HorizontalAlignment.Left : HorizontalAlignment.Stretch,
-                VerticalAlignment = side == Dock.Bottom ? VerticalAlignment.Bottom
-                                  : side == Dock.Top ? VerticalAlignment.Top : VerticalAlignment.Stretch,
-            };
-            bar.SetBinding(Border.BackgroundProperty, InheritedForeground());
-            var icon = new Grid { Width = 12, Height = 10, VerticalAlignment = VerticalAlignment.Center, HorizontalAlignment = HorizontalAlignment.Left };
-            icon.Children.Add(frame);
-            icon.Children.Add(bar);
-            return icon;
-        }
-
-        private static System.Windows.Data.Binding InheritedForeground() => new System.Windows.Data.Binding
-        {
-            Path = new PropertyPath(System.Windows.Documents.TextElement.ForegroundProperty),
-            RelativeSource = System.Windows.Data.RelativeSource.Self,
-        };
     }
 }

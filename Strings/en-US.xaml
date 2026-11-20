@@ -29,6 +29,9 @@
     <sys:String x:Key="Str_Theme_Decay">Decay</sys:String>
     <sys:String x:Key="Str_Theme_Mourning">Mourning</sys:String>
     <sys:String x:Key="Str_Theme_FilmGrain">Film Grain</sys:String>
+    <!-- Key names in the Film Grain tooltip chord (Shell/ThemeFlyout.cs). -->
+    <sys:String x:Key="Str_Key_Alt">Alt</sys:String>
+    <sys:String x:Key="Str_Key_Shift">Shift</sys:String>
     <sys:String x:Key="Str_Theme_Sepulchre">Sepulchre</sys:String>
     <sys:String x:Key="Str_Theme_Delirium">Delirium</sys:String>
     <sys:String x:Key="Str_Theme_Malaise">Malaise</sys:String>
@@ -1119,4 +1122,27 @@
     <sys:String x:Key="Str_TT_RemoveSearchFilter">Remove filter</sys:String>
     <sys:String x:Key="Str_A11y_ColumnHeadings">Column headings</sys:String>
     <sys:String x:Key="Str_A11y_ColumnHeadingsHelp">Press Menu (Apps) to choose visible columns.</sys:String>
+    <!-- Text box menu and the file pickers' New folder button (KillerUI kit). -->
+    <sys:String x:Key="Str_Ctx_Cut">Cut</sys:String>
+    <sys:String x:Key="Str_Ctx_Copy">Copy</sys:String>
+    <sys:String x:Key="Str_Ctx_Paste">Paste</sys:String>
+    <sys:String x:Key="Str_Ctx_SelectAll">Select all</sys:String>
+    <sys:String x:Key="Str_TT_NewFolder">New folder (Ctrl+Shift+N)</sys:String>
+    <sys:String x:Key="Str_FD_NewFolder">New folder</sys:String>
+    <sys:String x:Key="Str_FD_FolderEmpty">Type a name for the folder.</sys:String>
+    <sys:String x:Key="Str_FD_FolderInvalid">A folder name can't contain any of these characters: \ / : * ? " &lt; &gt; |</sys:String>
+    <sys:String x:Key="Str_FD_FolderReserved">Windows reserves that name. Choose another one.</sys:String>
+    <sys:String x:Key="Str_FD_FolderTrailing">A folder name can't end with a period or a space.</sys:String>
+    <sys:String x:Key="Str_FD_FolderTooLong">That name is too long. Use 255 characters or fewer.</sys:String>
+    <sys:String x:Key="Str_FD_FolderExists">There's already a folder or file with that name here.</sys:String>
+    <sys:String x:Key="Str_FD_FolderFailed">The folder couldn't be created:</sys:String>
+    <!-- Tile cards (Controls/CardMenus.cs): the customize pencil, its drawer, and the file card's copy flyout. -->
+    <sys:String x:Key="Str_Card_Customize">Customize this card</sys:String>
+    <sys:String x:Key="Str_Card_EditDone">Done</sys:String>
+    <sys:String x:Key="Str_Card_EditReset">Reset to default</sys:String>
+    <sys:String x:Key="Str_Card_EditResetShort">Reset</sys:String>
+    <sys:String x:Key="Str_Card_Hidden">Hidden</sys:String>
+    <sys:String x:Key="Str_Card_HiddenHint">Drag a tile here to hide it</sys:String>
+    <sys:String x:Key="Str_Card_AlwaysShown">Always shown</sys:String>
+    <sys:String x:Key="Str_Card_CopyAs">Copy as</sys:String>
 </ResourceDictionary>

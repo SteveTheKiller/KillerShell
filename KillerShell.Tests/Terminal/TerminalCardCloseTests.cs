@@ -43,11 +43,10 @@ public static class TerminalCardCloseScenario
 
             var head = card.Items.OfType<MenuItem>().Single(item => item.Tag as string == "cardhead");
             Assert.Empty(Logical((DependencyObject)head.Header).OfType<ButtonBase>());
-            var quick = card.Items.OfType<MenuItem>().Single(item => item.Tag as string == "cardquick");
-            var strip = Assert.IsType<UniformGrid>(((Border)quick.Header).Child);
-            Assert.Equal(5, strip.Children.Count);
+            var tiles = KillerShell.Controls.CardMenus.Buttons(card).Where(b => b.CommandParameter is string).ToList();
+            Assert.Equal(11, tiles.Count);
             var close = app.FindResource("Str_Term_Close");
-            Assert.DoesNotContain(strip.Children.OfType<FrameworkElement>(), b => Equals(AutomationProperties.GetName(b), close));
+            Assert.DoesNotContain(tiles, b => Equals(AutomationProperties.GetName(b), close));
             Assert.DoesNotContain(card.Items.OfType<MenuItem>(), item => Equals(item.Header, close));
             card.IsOpen = false;
         }

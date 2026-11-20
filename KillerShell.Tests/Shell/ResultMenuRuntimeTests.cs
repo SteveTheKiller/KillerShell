@@ -41,44 +41,42 @@ public static class ResultMenuScenario
             pane.Active.Results.Add(file);
             pane.ResultsList.SelectedItem = folder;
             OpenMenu(pane, true);
-            // A folder: the card names it, offers the five verbs that apply to a folder (no Edit),
-            // and the Path, Name and Folder chips (no Lines or SHA-256).
+            // A folder: the card names it, its tiles offer the verbs that apply to a folder (Edit and
+            // Open with are dim), Delete sits in the header, and Copy as holds Path, Name and Folder
+            // (no Lines or SHA-256).
             Assert.Equal("Runbooks", HeaderTitle(menu));
-            var quick = Tagged(menu.Items, "cardquick");
-            var chips = Tagged(menu.Items, "cardcopy");
-            Assert.Equal(Visibility.Visible, quick.Visibility);
-            Assert.Equal(new[] { "open", "cut", "copy", "rename", "delete" }, Shown(quick));
-            Assert.Equal(new[] { "path", "name", "folder" }, Shown(chips));
-            // A screen reader hears the whole command on a chip, not just "Path".
-            Assert.Equal(fixture.Window.FindResource("Str_Menu_CopyPath"),
-                System.Windows.Automation.AutomationProperties.GetName(QuickButton(chips, "path")));
-            // Clicking the card's header, label or strip border leaves it open.
-            foreach (var slot in new[] { "cardhead", "cardquick", "cardcopy" })
+            foreach (string verb in new[] { "open", "cut", "copy", "rename", "properties" })
+                Assert.True(Command(menu, verb).IsEnabled, verb + " is dim on a folder");
+            Assert.False(Command(menu, "edit").IsEnabled);
+            Assert.False(Command(menu, "openwith").IsEnabled);
+            Assert.Single(KillerShell.Controls.CardMenus.Buttons(menu), b => (string?)b.Tag == KillerShell.Controls.CardMenus.HeaderDeleteTag);
+            Assert.True(Offers(menu, "path") && Offers(menu, "name") && Offers(menu, "folder"));
+            Assert.False(Offers(menu, "lines") || Offers(menu, "hash"));
+            // A screen reader hears the whole command on a row, not just "Path".
+            Assert.Equal(fixture.Window.FindResource("Str_Menu_CopyPath"), ((MenuItem)Command(menu, "path")).Header);
+            // Clicking the card's header or the space around its tiles leaves it open.
+            foreach (var slot in new[] { "cardhead", "cardtiles" })
                 Assert.True(Tagged(menu.Items, slot).StaysOpenOnClick, slot + " closes the card on a click that does nothing");
-            Assert.Equal(Visibility.Collapsed, Gesture(menu, "Ctrl+V").Visibility);
-            Assert.Equal(Visibility.Collapsed, Gesture(menu, "Ctrl+Shift+N").Visibility);
-            Assert.Equal(Visibility.Collapsed, Gesture(menu, "Ctrl+Shift+O").Visibility);
-            var archives = Tagged(menu.Items, "archiveoptions");
-            Assert.Equal(Visibility.Visible, archives.Visibility);
-            Assert.Contains("Runbooks.zip", Tagged(archives.Items, "zip").Header.ToString());
-            Assert.Contains("Runbooks.tar.gz", Tagged(archives.Items, "targz").Header.ToString());
-            Assert.Contains(Tagged(menu.Items, "folderoptions").Items.OfType<MenuItem>(), item => item.InputGestureText == "Shift+F4");
+            Assert.Contains("Runbooks.zip", ((MenuItem)Command(menu, "zip")).Header.ToString());
+            Assert.Contains("Runbooks.tar.gz", ((MenuItem)Command(menu, "targz")).Header.ToString());
+            // Every tile shows its shortcut.
+            Assert.All(KillerShell.Controls.CardMenus.Commands(menu).OfType<Button>().Where(b => (string)b.CommandParameter is not ("copyas" or "archive")),
+                b => Assert.False(string.IsNullOrEmpty(System.Windows.Automation.AutomationProperties.GetAcceleratorKey(b)), (string)b.CommandParameter + " has no shortcut"));
 
             pane.ResultsList.SelectedItem = file;
             OpenMenu(pane, true);
             Assert.Equal(entry.Name, HeaderTitle(menu));
-            Assert.Equal(new[] { "open", "edit", "cut", "copy", "rename", "delete" }, Shown(quick));
-            Assert.Equal(new[] { "path", "name", "folder", "hash" }, Shown(chips));
-            Assert.Equal(Visibility.Visible, Gesture(menu, "Ctrl+Shift+O").Visibility);
+            Assert.True(Command(menu, "edit").IsEnabled);
+            Assert.True(Command(menu, "openwith").IsEnabled);
+            Assert.True(Offers(menu, "hash"));
 
             // Empty space: the card names the folder being browsed, and only the folder verbs remain.
             OpenMenu(pane, false);
             Assert.Equal(pane.Active.Title, HeaderTitle(menu));
-            Assert.Equal(Visibility.Collapsed, quick.Visibility);
-            Assert.Equal(Visibility.Collapsed, chips.Visibility);
-            Assert.Equal(Visibility.Collapsed, archives.Visibility);
-            Assert.Equal(Visibility.Visible, Gesture(menu, "Ctrl+V").Visibility);
-            Assert.Equal(Visibility.Visible, Gesture(menu, "Ctrl+Shift+N").Visibility);
+            Assert.False(Offers(menu, "open"));
+            Assert.False(Offers(menu, "zip"));
+            Assert.True(Command(menu, "paste").IsEnabled);
+            Assert.True(Command(menu, "newfolder").IsEnabled);
 
             // Two rows: the card counts them.
             pane.ResultsList.SelectedItems.Add(folder);
@@ -89,14 +87,15 @@ public static class ResultMenuScenario
             pane.ResultsList.SelectedItems.Clear();
             pane.ResultsList.SelectedItem = folder;
             OpenMenu(pane, true);
-            Tagged(archives.Items, "targz").RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+            Command(menu, "targz").RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
             ShellWindowFixture.PumpUntil(() => DemoArchives.Contains(parent + @"\Runbooks.tar.gz"));
             Assert.NotEmpty(DemoArchives.List(parent + @"\Runbooks.tar.gz", "Runbooks"));
             ShellWindowFixture.PumpUntil(() => pane.Active.Results.Any(row => row.FileName == "Runbooks.tar.gz"));
+            pane.ResultsList.SelectedItems.Clear();
             pane.ResultsList.SelectedItem = pane.Active.Results.First(row => row.FileName == "Runbooks.tar.gz");
             OpenMenu(pane, true);
-            // The quick Open button runs the same command the Open row did: an archive opens as a folder.
-            QuickButton(quick, "open").RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent));
+            // The Open tile runs the same command Enter does: an archive opens as a folder.
+            Command(menu, "open").RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent));
             ShellWindowFixture.PumpUntil(() => pane.Active.CurrentFolder == ArchiveProvider.Combine(parent + @"\Runbooks.tar.gz", ""));
         }
         finally { MainWindow.DemoMode = false; }
@@ -105,26 +104,13 @@ public static class ResultMenuScenario
     private static MenuItem Tagged(ItemCollection items, string tag)
         => Assert.Single(items.OfType<MenuItem>(), item => (string?)item.Tag == tag);
 
-    private static MenuItem Gesture(ContextMenu menu, string gesture)
-        => Assert.Single(menu.Items.OfType<MenuItem>(), item => item.InputGestureText == gesture);
+    private static FrameworkElement Command(ContextMenu menu, string command)
+        => Assert.Single(KillerShell.Controls.CardMenus.Commands(menu),
+            element => (element is Button button ? button.CommandParameter : element.Tag) as string == command);
 
-    private static Button[] Buttons(MenuItem slot)
-    {
-        var found = new System.Collections.Generic.List<Button>();
-        void Walk(object node)
-        {
-            if (node is Button button) { found.Add(button); return; }
-            if (node is DependencyObject d) foreach (var child in LogicalTreeHelper.GetChildren(d)) Walk(child);
-        }
-        Walk(slot.Header);
-        return found.ToArray();
-    }
-
-    private static string[] Shown(MenuItem slot)
-        => Buttons(slot).Where(b => b.Visibility == Visibility.Visible).Select(b => (string)b.CommandParameter).ToArray();
-
-    private static Button QuickButton(MenuItem slot, string command)
-        => Assert.Single(Buttons(slot), b => (string)b.CommandParameter == command);
+    private static bool Offers(ContextMenu menu, string command)
+        => KillerShell.Controls.CardMenus.Commands(menu)
+            .Any(element => (element is Button button ? button.CommandParameter : element.Tag) as string == command);
 
     // The name UI Automation reads: the slot MenuItem's own, since a panel header has no peer.
     private static string HeaderTitle(ContextMenu menu)

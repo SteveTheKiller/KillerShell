@@ -26,27 +26,6 @@ namespace KillerShell.Shell
             Closed += (_, _) => Services.Nicknames.Changed -= OnNicknameChanged;
         }
 
-        /// <summary>Sets the add/change/remove rows of an item menu for the item it opened on.
-        /// A null path (empty pane space) hides both.</summary>
-        private static void SyncNicknameMenu(ItemsControl? menu, string? path)
-        {
-            if (menu == null) return;
-            bool has = !string.IsNullOrEmpty(path) && Services.Nicknames.Get(path).Length > 0;
-            foreach (var mi in menu.Items.OfType<MenuItem>())
-            {
-                switch (mi.Tag as string)
-                {
-                    case "nick":
-                        mi.Visibility = string.IsNullOrEmpty(path) ? Visibility.Collapsed : Visibility.Visible;
-                        mi.Header = Loc(has ? "Str_Menu_ChangeNickname" : "Str_Menu_AddNickname");
-                        break;
-                    case "nickdel":
-                        mi.Visibility = has ? Visibility.Visible : Visibility.Collapsed;
-                        break;
-                }
-            }
-        }
-
         /// <summary>The rename prompt, asking for a nickname. An empty answer removes it.</summary>
         private void EditNickname(string? path)
         {
@@ -84,16 +63,6 @@ namespace KillerShell.Shell
         private void TreeNickname_Click(object sender, RoutedEventArgs e)       => EditNickname(TreeMenuPath());
         private void TreeNicknameRemove_Click(object sender, RoutedEventArgs e) => RemoveNickname(TreeMenuPath());
 
-        private void BookmarkNickname_Click(object sender, RoutedEventArgs e)
-        {
-            if (sender is FrameworkElement { DataContext: Bookmark b }) EditNickname(b.Path);
-        }
-
-        private void BookmarkNicknameRemove_Click(object sender, RoutedEventArgs e)
-        {
-            if (sender is FrameworkElement { DataContext: Bookmark b }) RemoveNickname(b.Path);
-        }
-
         // The saved-place menu lives in the row template, so it is set up per row as it opens.
         // Keyboard opening on a focused place: WPF raises ContextMenuOpening on the list item, which
         // has no menu of its own, so hand it to the row's card and anchor that card to the row.
@@ -113,23 +82,40 @@ namespace KillerShell.Shell
             if (sender is not FrameworkElement { DataContext: Bookmark b } row) return;
 
             // This PC and the Recycle Bin are places, not folders: a terminal, a scan or a
-            // Properties sheet has nowhere to point, so they keep only their name and Remove.
+            // Properties sheet has nowhere to point, so on those only Remove is lit.
             bool sentinel = IsPlaceSentinel(b.Path);   // Browse.cs
             var card = row.ContextMenu;
             if (card == null) return;
-            foreach (var item in card.Items.OfType<Control>())
-                item.Visibility = sentinel && item.Tag as string is not ("remove" or "cardhead")
-                    ? Visibility.Collapsed : Visibility.Visible;
+            Controls.CardMenus.Prepare(card);
 
             // The card names the place it acts on, the same header the tree card draws.
-            if (card.Items.OfType<MenuItem>().FirstOrDefault(m => m.Tag as string == "cardhead") is { } head)
-            {
-                var source = sentinel ? null : Services.IconCache.For(b.Path, 32, isDirectory: true);
-                var icon = source == null ? null : new Image { Source = source, Width = 32, Height = 32 };
-                Controls.CardMenus.SetHeader(head, icon, b.NameLabel, sentinel ? "" : b.Path);
-            }
+            var source = sentinel ? null : Services.IconCache.For(b.Path, 32, isDirectory: true);
+            var icon = source == null ? null : new Image { Source = source, Width = 32, Height = 32 };
+            card.Items.Add(Controls.CardMenus.HeaderSlot(card, Controls.CardMenus.Header(icon, b.NameLabel, sentinel ? "" : b.Path)));
 
-            SyncNicknameMenu(card, sentinel ? null : b.Path);
+            // The tree card's verbs on the place's path. Each runs once the card has closed, for the
+            // same reason as the tree: Search here moves focus into the search box.
+            string path = b.Path;
+            bool folder = !sentinel;
+            bool nicknamed = folder && Services.Nicknames.Get(path).Length > 0;
+            KillerFamily.Controls.CardTile Tile(string id, int glyph, string captionKey, string? shownKey, Action run, bool enabled)
+                => Controls.CardMenus.Tile(id, glyph, captionKey, shownKey, null, () => AfterMenuCloses(run), enabled);   // ResultsMenu.cs
+            card.Items.Add(Controls.CardMenus.Tiles(card,
+            [
+                Tile("newtab", 0xE710, "Str_Menu_OpenInNewTab", "Str_Card_NewTab", () => OpenFolderInNewTab(path), folder),
+                Tile("explorer", 0xE838, "Str_Menu_ShowExplorer", "Str_Card_Explorer", () => ShowFolderInExplorer(path), folder),
+                Tile("search", 0xE721, "Str_Menu_SearchHere", "Str_Card_Search", () => SearchInFolder(path), folder),
+                Tile("terminal", 0xE756, "Str_Menu_OpenTerminal", "Str_Card_Terminal",
+                    () => OpenShell(Terminal.TerminalProfileStore.ForFolder(path), path), folder),
+                // E7EF (admin shield), not the plain E756: two identical icons on two actions read as one.
+                Tile("terminaladmin", 0xE7EF, "Str_Menu_OpenTerminalAdmin", null, () => BookmarkTerminalAdmin_Click(row, e), folder),
+                Tile("analyze", 0xEDA2, "Str_Menu_AnalyzeStorage", null, () => BookmarkAnalyze_Click(row, e), folder),
+                Tile("copypath", 0xE8C8, "Str_Menu_CopyPath", "Str_Card_Path", () => PutOnClipboard(path, "Str_Status_Copied", "1"), folder),
+                Tile("nick", 0xE8EC, nicknamed ? "Str_Menu_ChangeNickname" : "Str_Menu_AddNickname", null, () => EditNickname(path), folder),
+                Tile("nickdel", 0xE738, "Str_Menu_RemoveNickname", null, () => RemoveNickname(path), nicknamed),
+                Tile("properties", 0xE946, "Str_Menu_Properties", null, () => BookmarkProperties_Click(row, e), folder),
+                Tile("remove", 0xE74D, "Str_Menu_RemoveFavorite", null, () => RemoveBookmark(path), true),
+            ]));
         }
 
         // The listing acts on the item the menu opened on (the seed), not the whole selection:

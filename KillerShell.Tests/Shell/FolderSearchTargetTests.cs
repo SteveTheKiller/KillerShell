@@ -121,8 +121,7 @@ public static class ResultFolderSearchScopeScenario
         });
         var menu = pane.ResultsList.ContextMenu;
         ShellWindowFixture.PumpUntil(() => menu.IsOpen);
-        menu.Items.OfType<MenuItem>().Single(item => item.InputGestureText == "F3")
-            .RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+        FileCommandCard.Click(pane, "search");
         menu.IsOpen = false;
         ShellWindowFixture.Click(window, "SearchButton");
         ShellWindowFixture.PumpUntil(() => pane.Active.HasSearch && !pane.Active.IsSearching);
@@ -266,11 +265,17 @@ public static class SavedPlaceFolderSearchScenario
                 && border.DataContext is Bookmark place && place.Path == folder);
             return row != null;
         });
-        var menu = row!.ContextMenu;
+        // The card is built as it opens, the way a right-click on the row opens it.
+        var args = (ContextMenuEventArgs)typeof(ContextMenuEventArgs).GetConstructors(
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
+            .First(c => c.GetParameters().Select(p => p.ParameterType).SequenceEqual(new[] { typeof(object), typeof(bool) }))
+            .Invoke(new object[] { row!, true });
+        args.RoutedEvent = FrameworkElement.ContextMenuOpeningEvent;
+        row!.RaiseEvent(args);
+        var menu = row.ContextMenu;
         menu.PlacementTarget = row;
         menu.IsOpen = true;
-        var quick = menu.Items.OfType<MenuItem>().Single(item => item.Tag as string == "cardquick");
-        var search = TabCardScenario.Buttons(quick).Single(button => button.CommandParameter as string == "search");
+        var search = KillerShell.Controls.CardMenus.TileButton(menu, "search")!;
         search.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent));
         ShellWindowFixture.PumpUntil(() => !menu.IsOpen);
     }

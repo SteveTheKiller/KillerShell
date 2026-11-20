@@ -830,6 +830,8 @@
     <sys:String x:Key="Str_Theme_Decay">Rozklad</sys:String>
     <sys:String x:Key="Str_Theme_Mourning">Smutek</sys:String>
     <sys:String x:Key="Str_Theme_FilmGrain">Filmové zrno</sys:String>
+    <sys:String x:Key="Str_Key_Alt">Alt</sys:String>
+    <sys:String x:Key="Str_Key_Shift">Shift</sys:String>
     <sys:String x:Key="Str_Theme_Sepulchre">Hrobka</sys:String>
     <sys:String x:Key="Str_Theme_Delirium">Delirium</sys:String>
     <sys:String x:Key="Str_Theme_Malaise">Malátnost</sys:String>
@@ -1072,4 +1074,27 @@
     <sys:String x:Key="Str_TT_RemoveSearchFilter">Odebrat filtr</sys:String>
     <sys:String x:Key="Str_A11y_ColumnHeadings">Záhlaví sloupců</sys:String>
     <sys:String x:Key="Str_A11y_ColumnHeadingsHelp">Stisknutím Menu (Apps) vyberte viditelné sloupce.</sys:String>
+    <!-- Text box menu and the file pickers' New folder button (KillerUI kit). -->
+    <sys:String x:Key="Str_Ctx_Cut">Vyjmout</sys:String>
+    <sys:String x:Key="Str_Ctx_Copy">Kopírovat</sys:String>
+    <sys:String x:Key="Str_Ctx_Paste">Vložit</sys:String>
+    <sys:String x:Key="Str_Ctx_SelectAll">Vybrat vše</sys:String>
+    <sys:String x:Key="Str_TT_NewFolder">Nová složka (Ctrl+Shift+N)</sys:String>
+    <sys:String x:Key="Str_FD_NewFolder">Nová složka</sys:String>
+    <sys:String x:Key="Str_FD_FolderEmpty">Zadejte název složky.</sys:String>
+    <sys:String x:Key="Str_FD_FolderInvalid">Název složky nesmí obsahovat žádný z těchto znaků: \ / : * ? " &lt; &gt; |</sys:String>
+    <sys:String x:Key="Str_FD_FolderReserved">Tento název je ve Windows vyhrazený. Zvolte jiný.</sys:String>
+    <sys:String x:Key="Str_FD_FolderTrailing">Název složky nesmí končit tečkou ani mezerou.</sys:String>
+    <sys:String x:Key="Str_FD_FolderTooLong">Tento název je příliš dlouhý. Použijte nejvýše 255 znaků.</sys:String>
+    <sys:String x:Key="Str_FD_FolderExists">Složka nebo soubor s tímto názvem už tady existuje.</sys:String>
+    <sys:String x:Key="Str_FD_FolderFailed">Složku se nepodařilo vytvořit:</sys:String>
+    <!-- Tile cards (Controls/CardMenus.cs): the customize pencil, its drawer, and the file card's copy flyout. -->
+    <sys:String x:Key="Str_Card_Customize">Přizpůsobit tuto kartu</sys:String>
+    <sys:String x:Key="Str_Card_EditDone">Hotovo</sys:String>
+    <sys:String x:Key="Str_Card_EditReset">Obnovit výchozí</sys:String>
+    <sys:String x:Key="Str_Card_EditResetShort">Obnovit</sys:String>
+    <sys:String x:Key="Str_Card_Hidden">Skryté</sys:String>
+    <sys:String x:Key="Str_Card_HiddenHint">Přetažením dlaždice sem ji skryjete</sys:String>
+    <sys:String x:Key="Str_Card_AlwaysShown">Vždy zobrazeno</sys:String>
+    <sys:String x:Key="Str_Card_CopyAs">Kopírovat jako</sys:String>
 </ResourceDictionary>

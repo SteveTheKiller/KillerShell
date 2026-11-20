@@ -47,28 +47,28 @@ public static class PlacesCardScenario
             return row!;
         }
 
-        // A folder: the header names it, and the tree card's five verbs are buttons.
+        // A folder: the header names it, and the tree card's verbs are tiles.
         var folderRow = Row(fixture.Root);
         var card = Open(folderRow);
         var place = (Bookmark)folderRow.DataContext;
         Assert.Equal(place.NameLabel, AutomationProperties.GetName(Tagged(card, "cardhead")));
-        var buttons = TabCardScenario.Buttons((MenuItem)Tagged(card, "cardquick"));
-        Assert.Equal(new[] { "newtab", "explorer", "terminal", "search", "copypath" },
+        var buttons = KillerShell.Controls.CardMenus.Buttons(card).Where(b => b.CommandParameter is string).ToList();
+        Assert.Equal(new[] { "newtab", "explorer", "search", "terminal", "terminaladmin", "analyze", "copypath",
+                             "nick", "nickdel", "properties", "remove" },
                      buttons.Select(b => (string)b.CommandParameter).ToArray());
         foreach (var button in buttons) Assert.False(string.IsNullOrEmpty(AutomationProperties.GetName(button)));
-        Assert.Equal(Visibility.Visible, Tagged(card, "cardquick").Visibility);
-        Assert.Equal(Visibility.Visible, Tagged(card, "remove").Visibility);
+        Assert.True(KillerShell.Controls.CardMenus.TileButton(card, "remove")!.IsEnabled);
 
-        // This PC is a place, not a folder: its name and Remove, nothing else.
+        // This PC is a place, not a folder: its name, and only Remove is lit.
         var pcCard = Open(Row(MainWindow.ThisPc));
         Assert.Equal(Visibility.Visible, Tagged(pcCard, "cardhead").Visibility);
-        Assert.Equal(Visibility.Visible, Tagged(pcCard, "remove").Visibility);
-        Assert.All(pcCard.Items.OfType<Control>().Where(c => c.Tag as string is not ("cardhead" or "remove")),
-                   c => Assert.Equal(Visibility.Collapsed, c.Visibility));
+        Assert.All(KillerShell.Controls.CardMenus.Buttons(pcCard).Where(b => b.CommandParameter is string),
+                   b => Assert.Equal((string)b.CommandParameter == "remove", b.IsEnabled));
 
         // New tab runs once the card has closed and opens the place in a tab of its own.
         card = Open(folderRow);
         card.IsOpen = true;
+        buttons = KillerShell.Controls.CardMenus.Buttons(card).Where(b => b.CommandParameter is string).ToList();
         int before = window.Pane.Tabs.Count;
         buttons[0].RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent));
         ShellWindowFixture.PumpUntil(() => window.Pane.Tabs.Count == before + 1

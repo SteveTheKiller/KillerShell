@@ -34,7 +34,9 @@
        application's SDK default globs. -->
   <!-- Kit files (Shell/About.cs) rely on this as a global using, as the other family apps do. -->
   <ItemGroup>
+    <Using Include="System" />
     <Using Include="System.Collections.Generic" />
+    <Using Include="System.Threading.Tasks" />
   </ItemGroup>
 
   <ItemGroup>

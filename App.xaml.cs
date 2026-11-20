@@ -95,6 +95,13 @@ namespace KillerShell
         protected override void OnStartup(StartupEventArgs e)
         {
             HookCrashLogging();   // CrashLog.cs - first, so it covers startup itself
+            // The motif cache builder: a windowless child the main window starts at idle priority (Controls/ThemeMotif.cs).
+            // It runs before anything else, so the child never claims the single instance or opens a window.
+            if (Controls.ThemeMotif.TryRunCacheBuilder(e.Args, Services.AppInfo.DisplayName) is int builderExit)
+            {
+                Shutdown(builderExit);
+                return;
+            }
             Services.TrayWake.UseForUpdateRelaunch();   // the updated app opens a window, never wakes a tray copy
             KillerFamily.Accessibility.AccessibleControls.Initialize();
             KillerFamily.Theming.AccentShadow.Initialize();
@@ -328,6 +335,8 @@ namespace KillerShell
                 window.SourceInitialized += (_, _) => KillerFamily.Deployment.StartupRegistration.StartMinimized(window);
             }
             MainWindow.Show();
+            // Fills the motif disk cache in the background so a first switch to Trash Polka decodes instead of rendering.
+            Controls.ThemeMotif.PrewarmWhenIdle(MainWindow);
         }
 
         // ============================================================

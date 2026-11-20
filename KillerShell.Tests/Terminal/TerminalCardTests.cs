@@ -10,7 +10,7 @@ namespace KillerShell.Tests.Terminal;
 public sealed class TerminalCardTests
 {
     [Fact]
-    public void TheTerminalCardPutsTheEverydayVerbsInItsQuickStrip()
+    public void TheTerminalCardOffersEveryCommandAsATile()
     {
         Exception? failure = null;
         var thread = new System.Threading.Thread(() =>
@@ -24,19 +24,23 @@ public sealed class TerminalCardTests
                     .GetMethod("BuildMenu", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!.Invoke(terminal, null)!;
 
                 Assert.Single(menu.Items.OfType<MenuItem>(), item => (string?)item.Tag == "cardhead");
-                var quick = Assert.Single(menu.Items.OfType<MenuItem>(), item => (string?)item.Tag == "cardquick");
-                var buttons = TabCardScenario.Buttons(quick);
-                // Copy, Paste, Select all, Clear scrollback and Open folder. Close is not on the card:
-                // a lone X read as "close this menu" and ended a running shell (Ctrl+W still closes).
-                Assert.Equal(5, buttons.Count);
+                // Every command is a tile with its shortcut. Close is not on the card: a lone X read
+                // as "close this menu" and ended a running shell (Ctrl+W still closes).
+                var ids = KillerShell.Controls.CardMenus.Buttons(menu).Select(b => b.CommandParameter as string).Where(id => id != null).ToArray();
+                Assert.Equal(new[] { "copy", "paste", "selectall", "clear", "folder", "newshell",
+                    "fonts", "editprompt", "resetprompt", "reloadprofile", "profile" }, ids);
+                Assert.All(KillerShell.Controls.CardMenus.Buttons(menu).Where(b => b.CommandParameter is string),
+                    b => Assert.False(string.IsNullOrEmpty(System.Windows.Automation.AutomationProperties.GetAcceleratorKey(b))));
 
-                // Open folder is a button now, and it still asks the window to open the folder.
-                buttons[4].RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent));
+                // Open folder still asks the window to open the folder.
+                KillerShell.Controls.CardMenus.TileButton(menu, "folder")!.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent));
                 Assert.Equal(TerminalMenuCommand.OpenFolder, raised);
 
-                // The rows that stayed rows keep the gestures the shortcut handler looks for.
-                foreach (var gesture in new[] { "F8", "Ctrl+Shift+,", "Ctrl+Shift+E", "Ctrl+Shift+R", "Ctrl+Shift+Q", "Ctrl+," })
-                    Assert.Single(menu.Items.OfType<MenuItem>(), item => item.InputGestureText == gesture);
+                // A tile and its chord run the same command.
+                KillerShell.Controls.CardMenus.TileButton(menu, "fonts")!.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent));
+                Assert.Equal(TerminalMenuCommand.Fonts, raised);
+                KillerShell.Controls.CardMenus.TileButton(menu, "editprompt")!.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent));
+                Assert.Equal(TerminalMenuCommand.EditPrompt, raised);
             }
             catch (Exception ex) { failure = ex; }
         });

@@ -53,15 +53,16 @@ public static class TreeCardScenario
         var card = tree.ContextMenu!;
         var head = Assert.Single(card.Items.OfType<MenuItem>(), item => item.Tag as string == "cardhead");
         Assert.Equal(node.NameLabel, AutomationProperties.GetName(head));
-        var quick = Assert.Single(card.Items.OfType<MenuItem>(), item => item.Tag as string == "cardquick");
-        var buttons = TabCardScenario.Buttons(quick);
-        Assert.Equal(new[] { "newtab", "explorer", "terminal", "search", "copypath" },
+        var buttons = KillerShell.Controls.CardMenus.Buttons(card).Where(b => b.CommandParameter is string).ToList();
+        Assert.Equal(new[] { "newtab", "explorer", "search", "terminal", "terminaladmin", "analyze", "copypath",
+                             "fav", "hidden", "nick", "nickdel", "properties", "shellmenu" },
                      buttons.Select(b => (string)b.CommandParameter).ToArray());
-        foreach (var button in buttons) Assert.False(string.IsNullOrEmpty(AutomationProperties.GetName(button)));
-
-        // The rows that stayed rows keep their gestures.
-        foreach (var gesture in new[] { "Ctrl+F8", "Shift+F4", "Alt+H", "Ctrl+D", "Alt+Enter", "Shift+F10" })
-            Assert.Single(card.Items.OfType<MenuItem>(), item => item.InputGestureText == gesture);
+        // Every tile is named and shows its shortcut.
+        foreach (var button in buttons)
+        {
+            Assert.False(string.IsNullOrEmpty(AutomationProperties.GetName(button)));
+            Assert.False(string.IsNullOrEmpty(AutomationProperties.GetAcceleratorKey(button)), (string)button.CommandParameter);
+        }
 
         // New tab runs once the card has closed and opens the folder in a tab of its own.
         int before = window.Pane.Tabs.Count;

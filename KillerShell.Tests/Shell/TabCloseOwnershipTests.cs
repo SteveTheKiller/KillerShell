@@ -120,7 +120,9 @@ internal sealed class ShellWindowFixture : IDisposable
     internal string Root { get; } = Path.Combine(Path.GetTempPath(), "shell-tabs-" + Guid.NewGuid().ToString("N"));
     internal MainWindow Window { get; }
 
-    internal ShellWindowFixture()
+    internal ShellWindowFixture() : this(null) { }
+
+    internal ShellWindowFixture(IDictionary<string, string>? extraSettings)
     {
         Directory.CreateDirectory(Root);
         SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext());
@@ -130,6 +132,8 @@ internal sealed class ShellWindowFixture : IDisposable
             ["HomeFolder"] = Root, ["EscQuit"] = "quit", ["RememberTabs"] = "0",
             ["CheckForUpdatesOnStartup"] = "0", ["CloseToTray"] = "0"
         };
+        if (extraSettings != null)
+            foreach (var pair in extraSettings) settings[pair.Key] = pair.Value;
         ThemeManager.GetSetting = key => settings.TryGetValue(key, out var value) ? value : null;
         ThemeManager.SetSetting = (key, value) => settings[key] = value;
         ThemeManager.Initialize();

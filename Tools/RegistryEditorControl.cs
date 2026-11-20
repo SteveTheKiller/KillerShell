@@ -1186,20 +1186,6 @@ namespace KillerShell.Tools
         // ═══════════════════════════════════════════════════════════
         //  CONTEXT MENUS
         // ═══════════════════════════════════════════════════════════
-        private static MenuItem AddMenuItem(ContextMenu menu, string headerKey, int glyph,
-                                            RoutedEventHandler click, bool enabled = true, string gesture = "")
-        {
-            var item = new MenuItem { IsEnabled = enabled, InputGestureText = gesture };
-            item.SetResourceReference(HeaderedItemsControl.HeaderProperty, headerKey);
-            var icon = new Glyph { Text = ((char)glyph).ToString() };
-            icon.SetResourceReference(FrameworkElement.StyleProperty, "MenuGlyph");
-            var iconBox = new Viewbox { Width = 14, Height = 14, Stretch = Stretch.Uniform, Child = icon };
-            item.Icon = iconBox;
-            item.Click += click;
-            menu.Items.Add(item);
-            return item;
-        }
-
         private void Tree_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
             var node = e.CursorLeft < 0 && e.CursorTop < 0
@@ -1211,54 +1197,42 @@ namespace KillerShell.Tools
             e.Handled = true;
         }
 
-        // The card's header: what it is about in bold, one dim line of detail under it.
-        private static void CardHeader(ContextMenu card, string title, string meta)
-        {
-            var head = KillerShell.Controls.CardMenus.Slot();
-            head.Tag = "cardhead";
-            KillerShell.Controls.CardMenus.SetHeader(head, null, title, meta);
-            card.Items.Add(head);
-        }
+        // The card's header: what it is about in bold, one dim line of detail under it, and the
+        // thing's Delete at its right end (the family puts Delete on a card for one thing there).
+        private static void CardHeader(ContextMenu card, string title, string meta, Action delete, bool deleteEnabled)
+            => card.Items.Add(KillerShell.Controls.CardMenus.HeaderSlot(card,
+                KillerShell.Controls.CardMenus.Header(null, title, meta),
+                KillerShell.Controls.CardMenus.Loc("Str_Menu_RegDelete"), "Del", delete, deleteEnabled));
 
-        // E710 New, E8AC Rename, E74D Delete, E8C8 the app's Copy, E70F Edit. Every button keeps
-        // its keyboard shortcut in its tooltip.
+        // E710 New, E8AC Rename, E8C8 the app's Copy, E70F Edit. Every tile shows its shortcut.
         private void BuildKeyCard(RegistryNode node)
         {
-            var menu = KillerShell.Controls.CardMenus.Card();
+            var menu = KillerShell.Controls.CardMenus.TileCard();
             menu.PlacementTarget = _tree;
-            CardHeader(menu, node.Name, node.FullPath);
+            CardHeader(menu, node.Name, node.FullPath, () => DeleteKeyWithConfirm(node), !node.IsRoot);
 
-            var quick = KillerShell.Controls.CardMenus.QuickStrip(out var strip);
-            quick.Tag = "cardquick";
-            KillerShell.Controls.CardMenus.QuickButton(strip, menu, 0xE710, "Str_Menu_RegNewKey", "Str_Menu_RegNewKey", null, () => CreateNewKey(node));
-            KillerShell.Controls.CardMenus.QuickButton(strip, menu, 0xE8AC, "Str_Card_Rename", "Str_Menu_RegRename", "F2", () => RenameKeyNode(node)).IsEnabled = !node.IsRoot;
-            KillerShell.Controls.CardMenus.QuickButton(strip, menu, 0xE74D, "Str_Card_Delete", "Str_Menu_RegDelete", "Del", () => DeleteKeyWithConfirm(node)).IsEnabled = !node.IsRoot;
-            KillerShell.Controls.CardMenus.QuickButton(strip, menu, 0xE8C8, "Str_Card_Path", "Str_Menu_RegCopyPath", "Ctrl+C",
-                () => CopyToClipboard(node.FullPath, "Str_RegEd_PathCopied"));
-            menu.Items.Add(quick);
-
-            var newMenu = new MenuItem();
-            newMenu.SetResourceReference(HeaderedItemsControl.HeaderProperty, "Str_Menu_RegNew");
-            var newIcon = new Glyph { Text = ((char)0xE710).ToString() };
-            newIcon.SetResourceReference(FrameworkElement.StyleProperty, "MenuGlyph");
-            newMenu.Icon = new Viewbox { Width = 14, Height = 14, Stretch = Stretch.Uniform, Child = newIcon };
-
-            void NewItem(string headerKey, RoutedEventHandler click)
-            {
-                var mi = new MenuItem();
-                mi.SetResourceReference(HeaderedItemsControl.HeaderProperty, headerKey);
-                mi.Click += click;
-                newMenu.Items.Add(mi);
-            }
-            // The new value kinds stay in the New submenu; a new key has its own button above.
-            NewItem("Str_Menu_RegNewString",       (_, _) => CreateNewValue(node, RegistryValueKind.String));
-            NewItem("Str_Menu_RegNewExpandString", (_, _) => CreateNewValue(node, RegistryValueKind.ExpandString));
-            NewItem("Str_Menu_RegNewMultiString",  (_, _) => CreateNewValue(node, RegistryValueKind.MultiString));
-            NewItem("Str_Menu_RegNewBinary",       (_, _) => CreateNewValue(node, RegistryValueKind.Binary));
-            NewItem("Str_Menu_RegNewDWord",        (_, _) => CreateNewValue(node, RegistryValueKind.DWord));
-            NewItem("Str_Menu_RegNewQWord",        (_, _) => CreateNewValue(node, RegistryValueKind.QWord));
-            menu.Items.Add(newMenu);
-            AddMenuItem(menu, "Str_Menu_RegCopyName", 0xE8C8, (_, _) => CopyToClipboard(node.Name, "Str_RegEd_NameCopied"));
+            // The new value kinds are a list beside the New value tile; a new key has its own tile.
+            MenuItem NewValue(string headerKey, RegistryValueKind kind, string tag)
+                => KillerShell.Controls.CardMenus.FlyoutRow(KillerShell.Controls.CardMenus.Loc(headerKey), null, null,
+                    (_, _) => CreateNewValue(node, kind), tag);
+            menu.Items.Add(KillerShell.Controls.CardMenus.Tiles(menu,
+            [
+                KillerShell.Controls.CardMenus.Tile("newkey", 0xE710, "Str_Menu_RegNewKey", null, null, () => CreateNewKey(node)),
+                KillerShell.Controls.CardMenus.Flyout("newvalue", ((char)0xE8A5).ToString(), KillerShell.Controls.CardMenus.Loc("Str_Menu_RegNew"), null,
+                [
+                    NewValue("Str_Menu_RegNewString", RegistryValueKind.String, "string"),
+                    NewValue("Str_Menu_RegNewExpandString", RegistryValueKind.ExpandString, "expandstring"),
+                    NewValue("Str_Menu_RegNewMultiString", RegistryValueKind.MultiString, "multistring"),
+                    NewValue("Str_Menu_RegNewBinary", RegistryValueKind.Binary, "binary"),
+                    NewValue("Str_Menu_RegNewDWord", RegistryValueKind.DWord, "dword"),
+                    NewValue("Str_Menu_RegNewQWord", RegistryValueKind.QWord, "qword"),
+                ]),
+                KillerShell.Controls.CardMenus.Tile("rename", 0xE8AC, "Str_Menu_RegRename", "Str_Card_Rename", "F2", () => RenameKeyNode(node), !node.IsRoot),
+                KillerShell.Controls.CardMenus.Tile("copypath", 0xE8C8, "Str_Menu_RegCopyPath", "Str_Card_Path", "Ctrl+C",
+                    () => CopyToClipboard(node.FullPath, "Str_RegEd_PathCopied")),
+                KillerShell.Controls.CardMenus.Tile("copyname", 0xE8C8, "Str_Menu_RegCopyName", "Str_Card_Name", null,
+                    () => CopyToClipboard(node.Name, "Str_RegEd_NameCopied")),
+            ]));
 
             menu.IsOpen = true;
         }
@@ -1272,19 +1246,18 @@ namespace KillerShell.Tools
 
         private void BuildValueCard(RegistryNode node, RegistryValueRow row)
         {
-            var menu = KillerShell.Controls.CardMenus.Card();
+            var menu = KillerShell.Controls.CardMenus.TileCard();
             menu.PlacementTarget = _grid;
-            CardHeader(menu, row.DisplayName, row.KindLabel + " · " + row.DataLabel);
+            CardHeader(menu, row.DisplayName, row.KindLabel + " · " + row.DataLabel, () => DeleteValueWithConfirm(node, row), true);
 
-            var quick = KillerShell.Controls.CardMenus.QuickStrip(out var strip);
-            quick.Tag = "cardquick";
-            KillerShell.Controls.CardMenus.QuickButton(strip, menu, 0xE70F, "Str_Card_Edit", "Str_Menu_RegModify", "Enter", () => ModifyValueRow(node, row));
-            KillerShell.Controls.CardMenus.QuickButton(strip, menu, 0xE8AC, "Str_Card_Rename", "Str_Menu_RegRename", "F2",
-                () => RenameValueRow(node, row)).IsEnabled = row.Name.Length != 0;
-            KillerShell.Controls.CardMenus.QuickButton(strip, menu, 0xE74D, "Str_Card_Delete", "Str_Menu_RegDelete", "Del", () => DeleteValueWithConfirm(node, row));
-            KillerShell.Controls.CardMenus.QuickButton(strip, menu, 0xE8C8, "Str_Card_Name", "Str_Menu_RegCopyName", "Ctrl+C",
-                () => CopyToClipboard(row.DisplayName, "Str_RegEd_NameCopied"));
-            menu.Items.Add(quick);
+            menu.Items.Add(KillerShell.Controls.CardMenus.Tiles(menu,
+            [
+                KillerShell.Controls.CardMenus.Tile("modify", 0xE70F, "Str_Menu_RegModify", "Str_Card_Edit", "Enter", () => ModifyValueRow(node, row)),
+                KillerShell.Controls.CardMenus.Tile("rename", 0xE8AC, "Str_Menu_RegRename", "Str_Card_Rename", "F2",
+                    () => RenameValueRow(node, row), row.Name.Length != 0),
+                KillerShell.Controls.CardMenus.Tile("copyname", 0xE8C8, "Str_Menu_RegCopyName", "Str_Card_Name", "Ctrl+C",
+                    () => CopyToClipboard(row.DisplayName, "Str_RegEd_NameCopied")),
+            ]));
 
             menu.IsOpen = true;
         }

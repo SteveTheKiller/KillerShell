@@ -829,6 +829,8 @@
     <sys:String x:Key="Str_Theme_Decay">腐朽</sys:String>
     <sys:String x:Key="Str_Theme_Mourning">哀悼</sys:String>
     <sys:String x:Key="Str_Theme_FilmGrain">胶片颗粒</sys:String>
+    <sys:String x:Key="Str_Key_Alt">Alt</sys:String>
+    <sys:String x:Key="Str_Key_Shift">Shift</sys:String>
     <sys:String x:Key="Str_Theme_Sepulchre">陵墓</sys:String>
     <sys:String x:Key="Str_Theme_Delirium">谵妄</sys:String>
     <sys:String x:Key="Str_Theme_Malaise">倦怠</sys:String>
@@ -1071,4 +1073,27 @@
     <sys:String x:Key="Str_TT_RemoveSearchFilter">移除过滤器</sys:String>
     <sys:String x:Key="Str_A11y_ColumnHeadings">列标题</sys:String>
     <sys:String x:Key="Str_A11y_ColumnHeadingsHelp">按 Menu (Apps) 选择要显示的列。</sys:String>
+    <!-- Text box menu and the file pickers' New folder button (KillerUI kit). -->
+    <sys:String x:Key="Str_Ctx_Cut">剪切</sys:String>
+    <sys:String x:Key="Str_Ctx_Copy">复制</sys:String>
+    <sys:String x:Key="Str_Ctx_Paste">粘贴</sys:String>
+    <sys:String x:Key="Str_Ctx_SelectAll">全选</sys:String>
+    <sys:String x:Key="Str_TT_NewFolder">新建文件夹 (Ctrl+Shift+N)</sys:String>
+    <sys:String x:Key="Str_FD_NewFolder">新建文件夹</sys:String>
+    <sys:String x:Key="Str_FD_FolderEmpty">请输入文件夹名称。</sys:String>
+    <sys:String x:Key="Str_FD_FolderInvalid">文件夹名称不能包含以下任何字符：\ / : * ? " &lt; &gt; |</sys:String>
+    <sys:String x:Key="Str_FD_FolderReserved">该名称是 Windows 保留名称。请选择其他名称。</sys:String>
+    <sys:String x:Key="Str_FD_FolderTrailing">文件夹名称不能以句点或空格结尾。</sys:String>
+    <sys:String x:Key="Str_FD_FolderTooLong">该名称太长。请使用不超过 255 个字符的名称。</sys:String>
+    <sys:String x:Key="Str_FD_FolderExists">此处已存在同名的文件夹或文件。</sys:String>
+    <sys:String x:Key="Str_FD_FolderFailed">无法创建文件夹：</sys:String>
+    <!-- Tile cards (Controls/CardMenus.cs): the customize pencil, its drawer, and the file card's copy flyout. -->
+    <sys:String x:Key="Str_Card_Customize">自定义此卡片</sys:String>
+    <sys:String x:Key="Str_Card_EditDone">完成</sys:String>
+    <sys:String x:Key="Str_Card_EditReset">恢复默认</sys:String>
+    <sys:String x:Key="Str_Card_EditResetShort">重置</sys:String>
+    <sys:String x:Key="Str_Card_Hidden">已隐藏</sys:String>
+    <sys:String x:Key="Str_Card_HiddenHint">将磁贴拖到此处即可隐藏</sys:String>
+    <sys:String x:Key="Str_Card_AlwaysShown">始终显示</sys:String>
+    <sys:String x:Key="Str_Card_CopyAs">复制为</sys:String>
 </ResourceDictionary>

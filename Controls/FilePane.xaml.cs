@@ -750,10 +750,6 @@ namespace KillerShell
         private void ExpandAll_Click(object s, RoutedEventArgs e)          => Owner.ExpandAll_Click(s, e);
         private void FavoriteStar_Click(object s, RoutedEventArgs e)      => Owner.FavoriteStar_Click(s, e);
 
-        // ── Results context menu: shells ─────────────────────────
-        private void MenuTerminal_Click(object s, RoutedEventArgs e)       => Owner.MenuTerminal_Click(s, e);
-        private void MenuTerminalAdmin_Click(object s, RoutedEventArgs e)  => Owner.MenuTerminalAdmin_Click(s, e);
-
         // ── Details-view column headers ──────────────────────────
         private void ColName_Click(object s, RoutedEventArgs e)            => Owner.ColName_Click(s, e);
         private void ColFolder_Click(object s, RoutedEventArgs e)          => Owner.ColFolder_Click(s, e);
@@ -846,38 +842,6 @@ namespace KillerShell
             Owner.UpdateDetailsPaneForSelection(this);   // Shell/DetailsPane.cs - no-ops when closed
         }
 
-        // ── Results context menu ─────────────────────────────────
-        private void ResultCard_ButtonClick(object s, RoutedEventArgs e)   => Owner.ResultCard_ButtonClick(s, e);
-        private void MenuOpen_Click(object s, RoutedEventArgs e)           => Owner.MenuOpen_Click(s, e);
-        private void MenuEdit_Click(object s, RoutedEventArgs e)           => Owner.MenuEdit_Click(s, e);
-        private void MenuOpenWith_Click(object s, RoutedEventArgs e)       => Owner.MenuOpenWith_Click(s, e);
-        private void MenuOpenAdmin_Click(object s, RoutedEventArgs e)      => Owner.MenuOpenAdmin_Click(s, e);
-        private void MenuShowInExplorer_Click(object s, RoutedEventArgs e) => Owner.MenuShowInExplorer_Click(s, e);
-        private void MenuFavorite_Click(object s, RoutedEventArgs e)       => Owner.MenuFavorite_Click(s, e);
-        private void MenuSearchHere_Click(object s, RoutedEventArgs e)     => Owner.MenuSearchHere_Click(s, e);
-        private void MenuAnalyze_Click(object s, RoutedEventArgs e)        => Owner.MenuAnalyze_Click(s, e);
-        private void MenuExcludeFolder_Click(object s, RoutedEventArgs e)  => Owner.MenuExcludeFolder_Click(s, e);
-        private void MenuCopyPath_Click(object s, RoutedEventArgs e)       => Owner.MenuCopyPath_Click(s, e);
-        private void MenuCopyName_Click(object s, RoutedEventArgs e)       => Owner.MenuCopyName_Click(s, e);
-        private void MenuCopyFolder_Click(object s, RoutedEventArgs e)     => Owner.MenuCopyFolder_Click(s, e);
-        private void MenuCopyLines_Click(object s, RoutedEventArgs e)      => Owner.MenuCopyLines_Click(s, e);
-        private void MenuCopyHash_Click(object s, RoutedEventArgs e)       => Owner.MenuCopyHash_Click(s, e);
-        private void MenuProperties_Click(object s, RoutedEventArgs e)     => Owner.MenuProperties_Click(s, e);
-        private void MenuShell_Click(object s, RoutedEventArgs e)          => Owner.MenuShell_Click(s, e);
-
-        // File operations (FileCommands.cs)
-        private void MenuCut_Click(object s, RoutedEventArgs e)            => Owner.MenuCut_Click(s, e);
-        private void MenuCopy_Click(object s, RoutedEventArgs e)           => Owner.MenuCopy_Click(s, e);
-        private void MenuPaste_Click(object s, RoutedEventArgs e)          => Owner.MenuPaste_Click(s, e);
-        private void MenuRename_Click(object s, RoutedEventArgs e)         => Owner.MenuRename_Click(s, e);
-        private void MenuNickname_Click(object s, RoutedEventArgs e)       => Owner.MenuNickname_Click(s, e);
-        private void MenuNicknameRemove_Click(object s, RoutedEventArgs e) => Owner.MenuNicknameRemove_Click(s, e);
-        private void MenuDelete_Click(object s, RoutedEventArgs e)         => Owner.MenuDelete_Click(s, e);
-        private void MenuNewFolder_Click(object s, RoutedEventArgs e)      => Owner.MenuNewFolder_Click(s, e);
-        private void MenuCompress_Click(object s, RoutedEventArgs e)       => Owner.MenuCompress_Click(s, e);
-        private void MenuExtractHere_Click(object s, RoutedEventArgs e)    => Owner.MenuExtractHere_Click(s, e);
-        private void MenuExtractTo_Click(object s, RoutedEventArgs e)      => Owner.MenuExtractTo_Click(s, e);
-
         // ── Document bar + gear (EditorBar.cs) ───────────────────
         private void EditorSave_Click(object s, RoutedEventArgs e)         => Owner.EditorSave_Click(s, e);
         private void EditorUndo_Click(object s, RoutedEventArgs e)         => Owner.EditorUndo_Click(s, e);
@@ -903,7 +867,16 @@ namespace KillerShell
         // THIS pane, not the focused one: the right-click can land on the unfocused pane's bar,
         // and hiding the other pane's bar in response would be exactly the cross-pane bug class
         // the zoom box already had.
-        private void BarHideMenu_Click(object s, RoutedEventArgs e)        => Owner.HideMenuBarFor(this);
+        // The bars' card: one tile, Hide menu bar, with Alt+M (the only way back) under it.
+        private void BarMenu_Opened(object s, RoutedEventArgs e)
+        {
+            var menu = CardMenus.Prepare((ContextMenu)s);
+            CardMenus.WatchKeyboardStart(menu);
+            menu.Items.Add(CardMenus.Tiles(menu, new[]
+            {
+                CardMenus.Tile("hidemenubar", 0xE7B3, "Str_Menu_HideMenuBar", null, "Alt+M", () => Owner.HideMenuBarFor(this)),
+            }));
+        }
 
         // ── Shell bar (TerminalBar.cs) ───────────────────────────
         private void TermCwd_Click(object s, MouseButtonEventArgs e)       => Owner.TermCwd_Click(s, e);

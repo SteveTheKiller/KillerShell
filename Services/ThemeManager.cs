@@ -35,9 +35,37 @@ namespace KillerShell.Services
 
         /// <summary>Killer Sans UI (Killer Sans scaled to Segoe UI proportions) with the Segoe fallback stack.</summary>
         private static readonly string AssemblyName = typeof(ThemeManager).Assembly.GetName().Name!;
-        internal static readonly FontFamily KillerSansUiStack = new(new Uri($"pack://application:,,,/{AssemblyName};component/"), "./Fonts/#Killer Sans UI, Segoe UI, Microsoft JhengHei UI, Nirmala UI");
+        /// <summary>The interface language the font stacks are built for, a culture name such as "zh-CN".</summary>
+        internal static string UiLanguage { get; private set; } = "en-US";
+        internal static FontFamily KillerSansUiStack { get; private set; } = UiStack(UiLanguage);
         internal static readonly FontFamily KillerSansFont = new(new Uri("pack://application:,,,/"), "./Fonts/#Killer Sans");
-        internal static readonly FontFamily LacquerHeadingStack = new(new Uri("pack://application:,,,/"), "./Fonts/#Lacquer, ./Fonts/#Killer Sans UI, Segoe UI, Microsoft JhengHei UI, Nirmala UI");
+        internal static FontFamily LacquerHeadingStack { get; private set; } = HeadingStack(UiLanguage);
+        // The title bar's file name: Killer Sans over the language's fallbacks, so a CJK name is not left to the
+        // system default face.
+        internal static FontFamily KillerSansTitleStack { get; private set; } = TitleStack(UiLanguage);
+
+        private static FontFamily UiStack(string language) =>
+            new(new Uri($"pack://application:,,,/{AssemblyName};component/"), UiFontStack.For(language));
+        private static FontFamily TitleStack(string language) =>
+            new(new Uri("pack://application:,,,/"), UiFontStack.Title(language));
+        private static FontFamily HeadingStack(string language) =>
+            new(new Uri("pack://application:,,,/"), UiFontStack.Heading(language));
+
+        /// <summary>
+        /// Builds the font stacks for an interface language and republishes the theme when they
+        /// change, so every font resource bound with DynamicResource follows. A language that keeps
+        /// the same stack republishes nothing.
+        /// </summary>
+        internal static void SetUiLanguage(string language)
+        {
+            bool changed = UiFontStack.For(language) != UiFontStack.For(UiLanguage);
+            UiLanguage = language;
+            if (!changed) return;
+            KillerSansUiStack = UiStack(language);
+            LacquerHeadingStack = HeadingStack(language);
+            KillerSansTitleStack = TitleStack(language);
+            LoadDict(_current);
+        }
         /// <summary>
         /// Read a corner radius out of the live theme. For code-built controls, which cannot use a
         /// DynamicResource and so had their radii as C# literals - the exact bug that kept the
@@ -217,7 +245,7 @@ namespace KillerShell.Services
             else if (family == Theme.Black) { _blackAccent = accent; SetSetting("BlackAccent", accent.ToString()); }
             else if (family == Theme.SE98)  { _se98Accent  = accent; SetSetting("98SEAccent",  accent.ToString()); }
             else if (family == Theme.TrashPolka) { _trashPolkaAccent = accent; SetSetting(ThemeAccentRules.SettingKey("TrashPolka"), accent.ToString()); }
-            else                          { _darkAccent  = accent; SetSetting("DarkAccent",  accent.ToString()); }
+            else                            { _darkAccent  = accent; SetSetting("DarkAccent",  accent.ToString()); }
 
             if (_current == family)
             {
@@ -285,6 +313,7 @@ namespace KillerShell.Services
                 }
                 catch { /* overlay not present - base theme stands */ }
             }
+
 
             // Trash Polka draws its motif behind the window and its chrome panes (Controls/ThemeMotif.cs); every other
             // theme keeps plain backgrounds. Set before the app's tokens so an app can turn it off.
@@ -448,6 +477,13 @@ namespace KillerShell.Services
                 var red = new SolidColorBrush(Color.FromRgb(0xE0, 0x44, 0x44)); red.Freeze();
                 combined["CaptionCloseHoverBrush"] = red;
             }
+            // The system menu's Close glyph: DangerRed's red on the dark menus, and a theme with a light gray menu
+            // (Light, 98SE) states a darker red so the glyph keeps 3:1 on it.
+            if (!combined.Contains("MenuDangerBrush"))
+            {
+                var menuRed = new SolidColorBrush(Color.FromRgb(0xE0, 0x44, 0x44)); menuRed.Freeze();
+                combined["MenuDangerBrush"] = menuRed;
+            }
             if (!combined.Contains("CaptionCloseHoverFgBrush"))
             {
                 var white = new SolidColorBrush(Colors.White); white.Freeze();
@@ -497,7 +533,9 @@ namespace KillerShell.Services
             SetIfAbsent("DialogButtonsMargin", new Thickness(16, 12, 16, 16));
             SetIfAbsent("DialogContentMargin", new Thickness(0));
             SetIfAbsent("DialogOuterBorderThickness", new Thickness(1));
-            SetIfAbsent("DialogTitleBarPadding", new Thickness(6, 0, 14, 0));
+            // Right 2: the card themes' close X has no visible face, so it reads against the card's
+            // corner and sits as far in from the right edge as down from the top (16 px).
+            SetIfAbsent("DialogTitleBarPadding", new Thickness(6, 0, 2, 0));
             SetIfAbsent("DialogFieldMargin", new Thickness(16, 12, 16, 0));
             // 10, the halo every dialog already reserved for its drop shadow. 98SE sets 0: it
             // casts no shadow, and an invisible 10px gutter would put the resize grab outside
@@ -930,6 +968,13 @@ namespace KillerShell.Services
             // opaque tile. 98SE states #c0c0c0 - there, a toolbar button IS a raised button.
             SetIfAbsent("SortButtonBrush", Transparent);
             Mirror("SurfaceHoverBrush", "RowHoverBrush");
+            // A plain (non-accent) dialog button's face and hovered face. Every theme keeps the
+            // pane and surface wash it always had; Trash Polka states black with a gray hover.
+            Mirror("ButtonFaceBrush", "PaneBrush");
+            Mirror("ButtonHoverFaceBrush", "SurfaceHoverBrush");
+            // A dialog list well's tint, drawn at half opacity. Trash Polka states black so its motif
+            // darkens behind the rows the way the app's panels do, instead of washing gray.
+            Mirror("WellFillBrush", "PaneBrush");
             // The toolbar buttons' hovered face (Controls.xaml ViewToggleBtn). Mirrors the wash
             // above so it reads its source AFTER it exists; 98SE states the flat button face.
             Mirror("ToolHoverFaceBrush", "SurfaceHoverBrush");
@@ -984,8 +1029,7 @@ namespace KillerShell.Services
             // baseline in Killer Sans, as KillerPDF's filename and KillerScan's subtitle do. A flat
             // theme keeps its caption font beside its plain title.
             bool flatTitle = combined.Contains("UseDialogCaption") && combined["UseDialogCaption"] is bool ft && ft;
-            SetIfAbsent("FileNameFont", flatTitle ? combined["ChromeFontFamily"]
-                : new FontFamily(new Uri("pack://application:,,,/"), "./Fonts/#Killer Sans"));
+            SetIfAbsent("FileNameFont", flatTitle ? combined["ChromeFontFamily"] : KillerSansTitleStack);
             SetIfAbsent("FileNameFontSize", flatTitle ? 11.0 : 18.0);
             if (!combined.Contains("FileNameTransform"))
             {
@@ -996,8 +1040,7 @@ namespace KillerShell.Services
             // The app (mono) slot: Killer Sans UI, the family UI face, over the Segoe stack. It is
             // completed here rather than in AppStyles.xaml so 98SE can state its own face; a font
             // picked in Fonts still overrides it from the top-level application dictionary.
-            SetIfAbsent("MonoFont", new FontFamily(new Uri("pack://application:,,,/"),
-                $"/{AssemblyName};component/Fonts/#Killer Sans UI, Segoe UI"));
+            SetIfAbsent("MonoFont", KillerSansUiStack);
             SetIfAbsent("TitleIconMargin", new Thickness(0, 0, 7, 0));
             SetIfAbsent("TitleIconSize", 27.0);
             SetIfAbsent("TitleTextMargin", new Thickness(0));
@@ -1046,8 +1089,15 @@ namespace KillerShell.Services
                 if (!combined.Contains("CaptionHoverBrush"))
                     combined["CaptionHoverBrush"] = flat ? (object)Transparent : combined["OutlineHoverBrush"];
 
+                // A flat theme draws Win98's caption glyphs as pixel art instead of the MDL2 font: the
+                // close X in ChromeCloseButton, and the app's own minimize line (8x2, 4px above the
+                // bottom) and maximize box (11x10 outline with a 2px top bar). These pick which shows.
+                combined["CaptionFontGlyphVisibility"]  = flat ? Visibility.Collapsed : Visibility.Visible;
+                combined["CaptionDrawnGlyphVisibility"] = flat ? Visibility.Visible   : Visibility.Collapsed;
+
                 // A 1px MDL2 stroke disappears against a gray button face at 16px.
                 combined["CaptionGlyphWeight"] = flat ? FontWeights.Bold : FontWeights.Normal;
+
                 // ...and at 10px the X fills a 98SE face edge to edge, which reads as off center.
                 combined["CaptionGlyphSize"] = flat ? 8.0 : 10.0;
 

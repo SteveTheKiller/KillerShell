@@ -29,6 +29,8 @@
     <sys:String x:Key="Str_Theme_Decay">Forfall</sys:String>
     <sys:String x:Key="Str_Theme_Mourning">Sorg</sys:String>
     <sys:String x:Key="Str_Theme_FilmGrain">Filmkorn</sys:String>
+    <sys:String x:Key="Str_Key_Alt">Alt</sys:String>
+    <sys:String x:Key="Str_Key_Shift">Shift</sys:String>
     <sys:String x:Key="Str_Theme_Sepulchre">Gravkammer</sys:String>
     <sys:String x:Key="Str_Theme_Delirium">Delirium</sys:String>
     <sys:String x:Key="Str_Theme_Malaise">Ubehag</sys:String>
@@ -1119,4 +1121,27 @@
     <sys:String x:Key="Str_TT_RemoveSearchFilter">Fjern filter</sys:String>
     <sys:String x:Key="Str_A11y_ColumnHeadings">Kolonneoverskrifter</sys:String>
     <sys:String x:Key="Str_A11y_ColumnHeadingsHelp">Trykk Menu (Apps) for å velge synlige kolonner.</sys:String>
+    <!-- Text box menu and the file pickers' New folder button (KillerUI kit). -->
+    <sys:String x:Key="Str_Ctx_Cut">Klipp ut</sys:String>
+    <sys:String x:Key="Str_Ctx_Copy">Kopier</sys:String>
+    <sys:String x:Key="Str_Ctx_Paste">Lim inn</sys:String>
+    <sys:String x:Key="Str_Ctx_SelectAll">Merk alt</sys:String>
+    <sys:String x:Key="Str_TT_NewFolder">Ny mappe (Ctrl+Skift+N)</sys:String>
+    <sys:String x:Key="Str_FD_NewFolder">Ny mappe</sys:String>
+    <sys:String x:Key="Str_FD_FolderEmpty">Skriv inn et navn på mappen.</sys:String>
+    <sys:String x:Key="Str_FD_FolderInvalid">Et mappenavn kan ikke inneholde noen av disse tegnene: \ / : * ? " &lt; &gt; |</sys:String>
+    <sys:String x:Key="Str_FD_FolderReserved">Windows reserverer dette navnet. Velg et annet.</sys:String>
+    <sys:String x:Key="Str_FD_FolderTrailing">Et mappenavn kan ikke slutte med punktum eller mellomrom.</sys:String>
+    <sys:String x:Key="Str_FD_FolderTooLong">Dette navnet er for langt. Bruk maksimalt 255 tegn.</sys:String>
+    <sys:String x:Key="Str_FD_FolderExists">Det finnes allerede en mappe eller fil med dette navnet her.</sys:String>
+    <sys:String x:Key="Str_FD_FolderFailed">Mappen kunne ikke opprettes:</sys:String>
+    <!-- Tile cards (Controls/CardMenus.cs): the customize pencil, its drawer, and the file card's copy flyout. -->
+    <sys:String x:Key="Str_Card_Customize">Tilpass dette kortet</sys:String>
+    <sys:String x:Key="Str_Card_EditDone">Ferdig</sys:String>
+    <sys:String x:Key="Str_Card_EditReset">Tilbakestill til standard</sys:String>
+    <sys:String x:Key="Str_Card_EditResetShort">Tilbakestill</sys:String>
+    <sys:String x:Key="Str_Card_Hidden">Skjult</sys:String>
+    <sys:String x:Key="Str_Card_HiddenHint">Dra en flis hit for å skjule den</sys:String>
+    <sys:String x:Key="Str_Card_AlwaysShown">Vises alltid</sys:String>
+    <sys:String x:Key="Str_Card_CopyAs">Kopier som</sys:String>
 </ResourceDictionary>

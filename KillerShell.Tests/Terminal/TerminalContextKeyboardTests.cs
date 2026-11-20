@@ -52,7 +52,9 @@ public static class TerminalContextKeyboardScenario
             Assert.InRange(position.Y, caret[1] - 1, caret[1] + 1);
             Assert.True(anchor.Height > 0 && anchor.Height < terminal.ActualHeight / 4,
                 "The anchor must cover a caret cell rather than the terminal surface.");
-            Assert.True(terminal.ContextMenu.MoveFocus(new TraversalRequest(FocusNavigationDirection.First)),
+            // A tile card has no rows to arrow to, so focus starts on its first tile (CardMenus.WatchKeyboardStart).
+            ShellWindowFixture.PumpUntil(() => terminal.ContextMenu.IsVisible);
+            Assert.True(KillerShell.Controls.CardMenus.FirstTile(terminal.ContextMenu)?.Focus() == true,
                 "The opened card must admit keyboard focus.");
             terminal.ContextMenu.IsOpen = false;
         }

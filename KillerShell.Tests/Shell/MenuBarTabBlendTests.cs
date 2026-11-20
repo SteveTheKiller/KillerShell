@@ -166,7 +166,8 @@ public static class MenuBarTerminalBlendScenario
         MenuBarTabBlendScenario.SelectTab(pane, tab);
         Assert.True(pane.TerminalHost.IsVisible);
         var menu = (ContextMenu)pane.FindResource("BarMenu");
-        ((MenuItem)menu.Items[0]).RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+        menu.RaiseEvent(new RoutedEventArgs(ContextMenu.OpenedEvent, menu));
+        KillerShell.Controls.CardMenus.TileButton(menu, "hidemenubar")!.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
         ShellWindowFixture.PumpUntil(() => pane.TerminalBarRow.Visibility == Visibility.Collapsed);
         var border = MenuBarTabBlendScenario.TabBorder(pane, tab);
         Assert.Equal(Colors.Black, MenuBarTabBlendScenario.Paint(border.Background));
@@ -230,7 +231,8 @@ public static class MenuBarTabBlendScenario
         Assert.NotEqual(content, initial);
 
         var menu = (ContextMenu)pane.FindResource("BarMenu");
-        ((MenuItem)menu.Items[0]).RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+        menu.RaiseEvent(new RoutedEventArgs(ContextMenu.OpenedEvent, menu));
+        KillerShell.Controls.CardMenus.TileButton(menu, "hidemenubar")!.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
         ShellWindowFixture.PumpUntil(() => pane.LocationRow.Visibility == Visibility.Collapsed);
 
         Assert.Equal(content, Paint(active.Background));
