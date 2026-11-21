@@ -102,7 +102,8 @@ internal static class SearchFooterScreen
         ((IInvokeProvider)UIElementAutomationPeer.CreatePeerForElement(trigger).GetPattern(PatternInterface.Invoke)).Invoke();
         var menu = (ContextMenu)window.FindName("LangMenu");
         ShellWindowFixture.PumpUntil(() => menu.IsOpen);
-        var columns = (StackPanel)menu.Items[0];
+        // The columns sit in the language menu's gutter-free PanelMenuItem (Language.cs).
+        var columns = (StackPanel)((MenuItem)menu.Items[0]).Header;
         var radio = columns.Children.OfType<StackPanel>().SelectMany(column => column.Children.OfType<RadioButton>())
             .Single(button => Equals(button.Tag, locale.ToString()));
         ((ISelectionItemProvider)UIElementAutomationPeer.CreatePeerForElement(radio).GetPattern(PatternInterface.SelectionItem)).Select();

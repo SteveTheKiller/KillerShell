@@ -111,7 +111,8 @@ public static class PaneLocalizationScenario
     {
         ShellWindowFixture.Click(window, "LangButton");
         var menu = (ContextMenu)window.FindName("LangMenu");
-        var columns = (StackPanel)menu.Items[0];
+        // The columns sit in the language menu's gutter-free PanelMenuItem (Language.cs).
+        var columns = (StackPanel)((MenuItem)menu.Items[0]).Header;
         var radio = columns.Children.OfType<StackPanel>().SelectMany(column => column.Children.OfType<RadioButton>())
             .Single(button => Equals(button.Tag, locale.ToString()));
         radio.IsChecked = true;

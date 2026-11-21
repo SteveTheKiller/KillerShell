@@ -94,7 +94,8 @@ public static class TerminalClearReceiverScenario
                 Environment.TickCount, Key.Apps) { RoutedEvent = Keyboard.PreviewKeyUpEvent });
             Assert.NotNull(terminal.ContextMenu);
             terminal.ContextMenu.UpdateLayout();
-            var clear = Assert.Single(Descendants(terminal.ContextMenu).OfType<Button>(),
+            // The card's own tile, not its hidden measuring copy (CardMenus skips that copy and the drawer).
+            var clear = Assert.Single(KillerShell.Controls.CardMenus.Buttons(terminal.ContextMenu),
                 button => AutomationProperties.GetName(button) == "Clear scrollback");
             var peer = UIElementAutomationPeer.CreatePeerForElement(clear);
             var invoke = Assert.IsAssignableFrom<IInvokeProvider>(peer.GetPattern(PatternInterface.Invoke));
@@ -120,14 +121,4 @@ public static class TerminalClearReceiverScenario
     internal static string VisibleText(TerminalControl terminal)
         => string.Join("\n", Enumerable.Range(terminal.Buffer.ScrollbackCount, terminal.Buffer.Rows)
             .Select(line => string.Concat(terminal.Buffer.LineAt(line).Select(cell => cell.Text))));
-
-    private static IEnumerable<DependencyObject> Descendants(DependencyObject parent)
-    {
-        for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
-        {
-            var child = VisualTreeHelper.GetChild(parent, i);
-            yield return child;
-            foreach (var descendant in Descendants(child)) yield return descendant;
-        }
-    }
 }

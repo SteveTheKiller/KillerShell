@@ -356,11 +356,12 @@ namespace KillerShell.Controls
             Buttons(card).FirstOrDefault(b => !Equals(b.Tag, HeaderDeleteTag) && b.IsEnabled && b.IsVisible);
 
         // The card's own controls: a customizable card's hidden measuring copy of its grid, its drawer (a popup)
-        // and its edit pencil (a button with no caption) are not tiles.
+        // and its edit pencil are not tiles. The pencil is the one plain button with no caption (Tag) and no command:
+        // tiles carry both, the header Delete carries HeaderDeleteTag, and the kit names the pencil for screen readers.
         private static IEnumerable<DependencyObject> Descendants(DependencyObject? root)
         {
             if (root == null || root is Popup || root is UIElement { Visibility: not Visibility.Visible }) yield break;
-            if (root is Button { Tag: null } && AutomationProperties.GetName(root).Length == 0) yield break;
+            if (root is Button { Tag: null, CommandParameter: null }) yield break;
             yield return root;
             foreach (var child in LogicalTreeHelper.GetChildren(root).OfType<DependencyObject>())
                 foreach (var d in Descendants(child)) yield return d;
