@@ -1714,6 +1714,10 @@
                          .OnRender washes the tile onto its own background fill directly, under
                          the glyphs, so texture still shows in every blank cell without ever
                          landing on top of the writing. -->
+                    <!-- Trash Polka: the pinned pane ink behind the screen, which leaves its own fill off then
+                         (TerminalControl.OnRender). No background of its own, so other themes draw nothing here. -->
+                    <Border Grid.Row="1" x:Name="TerminalInk" IsHitTestVisible="False"
+                            kc:ThemeMotif.Part="Window" kc:ThemeMotif.BaseBrush="TerminalBackgroundBrush"/>
                     <ContentControl Grid.Row="1" x:Name="TerminalSlot" Focusable="False"/>
                     <!-- The terminal's own sunken well - Grid.Row 1 ONLY, so it rings the black
                          screen and nothing else. Scoped here rather than across the pane because a
@@ -1997,6 +2001,10 @@
                          editor paints its own background and text as one opaque surface
                          (Editing/EditorControl.ApplyTheme), so grain declared after it would only
                          ever sit on top of the document's own writing. -->
+                    <!-- Trash Polka: the pinned pane ink behind the page, which is grain only then
+                         (EditorControl.ApplyTheme). No background of its own, so other themes draw nothing here. -->
+                    <Border Grid.Row="1" x:Name="EditorInk" IsHitTestVisible="False"
+                            kc:ThemeMotif.Part="Window" kc:ThemeMotif.BaseBrush="EditorBackgroundBrush"/>
                     <ContentControl Grid.Row="1" x:Name="EditorSlot" Focusable="False"/>
                     <!-- The document's own sunken well, exactly the terminal's four Borders one
                          host up: Grid.Row 1 ONLY so it rings the text surface and not the editor

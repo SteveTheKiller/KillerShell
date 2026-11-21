@@ -39,7 +39,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 - The file card can be customized: the pencil in its corner moves tiles between the card and a Hidden drawer, and Reset brings back the default.
 - The file picker has a New folder button that checks the name before it creates the folder.
-- Trash Polka, a new theme under 98SE: black with a tattoo-style ink background in your accent color, from eight accents with Blood red as the default. Under a Windows high contrast theme the ink steps aside for the system colors. The active tab carries on the ink of the bar below it with no seam, and the Performance Monitor's tiles and graphs show the ink too. The ink is saved to disk after it is first drawn, so later switches to Trash Polka load it instead of drawing it again.
+- Trash Polka, a new theme under 98SE: black with a tattoo-style ink background in your accent color, from eight accents with Blood red as the default. Under a Windows high contrast theme the ink steps aside for the system colors. The active tab carries on the ink of the bar below it with no seam, and the Performance Monitor's tiles and graphs show the ink too. The terminal screen and the text editor show the ink behind their text, and the LCD terminal keeps its own black. The ink is saved to disk after it is first drawn, so later switches to Trash Polka load it instead of drawing it again.
 
 ## [1.6.0] - 2026-11-14
 

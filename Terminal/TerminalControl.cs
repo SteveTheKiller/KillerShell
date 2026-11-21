@@ -644,9 +644,14 @@ namespace KillerShell.Terminal
             _drawnVersion = _buf.Version;
 
             var rect = new Rect(0, 0, ActualWidth, ActualHeight);
-            var bg = new SolidColorBrush(_palette.Background);
-            bg.Freeze();
-            dc.DrawRectangle(bg, null, rect);
+            // Trash Polka: the default screen leaves its fill off so the pane ink behind it (FilePane.xaml TerminalInk)
+            // shows in every blank cell. The LCD skin keeps its own phosphor black.
+            if (!(_palette.Skin == TerminalSkin.Default && Controls.MotifSurface.ShowsInk(this)))
+            {
+                var bg = new SolidColorBrush(_palette.Background);
+                bg.Freeze();
+                dc.DrawRectangle(bg, null, rect);
+            }
 
             // Grain sits on the background only, the same as every other pane surface in the
             // app - drawn here rather than as a separate Border, because this control fills its

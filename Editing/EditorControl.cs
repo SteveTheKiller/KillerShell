@@ -668,7 +668,8 @@ namespace KillerShell.Editing
             Color dim    = Res("DimTextBrush", Color.FromRgb(0x80, 0x80, 0x80));
             Color accent = Res("PrimaryBrush", Color.FromRgb(0x50, 0xAE, 0xE8));
 
-            Background            = SurfaceWithGrain(bg);
+            // Trash Polka: grain only, no fill, so the pane ink behind the page (FilePane.xaml EditorInk) shows through.
+            Background            = Controls.MotifSurface.ShowsInk(this) ? GrainOnly() : SurfaceWithGrain(bg);
             Foreground            = new SolidColorBrush(fg);
             LineNumbersForeground = new SolidColorBrush(dim);
 
@@ -719,6 +720,15 @@ namespace KillerShell.Editing
         /// from the editor entirely rather than folding it into the background paint, which left
         /// the page with no texture at all).
         /// </summary>
+        private static Brush GrainOnly()
+        {
+            if (Application.Current?.TryFindResource("GrainTileBrush") is not Brush grain) return Brushes.Transparent;
+            var brush = grain.Clone();
+            brush.Opacity = Application.Current?.TryFindResource("GrainOpacity") is double d ? d : 0.2;
+            brush.Freeze();
+            return brush;
+        }
+
         private static Brush SurfaceWithGrain(Color bg)
         {
             var solid = new SolidColorBrush(bg);
