@@ -168,10 +168,10 @@ public static class TabCardScenario
         var card = OpenCard(window, left, tab);
         var head = Tagged(card, "cardhead");
         Assert.Equal(tab.Title, AutomationProperties.GetName(head));
-        Assert.Equal(new[] { "newtab", "otherpane", "newwindow", "pipe", "close", "tabstop", "tabsbottom" },
+        // The card is customizable, and Pipe starts in its Hidden drawer for two full rows.
+        Assert.Equal(new[] { "newtab", "otherpane", "newwindow", "close", "tabstop", "tabsbottom" },
             KillerShell.Controls.CardMenus.Buttons(card).Select(b => b.CommandParameter as string).ToArray());
         Assert.False(KillerShell.Controls.CardMenus.TileButton(card, "otherpane")!.IsEnabled);
-        Assert.True(KillerShell.Controls.CardMenus.TileButton(card, "pipe")!.IsEnabled);
         Assert.Equal("Alt+Shift+Down", AutomationProperties.GetAcceleratorKey(KillerShell.Controls.CardMenus.TileButton(card, "tabsbottom")!));
 
         // Two panes: Other pane appears and moves the tab across.

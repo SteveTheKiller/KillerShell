@@ -479,7 +479,8 @@ namespace KillerShell.Shell
         {
             bool favorite = IsBookmarked(path);
             bool nicknamed = Services.Nicknames.Get(path).Length > 0;
-            string signature = string.Join("|", favorite, nicknamed, TreeShowHidden, Loc("Str_Card_Actions"));
+            string signature = string.Join("|", favorite, nicknamed, TreeShowHidden, Loc("Str_Card_Actions"),
+                Services.ThemeManager.GetSetting("Card.Tree.Hidden"));
             if (_treeTiles is { } kept && kept.Signature == signature) return kept.Slot;
 
             // Every command runs once the card has closed: Search here puts the caret in the search
@@ -489,7 +490,12 @@ namespace KillerShell.Shell
                 => Controls.CardMenus.Tile(id, glyph, captionKey, shownKey, keys,
                     () => AfterMenuCloses(() => handler(this, new RoutedEventArgs())), enabled, on);   // ResultsMenu.cs
 
-            var slot = Controls.CardMenus.Tiles(card,
+            // Customizable: New tab and Explorer always show, and the admin terminal, Analyze storage and the
+            // two nickname tiles start in the Hidden drawer, as on the file card, so the default card is three
+            // full rows.
+            var slot = Controls.CardMenus.EditableTiles(card, "Tree",
+                locked: ["newtab", "explorer"],
+                spares: ["terminaladmin", "analyze", "nick", "nickdel"],
             [
                 // "Open in new tab", not Str_Tab_New ("new search"): this opens the node in a NEW TAB.
                 Tile("newtab", 0xE710, "Str_Menu_OpenInNewTab", "Str_Card_NewTab", "Ctrl+Enter", TreeOpenNewTab_Click),

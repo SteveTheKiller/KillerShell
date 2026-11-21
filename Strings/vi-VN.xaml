@@ -1099,5 +1099,6 @@ Các cài đặt của bạn sẽ không bị xóa.</sys:String>
     <sys:String x:Key="Str_Card_Hidden">Đã ẩn</sys:String>
     <sys:String x:Key="Str_Card_HiddenHint">Kéo một ô vào đây để ẩn</sys:String>
     <sys:String x:Key="Str_Card_AlwaysShown">Luôn hiển thị</sys:String>
+    <sys:String x:Key="Str_Card_TileMoved">{0}, vị trí {1} trên {2}</sys:String>
     <sys:String x:Key="Str_Card_CopyAs">Sao chép dạng</sys:String>
 </ResourceDictionary>

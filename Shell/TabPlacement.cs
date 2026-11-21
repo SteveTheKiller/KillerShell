@@ -56,7 +56,12 @@ namespace KillerShell.Shell
             if (Equals(menu.Tag, "tabcard") && (menu.PlacementTarget as FrameworkElement)?.DataContext is Models.SearchTab tab
                 && FillTabCard(menu, tab) is { } verbs)
             {
-                menu.Items.Add(Controls.CardMenus.Tiles(menu, verbs, placement));
+                // Customizable: New tab and Close always show, and Pipe, which only folder and search tabs can
+                // use, starts in the Hidden drawer so the default card is two full rows.
+                menu.Items.Add(Controls.CardMenus.EditableTiles(menu, "Tab",
+                    locked: ["newtab", "close"],
+                    spares: ["pipe"],
+                    verbs, placement));
                 return;
             }
             Controls.CardMenus.WatchKeyboardStart(menu);

@@ -53,7 +53,8 @@ public static class PlacesCardScenario
         var place = (Bookmark)folderRow.DataContext;
         Assert.Equal(place.NameLabel, AutomationProperties.GetName(Tagged(card, "cardhead")));
         var buttons = KillerShell.Controls.CardMenus.Buttons(card).Where(b => b.CommandParameter is string).ToList();
-        Assert.Equal(new[] { "newtab", "explorer", "search", "terminal", "terminaladmin", "analyze", "copypath",
+        // The card is customizable, and the admin terminal and Analyze storage start in its Hidden drawer.
+        Assert.Equal(new[] { "newtab", "explorer", "search", "terminal", "copypath",
                              "nick", "nickdel", "properties", "remove" },
                      buttons.Select(b => (string)b.CommandParameter).ToArray());
         foreach (var button in buttons) Assert.False(string.IsNullOrEmpty(AutomationProperties.GetName(button)));

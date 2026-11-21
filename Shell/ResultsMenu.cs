@@ -140,7 +140,12 @@ namespace KillerShell.Shell
             if (!onItem)
             {
                 // Empty space in a folder: the card names the folder, and its own verbs lead.
-                card.Items.Add(Controls.CardMenus.Tiles(card, create, folderVerbs.Skip(1), folderMore));
+                // Customizable: Paste and New folder always show, and the admin terminal and Analyze storage
+                // start in the Hidden drawer so the default card is two full rows.
+                card.Items.Add(Controls.CardMenus.EditableTiles(card, "Folder",
+                    locked: ["paste", "newfolder"],
+                    spares: ["terminaladmin", "analyze"],
+                    create, folderVerbs.Skip(1), folderMore));
                 return;
             }
 

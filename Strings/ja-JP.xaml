@@ -1094,5 +1094,6 @@
     <sys:String x:Key="Str_Card_Hidden">非表示</sys:String>
     <sys:String x:Key="Str_Card_HiddenHint">非表示にするにはタイルをここにドラッグ</sys:String>
     <sys:String x:Key="Str_Card_AlwaysShown">常に表示</sys:String>
+    <sys:String x:Key="Str_Card_TileMoved">{0}、{2} 個中 {1} 番目</sys:String>
     <sys:String x:Key="Str_Card_CopyAs">形式を選んでコピー</sys:String>
 </ResourceDictionary>

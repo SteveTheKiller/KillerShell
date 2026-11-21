@@ -54,8 +54,10 @@ public static class TreeCardScenario
         var head = Assert.Single(card.Items.OfType<MenuItem>(), item => item.Tag as string == "cardhead");
         Assert.Equal(node.NameLabel, AutomationProperties.GetName(head));
         var buttons = KillerShell.Controls.CardMenus.Buttons(card).Where(b => b.CommandParameter is string).ToList();
-        Assert.Equal(new[] { "newtab", "explorer", "search", "terminal", "terminaladmin", "analyze", "copypath",
-                             "fav", "hidden", "nick", "nickdel", "properties", "shellmenu" },
+        // The card is customizable, and the admin terminal, Analyze storage and the nickname tiles start in
+        // its Hidden drawer.
+        Assert.Equal(new[] { "newtab", "explorer", "search", "terminal", "copypath",
+                             "fav", "hidden", "properties", "shellmenu" },
                      buttons.Select(b => (string)b.CommandParameter).ToArray());
         // Every tile is named and shows its shortcut.
         foreach (var button in buttons)

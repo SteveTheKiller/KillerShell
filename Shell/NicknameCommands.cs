@@ -100,7 +100,11 @@ namespace KillerShell.Shell
             bool nicknamed = folder && Services.Nicknames.Get(path).Length > 0;
             KillerFamily.Controls.CardTile Tile(string id, int glyph, string captionKey, string? shownKey, Action run, bool enabled)
                 => Controls.CardMenus.Tile(id, glyph, captionKey, shownKey, null, () => AfterMenuCloses(run), enabled);   // ResultsMenu.cs
-            card.Items.Add(Controls.CardMenus.Tiles(card,
+            // Customizable: New tab and Remove always show, and the admin terminal and Analyze storage start in
+            // the Hidden drawer so the default card is three full rows.
+            card.Items.Add(Controls.CardMenus.EditableTiles(card, "Place",
+                locked: ["newtab", "remove"],
+                spares: ["terminaladmin", "analyze"],
             [
                 Tile("newtab", 0xE710, "Str_Menu_OpenInNewTab", "Str_Card_NewTab", () => OpenFolderInNewTab(path), folder),
                 Tile("explorer", 0xE838, "Str_Menu_ShowExplorer", "Str_Card_Explorer", () => ShowFolderInExplorer(path), folder),

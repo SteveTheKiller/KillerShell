@@ -1096,5 +1096,6 @@
     <sys:String x:Key="Str_Card_Hidden">Skryté</sys:String>
     <sys:String x:Key="Str_Card_HiddenHint">Přetažením dlaždice sem ji skryjete</sys:String>
     <sys:String x:Key="Str_Card_AlwaysShown">Vždy zobrazeno</sys:String>
+    <sys:String x:Key="Str_Card_TileMoved">{0}, pozice {1} z {2}</sys:String>
     <sys:String x:Key="Str_Card_CopyAs">Kopírovat jako</sys:String>
 </ResourceDictionary>

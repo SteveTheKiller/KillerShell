@@ -42,12 +42,19 @@
                         <Setter.Value>
                             <ControlTemplate TargetType="Button">
                                 <Border x:Name="Bd" Background="Transparent" BorderBrush="{DynamicResource MenuBorderBrush}" BorderThickness="1"
-                                        CornerRadius="{DynamicResource SmallCornerRadius}" Padding="{TemplateBinding Padding}">
-                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" RecognizesAccessKey="False"/>
+                                        CornerRadius="{DynamicResource SmallCornerRadius}">
+                                    <Grid>
+                                        <!-- Grain over the hover fill, under the label, as on menu rows and card tiles. -->
+                                        <Border x:Name="ChipGrain" IsHitTestVisible="False" Visibility="Collapsed"
+                                                CornerRadius="{DynamicResource SmallCornerRadius}"
+                                                Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
+                                        <ContentPresenter Margin="{TemplateBinding Padding}" HorizontalAlignment="Center" VerticalAlignment="Center" RecognizesAccessKey="False"/>
+                                    </Grid>
                                 </Border>
                                 <ControlTemplate.Triggers>
                                     <Trigger Property="IsMouseOver" Value="True">
                                         <Setter TargetName="Bd" Property="Background" Value="{DynamicResource MenuHoverBrush}"/>
+                                        <Setter TargetName="ChipGrain" Property="Visibility" Value="Visible"/>
                                         <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource DimTextBrush}"/>
                                         <Setter Property="Foreground" Value="{DynamicResource MenuHoverTextBrush}"/>
                                     </Trigger>
@@ -56,6 +63,8 @@
                                     </Trigger>
                                     <Trigger Property="IsPressed" Value="True">
                                         <Setter TargetName="Bd" Property="Background" Value="{DynamicResource RowSelectedBrush}"/>
+                                        <!-- The pressed fill takes no grain of its own, as on the kit's pressed tiles. -->
+                                        <Setter TargetName="ChipGrain" Property="Visibility" Value="Collapsed"/>
                                     </Trigger>
                                 </ControlTemplate.Triggers>
                             </ControlTemplate>
@@ -1112,12 +1121,19 @@
                                         <Setter Property="Template">
                                             <Setter.Value>
                                                 <ControlTemplate TargetType="Button">
-                                                    <Border x:Name="bg" Background="Transparent" CornerRadius="{DynamicResource SmallCornerRadius}" Padding="8,4,10,4">
-                                                        <ContentPresenter/>
+                                                    <Border x:Name="bg" Background="Transparent" CornerRadius="{DynamicResource SmallCornerRadius}">
+                                                        <Grid>
+                                                            <!-- Grain over the hover fill, under the row's words, as on menu rows. -->
+                                                            <Border x:Name="ExportGrain" IsHitTestVisible="False" Visibility="Collapsed"
+                                                                    CornerRadius="{DynamicResource SmallCornerRadius}"
+                                                                    Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
+                                                            <ContentPresenter Margin="8,4,10,4"/>
+                                                        </Grid>
                                                     </Border>
                                                     <ControlTemplate.Triggers>
                                                         <Trigger Property="IsMouseOver" Value="True">
                                                             <Setter TargetName="bg" Property="Background" Value="{DynamicResource RowHoverBrush}"/>
+                                                            <Setter TargetName="ExportGrain" Property="Visibility" Value="Visible"/>
                                                         </Trigger>
                                                     </ControlTemplate.Triggers>
                                                 </ControlTemplate>
