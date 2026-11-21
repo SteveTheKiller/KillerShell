@@ -1070,7 +1070,7 @@ Các cài đặt của bạn sẽ không bị xóa.</sys:String>
   <sys:String x:Key="Str_Card_Rename">Đổi tên</sys:String>
   <sys:String x:Key="Str_Card_SelectAll">Chọn tất cả</sys:String>
   <sys:String x:Key="Str_Card_Paste">Dán</sys:String>
-  <sys:String x:Key="Str_Card_Clear">Xóa lịch sử cuộn</sys:String>
+  <sys:String x:Key="Str_Card_Clear">Xóa</sys:String>
   <sys:String x:Key="Str_Card_AsAdmin">Quyền quản trị</sys:String>
     <sys:String x:Key="Str_Ks_ContextMenu">mở menu ngữ cảnh</sys:String>
     <sys:String x:Key="Str_TT_RemoveSearchTerm">Xóa cụm từ tìm kiếm</sys:String>

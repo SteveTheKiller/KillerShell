@@ -1114,7 +1114,7 @@
     <sys:String x:Key="Str_Card_Rename">Átnevezés</sys:String>
     <sys:String x:Key="Str_Card_SelectAll">Összes kije&#xAD;lölése</sys:String>
     <sys:String x:Key="Str_Card_Paste">Beil&#xAD;lesztés</sys:String>
-    <sys:String x:Key="Str_Card_Clear">Előzmény törlése</sys:String>
+    <sys:String x:Key="Str_Card_Clear">Törlés</sys:String>
     <sys:String x:Key="Str_Card_AsAdmin">Rendszer&#xAD;gazdaként</sys:String>
     <sys:String x:Key="Str_Ks_ContextMenu">helyi menü megnyitása</sys:String>
     <sys:String x:Key="Str_TT_RemoveSearchTerm">Keresési kifejezés eltávolítása</sys:String>

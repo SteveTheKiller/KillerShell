@@ -25,10 +25,11 @@ public sealed class TerminalCardTests
 
                 Assert.Single(menu.Items.OfType<MenuItem>(), item => (string?)item.Tag == "cardhead");
                 // Every command is a tile with its shortcut. Close is not on the card: a lone X read
-                // as "close this menu" and ended a running shell (Ctrl+W still closes).
+                // as "close this menu" and ended a running shell (Ctrl+W still closes). The card is
+                // customizable, and Fonts and Reset prompt start in its Hidden drawer for three full rows.
                 var ids = KillerShell.Controls.CardMenus.Buttons(menu).Select(b => b.CommandParameter as string).Where(id => id != null).ToArray();
                 Assert.Equal(new[] { "copy", "paste", "selectall", "clear", "folder", "newshell",
-                    "fonts", "editprompt", "resetprompt", "reloadprofile", "profile" }, ids);
+                    "editprompt", "reloadprofile", "profile" }, ids);
                 Assert.All(KillerShell.Controls.CardMenus.Buttons(menu).Where(b => b.CommandParameter is string),
                     b => Assert.False(string.IsNullOrEmpty(System.Windows.Automation.AutomationProperties.GetAcceleratorKey(b))));
 
@@ -37,8 +38,6 @@ public sealed class TerminalCardTests
                 Assert.Equal(TerminalMenuCommand.OpenFolder, raised);
 
                 // A tile and its chord run the same command.
-                KillerShell.Controls.CardMenus.TileButton(menu, "fonts")!.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent));
-                Assert.Equal(TerminalMenuCommand.Fonts, raised);
                 KillerShell.Controls.CardMenus.TileButton(menu, "editprompt")!.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent));
                 Assert.Equal(TerminalMenuCommand.EditPrompt, raised);
             }

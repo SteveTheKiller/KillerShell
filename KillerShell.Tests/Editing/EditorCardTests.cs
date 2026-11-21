@@ -27,7 +27,8 @@ public sealed class EditorCardTests
 
                 var head = Assert.Single(menu.Items.OfType<MenuItem>(), item => (string?)item.Tag == "cardhead");
                 Button Tile(string id) => KillerShell.Controls.CardMenus.TileButton(menu, id)!;
-                var ids = KillerShell.Controls.CardMenus.Buttons(menu).Select(b => b.CommandParameter as string).ToArray();
+                // The customize pencil is a button with no command name, so only named tiles count.
+                var ids = KillerShell.Controls.CardMenus.Buttons(menu).Select(b => b.CommandParameter as string).Where(id => id != null).ToArray();
                 Assert.Equal(new[] { "undo", "redo", "save", "cut", "copy", "paste", "selectall", "find", "goto", "wrap", "settings", "closetab" }, ids);
 
                 // With no source the card opens without a header; with one it names the file.

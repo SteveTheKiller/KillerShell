@@ -987,7 +987,7 @@ Nastavitve bodo ohranjene.</sys:String>
     <sys:String x:Key="Str_Card_Rename">Preimenuj</sys:String>
     <sys:String x:Key="Str_Card_SelectAll">Izberi vse</sys:String>
     <sys:String x:Key="Str_Card_Paste">Prilepi</sys:String>
-    <sys:String x:Key="Str_Card_Clear">Počisti zgodovino</sys:String>
+    <sys:String x:Key="Str_Card_Clear">Počisti</sys:String>
     <sys:String x:Key="Str_Card_AsAdmin">Kot skrbnik</sys:String>
     <sys:String x:Key="Str_Ks_ContextMenu">odpri priročni meni</sys:String>
     <sys:String x:Key="Str_TT_RemoveSearchTerm">Odstrani iskalni izraz</sys:String>

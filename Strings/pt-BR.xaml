@@ -1114,7 +1114,7 @@
     <sys:String x:Key="Str_Card_Rename">Renomear</sys:String>
     <sys:String x:Key="Str_Card_SelectAll">Selecionar tudo</sys:String>
     <sys:String x:Key="Str_Card_Paste">Colar</sys:String>
-    <sys:String x:Key="Str_Card_Clear">Limpar histórico</sys:String>
+    <sys:String x:Key="Str_Card_Clear">Limpar</sys:String>
     <sys:String x:Key="Str_Card_AsAdmin">Como admin</sys:String>
     <sys:String x:Key="Str_Ks_ContextMenu">abrir o menu de contexto</sys:String>
     <sys:String x:Key="Str_TT_RemoveSearchTerm">Remover termo de pesquisa</sys:String>

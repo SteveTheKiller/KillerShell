@@ -1065,7 +1065,7 @@
     <sys:String x:Key="Str_Card_Rename">名前の変更</sys:String>
     <sys:String x:Key="Str_Card_SelectAll">すべて選択</sys:String>
     <sys:String x:Key="Str_Card_Paste">貼り付け</sys:String>
-    <sys:String x:Key="Str_Card_Clear">履歴を消去</sys:String>
+    <sys:String x:Key="Str_Card_Clear">消去</sys:String>
     <sys:String x:Key="Str_Card_AsAdmin">管理者で</sys:String>
     <sys:String x:Key="Str_Ks_ContextMenu">コンテキスト メニューを開く</sys:String>
     <sys:String x:Key="Str_TT_RemoveSearchTerm">検索語を削除</sys:String>

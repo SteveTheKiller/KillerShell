@@ -260,23 +260,28 @@ public sealed class TerminalProfileTests
                 System.Threading.Volatile.Write(ref stage, "building the menu");
                 int defaultLaunches = 0;
                 terminal.MenuCommand += _ => defaultLaunches++;
-                var menu = (System.Windows.Controls.ContextMenu)typeof(TerminalControl)
-                    .GetMethod("BuildMenu", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!.Invoke(terminal, null)!;
-                var parent = menu.Items.OfType<System.Windows.Controls.MenuItem>().Single(item => item.InputGestureText == "F8");
-                var child = new System.Windows.Controls.MenuItem { Header = "Ubuntu" };
-                parent.Items.Add(child);
+                // The New shell tile's flyout is filled by the window; this stands in with one shell row.
+                System.Windows.Controls.MenuItem? child = null;
                 int selectedLaunches = 0;
-                child.Click += (_, _) => selectedLaunches++;
+                terminal.LaunchSubmenuOpening += holder =>
+                {
+                    child = new System.Windows.Controls.MenuItem { Header = "Ubuntu" };
+                    child.Click += (_, _) => selectedLaunches++;
+                    holder.Items.Add(child);
+                };
+                const System.Reflection.BindingFlags Private = System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic;
+                var menu = (System.Windows.Controls.ContextMenu)typeof(TerminalControl).GetMethod("BuildMenu", Private)!.Invoke(terminal, null)!;
+                Assert.NotNull(KillerShell.Controls.CardMenus.TileButton(menu, "newshell"));
                 System.Threading.Volatile.Write(ref stage, "raising the profile click");
-                child.RaiseEvent(new System.Windows.RoutedEventArgs(System.Windows.Controls.MenuItem.ClickEvent));
+                child!.RaiseEvent(new System.Windows.RoutedEventArgs(System.Windows.Controls.MenuItem.ClickEvent));
                 System.Threading.Volatile.Write(ref stage, "checking menu behavior");
                 Assert.Equal(1, selectedLaunches);
                 Assert.Equal(0, defaultLaunches);
-                var editProfile = menu.Items.OfType<System.Windows.Controls.MenuItem>().Single(item => item.InputGestureText == "Ctrl+,");
-                Assert.False(editProfile.IsEnabled);
-                Assert.True(menu.Items.OfType<System.Windows.Controls.MenuItem>().Single(item => item.InputGestureText == "Ctrl+Shift+E").IsEnabled);
-                Assert.True(menu.Items.OfType<System.Windows.Controls.MenuItem>().Single(item => item.InputGestureText == "Ctrl+Shift+R").IsEnabled);
-                Assert.False(menu.Items.OfType<System.Windows.Controls.MenuItem>().Single(item => item.InputGestureText == "Ctrl+Shift+Q").IsEnabled);
+                // WSL has a prompt script but no PowerShell $PROFILE.
+                typeof(TerminalControl).GetMethod("ApplyTileState", Private)!.Invoke(terminal, new object[] { menu });
+                Assert.False(KillerShell.Controls.CardMenus.TileButton(menu, "profile")!.IsEnabled);
+                Assert.True(KillerShell.Controls.CardMenus.TileButton(menu, "editprompt")!.IsEnabled);
+                Assert.False(KillerShell.Controls.CardMenus.TileButton(menu, "reloadprofile")!.IsEnabled);
             }
             catch (Exception ex) { failure = ex; }
         });

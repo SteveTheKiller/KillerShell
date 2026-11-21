@@ -49,7 +49,11 @@ namespace KillerShell.Editing
             // Undo and Redo are wrapped rather than passed as method groups: both return whether there
             // was anything to undo, and the tile is dimmed otherwise. Save, Go to line, wrap, settings
             // and close belong to the WINDOW, which owns the bar and the tabs, so they are raised.
-            m.Items.Add(KillerShell.Controls.CardMenus.Tiles(m,
+            // Customizable: Save, Copy and Paste always show. Twelve tiles already make four full rows, so
+            // nothing starts in the Hidden drawer.
+            m.Items.Add(KillerShell.Controls.CardMenus.EditableTiles(m, "Editor",
+                locked: ["save", "copy", "paste"],
+                spares: [],
             [
                 KillerShell.Controls.CardMenus.Tile("undo", 0xE7A7, "Str_Ed_Undo", "Str_Card_Undo", "Ctrl+Z", () => Undo()),
                 KillerShell.Controls.CardMenus.Tile("redo", 0xE7A6, "Str_Ed_Redo", "Str_Card_Redo", "Ctrl+Y", () => Redo()),

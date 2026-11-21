@@ -1077,7 +1077,7 @@
     <sys:String x:Key="Str_Card_Rename">Rinomina</sys:String>
     <sys:String x:Key="Str_Card_SelectAll">Seleziona tutto</sys:String>
     <sys:String x:Key="Str_Card_Paste">Incolla</sys:String>
-    <sys:String x:Key="Str_Card_Clear">Cancella cronologia</sys:String>
+    <sys:String x:Key="Str_Card_Clear">Cancella</sys:String>
     <sys:String x:Key="Str_Card_AsAdmin">Come admin</sys:String>
     <sys:String x:Key="Str_Ks_ContextMenu">apri il menu contestuale</sys:String>
     <sys:String x:Key="Str_TT_RemoveSearchTerm">Rimuovi il termine di ricerca</sys:String>

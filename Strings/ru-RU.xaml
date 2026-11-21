@@ -1080,7 +1080,7 @@
     <sys:String x:Key="Str_Card_Rename">Пере&#xAD;име&#xAD;новать</sys:String>
     <sys:String x:Key="Str_Card_SelectAll">Выделить всё</sys:String>
     <sys:String x:Key="Str_Card_Paste">Вставить</sys:String>
-    <sys:String x:Key="Str_Card_Clear">Очистить историю</sys:String>
+    <sys:String x:Key="Str_Card_Clear">Очистить</sys:String>
     <sys:String x:Key="Str_Card_AsAdmin">От админа</sys:String>
     <sys:String x:Key="Str_Ks_ContextMenu">открыть контекстное меню</sys:String>
     <sys:String x:Key="Str_TT_RemoveSearchTerm">Удалить поисковый запрос</sys:String>

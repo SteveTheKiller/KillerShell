@@ -1069,7 +1069,7 @@
     <sys:String x:Key="Str_Card_Rename">Um&#xAD;be&#xAD;nennen</sys:String>
     <sys:String x:Key="Str_Card_SelectAll">Alles aus&#xAD;wählen</sys:String>
     <sys:String x:Key="Str_Card_Paste">Einfügen</sys:String>
-    <sys:String x:Key="Str_Card_Clear">Verlauf leeren</sys:String>
+    <sys:String x:Key="Str_Card_Clear">Leeren</sys:String>
     <sys:String x:Key="Str_Card_AsAdmin">Als Admin</sys:String>
     <sys:String x:Key="Str_Ks_ContextMenu">Kontextmenü öffnen</sys:String>
     <sys:String x:Key="Str_TT_RemoveSearchTerm">Suchbegriff entfernen</sys:String>

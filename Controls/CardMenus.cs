@@ -290,8 +290,15 @@ namespace KillerShell.Controls
         }
 
         /// <summary>A built tile by its command name, or null when the card has none.</summary>
-        internal static Button? TileButton(ItemsControl card, string id) =>
-            Buttons(card).FirstOrDefault(button => button.CommandParameter as string == id);
+        internal static Button? TileButton(ItemsControl card, string id)
+        {
+            // A customized card rebuilds its tile buttons, and a caller may set state before the card opens,
+            // so the names go back on first instead of waiting for the opening.
+            if (card.GetValue(TileListProperty) is List<CardTile> tiles)
+                foreach (var slot in card.Items.OfType<MenuItem>())
+                    if (slot.Header is DependencyObject root) NameTiles(root, tiles);
+            return Buttons(card).FirstOrDefault(button => button.CommandParameter as string == id);
+        }
 
         /// <summary>
         /// Sets a built tile's state as its card opens, so a card built once still dims what does not apply now

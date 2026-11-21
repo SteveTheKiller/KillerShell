@@ -1069,7 +1069,7 @@
     <sys:String x:Key="Str_Card_Rename">Renom&#xAD;mer</sys:String>
     <sys:String x:Key="Str_Card_SelectAll">Tout</sys:String>
     <sys:String x:Key="Str_Card_Paste">Coller</sys:String>
-    <sys:String x:Key="Str_Card_Clear">Tout effacer</sys:String>
+    <sys:String x:Key="Str_Card_Clear">Effacer</sys:String>
     <sys:String x:Key="Str_Card_AsAdmin">En admin</sys:String>
     <sys:String x:Key="Str_Ks_ContextMenu">ouvrir le menu contextuel</sys:String>
     <sys:String x:Key="Str_TT_RemoveSearchTerm">Supprimer le terme de recherche</sys:String>

@@ -1069,7 +1069,7 @@
     <sys:String x:Key="Str_Card_Rename">Yeniden adlandır</sys:String>
     <sys:String x:Key="Str_Card_SelectAll">Tümünü seç</sys:String>
     <sys:String x:Key="Str_Card_Paste">Yapıştır</sys:String>
-    <sys:String x:Key="Str_Card_Clear">Geçmişi temizle</sys:String>
+    <sys:String x:Key="Str_Card_Clear">Temizle</sys:String>
     <sys:String x:Key="Str_Card_AsAdmin">Yönetici olarak</sys:String>
     <sys:String x:Key="Str_Ks_ContextMenu">bağlam menüsünü aç</sys:String>
     <sys:String x:Key="Str_TT_RemoveSearchTerm">Arama terimini kaldır</sys:String>

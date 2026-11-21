@@ -87,16 +87,7 @@ namespace KillerShell.Terminal
                 if (source is { } head) KillerShell.Controls.CardMenus.SetHeader(_cardHead, head.Icon, head.Title, head.Meta);
             }
 
-            // Copy is the one button whose availability changes: with no selection there is
-            // nothing to copy, and a lit button that does nothing is worse than a dim one.
-            KillerShell.Controls.CardMenus.SetTile(_menu, "copy", _hasSelection);
-            // cmd.exe has no PowerShell $PROFILE. The same card belongs to both terminal skins,
-            // so the tiles stay in place for discovery, dimmed where they do not apply.
-            bool prompt = ShellKind is TerminalShellKind.PowerShell or TerminalShellKind.Wsl;
-            KillerShell.Controls.CardMenus.SetTile(_menu, "editprompt", prompt);
-            KillerShell.Controls.CardMenus.SetTile(_menu, "resetprompt", prompt);
-            KillerShell.Controls.CardMenus.SetTile(_menu, "reloadprofile", ShellKind == TerminalShellKind.PowerShell);
-            KillerShell.Controls.CardMenus.SetTile(_menu, "profile", ShellKind == TerminalShellKind.PowerShell);
+            ApplyTileState(_menu);
 
             _menu.PlacementTarget = this;
             _menu.Placement = keyboard
@@ -114,6 +105,21 @@ namespace KillerShell.Terminal
         // is BOM-less UTF-8 with zero non-ASCII bytes, and typing one of these directly is what
         // made KillerPDF's release.ps1 PS7-only.
         private static string Glyph(int cp) => ((char)cp).ToString();
+
+        /// <summary>Dims the tiles that do not apply to this shell right now.</summary>
+        private void ApplyTileState(ContextMenu menu)
+        {
+            // Copy is the one button whose availability changes: with no selection there is
+            // nothing to copy, and a lit button that does nothing is worse than a dim one.
+            KillerShell.Controls.CardMenus.SetTile(menu, "copy", _hasSelection);
+            // cmd.exe has no PowerShell $PROFILE. The same card belongs to both terminal skins,
+            // so the tiles stay in place for discovery, dimmed where they do not apply.
+            bool prompt = ShellKind is TerminalShellKind.PowerShell or TerminalShellKind.Wsl;
+            KillerShell.Controls.CardMenus.SetTile(menu, "editprompt", prompt);
+            KillerShell.Controls.CardMenus.SetTile(menu, "resetprompt", prompt);
+            KillerShell.Controls.CardMenus.SetTile(menu, "reloadprofile", ShellKind == TerminalShellKind.PowerShell);
+            KillerShell.Controls.CardMenus.SetTile(menu, "profile", ShellKind == TerminalShellKind.PowerShell);
+        }
 
         // Keep the visible screen and cursor intact: only the shell knows which cells
         // belong to a pending multiline prompt. This action never sends shell input.
@@ -139,7 +145,11 @@ namespace KillerShell.Terminal
             m.Items.Add(_cardHead);
             KillerShell.Controls.CardMenus.WatchKeyboardStart(m);
 
-            m.Items.Add(KillerShell.Controls.CardMenus.Tiles(m,
+            // Customizable: Copy and Paste always show, and Fonts and Reset prompt start in the Hidden drawer
+            // so the default card is three full rows.
+            m.Items.Add(KillerShell.Controls.CardMenus.EditableTiles(m, "Terminal",
+                locked: ["copy", "paste"],
+                spares: ["fonts", "resetprompt"],
             [
                 KillerShell.Controls.CardMenus.Tile("copy", 0xE8C8, "Str_Term_Copy", "Str_Card_Copy", "Ctrl+Shift+C", () =>
                 {
