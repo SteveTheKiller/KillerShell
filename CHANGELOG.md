@@ -14,6 +14,8 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ### Fixed
 
+- Theme and language menu labels line up with their radio buttons and check boxes again, instead of sitting a pixel high.
+- The theme and language menus keep 8px between their rows and the card edge on every side, and the language menu's divider has the same gap on each side.
 - Right-clicking a file opens its card quickly again, even on folders with hundreds of files.
 - The Performance Monitor shows each reading's label and value on one line, so the counters no longer crowd the bottom of the card.
 - The Mourning theme highlights selections in its original peach with dark text again, instead of pink.

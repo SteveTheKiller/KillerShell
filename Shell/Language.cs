@@ -52,14 +52,15 @@ namespace KillerShell.Shell
             menu.Items.Clear();
             var current = LocaleManager.Current;
 
-            var columns = new StackPanel { Orientation = Orientation.Horizontal,
-                                           Margin = new Thickness(12, 10, 14, 10) };
+            // KillerUI's language menu: each hover row sits 8px from the card's outer edge, and the
+            // divider sits 8px from the hover boxes on both sides.
+            var columns = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(15, 7, 5, 7) };
             var left = new StackPanel { Width = 200 };
             var right = new StackPanel { Width = 200 };
             var divider = new Border
             {
                 Width = 1,
-                Margin = new Thickness(6, 8, 7, 8),
+                Margin = new Thickness(6, 8, 16, 8),
                 Opacity = 0.18,
                 IsHitTestVisible = false,
                 OpacityMask = new LinearGradientBrush
@@ -87,14 +88,9 @@ namespace KillerShell.Shell
                 grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
                 grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
-                var nameBlock = new TextBlock
-                {
-                    Text = name,
-                    VerticalAlignment = VerticalAlignment.Center,
-                    // Localization-safe family (family footer/statusbar standard, CLAUDE.md):
-                    // renders every language's own script instead of tofu boxes.
-                    FontFamily = new FontFamily("Segoe UI, Microsoft JhengHei UI, Nirmala UI"),
-                };
+                // The row's own font (UiFont already falls back to Segoe UI, Microsoft JhengHei UI
+                // and Nirmala UI for other scripts), so the ring centers on the label's capitals.
+                var nameBlock = new TextBlock { Text = name, VerticalAlignment = VerticalAlignment.Center };
                 var codeBlock = new TextBlock
                 {
                     Text = code,
@@ -118,8 +114,18 @@ namespace KillerShell.Shell
                 radio.Checked += Lang_Checked;
                 (index++ < half ? left : right).Children.Add(radio);
             }
+            // The rows' 8px gap is for between rows; under the last one it would double the bottom edge.
+            foreach (var column in new[] { left, right })
+                if (column.Children.Count > 0 && column.Children[column.Children.Count - 1] is FrameworkElement last)
+                    last.Margin = new Thickness(last.Margin.Left, last.Margin.Top, last.Margin.Right, 0);
 
-            menu.Items.Add(columns);
+            // PanelMenuItem is the gutter-free container for custom menu panels, as in KillerUI.
+            menu.Items.Add(new MenuItem
+            {
+                Header = columns,
+                StaysOpenOnClick = true,
+                Style = (Style)FindResource("PanelMenuItem"),
+            });
         }
 
         private void Lang_Checked(object sender, RoutedEventArgs e)

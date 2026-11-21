@@ -824,11 +824,12 @@
                                 <ContextMenu.ItemContainerStyle>
                                     <Style TargetType="MenuItem" BasedOn="{StaticResource PanelMenuItem}"/>
                                 </ContextMenu.ItemContainerStyle>
-                                <!-- Hover rows sit 4px in from both menu edges: 12 left less the
-                                     row's -8, and 2 right plus the row's own 2. The theme column
-                                     fills the menu (*) so the hover reaches across when the menu
-                                     is wider than the list. -->
-                                <Grid Margin="12,10,2,10">
+                                <!-- Every hover row and accent pill sits 8px in from the card's
+                                     outer edge (family rule): the 1px border, then 15 left less
+                                     the row's -8, 7 top and bottom, and 5 right plus the row's or
+                                     pill's own 2. The theme column fills the menu (*) so the hover
+                                     reaches across when the menu is wider than the list. -->
+                                <Grid Margin="15,7,5,7">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
@@ -957,7 +958,7 @@
                                     <Grid x:Name="AccentStripHost" Grid.Column="1" Width="0" ClipToBounds="True">
                                         <Border Width="1" HorizontalAlignment="Left" Margin="0,6"
                                                 Background="{DynamicResource MenuBorderBrush}"/>
-                                        <Grid x:Name="AccentStrip" Margin="7,6,2,6">
+                                        <Grid x:Name="AccentStrip" Margin="7,0,2,6">
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="*"/><RowDefinition Height="*"/>
                                                 <RowDefinition Height="*"/><RowDefinition Height="*"/>

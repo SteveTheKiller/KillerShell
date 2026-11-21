@@ -358,7 +358,9 @@ namespace KillerShell.Shell
 
         private Theme _stripFamily = Theme.Dark;
         private bool _stripOpen;
-        private const double AccentStripWidth = 39;
+        // 7 gap from the divider, the 26px pill and its 2px right margin, with no slack, so the
+        // pill's right edge lands 8px inside the card.
+        private const double AccentStripWidth = 35;
         private const double AccentStripSlideMs = 180;
         private Border[] StripDots =>
             [AccentStripDot0, AccentStripDot1, AccentStripDot2, AccentStripDot3, AccentStripDot4, AccentStripDot5, AccentStripDot6, AccentStripDot7];
