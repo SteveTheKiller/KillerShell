@@ -72,7 +72,9 @@ public static class BottomListingTabSurfaceScenario
 
             pane.Active.Groups[0].Terms[0].Pattern = "*.txt";
             ShellWindowFixture.Click(window, "SearchButton");
-            ShellWindowFixture.PumpUntil(() => !pane.Active.IsSearching && pane.PaneStatusBar.IsVisible);
+            // A real disk search: it can outrun the fixture's five-second default on a busy machine.
+            ShellWindowFixture.PumpUntil(() => !pane.Active.IsSearching && pane.PaneStatusBar.IsVisible,
+                limitMilliseconds: 15000, diagnostic: () => $"theme {theme}, searching {pane.Active.IsSearching}, summary {pane.PaneStatusBar.Visibility}");
             MatchSurface(pane.ResultsPane.Background, "showing the search summary");
 
             pane.DetailsPaneBtn.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));

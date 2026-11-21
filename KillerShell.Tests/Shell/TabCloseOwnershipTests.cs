@@ -159,7 +159,7 @@ internal sealed class ShellWindowFixture : IDisposable
     }
 
     internal static void PumpUntil(Func<bool> done, [System.Runtime.CompilerServices.CallerLineNumber] int line = 0,
-        Func<string>? diagnostic = null)
+        Func<string>? diagnostic = null, int limitMilliseconds = 5000)
     {
         var elapsed = Stopwatch.StartNew();
         do
@@ -169,9 +169,9 @@ internal sealed class ShellWindowFixture : IDisposable
             timer.Tick += (_, _) => { timer.Stop(); frame.Continue = false; };
             timer.Start();
             Dispatcher.PushFrame(frame);
-        } while (!done() && elapsed.ElapsedMilliseconds < 5000);
-        Assert.True(done(), "The expected shell state at fixture line " + line + " did not arrive within five seconds. "
-            + diagnostic?.Invoke());
+        } while (!done() && elapsed.ElapsedMilliseconds < limitMilliseconds);
+        Assert.True(done(), "The expected shell state at fixture line " + line + " did not arrive within "
+            + limitMilliseconds + " ms. " + diagnostic?.Invoke());
     }
 
     public void Dispose()
