@@ -59,6 +59,14 @@ namespace KillerShell
         // ============================================================
 
         private static readonly string AppName    = "KillerShell";
+
+        /// <summary>Names the app for the kit's dialog chrome. The Trash Polka ink cache keys its folder on this
+        /// name and stays off without it, which made every switch to Trash Polka redraw the ink from scratch.</summary>
+        internal static void ConfigureDialogChrome()
+        {
+            Controls.DialogChrome.AppName = Services.AppInfo.DisplayName;
+            Controls.DialogChrome.WordmarkSplit = 6;
+        }
         private static readonly string ExeName    = "KillerShell.exe";
         private static readonly string InstallDir = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
@@ -288,6 +296,8 @@ namespace KillerShell
             // An elevated window themes itself separately, and defaults to Blood - see
             // ThemeManager.ThemeKey. Has to be set before Initialize, which is what reads it.
             Services.ThemeManager.Elevated = AppMainWindow.IsElevated;
+
+            ConfigureDialogChrome();
 
             // Trash Polka's background ink on every dialog, picker and flyout, not just the main window.
             Controls.ThemeMotif.EnableForAllWindows();
