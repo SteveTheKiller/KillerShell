@@ -101,9 +101,8 @@ public static class BottomListingTabSurfaceScenario
         {
             var menu = pane.TabBar.ContextMenu;
             menu.RaiseEvent(new RoutedEventArgs(ContextMenu.OpenedEvent));
-            var label = pane.FindResource(bottom ? "Str_Layout_TabsBottom" : "Str_Layout_TabsTop");
-            menu.Items.OfType<MenuItem>().Single(item => Equals(item.Header, label))
-                .RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+            KillerShell.Controls.CardMenus.TileButton(menu, bottom ? "tabsbottom" : "tabstop")!
+                .RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
             window.UpdateLayout();
         }
 
@@ -205,9 +204,8 @@ public static class TerminalTabGrainScenario
             {
                 var menu = pane.TabBar.ContextMenu;
                 menu.RaiseEvent(new RoutedEventArgs(ContextMenu.OpenedEvent));
-                var label = pane.FindResource(bottom ? "Str_Layout_TabsBottom" : "Str_Layout_TabsTop");
-                menu.Items.OfType<MenuItem>().Single(item => Equals(item.Header, label))
-                    .RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+                KillerShell.Controls.CardMenus.TileButton(menu, bottom ? "tabsbottom" : "tabstop")!
+                    .RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
                 foreach (bool hidden in new[] { false, true })
                 {
                     window.SetMenuBar(pane, hidden, animate: false, persist: false);

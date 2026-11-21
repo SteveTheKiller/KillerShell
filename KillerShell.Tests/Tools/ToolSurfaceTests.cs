@@ -182,9 +182,8 @@ public static class ActiveTabSurfaceScenario
         {
             var menu = pane.TabBar.ContextMenu;
             menu.RaiseEvent(new RoutedEventArgs(ContextMenu.OpenedEvent));
-            string label = (string)pane.FindResource(bottom ? "Str_Layout_TabsBottom" : "Str_Layout_TabsTop");
-            menu.Items.OfType<MenuItem>().Single(item => Equals(item.Header, label))
-                .RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+            KillerShell.Controls.CardMenus.TileButton(menu, bottom ? "tabsbottom" : "tabstop")!
+                .RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
         }
     }
 }

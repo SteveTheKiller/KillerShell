@@ -209,12 +209,12 @@ public static class TabPlacementScenario
         menu!.PlacementTarget = target;
         menu.IsOpen = true;
         ShellWindowFixture.PumpUntil(() => menu.IsOpen);
-        var choices = menu.Items.OfType<MenuItem>().Where(item => Equals(item.Header, window.FindResource("Str_Layout_TabsTop"))
-            || Equals(item.Header, window.FindResource("Str_Layout_TabsBottom"))).ToArray();
-        Assert.Equal(2, choices.Length);
-        Assert.Single(choices, item => item.IsChecked);
-        choices.Single(item => Equals(item.Header, window.FindResource(key)))
-            .RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+        // The tab card's two placement tiles, clicked the way the user does.
+        var top = KillerShell.Controls.CardMenus.TileButton(menu, "tabstop");
+        var bottom = KillerShell.Controls.CardMenus.TileButton(menu, "tabsbottom");
+        Assert.NotNull(top);
+        Assert.NotNull(bottom);
+        (key == "Str_Layout_TabsTop" ? top : bottom)!.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
         menu.IsOpen = false;
     }
 }
