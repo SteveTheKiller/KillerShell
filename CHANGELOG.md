@@ -25,7 +25,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 ### Changed
 
 - The file and folder right-click card shows its commands as tiles, each with its keyboard shortcut. Delete sits in the card's header, the copy variants are under Copy as, and the archive verbs are under one tile.
-- The tab, terminal, document, folder tree and saved place cards show their commands as tiles too, as do the Process List, Services, Event Viewer, Registry Editor, Storage Analyzer and Performance Monitor cards. A command that does not apply stays in its place, dimmed, and a card for one thing keeps its Delete in the header.
+- The tab, terminal, document, folder tree and saved place cards show their commands as tiles too, as do the Process List, Services, Event Viewer, Registry Editor, Storage Analyzer and Performance Monitor cards. A command that does not apply stays in its place, dimmed, and a card for one thing keeps its Delete in the header. The System Tools rail button opens a tile card of the five tools, and right-clicking it opens a card of the elevated launches.
 - The terminal and document cards are customizable like the file card: the pencil moves tiles between the card and its Hidden drawer. The terminal card's Clear tile is captioned Clear, with Clear scrollback in its tooltip.
 - The tab, folder tree, saved place and empty folder space cards are customizable too. Rarely used tiles, such as the admin terminal and Analyze storage, start in the Hidden drawer.
 - While editing a card, Alt+arrow keys move the focused tile one slot or one row, and a screen reader hears its new place.

@@ -700,44 +700,14 @@
                     <Button x:Name="SystemToolsRailBtn" Style="{StaticResource RailButton}" Content="&#xE90F;"
                             FontSize="12" Margin="0,0,0,10" Click="SystemToolsRail_Click"
                             ToolTip="{DynamicResource Str_TT_SystemTools}" ContextMenuOpening="SystemToolsAdmin_Opening">
+                        <!-- Two tile cards, like the app's other menus, built as each opens (SystemTools.cs
+                             FillSystemToolsCard): the click card holds the five tools, the right-click
+                             card the elevated ones. -->
                         <Button.Resources>
-                            <Style x:Key="SystemToolsFlyoutStyle" TargetType="{x:Type ContextMenu}"
-                                   BasedOn="{StaticResource {x:Type ContextMenu}}">
-                            </Style>
-                            <ContextMenu x:Key="SystemToolsMenu" Style="{StaticResource SystemToolsFlyoutStyle}">
-                                <MenuItem Header="{DynamicResource Str_Rail_ProcessesOpen}" Click="RailProcessesOpen_Click" InputGestureText="F9">
-                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE8FD;"/></MenuItem.Icon>
-                                </MenuItem>
-                                <MenuItem Header="{DynamicResource Str_TabTitle_Performance}" Click="PerformanceRail_Click" InputGestureText="F11">
-                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE9D9;"/></MenuItem.Icon>
-                                </MenuItem>
-                                <MenuItem Header="{DynamicResource Str_Rail_StorageOpen}" Click="RailStorageOpen_Click" InputGestureText="F4">
-                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xEDA2;"/></MenuItem.Icon>
-                                </MenuItem>
-                                <Separator/>
-                                <MenuItem Header="{DynamicResource Str_TabTitle_RegistryEditor}" Click="RegistryEditorRail_Click" InputGestureText="Ctrl+F11">
-                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE7EF;"/></MenuItem.Icon>
-                                </MenuItem>
-                                <MenuItem Header="{DynamicResource Str_TabTitle_EventViewer}" Click="EventViewerRail_Click" InputGestureText="Ctrl+F12">
-                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE7EF;"/></MenuItem.Icon>
-                                </MenuItem>
-                            </ContextMenu>
+                            <ContextMenu x:Key="SystemToolsMenu" Style="{StaticResource CardMenu}"/>
                         </Button.Resources>
                         <Button.ContextMenu>
-                            <ContextMenu Style="{StaticResource SystemToolsFlyoutStyle}">
-                                <MenuItem Header="{DynamicResource Str_Rail_ProcessesAdmin}" Click="RailProcessesAdmin_Click" InputGestureText="Ctrl+F9">
-                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE7EF;"/></MenuItem.Icon>
-                                </MenuItem>
-                                <MenuItem Header="{DynamicResource Str_Rail_StorageAdmin}" Click="RailStorageAdmin_Click" InputGestureText="Ctrl+F4">
-                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE7EF;"/></MenuItem.Icon>
-                                </MenuItem>
-                                <MenuItem Header="{DynamicResource Str_TabTitle_RegistryEditor}" Click="RegistryEditorRail_Click" InputGestureText="Ctrl+F11">
-                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE7EF;"/></MenuItem.Icon>
-                                </MenuItem>
-                                <MenuItem Header="{DynamicResource Str_TabTitle_EventViewer}" Click="EventViewerRail_Click" InputGestureText="Ctrl+F12">
-                                    <MenuItem.Icon><a11y:Glyph Style="{StaticResource MenuGlyph}" Text="&#xE7EF;"/></MenuItem.Icon>
-                                </MenuItem>
-                            </ContextMenu>
+                            <ContextMenu Style="{StaticResource CardMenu}"/>
                         </Button.ContextMenu>
                     </Button>
                     <!-- "?" (a literal, in Consolas): the shortcuts card, F1. Sits directly above
