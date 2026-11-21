@@ -320,6 +320,13 @@
                                         <ContextMenu Style="{StaticResource CardMenu}" Tag="tabcard" Opened="TabPlacementMenu_Opened"/>
                                     </Border.ContextMenu>
                                     <Grid>
+                                        <!-- Trash Polka: the active tab paints its own window-pinned stretch of the
+                                             pane ink, the same picture as the bar below it, so the tab runs on into the
+                                             bar with no seam. It has no background of its own, so on every other theme
+                                             it draws nothing and the tab face shows as before. -->
+                                        <Border x:Name="tabInk" IsHitTestVisible="False" Visibility="Collapsed"
+                                                Margin="{DynamicResource TabGrainMargin}"
+                                                kc:ThemeMotif.Part="Window" kc:ThemeMotif.BaseBrush="MenuBackgroundBrush"/>
                                         <!-- Grain follows the tab's radius, or the texture squares
                                              off the corner the border just rounded. -->
                                         <!-- Opacity 0 by default: an INACTIVE tab is transparent, so
@@ -522,6 +529,7 @@
                                         <!-- Only the active tab draws its own grain - it is opaque,
                                              so it hides the band's layer and needs to replace it. -->
                                         <Setter TargetName="tabGrain" Property="Opacity" Value="{DynamicResource GrainOpacity}"/>
+                                        <Setter TargetName="tabInk" Property="Visibility" Value="Visible"/>
                                         <!-- The accent stripe is theme-driven now: 3px on top by
                                              default, 0 on a flat theme. A Win98 tab is identified
                                              by its bevel and by being joined to the pane, not by
@@ -824,8 +832,11 @@
                 <!-- MenuBackgroundBrush, the same tier the ACTIVE TAB is filled with, so the tab
                      merges into this bar and the two read as one surface the listing hangs below.
                      Square top corners are fine: PaneClip.cs clips this to the pane's radius. -->
+                <!-- The pane's bars carry the window-pinned pane ink (not the popup piece the menu brush would get),
+                     so the active tab above, which paints the same picture, joins them with no seam. -->
                 <Grid x:Name="LocationRow" DockPanel.Dock="Top" SizeChanged="ToolStrip_SizeChanged"
                       Background="{DynamicResource MenuBackgroundBrush}"
+                      kc:ThemeMotif.Part="Window" kc:ThemeMotif.BaseBrush="MenuBackgroundBrush"
                       ContextMenu="{StaticResource BarMenu}"
                       Margin="{DynamicResource BarPadding}">
                     <Grid.RowDefinitions>
@@ -1612,6 +1623,7 @@
                     <!-- A wide bar stays 32px tall. A narrow pane moves the same cwd controls
                          below the buttons; auto height also lets Alt+M restore that second row. -->
                     <Border x:Name="TerminalBarRow" Grid.Row="0" Background="{DynamicResource MenuBackgroundBrush}"
+                            kc:ThemeMotif.Part="Window" kc:ThemeMotif.BaseBrush="MenuBackgroundBrush"
                             BorderBrush="{DynamicResource PaneBorderBrush}"
                             ContextMenu="{StaticResource BarMenu}"
                             BorderThickness="{DynamicResource BarUnderlineThickness}">
@@ -1751,6 +1763,7 @@
                     <!-- Height 32 = the folder LocationRow's natural height, same as the shell bar
                          above, so the content starts at one height whatever kind of tab is up. -->
                     <Border x:Name="EditorBarRow" Grid.Row="0" Height="32" Background="{DynamicResource MenuBackgroundBrush}"
+                            kc:ThemeMotif.Part="Window" kc:ThemeMotif.BaseBrush="MenuBackgroundBrush"
                             BorderBrush="{DynamicResource PaneBorderBrush}"
                             ContextMenu="{StaticResource BarMenu}"
                             BorderThickness="{DynamicResource BarUnderlineThickness}">
