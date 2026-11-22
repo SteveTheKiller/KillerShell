@@ -4,6 +4,15 @@ All notable changes to KillerShell are documented here.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.2] - Unreleased
+
+1.6.2 fixes the 98SE title bar and tabs.
+
+### Fixed
+
+- On 98SE the minimize and maximize buttons show Windows 98's own drawn glyphs again, matching KillerScan.
+- On 98SE the tab titles sit centered in their tabs instead of low.
+
 ## [1.6.1] - 2026-11-21
 
 1.6.1 adds the Trash Polka theme, turns the right-click menus into fast tile cards you can customize, and tightens the update checks.
