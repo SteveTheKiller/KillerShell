@@ -1530,6 +1530,9 @@
                                  AutomationProperties.Name="{DynamicResource Str_Layout_TopBottom}">
                         <RadioButton.ToolTip><TextBlock><Run Text="{DynamicResource Str_Layout_TopBottom}"/><Run Text="  (Ctrl+Alt+Up)"/></TextBlock></RadioButton.ToolTip>
                     </RadioButton>
+                    <!-- The family's divider between the view buttons and the version, as in KillerNotes. -->
+                    <Border Width="1" Height="12" Margin="4,0,8,0" VerticalAlignment="Center" IsHitTestVisible="False"
+                            Background="{DynamicResource TextFooter}" Opacity="0.35"/>
                 </StackPanel>
             </Grid>
             </Border>

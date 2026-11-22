@@ -2046,11 +2046,6 @@
                     <!-- Actual reserved page-frame geometry: the black monitor is inset inside a
                          full-width gray host, so the top strip cannot be covered or clipped away. -->
                     <Grid Background="{DynamicResource PerformancePageFrameBrush}">
-                        <!-- Trash Polka: the page around the tiles is the file browser's lighter list surface
-                             with the pane ink, the same picture the active tab paints above it. No background
-                             of its own, so every other theme keeps its page frame. -->
-                        <Border x:Name="PerformancePageInk" IsHitTestVisible="False"
-                                kc:ThemeMotif.Part="Window" kc:ThemeMotif.BaseBrush="ListPaneBrush"/>
                         <ContentControl x:Name="PerformanceSlot" Focusable="False"
                                         Margin="{DynamicResource PerformanceContentInset}"/>
                         <Border IsHitTestVisible="False" Panel.ZIndex="5"
@@ -2224,6 +2219,21 @@
                              is set by an attached behavior rather than a plain binding because it
                              depends on both the file and the current size, and containers get
                              recycled onto different files as the grid scrolls (ResultsView.cs). -->
+                        <!-- Grain over a hovered row, under its icon and text. The hover fill is opaque, so
+                             without its own layer it covered the pane's grain and the row came up flat.
+                             The nearest Border above is the row itself. -->
+                        <Style x:Key="RowHoverGrain" TargetType="Border">
+                            <Setter Property="IsHitTestVisible" Value="False"/>
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Setter Property="Background" Value="{DynamicResource GrainTileBrush}"/>
+                            <Setter Property="Opacity" Value="{DynamicResource GrainOpacity}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=Border}}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+
                         <DataTemplate x:Key="TileTemplate" DataType="{x:Type models:SearchResult}">
                             <!-- x:Name="TileBd" so TileResultText (AppStyles.xaml) can bind the
                                  filename's hover-green to this Border's own IsMouseOver - the
@@ -2235,7 +2245,6 @@
                                  hovered tile reads as an outlined card and not only a gray wash. -->
                             <Border x:Name="TileBd" CornerRadius="4" Cursor="Hand" BorderThickness="1"
                                     Margin="{Binding Tag.TileMargin, RelativeSource={RelativeSource AncestorType=ListBox}}"
-                                    Padding="{Binding Tag.TilePad, RelativeSource={RelativeSource AncestorType=ListBox}}"
                                     Tag="{Binding FilePath}" ToolTip="{Binding FilePath}"
                                     PreviewMouseLeftButtonDown="ResultHeader_MouseDown">
                                 <Border.Style>
@@ -2253,7 +2262,10 @@
                                         </Style.Triggers>
                                     </Style>
                                 </Border.Style>
-                                <StackPanel>
+                                <!-- The tile's padding sits on the content, so the hover grain fills the whole card. -->
+                                <Grid>
+                                <Border Style="{StaticResource RowHoverGrain}" CornerRadius="3"/>
+                                <StackPanel Margin="{Binding Tag.TilePad, RelativeSource={RelativeSource AncestorType=ListBox}}">
                                     <Image HorizontalAlignment="Center" VerticalAlignment="Center"
                                            RenderOptions.BitmapScalingMode="HighQuality"
                                            MaxWidth="{Binding Tag.TileSize, RelativeSource={RelativeSource AncestorType=ListBox}}"
@@ -2273,6 +2285,7 @@
                                                MaxHeight="30"
                                                Margin="{Binding Tag.TileNamePad, RelativeSource={RelativeSource AncestorType=ListBox}}"/>
                                 </StackPanel>
+                                </Grid>
                             </Border>
                         </DataTemplate>
 
@@ -2293,6 +2306,8 @@
                                         </Style.Triggers>
                                     </Style>
                                 </Border.Style>
+                                <Grid>
+                                <Border Style="{StaticResource RowHoverGrain}"/>
                                 <StackPanel Orientation="Horizontal" Margin="4,2">
                                     <Image Width="{Binding Tag.RowIconSize, RelativeSource={RelativeSource AncestorType=ListBox}}"
                                            Height="{Binding Tag.RowIconSize, RelativeSource={RelativeSource AncestorType=ListBox}}" VerticalAlignment="Center"
@@ -2304,6 +2319,7 @@
                                                Margin="6,0,0,0" VerticalAlignment="Center"
                                                TextTrimming="CharacterEllipsis"/>
                                 </StackPanel>
+                                </Grid>
                             </Border>
                         </DataTemplate>
 
@@ -2312,7 +2328,6 @@
                              are duplicated from DetailsHeader; change both together. -->
                         <DataTemplate x:Key="DetailsRowTemplate" DataType="{x:Type models:SearchResult}">
                             <Border Cursor="Hand" Tag="{Binding FilePath}"
-                                    Padding="{Binding Tag.RowPad, RelativeSource={RelativeSource AncestorType=ListBox}}"
                                     PreviewMouseLeftButtonDown="ResultHeader_MouseDown">
                                 <Border.Style>
                                     <Style TargetType="Border">
@@ -2327,7 +2342,10 @@
                                         </Style.Triggers>
                                     </Style>
                                 </Border.Style>
+                                <!-- RowPad sits on the columns, so the hover grain fills the whole row. -->
                                 <Grid>
+                                <Border Style="{StaticResource RowHoverGrain}"/>
+                                <Grid Margin="{Binding Tag.RowPad, RelativeSource={RelativeSource AncestorType=ListBox}}">
                                     <Grid.ColumnDefinitions>
                                         <!-- Grows with the icon (RowIconColumn) - keep DetailsHeader in step. -->
                                         <ColumnDefinition Width="{Binding Tag.RowIconColumn, RelativeSource={RelativeSource AncestorType=ListBox}}"/>
@@ -2373,6 +2391,7 @@
                                     <TextBlock Grid.Column="6" Text="{Binding CreatedLabel}" Style="{StaticResource ResultMuted}"
                                                FontFamily="{DynamicResource MonoFont}" FontSize="10.5" VerticalAlignment="Center"
                                                TextTrimming="CharacterEllipsis"/>
+                                </Grid>
                                 </Grid>
                             </Border>
                         </DataTemplate>

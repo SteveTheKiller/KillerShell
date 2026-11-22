@@ -6,12 +6,16 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ## [1.6.2] - Unreleased
 
-1.6.2 fixes the 98SE title bar and tabs.
+1.6.2 fixes the 98SE title bar and tabs and the Trash Polka tool pages.
 
 ### Fixed
 
 - On 98SE the minimize and maximize buttons show Windows 98's own drawn glyphs again, matching KillerScan.
 - On 98SE the tab titles sit centered in their tabs instead of low.
+- On Trash Polka the Performance page shows the file browser's lighter surface around its darker tiles. It could come up as dark as the tiles.
+- On Trash Polka the Storage map uses the file browser's lighter surface, with the darker one around it.
+- On Trash Polka a hovered file row keeps its film grain.
+- The status bar has a divider between the view buttons and the version, as in the other apps.
 
 ## [1.6.1] - 2026-11-21
 

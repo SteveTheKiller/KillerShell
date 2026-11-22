@@ -294,12 +294,8 @@ namespace KillerShell.Tools
                 Child = _map,
             };
             mapWell.SetResourceReference(Border.BorderBrushProperty, "PaneBorderBrush");
-            mapWell.SetResourceReference(Border.BackgroundProperty, "MonitorCellBrush");
-            // Trash Polka: the map's empty ground shows the ink too, at screen strength; the file blocks keep their
-            // own colors on top of it.
-            Controls.ThemeMotif.SetBaseBrush(mapWell, "MonitorCellBrush");
-            Controls.ThemeMotif.SetScreen(mapWell, true);
-            Controls.ThemeMotif.SetPart(mapWell, Controls.MotifPart.Window);
+            _mapWell = mapWell;
+            ApplySurfaces();
 
             // The sunken tier is the MAP, not the whole tab: StorageHost deliberately carries
             // no host-level well (a well around everything wrapped the target bar too, and on
@@ -368,8 +364,30 @@ namespace KillerShell.Tools
             Services.ThemeManager.ThemeChanged += OnThemeChanged;
         }
 
+        private Border? _mapWell;
+
+        /// <summary>
+        /// Trash Polka: the map is the file browser's lighter surface with the pane ink, and the bar and footer
+        /// around it take the darker menu surface, so the map reads as the list it stands for (Steve, 2026-11-22).
+        /// Every other theme keeps the PaneBrush frame around the MonitorCellBrush map.
+        /// </summary>
+        private void ApplySurfaces()
+        {
+            bool inked = Application.Current?.TryFindResource("ThemeMotif") is true;
+            string frame = inked ? "MenuBackgroundBrush" : "PaneBrush";
+            Controls.ThemeMotif.SetBaseBrush(this, frame);
+            SetResourceReference(BackgroundProperty, frame);
+            if (_mapWell == null) return;
+            string map = inked ? "ListPaneBrush" : "MonitorCellBrush";
+            Controls.ThemeMotif.SetBaseBrush(_mapWell, map);
+            Controls.ThemeMotif.SetScreen(_mapWell, false);
+            Controls.ThemeMotif.SetPart(_mapWell, Controls.MotifPart.Window);
+            _mapWell.SetResourceReference(Border.BackgroundProperty, map);
+        }
+
         private void OnThemeChanged()
         {
+            ApplySurfaces();
             _penCache = null;
             _map.InvalidateMap();
             _map.InvalidateOverlay();

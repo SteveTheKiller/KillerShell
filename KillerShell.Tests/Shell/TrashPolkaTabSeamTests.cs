@@ -312,8 +312,11 @@ public static class TrashPolkaPerformanceSurfaceScenario
             .Invoke(monitor, new object[] { hardware });
         window.UpdateLayout();
 
-        // The page face is see-through so the inked list surface under it shows; the tiles keep the darker face.
-        Assert.Equal(Colors.Transparent, Assert.IsType<SolidColorBrush>(monitor.Background).Color);
+        // The page carries the lighter list surface and its ink itself, so it never shows the window through it;
+        // the tiles keep the darker face.
+        Assert.Equal(MotifPart.Window, ThemeMotif.GetPart(monitor));
+        Assert.Equal("ListPaneBrush", ThemeMotif.GetBaseBrush(monitor));
+        Assert.NotNull(monitor.Background);
         Assert.Same(Application.Current.TryFindResource("MenuBackgroundBrush"), monitor.Resources["MonitorCellBrush"]);
         var tiles = TrashPolkaTabSeamScenario.Logical(monitor).OfType<Border>()
             .Where(b => ThemeMotif.GetBaseBrush(b) == "MonitorCellBrush" && ThemeMotif.GetPart(b) == MotifPart.Window).ToArray();

@@ -117,7 +117,8 @@ namespace KillerShell.Shell
         private static (string Brush, bool Screen) TabJoinSurface(SearchTab t, bool meetsPage)
         {
             if (t.IsPerformanceMonitor) return ("ListPaneBrush", false);
-            if (t.IsStorageAnalyzer) return ("PaneBrush", true);
+            // Storage's frame is the menu surface on Trash Polka (StorageAnalyzerControl.ApplySurfaces).
+            if (t.IsStorageAnalyzer) return ("MenuBackgroundBrush", true);
             if ((t.IsProcessList || t.IsEventViewer || t.IsRegistryEditor) && meetsPage) return ("PaneBrush", true);
             if (!meetsPage) return ("MenuBackgroundBrush", false);
             // A screen that keeps its own fill (the LCD skin) shows no ink, so neither does its tab: an unknown key

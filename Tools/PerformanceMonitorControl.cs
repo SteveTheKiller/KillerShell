@@ -167,6 +167,8 @@ namespace KillerShell.Tools
         private async void Control_Loaded(object sender, RoutedEventArgs e)
         {
             if (_lifetimeCts.IsCancellationRequested) return;
+            // The page face follows the theme in force when the tab is shown, not only the one it was built under.
+            RefreshSurfaceResources();
             int version = ++_loadVersion;
             if (!_staticApplied)
             {
@@ -232,14 +234,19 @@ namespace KillerShell.Tools
             if (configured == null) return;
             // Keep an explicit monitor palette, such as the retro black readouts. Ordinary
             // cells inherit the lighter content surface locally, without changing other tools.
-            // Trash Polka turns that around: its page is the lighter list surface (FilePane.xaml
-            // PerformancePageInk) and the tiles keep the darker one, so they stand off the page.
+            // Trash Polka turns that around: its page is the lighter list surface and the tiles keep
+            // the darker one, so they stand off the page.
             bool inked = app.TryFindResource("ThemeMotif") is true;
             Resources["MonitorCellBrush"] = !inked && ReferenceEquals(configured, app.TryFindResource("MenuBackgroundBrush"))
                 ? app.TryFindResource("ListPaneBrush") ?? configured : configured;
-            // The opaque page face would cover that inked page, so on Trash Polka it is see-through.
-            if (inked) Background = Brushes.Transparent;
-            else this.SetResourceReference(Grid.BackgroundProperty, "MenuBackgroundBrush");
+            // The page itself carries that surface, plain ListPaneBrush under its ink, the way the file
+            // list does. A see-through page left the dark window showing whenever its ink had not
+            // painted yet, so the page and the tiles came up the same dark (Steve, 2026-11-22).
+            // Part goes first: dropping it hands back the motif's brush before the face is set.
+            Controls.ThemeMotif.SetBaseBrush(this, "ListPaneBrush");
+            Controls.ThemeMotif.SetPart(this, inked ? Controls.MotifPart.Window : Controls.MotifPart.None);
+            // Setting the face over a painted page is fine: the motif sees the change and repaints on top of it.
+            this.SetResourceReference(Grid.BackgroundProperty, inked ? "ListPaneBrush" : "MenuBackgroundBrush");
         }
 
         private void DisposeCounters()
