@@ -53,6 +53,20 @@ namespace KillerShell.Shell
             SyncWindowCorners(force: true);   // WindowBounds.cs
             SyncElevationHaloCorners();   // Elevation.cs
             SyncWindowEdge();
+            UpdateCaptionGlyphs();
+        }
+
+        /// <summary>98SE shows Win98's drawn minimize, maximize and restore glyphs; every other
+        /// theme keeps the Segoe font glyphs. Same switch as KillerScan's Theme.cs.</summary>
+        private void UpdateCaptionGlyphs()
+        {
+            if (ClassicMinimizeGlyph == null) return;
+            bool classic = Services.ThemeManager.Current == Services.Theme.SE98;
+            bool restored = WindowState == WindowState.Maximized;
+            MinimizeGlyph.Visibility = MaximizeGlyph.Visibility = classic ? Visibility.Collapsed : Visibility.Visible;
+            ClassicMinimizeGlyph.Visibility = classic ? Visibility.Visible : Visibility.Collapsed;
+            ClassicMaximizeGlyph.Visibility = classic && !restored ? Visibility.Visible : Visibility.Collapsed;
+            ClassicRestoreGlyph.Visibility = classic && restored ? Visibility.Visible : Visibility.Collapsed;
         }
 
         /// <summary>
@@ -77,6 +91,7 @@ namespace KillerShell.Shell
             double h = TryFindResource("TitleBarHeight") is double d && d > 0 ? d : 36.0;
 
             TitleRow?.Height = new GridLength(h);
+            UpdateCaptionGlyphs();
 
             // Same treatment for the footer. 98SE's sunken cells need more room than the 24px the
             // rounded themes use - the cell loses 2px a side to FooterCellMargin and the bevel

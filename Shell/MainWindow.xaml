@@ -247,8 +247,29 @@
                 </Button>
                 <!-- Language and theme moved to the icon rail (column 0), the way KillerNotes
                      has them. The title bar keeps only the window buttons. -->
-                <Button x:Name="MinimizeBtn" Click="MinimizeBtn_Click" Style="{StaticResource ChromeButton}" Content="&#xE921;" ToolTip="{DynamicResource Str_Menu_Minimize}"/>
-                <Button x:Name="MaximizeBtn" Click="MaximizeBtn_Click" Style="{StaticResource ChromeButton}" Content="&#xE922;" ToolTip="{DynamicResource Str_Menu_Maximize}"/>
+                <!-- 98SE swaps the font glyphs for Win98's drawn ones, as KillerScan does: the
+                     minimize bar sits at the foot, the maximize box has its thick title bar
+                     (Chrome.Extras.cs UpdateCaptionGlyphs). -->
+                <Button x:Name="MinimizeBtn" Click="MinimizeBtn_Click" Style="{StaticResource ChromeButton}" ToolTip="{DynamicResource Str_Menu_Minimize}">
+                    <Grid Height="{DynamicResource CaptionButtonHeight}">
+                        <TextBlock x:Name="MinimizeGlyph" Text="&#xE921;" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <Rectangle x:Name="ClassicMinimizeGlyph" Width="6" Height="2" Fill="{DynamicResource CaptionGlyphBrush}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,3" SnapsToDevicePixels="True" Visibility="Collapsed"/>
+                    </Grid>
+                </Button>
+                <Button x:Name="MaximizeBtn" Click="MaximizeBtn_Click" Style="{StaticResource ChromeButton}" ToolTip="{DynamicResource Str_Menu_Maximize}">
+                    <Grid>
+                        <TextBlock x:Name="MaximizeGlyph" Text="&#xE922;"/>
+                        <Grid x:Name="ClassicMaximizeGlyph" Width="9" Height="9" Margin="0,0,0,1" SnapsToDevicePixels="True" Visibility="Collapsed">
+                            <Rectangle Stroke="{DynamicResource CaptionGlyphBrush}" StrokeThickness="1" Fill="Transparent"/>
+                            <Rectangle Height="2" Fill="{DynamicResource CaptionGlyphBrush}" VerticalAlignment="Top"/>
+                        </Grid>
+                        <Grid x:Name="ClassicRestoreGlyph" Width="10" Height="9" SnapsToDevicePixels="True" Visibility="Collapsed">
+                            <Border Width="7" Height="7" HorizontalAlignment="Right" VerticalAlignment="Top" Background="{DynamicResource CaptionButtonBrush}" BorderBrush="{DynamicResource CaptionGlyphBrush}" BorderThickness="1,2,1,1"/>
+                            <Border Width="7" Height="7" HorizontalAlignment="Left" VerticalAlignment="Bottom" Background="{DynamicResource CaptionButtonBrush}" BorderBrush="{DynamicResource CaptionGlyphBrush}" BorderThickness="1,2,1,1"/>
+                        </Grid>
+                    </Grid>
+                </Button>
                 <Button x:Name="CloseBtn"    Click="CloseBtn_Click"    Style="{StaticResource ChromeCloseButton}" Content="&#xE8BB;" AutomationProperties.Name="{DynamicResource Str_Menu_Close}"/>
             </StackPanel>
 
