@@ -281,6 +281,23 @@ public static class PerformanceMinimumWidthScenario
         Assert.InRange(perf.ActualWidth, pane.PerformanceSlot.ActualWidth - 0.5, pane.PerformanceSlot.ActualWidth + 0.5);
         Assert.Null(FindAncestorScroller(perf, pane.PerformanceHost));
 
+        // Very wide: the GPU card keeps memory beside utilization. It only moves memory under
+        // utilization when a legend item would not fit beside it.
+        window.Width = 1900;
+        window.UpdateLayout();
+        Settle(window);
+        var legend = GpuLegend(window, perf);
+        Assert.NotNull(legend);
+        Assert.True(Grid.GetRow(legend!) == 0, "At a " + perf.ActualWidth + "px page the GPU graphs must stay side by side.");
+        AssertLabelsFit(window, perf);
+
+        // The middle of the old cutoff band (legend items wider than half the card).
+        window.Width = 1100;
+        window.UpdateLayout();
+        Settle(window);
+        PaneRender.Pixels(window, "perf-mid-single", out _, out _, out _);
+        AssertLabelsFit(window, perf);
+
         // Single pane: the window cannot go narrower than the page's minimum allows.
         // A wide folder tree eats the room the page needs, so the window's own 600 floor is not enough.
         var tree = (ColumnDefinition)window.FindName("TreeCol");
@@ -378,6 +395,13 @@ public static class PerformanceMinimumWidthScenario
                         : System.Text.RegularExpressions.Regex.IsMatch(tb.Text, @"^\d+ %$") ? "100 %"
                         : tb.Text.Contains(" GB (") ? "99.9/99.9 GB (100%)"
                         : tb.Text;
+            // The GPU memory legend's readings at their widest.
+            if (GpuLegend(window, page) is { } legend)
+                foreach (var item in legend.Children.OfType<StackPanel>())
+                    item.Children.OfType<TextBlock>().Last().Text = "999.9 MB";
+            // A wider reading can move the GPU card's memory graph under utilization, which
+            // takes a second layout pass to land.
+            page.UpdateLayout();
             page.UpdateLayout();
             cut = LabelsCut(window, page);
         }));
@@ -395,13 +419,18 @@ public static class PerformanceMinimumWidthScenario
         }
         Collect(Application.Current.Resources);
         labels.Remove((string)window.FindResource("Str_Perf_GpuUnassigned"));
-        // The GPU card's memory legend items are wider than half the card below about a 1000px
-        // page (PerformanceMonitorControl.MinPageWidth), so their text is left out here.
-        var gpuLegend = new[] { (string)window.FindResource("Str_Perf_DedicatedMemory"), (string)window.FindResource("Str_Perf_SharedMemory") };
-        return PerformanceFit.Clipped(page, skip: node => node is StackPanel item
-                && item.Children.OfType<TextBlock>().Any(t => gpuLegend.Contains(t.Text)))
+        return PerformanceFit.Clipped(page, skip: _ => false)
             .Where(entry => { string text = entry.Split('"')[1]; return char.IsDigit(text[0]) || labels.Contains(text); })
             .ToList();
+    }
+
+    /// <summary>The GPU card's memory legend (null with no GPU card), so a test can tell whether
+    /// memory sits beside utilization (legend on row 0) or under it (row 2).</summary>
+    private static WrapPanel? GpuLegend(Window window, FrameworkElement page)
+    {
+        string dedicated = (string)window.FindResource("Str_Perf_DedicatedMemory");
+        return Descend(page).OfType<WrapPanel>().FirstOrDefault(w => w.IsVisible
+            && w.Children.OfType<StackPanel>().Any(item => item.Children.OfType<TextBlock>().Any(t => t.Text == dedicated)));
     }
 }
 

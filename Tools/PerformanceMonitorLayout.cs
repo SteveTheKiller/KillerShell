@@ -717,17 +717,62 @@ namespace KillerShell.Tools
                 (PerformanceGraphBrushes.Gpu, "Str_Perf_DedicatedMemory"), (PerformanceGraphBrushes.GpuShared, "Str_Perf_SharedMemory"));
             memoryLegend.VerticalAlignment = VerticalAlignment.Bottom;
 
-            SetColumn(memoryLegend, 2);
-            SetRow(util.Host, 1);
-            SetRow(memory.Host, 1);
-            SetColumn(memory.Host, 2);
+            graphs.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            graphs.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             graphs.Children.Add(utilCaption);
             graphs.Children.Add(memoryLegend);
             graphs.Children.Add(util.Host);
             graphs.Children.Add(memory.Host);
+            PlaceGpuGraphs(graphs, utilCaption, util.Host, memoryLegend, memory.Host, stacked: false);
+
+            // Side by side until a legend item, measured as it reads now, is wider than the
+            // memory column: then memory goes under utilization and the legend gets the card's
+            // whole width. Measured each time the card or a reading changes width, never a
+            // fixed page width. The column's width does not depend on the arrangement, so the
+            // switch cannot flip back and forth on its own.
+            bool stacked = false;
+            void Fit()
+            {
+                if (graphs.ActualWidth <= 0) return;
+                double column = (graphs.ActualWidth - 12) / 2;
+                bool stack = memoryLegend.Children.OfType<FrameworkElement>().Any(item => LegendItemWidth(item) > column);
+                if (stack == stacked) return;
+                stacked = stack;
+                PlaceGpuGraphs(graphs, utilCaption, util.Host, memoryLegend, memory.Host, stacked);
+            }
+            graphs.SizeChanged += (_, _) => Fit();
+            foreach (var item in memoryLegend.Children.OfType<FrameworkElement>()) item.SizeChanged += (_, _) => Fit();
 
             details.Children.Add(graphs);
             return card;
+        }
+
+        /// <summary>A legend item's full width on one line: each part is measured at its own
+        /// width by the item's horizontal StackPanel, whatever room the legend has.</summary>
+        private static double LegendItemWidth(FrameworkElement item)
+        {
+            double width = item.Margin.Left + item.Margin.Right;
+            if (item is Panel panel)
+                foreach (var part in panel.Children.OfType<FrameworkElement>())
+                    width += part.DesiredSize.Width;
+            return width;
+        }
+
+        private static void PlaceGpuGraphs(Grid graphs, FrameworkElement utilCaption, FrameworkElement util,
+            FrameworkElement legend, FrameworkElement memory, bool stacked)
+        {
+            // Side by side: captions on row 0, graphs on row 1, memory in column 2. Stacked: one
+            // column across the whole card, utilization over memory.
+            int span = stacked ? 3 : 1;
+            foreach (var part in new[] { utilCaption, util, legend, memory }) Grid.SetColumnSpan(part, span);
+            SetColumn(utilCaption, 0);
+            SetRow(utilCaption, 0);
+            SetColumn(util, 0);
+            SetRow(util, 1);
+            SetColumn(legend, stacked ? 0 : 2);
+            SetRow(legend, stacked ? 2 : 0);
+            SetColumn(memory, stacked ? 0 : 2);
+            SetRow(memory, stacked ? 3 : 1);
         }
     }
 }

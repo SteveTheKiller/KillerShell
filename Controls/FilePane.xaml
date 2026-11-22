@@ -2073,7 +2073,7 @@
                          full-width gray host, so the top strip cannot be covered or clipped away. -->
                     <Grid Background="{DynamicResource PerformancePageFrameBrush}">
                         <!-- No sideways scroll: the pane itself stops at the page's minimum width
-                             (DualPane.cs PaneContentMinimum), so the page always fits its pane. -->
+                             (DualPane.cs PaneMinimum), so the page always fits its pane. -->
                         <ContentControl x:Name="PerformanceSlot" Focusable="False"
                                         Margin="{DynamicResource PerformanceContentInset}"/>
                         <Border IsHitTestVisible="False" Panel.ZIndex="5"

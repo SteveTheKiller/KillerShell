@@ -110,8 +110,8 @@ namespace KillerShell.Tools
         /// PaneMinimum). Measured with the widest readings ("999.9 MB/s", "100 %"), counting text
         /// a card edge or grid column cuts as well as text cut in its own box: every reading and
         /// label fits from a 600px page up. Hardware names shorten with an ellipsis, as they are
-        /// built to. The GPU card's memory legend is the one exception: each of its two items is
-        /// wider than half the card below about a 1000px page.</summary>
+        /// built to. The GPU card moves its memory graph under utilization when a legend item
+        /// would not fit beside it (PerformanceMonitorLayout.cs BuildGpuPanel).</summary>
         internal const double MinPageWidth = 600;
 
         internal PerformanceMonitorControl(Func<CancellationToken, Task<Services.PerformanceHardwareInfo>>? discoverHardware = null)
