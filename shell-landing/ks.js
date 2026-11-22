@@ -121,7 +121,7 @@
     var dict = window.I18N && window.I18N[lang];
     if (!dict) return english;
     var captions = [
-      'Trash Polka, ' + dict.site_ui_red + ': ' + dict.f_panes_t + ', ' + dict.f_editor_t + ', ' + dict.f_browse_t,
+      'Trash Polka, ' + dict.ui_size + ' 125%: ' + dict.f_tabs_t + ', ' + dict.f_editor_t + ', ' + dict.f_term_t,
       dict.theme_cyanotic + ': ' + dict.f_panes_t + ', ' + dict.f_term_t + ', ' + dict.f_procsvc_t,
       dict.theme_light + ', ' + dict.site_ui_teal + ': ' + dict.f_editor_t,
       dict.theme_delirium + ': ' + dict.f_panes_t + ', ' + dict.f_reg_t + ', ' + dict.f_procsvc_t,
