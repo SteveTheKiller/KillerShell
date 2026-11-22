@@ -829,9 +829,9 @@ html[data-theme] body .content .result,
 html[data-theme] body .content .metric,
 html[data-theme] body .content .provenance-group,
 html[data-theme] body .content .source-links a {
-  border: 1px solid var(--pane-border);
-  box-shadow: 0 0 0 1px var(--tab-edge), 0 12px 26px rgba(0,0,0,.26);
-  transition: transform .12s, box-shadow .15s;
+  border: 1px solid var(--card-edge, rgba(140,140,140,0.32));
+  box-shadow: 0 12px 26px rgba(0,0,0,.26);
+  transition: transform .12s, box-shadow .15s, border-color .12s;
 }
 html[data-theme] body .content .hero-info:hover,
 html[data-theme] body .content .about-card:hover,
@@ -845,7 +845,26 @@ html[data-theme] body .content .result:hover,
 html[data-theme] body .content .metric:hover,
 html[data-theme] body .content .provenance-group:hover,
 html[data-theme] body .content .source-links a:hover {
-  border-color: var(--pane-border);
+  border-color: var(--accent);
   transform: translateY(-3px);
-  box-shadow: 0 0 0 1px var(--accent), 0 20px 40px rgba(0,0,0,.5);
+  box-shadow: 0 20px 40px rgba(0,0,0,.5);
+}
+
+/* Every card is the same smoked glass with a gray edge, so the pane's grain shows through instead of a flat fill. */
+html[data-theme="light"]:root { --hero-smoke:rgba(255,255,255,0.3); --card-edge:rgba(0,0,0,0.16); }
+html[data-theme="hc"]:root { --card-edge:#262626; }
+html[data-theme] body .content .hero-info,
+html[data-theme] body .content .about-card,
+html[data-theme] body .content .codeblock,
+html[data-theme] body .content .cli-demo,
+html[data-theme] body .content .diagram,
+html[data-theme] body .content .tech-sec,
+html[data-theme] body .content .acc-item,
+html[data-theme] body .content .engine-doc-hero,
+html[data-theme] body .content .engine-doc,
+html[data-theme] body .content .doc-pager a {
+  background: var(--hero-smoke, rgba(8,8,8,0.42));
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  border: 1px solid var(--card-edge, rgba(140,140,140,0.32));
 }

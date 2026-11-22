@@ -4,17 +4,17 @@
 .js .feature-carousel .feature-grid {
   display: block;
   min-height: 190px;
-  background: var(--modal) var(--grain-img) repeat;
-  background-size: 256px 256px;
-  border: 1px solid var(--pane-border);
+  background: var(--hero-smoke, rgba(8,8,8,0.42));
+  border: 1px solid var(--card-edge, rgba(140,140,140,0.32));
   border-radius: 7px;
-  box-shadow: 0 0 0 1px var(--tab-edge), 0 12px 26px rgba(0,0,0,.26);
+  box-shadow: 0 12px 26px rgba(0,0,0,.26);
   overflow: hidden;
   transition: transform .12s, box-shadow .15s, border-color .12s;
 }
 .js .feature-carousel .feature-grid:hover {
   transform: translateY(-3px);
-  box-shadow: 0 0 0 1px var(--accent), 0 20px 40px rgba(0,0,0,.5);
+  border-color: var(--accent);
+  box-shadow: 0 20px 40px rgba(0,0,0,.5);
 }
 .js .feature-carousel .feature-card {
   display: none;
