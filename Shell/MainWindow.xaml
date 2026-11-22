@@ -449,11 +449,11 @@
                 <!-- FAVORITES SLIDE-UP (Bookmarks.cs). Height animates 0 -> open so it rises
                      out of the sidebar's bottom edge, the way KillerNotes' Killculator does.
                      No header and no close button by design: the rail star is the handle and
-                     the rows are the whole content. A hairline on top is the only separator,
-                     since a full card would read as a second panel rather than a drawer. -->
+                     the rows are the whole content. No separator line either: Steve had the
+                     top hairline removed (2026-11-22), so the drawer flows straight out of the
+                     tree. Bookmarks.cs reads BorderThickness live, so its height math follows. -->
                 <Border x:Name="BookmarksPanel" Grid.Row="1" Height="0" Visibility="Collapsed"
                         ClipToBounds="True" AllowDrop="True"
-                        BorderBrush="{DynamicResource TreeLineBrush}" BorderThickness="0,1,0,0"
                         DragOver="BookmarksPanel_DragOver" Drop="BookmarksPanel_Drop">
                     <Grid>
                         <!-- Transparent, so the window's own background shows through the drawer.

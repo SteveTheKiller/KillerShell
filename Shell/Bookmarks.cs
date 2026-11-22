@@ -122,8 +122,8 @@ namespace KillerShell.Shell
         // Paths are joined with a character that cannot appear in one, so no escaping is needed.
         private const char BookmarkSep = '|';
 
-        // BookmarksPanel is a Border with a 1px top hairline (BorderThickness="0,1,0,0"), which
-        // eats into its own content area - the ListBox inside gets exactly this much LESS room
+        // BookmarksPanel is a Border whose BorderThickness (zero since the top hairline went,
+        // 2026-11-22) eats into its own content area - the ListBox inside gets exactly this much LESS room
         // than BookmarksPanel's own Height. Every conversion from "what the list's rows need"
         // to "what to set BookmarksPanel.Height to" has to add it back, or the list ends up a
         // pixel short of its content and a genuine, if tiny, sliver of scrollbar shows even once
@@ -393,8 +393,8 @@ namespace KillerShell.Shell
             if (!_bookmarksOpen || !TryMeasureBookmarksContent(out double listNeeds)) return;
 
             // +BookmarksBorderExtra: listNeeds is what the LIST needs; BookmarksPanel.Height is
-            // the OUTER border, which has its own 1px top hairline eating into that same space.
-            // Without adding it back, the list ends up exactly 1px short of its own content -
+            // the OUTER border, whose own border thickness (none today) eats into that same space.
+            // Without adding it back, a border would leave the list that much short of its content -
             // small, but a real, permanently-draggable sliver of scrollbar, not a rounding
             // artifact that a tolerance should be swallowing.
             double panelNeeds = listNeeds + BookmarksBorderExtra;

@@ -29,6 +29,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - On 98SE the window frame is 4 px and the icon rail 20 px, so the rail no longer reads wider than on the other themes.
 - A This PC tab restored from the last session lists the drives instead of opening empty.
 - A This PC tab shows the computer icon in the tab strip.
+- The bookmarks drawer in the sidebar has no divider line above it, so it runs straight on from the folder tree.
 
 ### Added
 
