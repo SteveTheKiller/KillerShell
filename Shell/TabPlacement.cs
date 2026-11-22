@@ -30,6 +30,31 @@ namespace KillerShell.Shell
                 p.TabBar.IsVisibleChanged += (_, _) => UpdateDetailsTabJoin(p);
             }
             SetTabPlacement(GetWindowViewSetting("TabsAtBottom") == "1", persist: false);
+            // The rail flyouts' corner sits above the bottom tab row instead of over it.
+            Controls.FlyoutPlacement.SetVisibleFoot(PaneHost, BottomTabsTop);
+        }
+
+        /// <summary>
+        /// The top of the bottom tab row along PaneHost's foot on the rail's side, in the root's DIPs, or NaN while no
+        /// tab row is there (tabs on top, or a single tab, whose bar is hidden). Read each time a rail flyout opens.
+        /// </summary>
+        internal double BottomTabsTop(FrameworkElement root)
+        {
+            if (!TabsAtBottom || !PaneHost.IsDescendantOf(root)) return double.NaN;
+            Rect host = PaneHost.TransformToAncestor(root).TransformBounds(new Rect(PaneHost.RenderSize));
+            double top = double.NaN;
+            foreach (var pane in new[] { LeftPane, RightPane })
+            {
+                if (!pane.IsVisible || !pane.TabBar.IsVisible || !pane.IsDescendantOf(root)) continue;
+                Rect bar = pane.TabBar.TransformToAncestor(root).TransformBounds(new Rect(pane.TabBar.RenderSize));
+                // Only a tab row along the host's foot, on the rail's side, is under the corner: the top pane of a
+                // stacked pair and the far pane of a side-by-side pair are clear of it.
+                if (bar.Bottom < host.Bottom - 4) continue;
+                Rect p = pane.TransformToAncestor(root).TransformBounds(new Rect(pane.RenderSize));
+                if (_treeRight ? p.Right < host.Right - 4 : p.Left > host.Left + 4) continue;
+                top = double.IsNaN(top) ? bar.Top : System.Math.Min(top, bar.Top);
+            }
+            return top;
         }
 
         internal void SetTabPlacement(bool bottom, bool persist = true)

@@ -21,6 +21,8 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - The Mourning theme highlights selections in its original peach with dark text again, instead of pink.
 - Opening a PowerShell profile clears the "Asking PowerShell where its profile is" status once the profile opens, instead of leaving it on the footer.
 - The demo Event Viewer's KillerShell startup event names the running version instead of 1.1.0.
+- With the tabs below, the sidebar's corner menus open 8 px above the tab row instead of covering it, in single and dual pane.
+- A sidebar menu taller than the file pane, such as the theme menu in a short window, keeps its foot in the corner and rises above the pane as far as it needs. It scrolls only when the window itself is too short.
 
 ### Changed
 
