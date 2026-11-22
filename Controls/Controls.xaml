@@ -450,7 +450,10 @@
                                Placement="Bottom" AllowsTransparency="True" PopupAnimation="Fade">
                             <!-- ComboPopupBrush: MenuBackgroundBrush everywhere, WHITE on 98SE -
                                  a Win98 dropdown list is a white well with the navy highlight. -->
+                            <!-- Marked here, not left to ThemeMotif's popup pass: WPF only sends Loaded into a subtree
+                                 that has an instance handler, so the open list was never found and stayed flat. -->
                             <Border MinWidth="{TemplateBinding ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}"
+                                    kui:ThemeMotif.Part="Popup" kui:ThemeMotif.BaseBrush="ComboPopupBrush"
                                     Background="{DynamicResource ComboPopupBrush}" BorderBrush="{DynamicResource MenuBorderBrush}"
                                     BorderThickness="1" CornerRadius="{DynamicResource MenuCornerRadius}" Margin="6"
                                     Effect="{DynamicResource ComboPopupShadow}">
@@ -609,7 +612,7 @@
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <Button x:Name="PART_PreviousButton" Grid.Column="0" Style="{StaticResource GrungeCalendarNavButton}" Content="&#xE76B;" Focusable="False"/>
+                                    <Button x:Name="PART_PreviousButton" Grid.Column="0" Style="{StaticResource GrungeCalendarNavButton}" Content="&#xE76B;" Focusable="False" ToolTip="{DynamicResource Str_Cal_PrevMonth}"/>
                                     <Button x:Name="PART_HeaderButton" Grid.Column="1" Focusable="False" Cursor="Hand"
                                             Background="Transparent" Foreground="{DynamicResource TextBrush}" FontFamily="{DynamicResource MonoFont}" FontSize="12" FontWeight="SemiBold">
                                         <Button.Template>
@@ -621,7 +624,7 @@
                                             </ControlTemplate>
                                         </Button.Template>
                                     </Button>
-                                    <Button x:Name="PART_NextButton" Grid.Column="2" Style="{StaticResource GrungeCalendarNavButton}" Content="&#xE76C;" Focusable="False"/>
+                                    <Button x:Name="PART_NextButton" Grid.Column="2" Style="{StaticResource GrungeCalendarNavButton}" Content="&#xE76C;" Focusable="False" ToolTip="{DynamicResource Str_Cal_NextMonth}"/>
                                 </Grid>
                                 <Grid Margin="0,2,0,0">
                                     <Grid x:Name="PART_MonthView" HorizontalAlignment="Center" Visibility="Visible">
@@ -2481,8 +2484,8 @@
         <GradientStop Color="#38000000" Offset="0.65"/>
         <GradientStop Color="#80000000" Offset="1"/>
     </LinearGradientBrush>
-    <!-- An app whose list sits over a bottom tab strip hides this cue there, so the list and the
-         active tab join without a dark band. -->
+    <!-- An app whose list sits over a bottom tab strip hides this cue there and draws one shadow
+         from the list's foot on through the active tab instead, so the shade never stops at the join. -->
     <Style x:Key="ScrollBottomCue" TargetType="Border" BasedOn="{StaticResource ScrollCueBase}">
         <Setter Property="Height" Value="28"/>
         <Setter Property="VerticalAlignment" Value="Bottom"/>
@@ -3457,8 +3460,10 @@
                                IsOpen="{TemplateBinding IsDropDownOpen}" Focusable="False"
                                PopupAnimation="Fade" Placement="Bottom">
                             <!-- ComboPopupBrush (the menu surface), not PaneBrush: ThemeMotif paints ComboPopupBrush with the
-                                 popup piece, so an open list under Trash Polka carries the art like a menu does. -->
+                                 popup piece, so an open list under Trash Polka carries the art like a menu does. Marked
+                                 here: WPF never sends Loaded into the list, so the popup pass could not find it. -->
                             <Border x:Name="PopupBd" Background="{DynamicResource ComboPopupBrush}"
+                                    kui:ThemeMotif.Part="Popup" kui:ThemeMotif.BaseBrush="ComboPopupBrush"
                                     BorderBrush="{DynamicResource MenuBorderBrush}" BorderThickness="1"
                                     CornerRadius="{DynamicResource SmallCornerRadius}" Padding="2" Margin="0,2,6,6"
                                     MinWidth="{Binding ActualWidth, RelativeSource={RelativeSource TemplatedParent}}"

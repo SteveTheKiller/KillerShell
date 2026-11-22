@@ -19,6 +19,8 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - With the tabs below, a list that scrolls has its bottom shadow back. It runs on into the current tab as one shade, so the join stays seamless.
 - The Performance page's cards scroll right to the page's foot instead of stopping 4 px above it.
 - The Performance page has a minimum width. A narrower pane scrolls it sideways instead of squeezing the cards until their labels cut off.
+- On Trash Polka an open dropdown list carries the theme's artwork instead of a flat fill.
+- The calendar's month arrows have tooltips.
 
 ## [1.6.1] - 2026-11-21
 
