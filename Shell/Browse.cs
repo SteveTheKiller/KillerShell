@@ -374,6 +374,8 @@ namespace KillerShell.Shell
             if (DemoMode)
             {
                 foreach (var root in Services.DemoFs.Drives)
+                {
+                    var (total, free) = Services.DemoFs.DriveSpace(root);
                     list.Add(new SearchResult
                     {
                         FilePath    = root,
@@ -384,9 +386,10 @@ namespace KillerShell.Shell
                         Modified    = default,
                         Seq         = seq++,
                         // Invented capacities, so a capture shows the bars the real listing has.
-                        DriveTotalBytes = seq == 1 ? 511_101_759_488L : 1_000_202_043_392L,
-                        DriveFreeBytes  = seq == 1 ? 227_633_270_784L :    93_415_538_688L,
+                        DriveTotalBytes = total,
+                        DriveFreeBytes  = free,
                     });
+                }
                 return list;
             }
 

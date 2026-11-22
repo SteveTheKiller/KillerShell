@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 // The machine --demo pretends to be: one MSP field technician's workstation, invented whole.
 //
@@ -78,7 +79,27 @@ namespace KillerShell.Services
 
         private static readonly List<Entry> Nothing = [];
 
-        private static readonly List<string> Roots = [@"C:\", @"D:\"];
+        // The fabricated volumes: root, label, capacity and free space. The usage spread is on
+        // purpose, so a This PC capture shows a green, a yellow (80%) and a red (95%) bar.
+        private static readonly (string Root, string Label, long Total, long Free)[] Volumes =
+        [
+            (@"C:\", "Local Disk (C:)",      511_101_759_488L,   227_633_270_784L),
+            (@"D:\", "Field Backup (D:)",  1_000_202_043_392L,    93_415_538_688L),
+            (@"E:\", "Media (E:)",         4_000_787_030_016L,   131_941_395_456L),
+            (@"F:\", "Scratch SSD (F:)",   1_000_204_886_016L,   702_764_744_704L),
+            (@"G:\", "Toolkit USB (G:)",      61_530_439_680L,    40_265_318_400L),
+        ];
+
+        private static readonly List<string> Roots = Volumes.Select(v => v.Root).ToList();
+
+        /// <summary>The invented capacity and free space for a fabricated root, or zeros.</summary>
+        internal static (long Total, long Free) DriveSpace(string root)
+        {
+            string key = Key(root);
+            foreach (var v in Volumes)
+                if (string.Equals(v.Root, key, StringComparison.OrdinalIgnoreCase)) return (v.Total, v.Free);
+            return (0, 0);
+        }
 
         // What Services\DemoImages.cs treats as a picture. Deliberately the same set
         // Services\IconCache.cs calls decodable, so a row that gets an image icon in the listing
@@ -243,8 +264,8 @@ namespace KillerShell.Services
         internal static string DriveLabel(string root)
         {
             string key = Key(root);
-            if (string.Equals(key, @"C:\", StringComparison.OrdinalIgnoreCase)) return "Local Disk (C:)";
-            if (string.Equals(key, @"D:\", StringComparison.OrdinalIgnoreCase)) return "Field Backup (D:)";
+            foreach (var v in Volumes)
+                if (string.Equals(v.Root, key, StringComparison.OrdinalIgnoreCase)) return v.Label;
             return key.TrimEnd('\\');
         }
 
@@ -822,6 +843,24 @@ namespace KillerShell.Services
                 F("dell-latitude-7450.cab", 780 * Mb, 2026, 5, 22),
                 F("hp-elitebook-860.cab",   640 * Mb, 2026, 5, 22),
                 F("lenovo-t14s-gen5.cab",   590 * Mb, 2026, 5, 22));
+
+            // ── E: the nearly full media drive ───────────────────
+            Add(@"E:\",
+                D("Live recordings", 2026, 6, 21),
+                D("Multitracks",     2026, 6, 14),
+                D("Video",           2026, 5, 30));
+
+            // ── F: the scratch SSD ───────────────────────────────
+            Add(@"F:\",
+                D("Builds", 2026, 7, 2),
+                D("Temp",   2026, 7, 3),
+                D("VMs",    2026, 6, 18));
+
+            // ── G: the toolkit stick ─────────────────────────────
+            Add(@"G:\",
+                D("Installers", 2026, 6, 24),
+                D("Portable",   2026, 6, 24),
+                F("autorun.inf", 1 * Kb, 2026, 1, 9));
         }
     }
 }
