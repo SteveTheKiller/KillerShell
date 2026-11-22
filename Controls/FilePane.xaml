@@ -2325,9 +2325,9 @@
                         </DataTemplate>
 
                         <!-- One This PC drive. Same hover, selection and click handling as the icon
-                             tile above. The bar is a track with the used share scaled across it;
-                             it turns red past 90% full, as Explorer's does, and is left out for a
-                             drive that did not report its size. -->
+                             tile above. The bar is a track with the used share scaled across it,
+                             colored by how full the drive is, and is left out for a drive that did
+                             not report its size. -->
                         <DataTemplate x:Key="DriveTileTemplate" DataType="{x:Type models:SearchResult}">
                             <Border x:Name="TileBd" CornerRadius="4" Cursor="Hand" BorderThickness="1" Margin="3"
                                     Tag="{Binding FilePath}" ToolTip="{Binding FilePath}"
@@ -2370,12 +2370,39 @@
                                                 <Rectangle.RenderTransform>
                                                     <ScaleTransform ScaleX="{Binding DriveUsedFraction, Mode=OneWay}"/>
                                                 </Rectangle.RenderTransform>
+                                                <!-- Fixed space colors on every theme, not the accent: green,
+                                                     yellow from 80% full, red only from 95%. Each is a slight
+                                                     top-to-bottom gradient. -->
                                                 <Rectangle.Style>
                                                     <Style TargetType="Rectangle">
-                                                        <Setter Property="Fill" Value="{DynamicResource PrimaryBrush}"/>
+                                                        <Setter Property="Fill">
+                                                            <Setter.Value>
+                                                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                                    <GradientStop Color="#5fd06f" Offset="0"/>
+                                                                    <GradientStop Color="#2f9a45" Offset="1"/>
+                                                                </LinearGradientBrush>
+                                                            </Setter.Value>
+                                                        </Setter>
                                                         <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding DriveNearlyFull}" Value="True">
-                                                                <Setter Property="Fill" Value="{DynamicResource DangerRed}"/>
+                                                            <DataTrigger Binding="{Binding DriveSpaceLevel}" Value="1">
+                                                                <Setter Property="Fill">
+                                                                    <Setter.Value>
+                                                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                                            <GradientStop Color="#f2d04e" Offset="0"/>
+                                                                            <GradientStop Color="#c99a1c" Offset="1"/>
+                                                                        </LinearGradientBrush>
+                                                                    </Setter.Value>
+                                                                </Setter>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding DriveSpaceLevel}" Value="2">
+                                                                <Setter Property="Fill">
+                                                                    <Setter.Value>
+                                                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                                            <GradientStop Color="#f06a6a" Offset="0"/>
+                                                                            <GradientStop Color="#c02e2e" Offset="1"/>
+                                                                        </LinearGradientBrush>
+                                                                    </Setter.Value>
+                                                                </Setter>
                                                             </DataTrigger>
                                                         </Style.Triggers>
                                                     </Style>

@@ -68,8 +68,11 @@ namespace KillerShell.Models
         public double DriveUsedFraction => DriveTotalBytes <= 0 ? 0
             : System.Math.Min(1, System.Math.Max(0, (DriveTotalBytes - DriveFreeBytes) / (double)DriveTotalBytes));
 
-        /// <summary>Over 90% full, which is where Explorer turns the bar red.</summary>
-        public bool DriveNearlyFull => HasDriveSpace && DriveUsedFraction >= 0.9;
+        /// <summary>The bar's color band: 0 green, 1 yellow once the drive is 80% full,
+        /// 2 red only when it is 95% full and genuinely close to running out.</summary>
+        public int DriveSpaceLevel => !HasDriveSpace ? 0
+            : DriveUsedFraction >= 0.95 ? 2
+            : DriveUsedFraction >= 0.80 ? 1 : 0;
 
         /// <summary>"212 GB free of 476 GB" in the current language.</summary>
         public string DriveFreeLabel => !HasDriveSpace ? string.Empty

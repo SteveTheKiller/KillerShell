@@ -32,7 +32,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ### Added
 
-- This PC shows each drive as a tile with a usage bar and its free space, as Explorer does. The bar turns red when a drive is over 90% full.
+- This PC shows each drive as a tile with a usage bar and its free space, as Explorer does. The bar is green, turns yellow at 80% full and red at 95%.
 
 ## [1.6.1] - 2026-11-21
 
