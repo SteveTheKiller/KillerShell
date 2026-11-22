@@ -846,14 +846,20 @@ namespace KillerShell.Shell
 
             int mode = Pane.ViewMode;
 
+            // This PC shows Explorer's drive tiles in every mode: a list of three drive names
+            // with a blank size column says nothing a drive tile does not say better.
+            bool drives = Pane.Active is { IsBrowsing: true } a && IsThisPc(a.CurrentFolder);   // Browse.cs
+
             // mode 0 = Compact List (Explorer's List): wrap panel that flows top-to-bottom into
             // vertical columns. mode 1 = Icons (tile grid). mode 2 = Details (sortable columns).
             Pane.ResultsList.ItemsPanel = (ItemsPanelTemplate)Pane.ResultsList.FindResource(
+                drives    ? "PanelDrives" :
                 mode == 0 ? "PanelWrapVertical" :
                 mode == 1 ? "PanelWrap"
                           : "PanelStack");
 
             Pane.ResultsList.ItemTemplate =
+                drives    ? (DataTemplate)Pane.ResultsList.FindResource("DriveTileTemplate") :
                 mode == 0 ? (DataTemplate)Pane.ResultsList.FindResource("CompactListRowTemplate") :
                 mode == 1 ? (DataTemplate)Pane.ResultsList.FindResource("TileTemplate")
                           : (DataTemplate)Pane.ResultsList.FindResource("DetailsRowTemplate");
@@ -864,9 +870,9 @@ namespace KillerShell.Shell
             // which realizes every item and hangs on a large folder. The wrap panels already
             // scroll by pixels through IScrollInfo.
             ScrollViewer.SetHorizontalScrollBarVisibility(Pane.ResultsList,
-                mode == 0 ? ScrollBarVisibility.Auto : ScrollBarVisibility.Disabled);
+                mode == 0 && !drives ? ScrollBarVisibility.Auto : ScrollBarVisibility.Disabled);
             ScrollViewer.SetVerticalScrollBarVisibility(Pane.ResultsList,
-                mode == 0 ? ScrollBarVisibility.Disabled : ScrollBarVisibility.Auto);
+                mode == 0 && !drives ? ScrollBarVisibility.Disabled : ScrollBarVisibility.Auto);
             ScrollViewer.SetCanContentScroll(Pane.ResultsList, true);
 
             // Column headers belong to details view. Expand-all had a role only on the old
@@ -885,7 +891,7 @@ namespace KillerShell.Shell
             // EventViewerTabs.cs/PerformanceTabs.cs all do this already, so it is the one signal
             // every one of them already agrees on), so it doubles as "is a listing even showing".
             bool showingListing = Pane.ResultsList.Visibility == Visibility.Visible;
-            Pane.DetailsHeader.Visibility   = mode == 2 && showingListing ? Visibility.Visible : Visibility.Collapsed;
+            Pane.DetailsHeader.Visibility   = mode == 2 && showingListing && !drives ? Visibility.Visible : Visibility.Collapsed;
             // Collapsed now that no view shows it: a Hidden slot left a blank 28px gap in the
             // strip and counted against the room the toolbar has before shedding (PaneToolbar.cs).
             Pane.ExpandAllButton.Visibility = Visibility.Collapsed;

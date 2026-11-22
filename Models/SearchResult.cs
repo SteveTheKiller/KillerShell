@@ -55,6 +55,39 @@ namespace KillerShell.Models
             }
         }
 
+        // ── Drive rows (This PC, Browse.cs ListDrives) ─────────────
+        // A drive's capacity and free space, read once when This PC is listed. Zero total means
+        // the volume did not answer (an empty card reader, a dead share), and the tile then
+        // shows the name alone with no bar.
+        public long DriveTotalBytes { get; set; }
+        public long DriveFreeBytes  { get; set; }
+
+        public bool HasDriveSpace => DriveTotalBytes > 0;
+
+        /// <summary>The used share of the drive, 0 to 1, for the tile's bar.</summary>
+        public double DriveUsedFraction => DriveTotalBytes <= 0 ? 0
+            : System.Math.Min(1, System.Math.Max(0, (DriveTotalBytes - DriveFreeBytes) / (double)DriveTotalBytes));
+
+        /// <summary>Over 90% full, which is where Explorer turns the bar red.</summary>
+        public bool DriveNearlyFull => HasDriveSpace && DriveUsedFraction >= 0.9;
+
+        /// <summary>"212 GB free of 476 GB" in the current language.</summary>
+        public string DriveFreeLabel => !HasDriveSpace ? string.Empty
+            : string.Format(Shell.MainWindow.LocStatic("Str_Drive_FreeOf"),
+                            DriveSize(DriveFreeBytes), DriveSize(DriveTotalBytes));
+
+        /// <summary>Three significant digits, the way Explorer writes drive sizes: 476 GB,
+        /// 31.9 GB, 1.81 TB.</summary>
+        internal static string DriveSize(long bytes)
+        {
+            string[] units = ["B", "KB", "MB", "GB", "TB", "PB"];
+            double v = System.Math.Max(0, bytes);
+            int u = 0;
+            while (v >= 1000 && u < units.Length - 1) { v /= 1024; u++; }
+            string format = u == 0 || v >= 100 ? "0" : v >= 10 ? "0.#" : "0.##";
+            return v.ToString(format, System.Globalization.CultureInfo.CurrentCulture) + " " + units[u];
+        }
+
         // The culture's short date and short time ("9/14/2026 10:09 PM" under en-US), which is
         // what Explorer's date columns show. One format for every date the listing draws.
         internal static string DateLabel(System.DateTime d) =>

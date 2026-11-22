@@ -77,6 +77,7 @@
     <sys:String x:Key="Str_TT_SystemTools">সিস্টেম টুল</sys:String>
     <sys:String x:Key="Str_TT_Sort">সাজান  (Alt+S)</sys:String>
     <sys:String x:Key="Str_Nav_ThisPc">এই পিসি</sys:String>
+    <sys:String x:Key="Str_Drive_FreeOf">{1} এর মধ্যে {0} খালি</sys:String>
     <sys:String x:Key="Str_Nav_RecycleBin">রিসাইকেল বিন</sys:String>
     <sys:String x:Key="Str_Bm_Unreachable" xml:space="preserve">{0}&#10;এই মুহূর্তে পৌঁছানো যাচ্ছে না। ড্রাইভ সংযুক্ত আছে কিনা বা শেয়ার অনলাইনে আছে কিনা দেখুন।</sys:String>
     <sys:String x:Key="Str_Menu_PipeTab">এই ফলাফলগুলির মধ্যে অনুসন্ধান করুন</sys:String>

@@ -136,6 +136,15 @@ namespace KillerShell.Shell
 
             if (t.IsSearching) return;   // deferred - re-applied when the search finishes
 
+            // This PC lists its drives by letter, whatever the folder sort is, and never groups:
+            // the tiles lay out in a wrap panel (ResultsView.cs), which cannot hold groups.
+            if (t.IsBrowsing && IsThisPc(t.CurrentFolder))
+            {
+                view.SortDescriptions.Add(new System.ComponentModel.SortDescription(
+                    nameof(SearchResult.FilePath), System.ComponentModel.ListSortDirection.Ascending));
+                return;
+            }
+
             // Date groups (Today, Last week, ...) when the details view is sorted by a date
             // column. Null for every other sort, view and pane setting.
             string? groupBy = DateGroupProperty(t);

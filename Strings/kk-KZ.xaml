@@ -118,6 +118,7 @@
     <sys:String x:Key="Str_TT_SystemTools">Жүйелік құралдар</sys:String>
     <sys:String x:Key="Str_TT_Sort">Бойынша сұрыптау  (Alt+S)</sys:String>
     <sys:String x:Key="Str_Nav_ThisPc">Осы компьютер</sys:String>
+    <sys:String x:Key="Str_Drive_FreeOf">{1} ішінен {0} бос</sys:String>
     <sys:String x:Key="Str_Nav_RecycleBin">Себет</sys:String>
     <sys:String x:Key="Str_Bm_Unreachable" xml:space="preserve">{0}&#10;Қазір қолжетімсіз. Дискінің қосылғанын немесе ортақ қалтаның желіде екенін тексеріңіз.</sys:String>
     <sys:String x:Key="Str_Menu_PipeTab">Осы нәтижелердің ішінен іздеу</sys:String>

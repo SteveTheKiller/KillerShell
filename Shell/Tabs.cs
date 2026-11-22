@@ -870,7 +870,10 @@ namespace KillerShell.Shell
             if (updateShared) StopWatching();
             // A --demo folder is fabricated (DemoFileSystem.cs), so ask the demo table too, or a demo
             // tab switch would skip the refresh and the tree would never follow it.
+            // This PC has no directory behind it, so it is named here too: without it a This PC
+            // tab restored from the session was never listed and sat empty.
             if (updateShared && t.IsBrowsing && (System.IO.Directory.Exists(t.CurrentFolder)
+                                || IsThisPc(t.CurrentFolder)
                                 || (DemoMode && Services.DemoFs.Has(t.CurrentFolder))))
                 _ = RefreshBrowsingTab(Pane, t, restoreSelection: rebound);
 

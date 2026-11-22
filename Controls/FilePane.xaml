@@ -2241,6 +2241,13 @@
                                 ItemHeight="{Binding Tag.ListItemHeight, RelativeSource={RelativeSource AncestorType=ListBox}}"/>
                         </ItemsPanelTemplate>
 
+                        <!-- THIS PC. Explorer's "Devices and drives" tiles: art, name, a usage bar
+                             and "212 GB free of 476 GB", whatever view mode the pane is in
+                             (ResultsView.cs ApplyResultsViewToPane). -->
+                        <ItemsPanelTemplate x:Key="PanelDrives">
+                            <local:VirtualizingWrapPanel ItemWidth="268" ItemHeight="66"/>
+                        </ItemsPanelTemplate>
+
                         <!-- ICON VIEW. Fixed-size tile: art on top, name wrapped to two lines
                              under it. No expander - a tile cannot carry matched content lines,
                              and the wrap panel needs every item the same height anyway. The art
@@ -2313,6 +2320,74 @@
                                                MaxHeight="30"
                                                Margin="{Binding Tag.TileNamePad, RelativeSource={RelativeSource AncestorType=ListBox}}"/>
                                 </StackPanel>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+
+                        <!-- One This PC drive. Same hover, selection and click handling as the icon
+                             tile above. The bar is a track with the used share scaled across it;
+                             it turns red past 90% full, as Explorer's does, and is left out for a
+                             drive that did not report its size. -->
+                        <DataTemplate x:Key="DriveTileTemplate" DataType="{x:Type models:SearchResult}">
+                            <Border x:Name="TileBd" CornerRadius="4" Cursor="Hand" BorderThickness="1" Margin="3"
+                                    Tag="{Binding FilePath}" ToolTip="{Binding FilePath}"
+                                    PreviewMouseLeftButtonDown="ResultHeader_MouseDown">
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="Background" Value="Transparent"/>
+                                        <Setter Property="BorderBrush" Value="Transparent"/>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="{DynamicResource RowHoverBrush}"/>
+                                                <Setter Property="BorderBrush" Value="{DynamicResource InputHoverBrush}"/>
+                                            </Trigger>
+                                            <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
+                                                <Setter Property="Background" Value="{DynamicResource SelectionBg}"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                                <Grid>
+                                <Border Style="{StaticResource RowHoverGrain}" CornerRadius="3"/>
+                                <Grid Margin="8,6,10,6">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="40"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Image Width="36" Height="36" VerticalAlignment="Center"
+                                           RenderOptions.BitmapScalingMode="HighQuality"
+                                           shellns:TileArt.Path="{Binding FilePath}"
+                                           shellns:TileArt.IsDirectory="True"
+                                           shellns:TileArt.Size="48"/>
+                                    <StackPanel Grid.Column="1" Margin="8,0,0,0" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding NameLabel, Mode=OneWay}" Style="{StaticResource ResultText}"
+                                                   TextTrimming="CharacterEllipsis"/>
+                                        <Border Height="12" Margin="0,4,0,3" BorderThickness="1"
+                                                BorderBrush="{DynamicResource PaneBorderBrush}"
+                                                Background="{DynamicResource SurfaceBrush}"
+                                                Visibility="{Binding HasDriveSpace, Converter={StaticResource BoolToVis}}">
+                                            <Rectangle HorizontalAlignment="Stretch" RenderTransformOrigin="0,0.5">
+                                                <Rectangle.RenderTransform>
+                                                    <ScaleTransform ScaleX="{Binding DriveUsedFraction, Mode=OneWay}"/>
+                                                </Rectangle.RenderTransform>
+                                                <Rectangle.Style>
+                                                    <Style TargetType="Rectangle">
+                                                        <Setter Property="Fill" Value="{DynamicResource PrimaryBrush}"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding DriveNearlyFull}" Value="True">
+                                                                <Setter Property="Fill" Value="{DynamicResource DangerRed}"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Rectangle.Style>
+                                            </Rectangle>
+                                        </Border>
+                                        <TextBlock Text="{Binding DriveFreeLabel, Mode=OneWay}" FontSize="11"
+                                                   Foreground="{DynamicResource MutedTextBrush}"
+                                                   TextTrimming="CharacterEllipsis"
+                                                   Visibility="{Binding HasDriveSpace, Converter={StaticResource BoolToVis}}"/>
+                                    </StackPanel>
+                                </Grid>
                                 </Grid>
                             </Border>
                         </DataTemplate>

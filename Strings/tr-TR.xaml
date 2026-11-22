@@ -77,6 +77,7 @@
     <sys:String x:Key="Str_TT_SystemTools">Sistem araçları</sys:String>
     <sys:String x:Key="Str_TT_Sort">Sıralama ölçütü  (Alt+S)</sys:String>
     <sys:String x:Key="Str_Nav_ThisPc">Bu bilgisayar</sys:String>
+    <sys:String x:Key="Str_Drive_FreeOf">{1} içinde {0} boş</sys:String>
     <sys:String x:Key="Str_Nav_RecycleBin">Geri Dönüşüm Kutusu</sys:String>
     <sys:String x:Key="Str_Bm_Unreachable" xml:space="preserve">{0}&#10;Şu anda erişilemiyor. Sürücünün bağlı olduğunu veya paylaşımın çevrimiçi olduğunu kontrol edin.</sys:String>
     <sys:String x:Key="Str_Menu_PipeTab">Bu sonuçların içinde ara</sys:String>

@@ -118,6 +118,7 @@
     <sys:String x:Key="Str_TT_SystemTools">Системные инструменты</sys:String>
     <sys:String x:Key="Str_TT_Sort">Сортировать по  (Alt+S)</sys:String>
     <sys:String x:Key="Str_Nav_ThisPc">Этот компьютер</sys:String>
+    <sys:String x:Key="Str_Drive_FreeOf">{0} свободно из {1}</sys:String>
     <sys:String x:Key="Str_Nav_RecycleBin">Корзина</sys:String>
     <sys:String x:Key="Str_Bm_Unreachable" xml:space="preserve">{0}&#10;Сейчас недоступно. Проверьте, подключён ли диск и доступна ли сетевая папка.</sys:String>
     <sys:String x:Key="Str_Menu_PipeTab">Искать внутри этих результатов</sys:String>

@@ -6,7 +6,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ## [1.6.2] - Unreleased
 
-1.6.2 fixes the 98SE title bar and tabs and the Trash Polka tool pages.
+1.6.2 fixes the 98SE title bar and tabs and the Trash Polka tool pages, and gives This PC drive tiles with usage bars.
 
 ### Fixed
 
@@ -27,6 +27,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - On 98SE the confirm and quit dialogs pack their text, checkboxes and 23 px buttons the way a Windows 98 message box does.
 - On 98SE the folder picker and the details, file operation and registry dialogs have the 20 px caption band inside the frame, with the close button placed as in the other dialogs.
 - On 98SE the window frame is 4 px and the icon rail 20 px, so the rail no longer reads wider than on the other themes.
+- A This PC tab restored from the last session lists the drives instead of opening empty.
+- A This PC tab shows the computer icon in the tab strip.
+
+### Added
+
+- This PC shows each drive as a tile with a usage bar and its free space, as Explorer does. The bar turns red when a drive is over 90% full.
 
 ## [1.6.1] - 2026-11-21
 

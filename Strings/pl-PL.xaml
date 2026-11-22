@@ -206,6 +206,7 @@
     <sys:String x:Key="Str_TT_SystemTools">Narzędzia systemowe</sys:String>
     <sys:String x:Key="Str_TT_Sort">Sortuj według  (Alt+S)</sys:String>
     <sys:String x:Key="Str_Nav_ThisPc">Ten komputer</sys:String>
+    <sys:String x:Key="Str_Drive_FreeOf">{0} wolnego z {1}</sys:String>
     <sys:String x:Key="Str_Nav_RecycleBin">Kosz</sys:String>
     <sys:String x:Key="Str_Bm_Unreachable" xml:space="preserve">{0}&#10;Obecnie niedostępne. Sprawdź, czy dysk jest podłączony, a udział sieciowy jest online.</sys:String>
     <sys:String x:Key="Str_Menu_PipeTab">Szukaj w tych wynikach</sys:String>

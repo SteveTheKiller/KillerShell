@@ -117,8 +117,12 @@ namespace KillerShell.Shell
                     Pane.ScannedText.Visibility = Visibility.Collapsed;
                 }
             }
+            bool wasThisPc = tab.IsBrowsing && IsThisPc(tab.CurrentFolder);
             tab.CurrentFolder = folder;
             tab.IsBrowsing    = true;
+            // This PC draws drive tiles in place of the pane's own view (ResultsView.cs), so the
+            // panel and template swap on the way in and back on the way out.
+            if (tab == _active && wasThisPc != thisPc) ApplyResultsViewToPane();
             // Every folder opens in its own remembered sort, Modified newest first until you pick
             // another one there (ResultsView.cs). ApplySort below puts it on the new rows.
             ApplyFolderSort(tab, folder);
@@ -145,7 +149,13 @@ namespace KillerShell.Shell
             List<SearchResult> entries;
             bool listingFailed = false;
             string? archiveError = null;
-            if (thisPc) entries = ListDrives();
+            // Off the UI thread: reading capacity touches each volume, and a mapped share that
+            // has gone away can take seconds to say so.
+            if (thisPc)
+            {
+                try { entries = await Task.Run(ListDrives, ct); }
+                catch (OperationCanceledException) { return; }
+            }
             else if (archive && DemoMode)
                 entries = ArchiveRows(arcPath, Services.DemoArchives.List(arcPath, arcEntry));
             else if (archive)
@@ -352,10 +362,10 @@ namespace KillerShell.Shell
         internal static bool IsPlaceSentinel(string? path) => IsThisPc(path) || IsRecycleBin(path);
 
         /// <summary>
-        /// The drives, as browse entries. Not off the UI thread like ListFolder: this is a
-        /// handful of rows, and DriveInfo.GetDrives does not touch the volumes themselves.
+        /// The drives, as browse entries, each with its capacity and free space for the This PC
+        /// tiles. Run off the UI thread: the space query touches each volume.
         /// </summary>
-        private static List<SearchResult> ListDrives()
+        internal static List<SearchResult> ListDrives()
         {
             var list = new List<SearchResult>();
             int seq = 0;
@@ -373,6 +383,9 @@ namespace KillerShell.Shell
                         SizeBytes   = 0,
                         Modified    = default,
                         Seq         = seq++,
+                        // Invented capacities, so a capture shows the bars the real listing has.
+                        DriveTotalBytes = seq == 1 ? 511_101_759_488L : 1_000_202_043_392L,
+                        DriveFreeBytes  = seq == 1 ? 227_633_270_784L :    93_415_538_688L,
                     });
                 return list;
             }
@@ -388,6 +401,16 @@ namespace KillerShell.Shell
                 try { root = d.RootDirectory.FullName; }
                 catch { continue; }
 
+                // A drive that is not ready (empty optical, card reader, dead share) throws here;
+                // it still lists, just without a bar.
+                long total = 0, free = 0;
+                try
+                {
+                    if (d.IsReady) { total = d.TotalSize; free = d.AvailableFreeSpace; }
+                }
+                catch (IOException) { }
+                catch (UnauthorizedAccessException) { }
+
                 list.Add(new SearchResult
                 {
                     FilePath    = root,
@@ -396,12 +419,12 @@ namespace KillerShell.Shell
                     FileName    = FolderNode.DriveLabel(d),
                     Directory   = string.Empty,
                     IsDirectory = true,
-                    // Left at 0 like a folder. Free space would be the interesting number here,
-                    // but the column says size, and a size column that means something else on
-                    // one screen is worse than a blank one.
+                    // Left at 0 like a folder: the space goes on the tile's bar instead.
                     SizeBytes   = 0,
                     Modified    = default,
                     Seq         = seq++,
+                    DriveTotalBytes = total,
+                    DriveFreeBytes  = free,
                 });
             }
 

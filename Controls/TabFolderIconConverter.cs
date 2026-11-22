@@ -64,6 +64,8 @@ namespace KillerShell
             if (t.IsSearching || (!t.IsBrowsing && (t.HasSearch || IsSearchTab(t)))) return IconCache.Art("search_results_icon");
 
             if (!t.IsBrowsing || string.IsNullOrEmpty(t.CurrentFolder)) return null;
+            // This PC is a sentinel, not a directory, so the existence check below would drop it.
+            if (Shell.MainWindow.IsThisPc(t.CurrentFolder)) return IconCache.Art("my_pc_icon");
             // A --demo folder is fabricated (DemoFileSystem.cs) and not on disk, so ask the demo
             // table too; IconCache answers demo paths from the same table the folder tree uses.
             if (!Directory.Exists(t.CurrentFolder)
