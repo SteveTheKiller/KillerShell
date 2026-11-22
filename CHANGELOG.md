@@ -31,6 +31,12 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - A This PC tab shows the computer icon in the tab strip.
 - The bookmarks drawer in the sidebar has no divider line above it, so it runs straight on from the folder tree.
 - Confirm and quit dialogs size to what they say, so a short prompt like Quit is narrower. The heading sits a few pixels higher, with more room above the checkboxes. On 98SE the wrapped text stops short of the right edge.
+- Under Trash Polka the file picker's places, file list and preview panes carry the ink instead of flat slabs.
+- Making a new folder in the file picker no longer freezes the window on a share that stopped answering. A refused name is read out to a screen reader as well as shown.
+
+### Changed
+
+- The tray icon's card shows the KillerShell logo over one row of tiles, Open and then Exit, like the other cards.
 
 ### Added
 

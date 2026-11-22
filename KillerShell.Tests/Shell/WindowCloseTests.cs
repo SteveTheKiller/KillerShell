@@ -289,13 +289,15 @@ public static class WindowCloseScenario
         });
         // Deliver the notification area's right-click callback to this process's own tray window.
         SendMessage(tray.Handle, 0x8051, IntPtr.Zero, new IntPtr(0x0205));
-        string header = string.Format((string)Application.Current.FindResource(resource), AppInfo.DisplayName);
+        // The tray card's tiles carry their full caption ("Open KillerShell", "Exit") as the accessible name.
+        string caption = string.Format((string)Application.Current.FindResource(resource), AppInfo.DisplayName);
         var menu = PresentationSource.CurrentSources.OfType<HwndSource>()
             .SelectMany(source => Descendants(source.RootVisual)).OfType<ContextMenu>()
             .Single(candidate => candidate.IsOpen);
-        var item = menu.Items.OfType<MenuItem>().Single(candidate => Equals(candidate.Header, header));
-        menu.IsOpen = false;
-        item.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+        var tile = CardMenus.Buttons(menu).Single(candidate => System.Windows.Automation.AutomationProperties.GetName(candidate) == caption);
+        Assert.True(tile.IsEnabled, $"The tray card's {caption} tile is dimmed.");
+        // Clicks the tile the way the mouse does: the kit closes the card, then runs the tile.
+        tile.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
     }
 
     private static IEnumerable<DependencyObject> Descendants(DependencyObject? root)

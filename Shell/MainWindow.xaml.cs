@@ -39,7 +39,8 @@ namespace KillerShell.Shell
             InitializeComponent();
             Controls.ThemeMotif.SetSecondPane(RightPane, true);
             _tray = KillerFamily.Shell.CloseToTray.Attach(this, Services.AppInfo.DisplayName, Loc,
-                () => !IsTaskWindow && Features.About.AboutController.CloseToTrayEnabled, ConfirmShutdown);
+                () => !IsTaskWindow && Features.About.AboutController.CloseToTrayEnabled, ConfirmShutdown,
+                brand: () => KillerFamily.Shell.CloseToTray.Brand(new AppIcon { Source = TitleIcon.Source }, "Killer", "Shell"));
             new KillerFamily.Accessibility.OverlayFocus(this)
                 .Track(ShortcutsOverlay, AboutOverlay, FontsOverlay, AssocOverlay);
             _about = new Features.About.AboutController(this);   // Features/About

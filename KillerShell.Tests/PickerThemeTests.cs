@@ -47,9 +47,10 @@ public static class PickerThemeScenario
                         var header = (Grid)picker.FindName("DetailsHeader");
                         var headers = Buttons(header).ToArray();
                         Assert.Equal(3, headers.Length);
+                        // The file dialog's own Accept and Cancel styles are BasedOn these two, so the chain counts.
                         var actions = Buttons(picker.Content).Where(button =>
-                            ReferenceEquals(button.Style, picker.FindResource("OutlineButton")) ||
-                            ReferenceEquals(button.Style, picker.FindResource("SurfaceButton"))).ToArray();
+                            DerivesFrom(button.Style, (Style)picker.FindResource("OutlineButton")) ||
+                            DerivesFrom(button.Style, (Style)picker.FindResource("SurfaceButton"))).ToArray();
                         Assert.Equal(2, actions.Length);
                         foreach (Button button in headers.Concat(actions))
                             Assert.True(expected == PrimaryFamily(button.FontFamily),
@@ -63,6 +64,13 @@ public static class PickerThemeScenario
             }
         }
         finally { app.Shutdown(); }
+    }
+
+    private static bool DerivesFrom(Style? style, Style root)
+    {
+        for (; style != null; style = style.BasedOn)
+            if (ReferenceEquals(style, root)) return true;
+        return false;
     }
 
     private static string PrimaryFamily(FontFamily family)
