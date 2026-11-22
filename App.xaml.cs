@@ -141,10 +141,9 @@ namespace KillerShell
             ShutdownMode = ShutdownMode.OnExplicitShutdown;
             AppMainWindow.PublishGrainTile();   // install and uninstall dialogs open before any main window
 
-            // Render on the CPU so the window isn't black over console-session screen-sharing tools
-            // (ScreenConnect, Kaseya LiveConnect, VNC, TeamViewer). Negligible cost for this app.
-            System.Windows.Media.RenderOptions.ProcessRenderMode =
-                System.Windows.Interop.RenderMode.SoftwareOnly;
+            // The GPU draws unless a remote session or a screen-sharing agent is running, where a
+            // hardware-rendered window can come up black (Services/RenderModeService.cs).
+            Services.RenderModeService.Apply();
 
             // Silent install: KillerShell.exe /silent
             // No UI. With admin rights (winget/choco/RMM) it installs machine-wide to Program

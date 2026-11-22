@@ -10,6 +10,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ### Fixed
 
+- Clicks respond right away again. The window draws on the graphics card and falls back to the CPU only under Remote Desktop or a screen-sharing agent.
 - On 98SE the minimize and maximize buttons show Windows 98's own drawn glyphs again, matching KillerScan.
 - On 98SE the tab titles sit centered in their tabs instead of low.
 - On Trash Polka the Performance page shows the file browser's lighter surface around its darker tiles. It could come up as dark as the tiles.
