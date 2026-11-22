@@ -175,18 +175,22 @@ namespace KillerShell
         private LinearGradientBrush? _paneFadeMask;
         private bool _paneUsesShadow;
 
-        public static readonly DependencyProperty HasBottomTabShadowProperty = DependencyProperty.Register(
-            nameof(HasBottomTabShadow), typeof(bool), typeof(FilePane),
-            new PropertyMetadata(false, (d, _) => ((FilePane)d).ApplyBottomTabShadow()));
-        public bool HasBottomTabShadow => (bool)GetValue(HasBottomTabShadowProperty);
+        /// <summary>True while the tabs sit below a list that has more below: the active tab then shows the cut-off
+        /// row carrying on into its face (tabListPeek).</summary>
+        public static readonly DependencyProperty HasBottomTabPeekProperty = DependencyProperty.Register(
+            nameof(HasBottomTabPeek), typeof(bool), typeof(FilePane),
+            new PropertyMetadata(false, (d, _) => ((FilePane)d).ApplyBottomTabPeek()));
+        public bool HasBottomTabPeek => (bool)GetValue(HasBottomTabPeekProperty);
 
-        // The list's own bottom cue steps aside while TabScrollShadow draws it, so the two
-        // never stack. Set on the scroller, not the pane, so the details panel keeps its cue.
+        // The list's own bottom cue steps aside while the tabs sit below it: a shade at the list's foot stops dead
+        // at the tab and reads as a dark band across the join, which must be seamless (Steve 2026-11-21). The
+        // peek into the tab says "more below" instead. Set on the scroller, not the pane, so the details panel
+        // keeps its cue.
         private ScrollViewer? _cueHiddenOn;
 
-        private void ApplyBottomTabShadow()
+        private void ApplyBottomTabPeek()
         {
-            bool on = HasBottomTabShadow;
+            bool on = HasBottomTabPeek;
             if (_cueHiddenOn != null && (!on || !ReferenceEquals(_cueHiddenOn, _paneScroller)))
             {
                 _cueHiddenOn.Resources.Remove("ScrollBottomCueBrush");
@@ -197,60 +201,22 @@ namespace KillerShell
                 _paneScroller.Resources["ScrollBottomCueBrush"] = Brushes.Transparent;
                 _cueHiddenOn = _paneScroller;
             }
-            TabScrollShadow.Visibility = on ? Visibility.Visible : Visibility.Collapsed;
             if (!on) return;
-            UpdateTabScrollShadow();
+            UpdateBottomTabPeek();
             Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Loaded,
-                (Action)UpdateTabScrollShadow);
+                (Action)UpdateBottomTabPeek);
         }
 
-        /// <summary>The list's bottom cue height, which the overlay's fade starts above the band.</summary>
-        private const double ScrollShadowReach = 28;
-
         /// <summary>
-        /// Lays out TabScrollShadow (FilePane.xaml): one gradient from 28px above the pane's
-        /// foot to the active tab's foot, clipped to the list's foot and the tab's face. Both
-        /// pieces are measured in the pane stack's own coordinates, so they line up with the
-        /// pane border and the tab wherever the frame, the zoom or the margins put them. The
-        /// active tab is upside down at the bottom (TabPlacement.cs), so its TopLeft and
-        /// TopRight radii are the ones that show at its foot. Until the tab's container exists
-        /// the list's foot alone is shaded, and the Loaded pass that follows adds the tab.
+        /// Points the active bottom tab's tabListPeek at the rows just below the list's viewport. Until the tab's
+        /// container exists there is nothing to paint, and the Loaded pass that follows finds it.
         /// </summary>
-        internal void UpdateTabScrollShadow()
+        internal void UpdateBottomTabPeek()
         {
-            if (!HasBottomTabShadow || ResultsPane.ActualHeight <= 0 || !ResultsPane.IsDescendantOf(PaneStack)) return;
-
-            Rect pane = ResultsPane.TransformToAncestor(PaneStack).TransformBounds(new Rect(ResultsPane.RenderSize));
-            double top = pane.Bottom - ScrollShadowReach;
-            Thickness stroke = ResultsPane.BorderThickness;
-            CornerRadius paneRadius = ResultsPane.CornerRadius;
-            Geometry clip = PickerBorder.RoundedGeometry(
-                new Rect(pane.X + stroke.Left, 0, Math.Max(0, pane.Width - stroke.Left - stroke.Right), ScrollShadowReach),
-                new Size(0, 0), new Size(0, 0),
-                new Size(Math.Max(0, paneRadius.BottomRight - stroke.Right / 2), paneRadius.BottomRight),
-                new Size(Math.Max(0, paneRadius.BottomLeft - stroke.Left / 2), paneRadius.BottomLeft));
-            double bottom = pane.Bottom;
-
-            if (Active != null
-                && TabStrip.ItemContainerGenerator.ContainerFromItem(Active) is FrameworkElement container
-                && FindNamedBorder(container, "tabBd") is Border face && face.ActualHeight > 0 && face.IsDescendantOf(PaneStack))
-            {
-                Rect tab = face.TransformToAncestor(PaneStack).TransformBounds(new Rect(face.RenderSize));
-                tab.Offset(0, -top);
-                CornerRadius tabRadius = face.CornerRadius;
-                Geometry tabFace = PickerBorder.RoundedGeometry(tab, new Size(0, 0), new Size(0, 0),
-                    new Size(tabRadius.TopRight, tabRadius.TopRight), new Size(tabRadius.TopLeft, tabRadius.TopLeft));
-                clip = new CombinedGeometry(GeometryCombineMode.Union, clip, tabFace);
-                bottom = Math.Max(bottom, tab.Bottom + top);
-                if (FindNamedBorder(container, "tabListPeek") is Border peek) UpdateTabListPeek(peek);
-            }
-
-            clip.Freeze();
-            var margin = new Thickness(0, top, 0, 0);
-            if (TabScrollShadow.Margin != margin) TabScrollShadow.Margin = margin;
-            double height = Math.Max(0, bottom - top);
-            if (TabScrollShadow.Height != height) TabScrollShadow.Height = height;
-            TabScrollShadow.Clip = clip;
+            if (!HasBottomTabPeek || Active == null) return;
+            if (TabStrip.ItemContainerGenerator.ContainerFromItem(Active) is FrameworkElement container
+                && FindNamedBorder(container, "tabListPeek") is Border peek)
+                UpdateTabListPeek(peek);
         }
 
         /// <summary>
@@ -335,12 +301,12 @@ namespace KillerShell
             return null;
         }
 
-        internal void RefreshBottomTabShadow()
+        internal void RefreshBottomTabPeek()
         {
             bool listing = _paneScroller != null && IsVisualDescendantOf(_paneScroller, ResultsList);
             bool covered = listing && (PaneStatusBar.Visibility == Visibility.Visible ||
                 (DetailsPane.Visibility == Visibility.Visible && !DetailsPaneOnRight));
-            SetValue(HasBottomTabShadowProperty, Grid.GetRow(TabBar) == 2 && !covered &&
+            SetValue(HasBottomTabPeekProperty, Grid.GetRow(TabBar) == 2 && !covered &&
                 _paneUsesShadow && _paneScroller?.IsVisible == true &&
                 _paneScroller.ScrollableHeight - _paneScroller.VerticalOffset > 0.5);
         }
@@ -405,7 +371,7 @@ namespace KillerShell
             _paneFadeMask = null;
             _paneUsesShadow = scroller != null && UsesShadowCue(scroller);
             _paneScrollerOriginalMask = scroller?.OpacityMask;
-            RefreshBottomTabShadow();
+            RefreshBottomTabPeek();
 
             if (scroller == null || _paneUsesShadow) return;
             _paneFadeMask = new LinearGradientBrush
@@ -449,9 +415,9 @@ namespace KillerShell
             bool hasBelow = scroller.VerticalOffset < scroller.ScrollableHeight - 0.5;
 
             if (!ReferenceEquals(_paneScroller, scroller)) SetPaneScroller(scroller);
-            RefreshBottomTabShadow();
+            RefreshBottomTabPeek();
             // The tab's peek into the list tracks the viewport as it scrolls.
-            if (HasBottomTabShadow) UpdateTabScrollShadow();
+            if (HasBottomTabPeek) UpdateBottomTabPeek();
             if (scroller.ActualHeight <= 1) return;
 
             // The file browser and Performance read better with the original dark edge shadow:
@@ -712,7 +678,7 @@ namespace KillerShell
         private void TabBar_SizeChanged(object s, SizeChangedEventArgs e)
         {
             Owner.TabBarResized(this);
-            UpdateTabScrollShadow();
+            UpdateBottomTabPeek();
         }
         private void TabOverflow_Click(object s, RoutedEventArgs e)        => Owner.TabOverflowMenu(this);
         private void TabPlacementMenu_Opened(object s, RoutedEventArgs e) => Owner.TabPlacementMenu_Opened(s, e);
@@ -795,7 +761,7 @@ namespace KillerShell
         private void PaneContent_SizeChanged(object s, SizeChangedEventArgs e)
         {
             if (_paneScroller != null) SyncScrollChrome(_paneScroller);
-            UpdateTabScrollShadow();
+            UpdateBottomTabPeek();
 
             // The details columns are pixel widths shared by both panes, so they have to be
             // re-fitted whenever either pane changes size (ResultsView.UpdateColumnFit).

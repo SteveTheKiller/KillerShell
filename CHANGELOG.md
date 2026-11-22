@@ -34,6 +34,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - The sidebar side and details pane layout choices are small tile cards with the choice in use lit, and right-clicking a menu bar shows Hide menu bar as a tile with Alt+M under it.
 - Shared Killer app controls, themes and dialogs are updated to the current family versions.
 - The copyright at the right end of the footer ends 8 px before the corner grip, the same gap in every Killer app.
+- With the tabs below, the list and the current tab meet without a shadow, so the join is seamless. The row of icons cut off at the list's foot still carries on into the tab and fades there.
 
 ### Added
 

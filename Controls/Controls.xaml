@@ -2481,8 +2481,8 @@
         <GradientStop Color="#38000000" Offset="0.65"/>
         <GradientStop Color="#80000000" Offset="1"/>
     </LinearGradientBrush>
-    <!-- A list over a bottom tab strip hides this (FilePane.xaml.cs ApplyBottomTabShadow) while
-         the pane's TabScrollShadow overlay draws the same shadow on into the active tab. -->
+    <!-- An app whose list sits over a bottom tab strip hides this cue there, so the list and the
+         active tab join without a dark band. -->
     <Style x:Key="ScrollBottomCue" TargetType="Border" BasedOn="{StaticResource ScrollCueBase}">
         <Setter Property="Height" Value="28"/>
         <Setter Property="VerticalAlignment" Value="Bottom"/>

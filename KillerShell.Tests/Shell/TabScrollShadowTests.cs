@@ -14,7 +14,7 @@ namespace KillerShell.Tests.Terminal;
 public sealed class TabScrollShadowTests
 {
     [Fact]
-    public Task BottomTabsCarryTheListShadowAsOneFade()
+    public Task BottomTabsJoinTheListWithoutADarkBand()
         => RuntimeComponentProcess.Run(nameof(TabScrollShadowScenario));
 
     [Fact]
@@ -145,57 +145,48 @@ public static class TabScrollShadowScenario
         var pane = PaneRender.ScrollingFolder(fixture);
         window.SetTabPlacement(bottom: true, persist: false);
         window.UpdateLayout();
-        ShellWindowFixture.PumpUntil(() => pane.HasBottomTabShadow);
+        ShellWindowFixture.PumpUntil(() => pane.HasBottomTabPeek);
         // Part way down a row, so the list's foot cuts through a line of icons the way a real
         // folder does more often than not.
         var scroller = PaneRender.FindScroller(pane.ResultsList)!;
         scroller.ScrollToVerticalOffset(70);
         window.UpdateLayout();
         ShellWindowFixture.PumpUntil(() => scroller.VerticalOffset > 60);
-        ShellWindowFixture.PumpUntil(() => pane.TabScrollShadow.Clip != null && pane.TabScrollShadow.ActualHeight > 28);
+
+        // No shade sits over the join: the list's own bottom cue is switched off while the tabs
+        // are below it (Steve 2026-11-21: "it needs to be seamless").
+        Assert.Same(Brushes.Transparent, scroller.Resources["ScrollBottomCueBrush"]);
 
         var tabFace = MenuBarTabBlendScenario.TabBorder(pane, pane.Active);
-        Rect face = PaneRender.BoundsIn(tabFace, PaneRender.Screen(window));
-        Rect list = PaneRender.BoundsIn(pane.ResultsPane, PaneRender.Screen(window));
-        Rect overlay = PaneRender.BoundsIn(pane.TabScrollShadow, PaneRender.Screen(window));
-        Assert.InRange(overlay.Top, list.Bottom - 29, list.Bottom - 27);
-        Assert.InRange(overlay.Bottom, face.Bottom - 1, face.Bottom + 1);
+        var peek = PaneRender.FindNamedBorder(tabFace, "tabListPeek")!;
+        ShellWindowFixture.PumpUntil(() => peek.Visibility == Visibility.Visible && peek.Background is VisualBrush);
         double scale = PaneRender.DeviceScale(window);
-        face = PaneRender.Device(face, scale);
-        list = PaneRender.Device(list, scale);
-        overlay = PaneRender.Device(overlay, scale);
+        Rect face = PaneRender.Device(PaneRender.BoundsIn(tabFace, PaneRender.Screen(window)), scale);
+        Rect list = PaneRender.Device(PaneRender.BoundsIn(pane.ResultsPane, PaneRender.Screen(window)), scale);
 
-        byte[] shaded = PaneRender.Pixels(window, "shadow-window", out int width, out int height, out int stride);
-        pane.TabScrollShadow.Visibility = Visibility.Collapsed;
-        byte[] plain = PaneRender.Pixels(window, "shadow-window-plain", out _, out _, out _);
-        pane.TabScrollShadow.Visibility = Visibility.Visible;
+        byte[] seen = PaneRender.Pixels(window, "seam-window", out _, out int height, out int stride);
+        int seam = (int)Math.Round(list.Bottom);
+        PaneRender.SaveMagnified(seen, stride, height,
+            new Int32Rect((int)face.Left - 12, seam - 30, (int)face.Width + 24, (int)(face.Bottom - seam) + 36), 4, "seam-join");
+        PaneRender.SaveMagnified(seen, stride, height, new Int32Rect((int)list.Left, seam - 70, (int)list.Width, (int)(face.Bottom - seam) + 76), 2, "seam-foot");
 
-        double Shade(int px, int py) => PaneRender.Luma(shaded, stride, px, py) / Math.Max(1, PaneRender.Luma(plain, stride, px, py));
-
-        int x = (int)(face.Left + face.Width / 2);
-        int top = (int)Math.Ceiling(overlay.Top), seam = (int)Math.Round(list.Bottom), foot = (int)Math.Floor(face.Bottom) - 1;
-        PaneRender.SaveMagnified(shaded, stride, height,
-            new Int32Rect((int)face.Left - 12, top - 6, (int)face.Width + 24, foot - top + 12), 4, "shadow-join");
-        PaneRender.SaveMagnified(shaded, stride, height, new Int32Rect((int)list.Left, top - 40, (int)list.Width, foot - top + 48), 2, "shadow-foot");
-
-        // The shade (shaded over unshaded brightness) deepens down the column and never jumps
-        // back up at the seam: that is what makes the list and the tab one surface.
-        double above = Shade(x, top + 2), atSeamList = Shade(x, seam - 2), atSeamTab = Shade(x, seam + 2), atFoot = Shade(x, foot);
-        Assert.True(above > 0.97, "The fade must start transparent 28px above the band: " + above);
-        Assert.True(atSeamList < 0.9, "The list's foot must be shaded before the tab: " + atSeamList);
-        Assert.True(Math.Abs(atSeamList - atSeamTab) < 0.08, "A line at the seam: list " + atSeamList.ToString("0.00") + " vs tab " + atSeamTab.ToString("0.00"));
-        Assert.True(atFoot < atSeamTab - 0.05, "The tab's foot must be darker than its join: " + atFoot.ToString("0.00") + " vs " + atSeamTab.ToString("0.00"));
-
-        // The inactive tab stays unshaded: sampled on its face, clear of icon and title.
-        var other = pane.Tabs.First(t => t != pane.Active);
-        Rect otherFace = PaneRender.Device(PaneRender.BoundsIn(MenuBarTabBlendScenario.TabBorder(pane, other), PaneRender.Screen(window)), scale);
-        int ox = (int)(otherFace.Left + otherFace.Width * 0.72), oy = (int)(otherFace.Top + 3);
-        Assert.InRange(Math.Abs(PaneRender.Luma(shaded, stride, ox, oy) - PaneRender.Luma(plain, stride, ox, oy)), 0, 2);
+        // The rows on either side of the seam, across the active tab, are one surface: the cut-off
+        // row carries on into the tab at the same brightness, with no dark band at the list's foot.
+        double Row(int py)
+        {
+            double sum = 0; int n = 0;
+            for (int px = (int)face.Left + 4; px < face.Right - 4; px++, n++) sum += PaneRender.Luma(seen, stride, px, py);
+            return sum / Math.Max(1, n);
+        }
+        // Sampled a pixel or two either side: further into the tab the peek's own fade takes over.
+        double listFoot = Row(seam - 2), tabTop = Row(seam + 1), higher = Row(seam - 24);
+        Assert.True(Math.Abs(listFoot - tabTop) < 12,
+            "A line at the seam: list " + listFoot.ToString("0") + " vs tab " + tabTop.ToString("0"));
+        Assert.True(listFoot > higher - 12,
+            "The list's foot must not darken toward the tabs: foot " + listFoot.ToString("0") + " vs 24px up " + higher.ToString("0"));
 
         // The folder carries on into its tab: the row cut off at the list's foot shows through
         // the active tab's face (tabListPeek) and that layer fades out before the tab's foot.
-        var peek = PaneRender.FindNamedBorder(tabFace, "tabListPeek")!;
-        Assert.Equal(Visibility.Visible, peek.Visibility);
         var brush = Assert.IsType<VisualBrush>(peek.Background);
         Assert.True(brush.Viewbox.Y > 0, "The peek must look just below the viewport.");
         Assert.Equal(brush.Viewbox.Width, brush.Viewport.Width);
@@ -203,14 +194,14 @@ public static class TabScrollShadowScenario
         double brightest = 0;
         for (int py = seam + 2; py < seam + face.Height * 0.4; py++)
             for (int px = (int)face.Left + 2; px < face.Right - 2; px++)
-                brightest = Math.Max(brightest, PaneRender.Luma(shaded, stride, px, py));
+                brightest = Math.Max(brightest, PaneRender.Luma(seen, stride, px, py));
         Assert.True(brightest > 120, "The cut-off icons must show through the tab's face: brightest " + brightest.ToString("0"));
 
-        // Scrolled to the end, the shadow is gone.
+        // Scrolled to the end there is nothing below, so the peek goes and the list's cue comes back.
         scroller.ScrollToEnd();
         window.UpdateLayout();
-        ShellWindowFixture.PumpUntil(() => !pane.HasBottomTabShadow);
-        Assert.Equal(Visibility.Collapsed, pane.TabScrollShadow.Visibility);
+        ShellWindowFixture.PumpUntil(() => !pane.HasBottomTabPeek);
+        Assert.False(scroller.Resources.Contains("ScrollBottomCueBrush"));
     }
 }
 

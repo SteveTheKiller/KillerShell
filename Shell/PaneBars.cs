@@ -56,7 +56,7 @@ namespace KillerShell.Shell
 
         internal void RefreshActiveTabSurface(FilePane pane)
         {
-            pane.RefreshBottomTabShadow();
+            pane.RefreshBottomTabPeek();
             var t = pane.Active;
             if (t == null) return;
             bool bottom = Grid.GetRow(pane.TabBar) == 2;
