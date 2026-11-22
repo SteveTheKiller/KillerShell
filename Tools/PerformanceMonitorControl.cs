@@ -106,8 +106,13 @@ namespace KillerShell.Tools
 
         internal bool IsSampling => _timer.IsEnabled;
 
-        /// <summary>The narrowest the page lays out at before it scrolls sideways.</summary>
-        internal const double MinPageWidth = 840;
+        /// <summary>The narrowest the page goes: the pane holding it stops here (DualPane.cs
+        /// PaneMinimum). Measured with the widest readings ("999.9 MB/s", "100 %"), counting text
+        /// a card edge or grid column cuts as well as text cut in its own box: every reading and
+        /// label fits from a 600px page up. Hardware names shorten with an ellipsis, as they are
+        /// built to. The GPU card's memory legend is the one exception: each of its two items is
+        /// wider than half the card below about a 1000px page.</summary>
+        internal const double MinPageWidth = 600;
 
         internal PerformanceMonitorControl(Func<CancellationToken, Task<Services.PerformanceHardwareInfo>>? discoverHardware = null)
         {
@@ -117,9 +122,6 @@ namespace KillerShell.Tools
             RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });   // summary strip
             RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) }); // the panels
             RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });   // status line
-            // Narrower than this the tiles squeeze their labels to "C..." and "Spee"; the host
-            // (FilePane.xaml PerformanceWidthScroller) scrolls the page sideways instead.
-            MinWidth = MinPageWidth;
 
             this.SetResourceReference(Grid.BackgroundProperty, "MenuBackgroundBrush");
             RefreshSurfaceResources();

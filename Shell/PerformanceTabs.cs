@@ -86,6 +86,7 @@ namespace KillerShell.Shell
             bool perf = t.IsPerformanceMonitor;
 
             Pane.PerformanceHost.Visibility = perf ? Visibility.Visible : Visibility.Collapsed;
+            QueuePaneMinimums();   // the pane stops at the page's minimum width (DualPane.cs)
 
             // MOVED rather than rebuilt: the control owns a live refresh timer and every metric's
             // sparkline history, and a fresh one per activation would throw both away on every

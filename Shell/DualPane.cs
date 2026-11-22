@@ -117,15 +117,61 @@ namespace KillerShell.Shell
             return width;
         }
 
+        /// <summary>The least width a pane's column may take: PaneMinWidth, or, while the pane
+        /// shows the Performance page, the page's own minimum plus the pane's frame around it.
+        /// The gutter and the window edge stop there, so the page always fits its pane and never
+        /// has to scroll sideways.</summary>
+        private static double PaneMinimum(FilePane pane, ColumnDefinition column)
+        {
+            if (pane.PerformanceHost.Visibility != Visibility.Visible || pane.PerformanceSlot.ActualWidth <= 0)
+                return PaneMinWidth;
+            double frame = System.Math.Max(0, column.ActualWidth - pane.PerformanceSlot.ActualWidth);
+            return System.Math.Max(PaneMinWidth, Tools.PerformanceMonitorControl.MinPageWidth + frame);
+        }
+
+        private double MinA => PaneMinimum(LeftPane, PaneColA);
+        private double MinB => PaneMinimum(RightPane, PaneColB);
+
+        private bool _paneMinimumsHooked;
+
+        /// <summary>Re-reads both panes' minimums. Runs (queued) when a pane switches to or from
+        /// the Performance page and whenever that page's slot changes size, which covers the
+        /// tree, the app scale and the split moving around it.</summary>
+        internal void QueuePaneMinimums()
+        {
+            if (!_paneMinimumsHooked)
+            {
+                _paneMinimumsHooked = true;
+                LeftPane.PerformanceSlot.SizeChanged += (_, _) => QueuePaneMinimums();
+                RightPane.PerformanceSlot.SizeChanged += (_, _) => QueuePaneMinimums();
+            }
+            Dispatcher.BeginInvoke(new System.Action(UpdatePaneMinimums),
+                                   System.Windows.Threading.DispatcherPriority.Loaded);
+        }
+
+        private void UpdatePaneMinimums()
+        {
+            double a = MinA;
+            if (System.Math.Abs(PaneColA.MinWidth - a) > 0.5) PaneColA.MinWidth = a;
+            // Pane B's minimum is released to 0 while it slides; the slide's settle restores it.
+            if (DualPane && _paneSideBySide && _paneSlideSettle == null && PaneColB.MinWidth > 0)
+            {
+                double b = MinB;
+                if (System.Math.Abs(PaneColB.MinWidth - b) > 0.5) PaneColB.MinWidth = b;
+            }
+            UpdatePaneWindowMinimum();
+        }
+
         private void UpdatePaneWindowMinimum()
         {
             if (_paneSingleMinWidth < 0) _paneSingleMinWidth = MinWidth;
             double minimum = _paneSingleMinWidth;
+            double frame = RootGrid.Margin.Left + RootGrid.Margin.Right
+                         + WindowFrame.BorderThickness.Left + WindowFrame.BorderThickness.Right;
             if (DualPane && _paneSideBySide)
-                minimum = System.Math.Max(minimum,
-                    (PaneChromeWidth() + PaneMinWidth * 2 + SplitPx) * _appScale
-                    + RootGrid.Margin.Left + RootGrid.Margin.Right
-                    + WindowFrame.BorderThickness.Left + WindowFrame.BorderThickness.Right);
+                minimum = System.Math.Max(minimum, (PaneChromeWidth() + MinA + MinB + SplitPx) * _appScale + frame);
+            else if (MinA > PaneMinWidth)
+                minimum = System.Math.Max(minimum, (PaneChromeWidth() + MinA) * _appScale + frame);
             if (System.Math.Abs(MinWidth - minimum) > 0.5) MinWidth = minimum;
         }
 
@@ -145,15 +191,15 @@ namespace KillerShell.Shell
             {
                 // Keep A fixed until B reaches its minimum. Beyond that, a pinned pixel
                 // column would push B outside the viewport even though dual pane stays on.
-                double maxA = System.Math.Max(PaneMinWidth, avail - PaneMinWidth);
+                double maxA = System.Math.Max(MinA, avail - MinB);
                 if (!PaneColA.Width.IsStar && PaneColA.Width.Value > maxA)
                     PaneColA.Width = new GridLength(maxA);
                 RememberPaneRatio();
                 return;
             }
 
-            double aW = System.Math.Max(PaneMinWidth, avail * _paneARatio);
-            aW = System.Math.Min(aW, System.Math.Max(PaneMinWidth, avail - PaneMinWidth));
+            double aW = System.Math.Max(MinA, avail * _paneARatio);
+            aW = System.Math.Min(aW, System.Math.Max(MinA, avail - MinB));
             if (!PaneColA.Width.IsStar && System.Math.Abs(PaneColA.ActualWidth - aW) > 0.5)
                 PaneColA.Width = new GridLength(aW);
         }
@@ -330,7 +376,7 @@ namespace KillerShell.Shell
             UpdatePaneWindowMinimum();
 
             PaneColSplit.Width  = new GridLength(cols ? SplitPx : 0);
-            PaneColB.MinWidth   = cols ? PaneMinWidth : 0;
+            PaneColB.MinWidth   = cols ? MinB : 0;
             if (slideCols) SlidePaneColumn(cols);
             else PaneColB.Width = cols ? new GridLength(1, GridUnitType.Star) : new GridLength(0);
 
@@ -607,7 +653,7 @@ namespace KillerShell.Shell
                                PaneColA.BeginAnimation(ColumnDefinition.WidthProperty, null);
                                PaneColA.Width = new GridLength(1, GridUnitType.Star);
                            }
-                           PaneColB.MinWidth = open ? PaneMinWidth : 0;
+                           PaneColB.MinWidth = open ? MinB : 0;
                            PaneColB.Width = open
                                ? new GridLength(1, GridUnitType.Star)
                                : new GridLength(0);
@@ -670,7 +716,7 @@ namespace KillerShell.Shell
                        settle: () =>
                        {
                            ThawPane();
-                           PaneColB.MinWidth = PaneMinWidth;
+                           PaneColB.MinWidth = MinB;
                            PaneColB.Width = new GridLength(1, GridUnitType.Star);
                            // Queued so the ratio reads the settled layout, not this frame's.
                            Dispatcher.BeginInvoke(new System.Action(RememberPaneRatio),

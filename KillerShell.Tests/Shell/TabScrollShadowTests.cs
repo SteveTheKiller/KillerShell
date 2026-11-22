@@ -25,8 +25,12 @@ public sealed class TabScrollShadowTests
         => RuntimeComponentProcess.Run(nameof(PerformanceScrollShadowScenario));
 
     [Fact]
-    public Task PerformancePageScrollsSidewaysBelowItsMinimumWidth()
+    public Task PerformancePaneStopsAtThePagesMinimumWidth()
         => RuntimeComponentProcess.Run(nameof(PerformanceMinimumWidthScenario));
+
+    [Fact]
+    public Task PerformanceSplitPaneStopsAtThePagesMinimumWidth()
+        => RuntimeComponentProcess.Run(nameof(PerformanceSplitMinimumWidthScenario));
 
     [Fact]
     public Task PaneCornersOppositeTheTabsMatchAtEveryAppScale()
@@ -215,7 +219,7 @@ public static class PerformanceScrollShadowScenario
         typeof(PerformanceMonitorControl).GetMethod("BuildTiles", BindingFlags.NonPublic | BindingFlags.Instance)!
             .Invoke(pane.Active!.Perf, new object[] { hardware });
         window.UpdateLayout();
-        // The monitor's own panels scroller, inside the host's sideways-only one.
+        // The monitor's own panels scroller.
         ShellWindowFixture.PumpUntil(() => PaneRender.FindScroller(pane.PerformanceSlot) is ScrollViewer s && s.ScrollableHeight > 30);
         var scroller = PaneRender.FindScroller(pane.PerformanceSlot)!;
 
@@ -251,8 +255,8 @@ public static class PerformanceScrollShadowScenario
 }
 
 /// <summary>
-/// Steve 2026-11-22: "perfmon needs a minimum width". A pane narrower than the page's minimum
-/// scrolls the page sideways at its full minimum width; a wide pane gets no sideways scroll.
+/// Steve 2026-11-22: "perfmon needs a minimum width", and the pane stops there. The page never
+/// scrolls sideways: the window edge and the split gutter stop at the width that keeps it whole.
 /// </summary>
 public static class PerformanceMinimumWidthScenario
 {
@@ -270,29 +274,177 @@ public static class PerformanceMinimumWidthScenario
         var hardware = new PerformanceHardwareInfo("AMD Ryzen 7 5700X 8-Core Processor", "DDR4-3200", "GPU", "Network", 8, 1, 1, 1000, [], ["Realtek PCIe GbE Family Controller"], []);
         typeof(PerformanceMonitorControl).GetMethod("BuildTiles", BindingFlags.NonPublic | BindingFlags.Instance)!
             .Invoke(perf, new object[] { hardware });
-        var across = pane.PerformanceWidthScroller;
-
         window.UpdateLayout();
         ShellWindowFixture.PumpUntil(() => perf.ActualWidth > 0);
-        PaneRender.Pixels(window, "perf-width-wide", out _, out _, out _);
-        Assert.True(across.ScrollableWidth < 0.5, "A wide pane must not scroll the page sideways: " + across.ScrollableWidth);
-        Assert.Equal(Visibility.Collapsed, across.ComputedHorizontalScrollBarVisibility);
 
-        // Exactly the minimum: laid out at it, no sideways scroll yet.
-        double chrome = window.ActualWidth - across.ViewportWidth;
-        window.Width = PerformanceMonitorControl.MinPageWidth + chrome;
-        window.UpdateLayout();
-        ShellWindowFixture.PumpUntil(() => Math.Abs(perf.ActualWidth - PerformanceMonitorControl.MinPageWidth) < 1,
-            diagnostic: () => "perf " + perf.ActualWidth + ", viewport " + across.ViewportWidth + ", window " + window.ActualWidth + " of " + window.Width + ", chrome " + chrome);
-        PaneRender.Pixels(window, "perf-width-minimum", out _, out _, out _);
+        // A wide window: the page is exactly as wide as its slot, and nothing scrolls sideways.
+        Assert.InRange(perf.ActualWidth, pane.PerformanceSlot.ActualWidth - 0.5, pane.PerformanceSlot.ActualWidth + 0.5);
+        Assert.Null(FindAncestorScroller(perf, pane.PerformanceHost));
 
-        // Narrower than the minimum: the page keeps its width and scrolls across.
-        window.Width = 600;
+        // Single pane: the window cannot go narrower than the page's minimum allows.
+        // A wide folder tree eats the room the page needs, so the window's own 600 floor is not enough.
+        var tree = (ColumnDefinition)window.FindName("TreeCol");
+        tree.Width = new GridLength(420);
         window.UpdateLayout();
-        ShellWindowFixture.PumpUntil(() => across.ScrollableWidth > 1);
-        PaneRender.Pixels(window, "perf-width-narrow", out _, out _, out _);
-        Assert.InRange(perf.ActualWidth, PerformanceMonitorControl.MinPageWidth - 0.5, PerformanceMonitorControl.MinPageWidth + 0.5);
-        Assert.Equal(Visibility.Visible, across.ComputedHorizontalScrollBarVisibility);
+        ShellWindowFixture.PumpUntil(() => window.MinWidth > 600.5,
+            diagnostic: () => "window MinWidth " + window.MinWidth + ", tree " + tree.ActualWidth);
+        window.Width = 400;
+        window.UpdateLayout();
+        Settle(window);
+        Assert.True(perf.ActualWidth >= PerformanceMonitorControl.MinPageWidth - 0.5,
+            "Single pane, window dragged narrow: the page must keep its minimum: " + perf.ActualWidth);
+        Assert.InRange(perf.ActualWidth, pane.PerformanceSlot.ActualWidth - 0.5, pane.PerformanceSlot.ActualWidth + 0.5);
+        PaneRender.Pixels(window, "perf-min-single", out _, out _, out _);
+        AssertLabelsFit(window, perf);
+
+    }
+
+    /// <summary>Dual pane with the page on the right: pane B's column stops at the page's
+    /// minimum, and the window's minimum makes room for both panes.</summary>
+    public static void RunDual()
+    {
+        using var fixture = new ShellWindowFixture();
+        var window = fixture.Window;
+        window.Width = 1100; window.Height = 600;
+        window.UpdateLayout();
+        window.ToggleDualPane();
+        var right = (FilePane)window.FindName("RightPane");
+        var colA = (ColumnDefinition)window.FindName("PaneColA");
+        var colB = (ColumnDefinition)window.FindName("PaneColB");
+        ShellWindowFixture.PumpUntil(() => right.ActualWidth > 100 && colB.MinWidth > 0);
+        window.FocusPane(right);
+        window.OpenPerformanceMonitor();
+        ShellWindowFixture.PumpUntil(() => right.Active?.Perf != null);
+        var perfB = right.Active!.Perf!;
+        var hardware = new PerformanceHardwareInfo("AMD Ryzen 7 5700X 8-Core Processor", "DDR4-3200", "GPU", "Network", 8, 1, 1, 1000, [], ["Realtek PCIe GbE Family Controller"], []);
+        typeof(PerformanceMonitorControl).GetMethod("BuildTiles", BindingFlags.NonPublic | BindingFlags.Instance)!
+            .Invoke(perfB, new object[] { hardware });
+        window.UpdateLayout();
+        ShellWindowFixture.PumpUntil(() => colB.MinWidth >= PerformanceMonitorControl.MinPageWidth,
+            diagnostic: () => "B MinWidth " + colB.MinWidth + ", slot " + right.PerformanceSlot.ActualWidth);
+        double frameB = colB.ActualWidth - right.PerformanceSlot.ActualWidth;
+        Assert.InRange(colB.MinWidth, PerformanceMonitorControl.MinPageWidth + frameB - 0.5, PerformanceMonitorControl.MinPageWidth + frameB + 0.5);
+        Assert.True(window.MinWidth > colA.MinWidth + colB.MinWidth,
+            "The window's minimum must hold both panes at their minimums: " + window.MinWidth);
+
+        // Squeeze: the window at its floor still gives the right page its minimum.
+        window.Width = 400;
+        window.UpdateLayout();
+        Settle(window);
+        Assert.True(perfB.ActualWidth >= PerformanceMonitorControl.MinPageWidth - 0.5,
+            "Dual pane, window dragged narrow: the right page must keep its minimum: " + perfB.ActualWidth);
+        PaneRender.Pixels(window, "perf-min-dual", out _, out _, out _);
+        AssertLabelsFit(window, perfB);
+
+        // A file listing in pane B again: back to the ordinary pane minimum.
+        window.FocusPane(right);
+        right.NewTabBtn.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        ShellWindowFixture.PumpUntil(() => right.PerformanceHost.Visibility != Visibility.Visible && colB.MinWidth < PerformanceMonitorControl.MinPageWidth,
+            diagnostic: () => "B MinWidth " + colB.MinWidth);
+    }
+
+    private static void Settle(Window window)
+    {
+        for (int i = 0; i < 4; i++)
+            window.Dispatcher.Invoke(System.Windows.Threading.DispatcherPriority.Background, new Action(() => window.UpdateLayout()));
+    }
+
+    private static ScrollViewer? FindAncestorScroller(DependencyObject child, DependencyObject stop)
+    {
+        for (var node = VisualTreeHelper.GetParent(child); node != null && node != stop; node = VisualTreeHelper.GetParent(node))
+            if (node is ScrollViewer s) return s;
+        return null;
+    }
+
+    /// <summary>At the minimum every reading (it starts with a digit) and every label of the
+    /// app's own fits. Hardware names, and the GPU card's title beside its big reading, shorten
+    /// with an ellipsis as they are built to.</summary>
+    private static System.Collections.Generic.IEnumerable<DependencyObject> Descend(DependencyObject node)
+    {
+        yield return node;
+        for (int i = 0; i < VisualTreeHelper.GetChildrenCount(node); i++)
+            foreach (var d in Descend(VisualTreeHelper.GetChild(node, i))) yield return d;
+    }
+
+    /// <summary>Checks with the widest readings in place, set and measured in one dispatcher
+    /// turn so the live sampler cannot overwrite them first.</summary>
+    private static void AssertLabelsFit(Window window, FrameworkElement page)
+    {
+        var cut = new System.Collections.Generic.List<string>();
+        window.Dispatcher.Invoke(new Action(() =>
+        {
+            foreach (var tb in Descend(page).OfType<TextBlock>().Where(t => t.IsVisible && t.Text.Length > 0 && char.IsDigit(t.Text[0])))
+                tb.Text = tb.Text.EndsWith("/s") ? "999.9 MB/s"
+                        : System.Text.RegularExpressions.Regex.IsMatch(tb.Text, @"^\d+ %$") ? "100 %"
+                        : tb.Text.Contains(" GB (") ? "99.9/99.9 GB (100%)"
+                        : tb.Text;
+            page.UpdateLayout();
+            cut = LabelsCut(window, page);
+        }));
+        Assert.True(cut.Count == 0, "Labels cut off at the page's minimum width: " + string.Join(" | ", cut));
+    }
+
+    private static System.Collections.Generic.List<string> LabelsCut(Window window, FrameworkElement page)
+    {
+        var labels = new System.Collections.Generic.HashSet<string>();
+        void Collect(ResourceDictionary d)
+        {
+            foreach (var key in d.Keys)
+                if (key is string k && k.StartsWith("Str_", StringComparison.Ordinal) && d[key] is string v) labels.Add(v);
+            foreach (var m in d.MergedDictionaries) Collect(m);
+        }
+        Collect(Application.Current.Resources);
+        labels.Remove((string)window.FindResource("Str_Perf_GpuUnassigned"));
+        // The GPU card's memory legend items are wider than half the card below about a 1000px
+        // page (PerformanceMonitorControl.MinPageWidth), so their text is left out here.
+        var gpuLegend = new[] { (string)window.FindResource("Str_Perf_DedicatedMemory"), (string)window.FindResource("Str_Perf_SharedMemory") };
+        return PerformanceFit.Clipped(page, skip: node => node is StackPanel item
+                && item.Children.OfType<TextBlock>().Any(t => gpuLegend.Contains(t.Text)))
+            .Where(entry => { string text = entry.Split('"')[1]; return char.IsDigit(text[0]) || labels.Contains(text); })
+            .ToList();
+    }
+}
+
+public static class PerformanceSplitMinimumWidthScenario
+{
+    public static void Run() => PerformanceMinimumWidthScenario.RunDual();
+}
+
+/// <summary>Every visible line of text on the Performance page that does not fit its box.</summary>
+internal static class PerformanceFit
+{
+    internal static System.Collections.Generic.List<string> Clipped(FrameworkElement root, Func<DependencyObject, bool>? skip = null)
+    {
+        var found = new System.Collections.Generic.List<string>();
+        double dip = VisualTreeHelper.GetDpi(root).PixelsPerDip;
+        void Walk(DependencyObject node)
+        {
+            if (node is UIElement ui && !ui.IsVisible) return;
+            if (skip != null && skip(node)) return;
+            if (node is TextBlock tb && !string.IsNullOrEmpty(tb.Text) && tb.ActualWidth > 0)
+            {
+                var text = new FormattedText(tb.Text, System.Globalization.CultureInfo.CurrentUICulture, tb.FlowDirection,
+                    new Typeface(tb.FontFamily, tb.FontStyle, tb.FontWeight, tb.FontStretch), tb.FontSize, Brushes.Black, dip);
+                double room = tb.ActualWidth - tb.Padding.Left - tb.Padding.Right;
+                // A box can hold all of its text and still be cut by a parent that is narrower
+                // (a grid column or a card edge), so the room is the least any of them leaves.
+                for (DependencyObject? a = tb; a != null; a = a == root ? null : VisualTreeHelper.GetParent(a))
+                {
+                    if (a is not FrameworkElement fe) continue;
+                    double left = tb.TransformToAncestor(fe).Transform(new Point(0, 0)).X;
+                    var clip = System.Windows.Controls.Primitives.LayoutInformation.GetLayoutClip(fe);
+                    if (clip != null) room = Math.Min(room, clip.Bounds.Right - left - tb.Padding.Left);
+                    if (fe.ClipToBounds || fe == root) room = Math.Min(room, fe.ActualWidth - left - tb.Padding.Left);
+                }
+                // Room of zero or less is text parked out of view at every width (two digits of
+                // that kind show up even on a 1000px page), not text a narrow page cut off.
+                if (tb.TextWrapping == TextWrapping.NoWrap && room > 0 && text.WidthIncludingTrailingWhitespace > room + 3)
+                    found.Add("\"" + tb.Text + "\" " + room.ToString("0") + "<" + text.WidthIncludingTrailingWhitespace.ToString("0"));
+            }
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(node); i++) Walk(VisualTreeHelper.GetChild(node, i));
+        }
+        Walk(root);
+        return found;
     }
 }
 

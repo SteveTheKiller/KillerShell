@@ -515,18 +515,6 @@ namespace KillerShell
                 hasAbove ? topStrength : 0, hasBelow ? bottomStrength : 0);
         }
 
-        /// <summary>
-        /// The Performance page is exactly as wide as its pane, down to its minimum, and scrolls
-        /// sideways below that. A sideways ScrollViewer measures its content at infinite width, so
-        /// without this the page would take its natural width and scroll in panes that fit it.
-        /// </summary>
-        private void PerformanceWidthScroller_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            double width = Math.Max(PerformanceWidthScroller.ActualWidth, Tools.PerformanceMonitorControl.MinPageWidth);
-            if (Math.Abs(PerformanceSlot.Width - width) > 0.01 || double.IsNaN(PerformanceSlot.Width))
-                PerformanceSlot.Width = width;
-        }
-
         private bool UsesShadowCue(DependencyObject scroller) =>
             IsVisualDescendantOf(scroller, ResultsList) ||
             IsVisualDescendantOf(scroller, PerformanceHost);

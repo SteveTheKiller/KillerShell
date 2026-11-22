@@ -2072,16 +2072,10 @@
                     <!-- Actual reserved page-frame geometry: the black monitor is inset inside a
                          full-width gray host, so the top strip cannot be covered or clipped away. -->
                     <Grid Background="{DynamicResource PerformancePageFrameBrush}">
-                        <!-- Sideways only: the monitor has a minimum width (PerformanceMonitorControl
-                             MinPageWidth), and a pane narrower than that scrolls the page across
-                             instead of squeezing the tiles until their labels read "C..." and "Spee".
-                             Vertical is Disabled so the monitor keeps the pane's height and its own
-                             panels scroller does the up and down. -->
-                        <ScrollViewer x:Name="PerformanceWidthScroller" Focusable="False" SizeChanged="PerformanceWidthScroller_SizeChanged"
-                                      HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled"
-                                      Margin="{DynamicResource PerformanceContentInset}">
-                            <ContentControl x:Name="PerformanceSlot" Focusable="False"/>
-                        </ScrollViewer>
+                        <!-- No sideways scroll: the pane itself stops at the page's minimum width
+                             (DualPane.cs PaneContentMinimum), so the page always fits its pane. -->
+                        <ContentControl x:Name="PerformanceSlot" Focusable="False"
+                                        Margin="{DynamicResource PerformanceContentInset}"/>
                         <Border IsHitTestVisible="False" Panel.ZIndex="5"
                                 BorderBrush="{DynamicResource PerformancePageFrameDarkBrush}"
                                 BorderThickness="{DynamicResource PerformancePageFrameDarkThickness}"/>
