@@ -111,7 +111,8 @@ public sealed class TabLayoutTests
             .Single(element => element.Name.LocalName == "Thickness" &&
                 (string?)element.Attribute(x + "Key") == key).Value;
         Assert.Equal("0,-2,0,0", ThicknessValue("PaneOuterMargin"));
-        Assert.Equal("8,6,5,2", ThicknessValue("TabPadding"));
+        // 4 above and 4 below centers the title in the tab (041a0a7, the kit's 98SE TabPadding).
+        Assert.Equal("8,4,5,4", ThicknessValue("TabPadding"));
         Assert.Equal("8,4,4,4", ThicknessValue("TabActivePadding"));
         Assert.Equal("0,5,0,0", ThicknessValue("TabMargin"));
         Assert.Equal("0,5,0,0", ThicknessValue("TabInactiveFirstMargin"));

@@ -16,6 +16,9 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - On Trash Polka the Storage map uses the file browser's lighter surface, with the darker one around it.
 - On Trash Polka a hovered file row keeps its film grain.
 - The status bar has a divider between the view buttons and the version, as in the other apps.
+- With the tabs below, a list that scrolls has its bottom shadow back. It runs on into the current tab as one shade, so the join stays seamless.
+- The Performance page's cards scroll right to the page's foot instead of stopping 4 px above it.
+- The Performance page has a minimum width. A narrower pane scrolls it sideways instead of squeezing the cards until their labels cut off.
 
 ## [1.6.1] - 2026-11-21
 

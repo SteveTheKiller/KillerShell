@@ -1,11 +1,14 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using KillerShell.Services;
+using KillerShell.Tools;
 using Xunit;
 
 namespace KillerShell.Tests.Terminal;
@@ -14,8 +17,16 @@ namespace KillerShell.Tests.Terminal;
 public sealed class TabScrollShadowTests
 {
     [Fact]
-    public Task BottomTabsJoinTheListWithoutADarkBand()
+    public Task BottomTabsCarryTheListShadowAsOneFade()
         => RuntimeComponentProcess.Run(nameof(TabScrollShadowScenario));
+
+    [Fact]
+    public Task PerformancePageKeepsItsBottomScrollShadow()
+        => RuntimeComponentProcess.Run(nameof(PerformanceScrollShadowScenario));
+
+    [Fact]
+    public Task PerformancePageScrollsSidewaysBelowItsMinimumWidth()
+        => RuntimeComponentProcess.Run(nameof(PerformanceMinimumWidthScenario));
 
     [Fact]
     public Task PaneCornersOppositeTheTabsMatchAtEveryAppScale()
@@ -153,37 +164,14 @@ public static class TabScrollShadowScenario
         window.UpdateLayout();
         ShellWindowFixture.PumpUntil(() => scroller.VerticalOffset > 60);
 
-        // No shade sits over the join: the list's own bottom cue is switched off while the tabs
-        // are below it.
+        // The list's own cue steps aside so the overlay is the only shade, never two stacked.
         Assert.Same(Brushes.Transparent, scroller.Resources["ScrollBottomCueBrush"]);
 
         var tabFace = MenuBarTabBlendScenario.TabBorder(pane, pane.Active);
         var peek = PaneRender.FindNamedBorder(tabFace, "tabListPeek")!;
         ShellWindowFixture.PumpUntil(() => peek.Visibility == Visibility.Visible && peek.Background is VisualBrush);
-        double scale = PaneRender.DeviceScale(window);
-        Rect face = PaneRender.Device(PaneRender.BoundsIn(tabFace, PaneRender.Screen(window)), scale);
-        Rect list = PaneRender.Device(PaneRender.BoundsIn(pane.ResultsPane, PaneRender.Screen(window)), scale);
+        byte[] seen = BottomShadow.AssertOneShade(window, pane, "shadow", out Rect face, out int seam, out int stride);
 
-        byte[] seen = PaneRender.Pixels(window, "seam-window", out _, out int height, out int stride);
-        int seam = (int)Math.Round(list.Bottom);
-        PaneRender.SaveMagnified(seen, stride, height,
-            new Int32Rect((int)face.Left - 12, seam - 30, (int)face.Width + 24, (int)(face.Bottom - seam) + 36), 4, "seam-join");
-        PaneRender.SaveMagnified(seen, stride, height, new Int32Rect((int)list.Left, seam - 70, (int)list.Width, (int)(face.Bottom - seam) + 76), 2, "seam-foot");
-
-        // The rows on either side of the seam, across the active tab, are one surface: the cut-off
-        // row carries on into the tab at the same brightness, with no dark band at the list's foot.
-        double Row(int py)
-        {
-            double sum = 0; int n = 0;
-            for (int px = (int)face.Left + 4; px < face.Right - 4; px++, n++) sum += PaneRender.Luma(seen, stride, px, py);
-            return sum / Math.Max(1, n);
-        }
-        // Sampled a pixel or two either side: further into the tab the peek's own fade takes over.
-        double listFoot = Row(seam - 2), tabTop = Row(seam + 1), higher = Row(seam - 24);
-        Assert.True(Math.Abs(listFoot - tabTop) < 12,
-            "A line at the seam: list " + listFoot.ToString("0") + " vs tab " + tabTop.ToString("0"));
-        Assert.True(listFoot > higher - 12,
-            "The list's foot must not darken toward the tabs: foot " + listFoot.ToString("0") + " vs 24px up " + higher.ToString("0"));
 
         // The folder carries on into its tab: the row cut off at the list's foot shows through
         // the active tab's face (tabListPeek) and that layer fades out before the tab's foot.
@@ -197,11 +185,167 @@ public static class TabScrollShadowScenario
                 brightest = Math.Max(brightest, PaneRender.Luma(seen, stride, px, py));
         Assert.True(brightest > 120, "The cut-off icons must show through the tab's face: brightest " + brightest.ToString("0"));
 
-        // Scrolled to the end there is nothing below, so the peek goes and the list's cue comes back.
+        // Scrolled to the end there is nothing below, so the shadow and the peek go and the
+        // list's cue comes back for the next time there is.
         scroller.ScrollToEnd();
         window.UpdateLayout();
         ShellWindowFixture.PumpUntil(() => !pane.HasBottomTabPeek);
+        Assert.Equal(Visibility.Collapsed, pane.TabScrollShadow.Visibility);
         Assert.False(scroller.Resources.Contains("ScrollBottomCueBrush"));
+    }
+}
+
+/// <summary>
+/// The Performance page scrolls its tiles under the same bottom shadow as the file list, with
+/// the tabs on top (the scroller's own cue) and below (one shade on through the active tab).
+/// </summary>
+public static class PerformanceScrollShadowScenario
+{
+    public static void Run()
+    {
+        using var fixture = new ShellWindowFixture();
+        var window = fixture.Window;
+        var pane = (FilePane)window.FindName("LeftPane");
+        window.FocusPane(pane);
+        window.Width = 1100; window.Height = 560;
+        window.UpdateLayout();
+        window.OpenPerformanceMonitor();
+        ShellWindowFixture.PumpUntil(() => pane.Active?.Perf != null);
+        var hardware = new PerformanceHardwareInfo("CPU", "RAM", "GPU", "Network", 8, 1, 1, 1000, [], ["Adapter"], []);
+        typeof(PerformanceMonitorControl).GetMethod("BuildTiles", BindingFlags.NonPublic | BindingFlags.Instance)!
+            .Invoke(pane.Active!.Perf, new object[] { hardware });
+        window.UpdateLayout();
+        // The monitor's own panels scroller, inside the host's sideways-only one.
+        ShellWindowFixture.PumpUntil(() => PaneRender.FindScroller(pane.PerformanceSlot) is ScrollViewer s && s.ScrollableHeight > 30);
+        var scroller = PaneRender.FindScroller(pane.PerformanceSlot)!;
+
+        // Tabs on top: the scroller's own 28px cue darkens the page's foot.
+        window.SetTabPlacement(bottom: false, persist: false);
+        window.UpdateLayout();
+        ShellWindowFixture.PumpUntil(() => !pane.HasBottomTabPeek);
+        double scale = PaneRender.DeviceScale(window);
+        Rect page = PaneRender.Device(PaneRender.BoundsIn(scroller, PaneRender.Screen(window)), scale);
+        byte[] shaded = PaneRender.Pixels(window, "perf-shadow-top", out _, out int height, out int stride);
+        scroller.Resources["ScrollBottomCueBrush"] = Brushes.Transparent;
+        byte[] plain = PaneRender.Pixels(window, "perf-shadow-top-plain", out _, out _, out _);
+        scroller.Resources.Remove("ScrollBottomCueBrush");
+        int foot = (int)page.Bottom - 2;
+        double ratio = BottomShadow.RowLuma(shaded, stride, page, foot) / Math.Max(1, BottomShadow.RowLuma(plain, stride, page, foot));
+        Assert.True(ratio < 0.85, "Tabs on top: the Performance page's foot must carry the scroll shadow: " + ratio.ToString("0.00"));
+
+        // Tabs below: one shade from the page's foot on through the active tab.
+        window.SetTabPlacement(bottom: true, persist: false);
+        window.UpdateLayout();
+        ShellWindowFixture.PumpUntil(() => pane.HasBottomTabPeek);
+        BottomShadow.AssertOneShade(window, pane, "perf-shadow-bottom", out _, out _, out _);
+
+        // The cards scroll right to the page's foot: no strip of bare page is held under them.
+        // The panels' 4px inset is the stack's margin, which scrolls, never the scroller's
+        // padding, which the template turns into a fixed frame.
+        Assert.Equal(new Thickness(0), scroller.Padding);
+        var presenter = (FrameworkElement)scroller.Template.FindName("PART_ScrollContentPresenter", scroller);
+        Rect viewport = PaneRender.BoundsIn(presenter, PaneRender.Screen(window));
+        Rect whole = PaneRender.BoundsIn(scroller, PaneRender.Screen(window));
+        Assert.InRange(whole.Bottom - viewport.Bottom, -0.5, 0.5);
+    }
+}
+
+/// <summary>
+/// Steve 2026-11-22: "perfmon needs a minimum width". A pane narrower than the page's minimum
+/// scrolls the page sideways at its full minimum width; a wide pane gets no sideways scroll.
+/// </summary>
+public static class PerformanceMinimumWidthScenario
+{
+    public static void Run()
+    {
+        using var fixture = new ShellWindowFixture();
+        var window = fixture.Window;
+        var pane = (FilePane)window.FindName("LeftPane");
+        window.FocusPane(pane);
+        window.Width = 1100; window.Height = 600;
+        window.UpdateLayout();
+        window.OpenPerformanceMonitor();
+        ShellWindowFixture.PumpUntil(() => pane.Active?.Perf != null);
+        var perf = pane.Active!.Perf!;
+        var hardware = new PerformanceHardwareInfo("AMD Ryzen 7 5700X 8-Core Processor", "DDR4-3200", "GPU", "Network", 8, 1, 1, 1000, [], ["Realtek PCIe GbE Family Controller"], []);
+        typeof(PerformanceMonitorControl).GetMethod("BuildTiles", BindingFlags.NonPublic | BindingFlags.Instance)!
+            .Invoke(perf, new object[] { hardware });
+        var across = pane.PerformanceWidthScroller;
+
+        window.UpdateLayout();
+        ShellWindowFixture.PumpUntil(() => perf.ActualWidth > 0);
+        PaneRender.Pixels(window, "perf-width-wide", out _, out _, out _);
+        Assert.True(across.ScrollableWidth < 0.5, "A wide pane must not scroll the page sideways: " + across.ScrollableWidth);
+        Assert.Equal(Visibility.Collapsed, across.ComputedHorizontalScrollBarVisibility);
+
+        // Exactly the minimum: laid out at it, no sideways scroll yet.
+        double chrome = window.ActualWidth - across.ViewportWidth;
+        window.Width = PerformanceMonitorControl.MinPageWidth + chrome;
+        window.UpdateLayout();
+        ShellWindowFixture.PumpUntil(() => Math.Abs(perf.ActualWidth - PerformanceMonitorControl.MinPageWidth) < 1,
+            diagnostic: () => "perf " + perf.ActualWidth + ", viewport " + across.ViewportWidth + ", window " + window.ActualWidth + " of " + window.Width + ", chrome " + chrome);
+        PaneRender.Pixels(window, "perf-width-minimum", out _, out _, out _);
+
+        // Narrower than the minimum: the page keeps its width and scrolls across.
+        window.Width = 600;
+        window.UpdateLayout();
+        ShellWindowFixture.PumpUntil(() => across.ScrollableWidth > 1);
+        PaneRender.Pixels(window, "perf-width-narrow", out _, out _, out _);
+        Assert.InRange(perf.ActualWidth, PerformanceMonitorControl.MinPageWidth - 0.5, PerformanceMonitorControl.MinPageWidth + 0.5);
+        Assert.Equal(Visibility.Visible, across.ComputedHorizontalScrollBarVisibility);
+    }
+}
+
+internal static class BottomShadow
+{
+    internal static double RowLuma(byte[] pixels, int stride, Rect span, int y)
+    {
+        double sum = 0; int n = 0;
+        for (int px = (int)span.Left + 4; px < span.Right - 4; px++, n++) sum += PaneRender.Luma(pixels, stride, px, y);
+        return sum / Math.Max(1, n);
+    }
+
+    /// <summary>
+    /// Renders with and without TabScrollShadow and checks it is one shade: clear 28px above the
+    /// band, already dark at the list's foot, the same on both sides of the seam, darkest at the
+    /// tab's foot. Returns the shaded pixels.
+    /// </summary>
+    internal static byte[] AssertOneShade(Window window, FilePane pane, string name, out Rect face, out int seam, out int stride)
+    {
+        ShellWindowFixture.PumpUntil(() => pane.TabScrollShadow.Visibility == Visibility.Visible
+            && pane.TabScrollShadow.Clip != null && pane.TabScrollShadow.ActualHeight > 28);
+        var tabFace = MenuBarTabBlendScenario.TabBorder(pane, pane.Active);
+        double scale = PaneRender.DeviceScale(window);
+        var root = PaneRender.Screen(window);
+        face = PaneRender.Device(PaneRender.BoundsIn(tabFace, root), scale);
+        Rect list = PaneRender.Device(PaneRender.BoundsIn(pane.ResultsPane, root), scale);
+        Rect overlay = PaneRender.Device(PaneRender.BoundsIn(pane.TabScrollShadow, root), scale);
+        Assert.InRange(overlay.Top, list.Bottom - 29 * scale - 2, list.Bottom - 27 * scale + 2);
+        Assert.InRange(overlay.Bottom, face.Bottom - 2, face.Bottom + 2);
+
+        byte[] shaded = PaneRender.Pixels(window, name + "-window", out _, out int height, out stride);
+        pane.TabScrollShadow.Visibility = Visibility.Collapsed;
+        byte[] plain = PaneRender.Pixels(window, name + "-window-plain", out _, out _, out _);
+        pane.TabScrollShadow.Visibility = Visibility.Visible;
+
+        int s = stride;
+        Rect f = face;
+        double Shade(int py) => RowLuma(shaded, s, f, py) / Math.Max(1, RowLuma(plain, s, f, py));
+
+        int top = (int)Math.Ceiling(overlay.Top);
+        seam = (int)Math.Round(list.Bottom);
+        int foot = (int)Math.Floor(face.Bottom) - 1;
+        PaneRender.SaveMagnified(shaded, stride, height,
+            new Int32Rect((int)face.Left - 12, top - 6, (int)face.Width + 24, foot - top + 12), 4, name + "-join");
+
+        double above = Shade(top + 2), atSeamList = Shade(seam - 2), atSeamTab = Shade(seam + 2), atFoot = Shade(foot);
+        Assert.True(above > 0.95, name + ": the fade must start clear 28px above the band: " + above.ToString("0.00"));
+        Assert.True(atSeamList < 0.9, name + ": the list's foot must be shaded before the tab: " + atSeamList.ToString("0.00"));
+        Assert.True(Math.Abs(atSeamList - atSeamTab) < 0.08,
+            name + ": a line at the seam: list " + atSeamList.ToString("0.00") + " vs tab " + atSeamTab.ToString("0.00"));
+        Assert.True(atFoot < atSeamTab - 0.05,
+            name + ": the tab's foot must be darker than its join: " + atFoot.ToString("0.00") + " vs " + atSeamTab.ToString("0.00"));
+        return shaded;
     }
 }
 

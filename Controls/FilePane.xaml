@@ -87,6 +87,32 @@
                   <RowDefinition Height="Auto"/>
               </Grid.RowDefinitions>
 
+              <!-- THE BOTTOM SCROLL SHADOW WITH TABS BELOW THE LIST. The active tab is a
+                   continuation of the page it shows, so the shadow that says "more below" is
+                   ONE gradient: transparent 28px above the band, darkest at the active tab's
+                   foot, drawn by this single overlay and clipped to the list's foot plus the
+                   active tab's face (FilePane.xaml.cs UpdateTabScrollShadow). Because it is one
+                   brush across both, the join stays seamless: it is the same shade continued, not
+                   a band that stops at the tab. It lives in the pane's outer stack because the tab
+                   band is a sibling of the pane, not a child. It sits ABOVE the band (ZIndex 30
+                   over the band's 20) so the tab's icon and title darken with the rows above them,
+                   and the list's own 28px cue steps aside while it shows so the two never stack.
+                   Taking it out left bottom-tab lists with no shadow at all, which Steve wants
+                   kept. Hidden when the list is scrolled to its end, when the status bar or a
+                   details panel sits between the list and the band, and whenever the tabs are on
+                   top, where the list's own cue draws it. -->
+              <Border x:Name="TabScrollShadow" Grid.Row="1" Grid.RowSpan="2" Panel.ZIndex="30"
+                      IsHitTestVisible="False" VerticalAlignment="Top" Visibility="Collapsed"
+                      Opacity="{DynamicResource EdgeFadeOpacity}">
+                  <Border.Background>
+                      <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                          <GradientStop Color="#00000000" Offset="0"/>
+                          <GradientStop Color="#38000000" Offset="0.5"/>
+                          <GradientStop Color="#80000000" Offset="1"/>
+                      </LinearGradientBrush>
+                  </Border.Background>
+              </Border>
+
               <!-- Tab band: hidden until there are 2+ tabs (like KillerPDF). Opaque + its own
                    grain so the strip reads as one textured band with the tabs sitting on it. -->
               <!-- ZIndex 20 so the strip draws ABOVE the pane. Without it the pane wins on
@@ -317,9 +343,9 @@
                                         <!-- THE FOLDER CONTINUES INTO ITS TAB. With the tabs at the bottom
                                              the active tab is part of the folder it shows, so the row of
                                              icons cut off at the list's foot carries on across the tab's
-                                             face and fades out about halfway down it. No shadow darkens the
-                                             join: the list and its tab read as one surface.
-                                             The brush is a live
+                                             face and fades out about halfway down it, under the same shadow
+                                             the list wears (PaneStack's TabScrollShadow), so the list and its
+                                             tab read as one surface. The brush is a live
                                              view of the list panel just below its viewport, set from the real
                                              positions in FilePane.xaml.cs UpdateBottomTabPeek so the icons
                                              land at the same x as the rows above them. The tab is drawn
@@ -2046,8 +2072,16 @@
                     <!-- Actual reserved page-frame geometry: the black monitor is inset inside a
                          full-width gray host, so the top strip cannot be covered or clipped away. -->
                     <Grid Background="{DynamicResource PerformancePageFrameBrush}">
-                        <ContentControl x:Name="PerformanceSlot" Focusable="False"
-                                        Margin="{DynamicResource PerformanceContentInset}"/>
+                        <!-- Sideways only: the monitor has a minimum width (PerformanceMonitorControl
+                             MinPageWidth), and a pane narrower than that scrolls the page across
+                             instead of squeezing the tiles until their labels read "C..." and "Spee".
+                             Vertical is Disabled so the monitor keeps the pane's height and its own
+                             panels scroller does the up and down. -->
+                        <ScrollViewer x:Name="PerformanceWidthScroller" Focusable="False" SizeChanged="PerformanceWidthScroller_SizeChanged"
+                                      HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled"
+                                      Margin="{DynamicResource PerformanceContentInset}">
+                            <ContentControl x:Name="PerformanceSlot" Focusable="False"/>
+                        </ScrollViewer>
                         <Border IsHitTestVisible="False" Panel.ZIndex="5"
                                 BorderBrush="{DynamicResource PerformancePageFrameDarkBrush}"
                                 BorderThickness="{DynamicResource PerformancePageFrameDarkThickness}"/>

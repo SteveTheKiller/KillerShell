@@ -106,6 +106,9 @@ namespace KillerShell.Tools
 
         internal bool IsSampling => _timer.IsEnabled;
 
+        /// <summary>The narrowest the page lays out at before it scrolls sideways.</summary>
+        internal const double MinPageWidth = 840;
+
         internal PerformanceMonitorControl(Func<CancellationToken, Task<Services.PerformanceHardwareInfo>>? discoverHardware = null)
         {
             _discoverHardware = discoverHardware ?? (token => Task.Factory.StartNew(
@@ -114,6 +117,9 @@ namespace KillerShell.Tools
             RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });   // summary strip
             RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) }); // the panels
             RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });   // status line
+            // Narrower than this the tiles squeeze their labels to "C..." and "Spee"; the host
+            // (FilePane.xaml PerformanceWidthScroller) scrolls the page sideways instead.
+            MinWidth = MinPageWidth;
 
             this.SetResourceReference(Grid.BackgroundProperty, "MenuBackgroundBrush");
             RefreshSurfaceResources();

@@ -79,9 +79,11 @@ namespace KillerShell.Tools
             // MonitorPanelsPadding: 4 a side so the cards' own 4px MonitorTileMargin lands their
             // edges at 8; 0 on 98SE so the cards run to the pane edge like every other well (the
             // tab strip above runs to the window edge, and anything short of it reads as the
-            // right edge being off). It is Padding, inside the scrolling content, so the edge
-            // shadows still reach the pane edges.
-            scroller.SetResourceReference(Control.PaddingProperty, "MonitorPanelsPadding");
+            // right edge being off). It is the panel stack's Margin, so it scrolls with the cards.
+            // As the scroller's Padding it was a fixed inset (the template puts Padding on the
+            // ScrollContentPresenter's Margin), which cut the cards off 4px above the page's foot
+            // and left a strip of bare page there.
+            _panels.SetResourceReference(FrameworkElement.MarginProperty, "MonitorPanelsPadding");
             _panelsScroller = scroller;
             return scroller;
         }

@@ -182,10 +182,9 @@ namespace KillerShell
             new PropertyMetadata(false, (d, _) => ((FilePane)d).ApplyBottomTabPeek()));
         public bool HasBottomTabPeek => (bool)GetValue(HasBottomTabPeekProperty);
 
-        // The list's own bottom cue steps aside while the tabs sit below it: a shade at the list's foot stops dead
-        // at the tab and reads as a dark band across the join, which must be seamless. The
-        // peek into the tab says "more below" instead. Set on the scroller, not the pane, so the details panel
-        // keeps its cue.
+        // The list's own bottom cue steps aside while TabScrollShadow draws the shadow on through the active tab,
+        // so the two never stack and the shade never stops dead at the join. Set on the scroller, not the pane,
+        // so the details panel keeps its cue.
         private ScrollViewer? _cueHiddenOn;
 
         private void ApplyBottomTabPeek()
@@ -201,6 +200,7 @@ namespace KillerShell
                 _paneScroller.Resources["ScrollBottomCueBrush"] = Brushes.Transparent;
                 _cueHiddenOn = _paneScroller;
             }
+            TabScrollShadow.Visibility = on ? Visibility.Visible : Visibility.Collapsed;
             if (!on) return;
             UpdateBottomTabPeek();
             Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Loaded,
@@ -213,10 +213,60 @@ namespace KillerShell
         /// </summary>
         internal void UpdateBottomTabPeek()
         {
-            if (!HasBottomTabPeek || Active == null) return;
+            if (!HasBottomTabPeek) return;
+            UpdateTabScrollShadow();
+            if (Active == null) return;
             if (TabStrip.ItemContainerGenerator.ContainerFromItem(Active) is FrameworkElement container
                 && FindNamedBorder(container, "tabListPeek") is Border peek)
                 UpdateTabListPeek(peek);
+        }
+
+        /// <summary>The list's bottom cue height, which the overlay's fade starts above the band.</summary>
+        private const double ScrollShadowReach = 28;
+
+        /// <summary>
+        /// Lays out TabScrollShadow (FilePane.xaml): one gradient from 28px above the pane's
+        /// foot to the active tab's foot, clipped to the list's foot and the tab's face. Both
+        /// pieces are measured in the pane stack's own coordinates, so they line up with the
+        /// pane border and the tab wherever the frame, the zoom or the margins put them. The
+        /// active tab is upside down at the bottom (TabPlacement.cs), so its TopLeft and
+        /// TopRight radii are the ones that show at its foot. Until the tab's container exists
+        /// the list's foot alone is shaded, and the Loaded pass that follows adds the tab.
+        /// </summary>
+        private void UpdateTabScrollShadow()
+        {
+            if (!HasBottomTabPeek || ResultsPane.ActualHeight <= 0 || !ResultsPane.IsDescendantOf(PaneStack)) return;
+
+            Rect pane = ResultsPane.TransformToAncestor(PaneStack).TransformBounds(new Rect(ResultsPane.RenderSize));
+            double top = pane.Bottom - ScrollShadowReach;
+            Thickness stroke = ResultsPane.BorderThickness;
+            CornerRadius paneRadius = ResultsPane.CornerRadius;
+            Geometry clip = PickerBorder.RoundedGeometry(
+                new Rect(pane.X + stroke.Left, 0, Math.Max(0, pane.Width - stroke.Left - stroke.Right), ScrollShadowReach),
+                new Size(0, 0), new Size(0, 0),
+                new Size(Math.Max(0, paneRadius.BottomRight - stroke.Right / 2), paneRadius.BottomRight),
+                new Size(Math.Max(0, paneRadius.BottomLeft - stroke.Left / 2), paneRadius.BottomLeft));
+            double bottom = pane.Bottom;
+
+            if (Active != null
+                && TabStrip.ItemContainerGenerator.ContainerFromItem(Active) is FrameworkElement container
+                && FindNamedBorder(container, "tabBd") is Border face && face.ActualHeight > 0 && face.IsDescendantOf(PaneStack))
+            {
+                Rect tab = face.TransformToAncestor(PaneStack).TransformBounds(new Rect(face.RenderSize));
+                tab.Offset(0, -top);
+                CornerRadius tabRadius = face.CornerRadius;
+                Geometry tabFace = PickerBorder.RoundedGeometry(tab, new Size(0, 0), new Size(0, 0),
+                    new Size(tabRadius.TopRight, tabRadius.TopRight), new Size(tabRadius.TopLeft, tabRadius.TopLeft));
+                clip = new CombinedGeometry(GeometryCombineMode.Union, clip, tabFace);
+                bottom = Math.Max(bottom, tab.Bottom + top);
+            }
+
+            clip.Freeze();
+            var margin = new Thickness(0, top, 0, 0);
+            if (TabScrollShadow.Margin != margin) TabScrollShadow.Margin = margin;
+            double height = Math.Max(0, bottom - top);
+            if (TabScrollShadow.Height != height) TabScrollShadow.Height = height;
+            TabScrollShadow.Clip = clip;
         }
 
         /// <summary>
@@ -463,6 +513,18 @@ namespace KillerShell
 
             BuildVerticalFade(_paneFadeMask, height, topY, bottomY,
                 hasAbove ? topStrength : 0, hasBelow ? bottomStrength : 0);
+        }
+
+        /// <summary>
+        /// The Performance page is exactly as wide as its pane, down to its minimum, and scrolls
+        /// sideways below that. A sideways ScrollViewer measures its content at infinite width, so
+        /// without this the page would take its natural width and scroll in panes that fit it.
+        /// </summary>
+        private void PerformanceWidthScroller_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            double width = Math.Max(PerformanceWidthScroller.ActualWidth, Tools.PerformanceMonitorControl.MinPageWidth);
+            if (Math.Abs(PerformanceSlot.Width - width) > 0.01 || double.IsNaN(PerformanceSlot.Width))
+                PerformanceSlot.Width = width;
         }
 
         private bool UsesShadowCue(DependencyObject scroller) =>
