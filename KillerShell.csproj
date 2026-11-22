@@ -19,7 +19,7 @@
     <Authors>Steve the Killer</Authors>
     <Copyright>Copyright (c) 2026 Steve the Killer</Copyright>
     <!-- Displayed semantic version, matching Version. -->
-    <InformationalVersion>1.6.1</InformationalVersion>
+    <InformationalVersion>1.6.2</InformationalVersion>
     <!-- Shown in the About card next to the version so a user can tell how old their build
          is. Keep the prior release date during development. On release day, match the date
          on this version's CHANGELOG section; release.ps1 preflight enforces that match. -->
