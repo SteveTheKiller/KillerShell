@@ -43,7 +43,10 @@ public static class StorageContextKeyboardScenario
             var menu = Assert.Single(PresentationSource.CurrentSources.Cast<PresentationSource>()
                 .OfType<HwndSource>().Where(source => source.RootVisual != null)
                 .SelectMany(source => Menus(source.RootVisual)), item => item.IsOpen);
-            Assert.Contains(menu.Items.Cast<object>(), item => item is MenuItem row && row.IsCheckable);
+            // The map card: with nothing selected it still offers the color modes as on/off tiles.
+            var tiles = KillerShell.Controls.CardMenus.Buttons(menu).Select(b => b.CommandParameter).OfType<string>().ToArray();
+            Assert.Contains("bytype", tiles);
+            Assert.Contains("byfolder", tiles);
             menu.IsOpen = false;
         }
         finally { control.Shutdown(); window.Close(); app.Shutdown(); }

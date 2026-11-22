@@ -232,8 +232,14 @@ namespace KillerShell.Tools
             if (configured == null) return;
             // Keep an explicit monitor palette, such as the retro black readouts. Ordinary
             // cells inherit the lighter content surface locally, without changing other tools.
-            Resources["MonitorCellBrush"] = ReferenceEquals(configured, app.TryFindResource("MenuBackgroundBrush"))
+            // Trash Polka turns that around: its page is the lighter list surface (FilePane.xaml
+            // PerformancePageInk) and the tiles keep the darker one, so they stand off the page.
+            bool inked = app.TryFindResource("ThemeMotif") is true;
+            Resources["MonitorCellBrush"] = !inked && ReferenceEquals(configured, app.TryFindResource("MenuBackgroundBrush"))
                 ? app.TryFindResource("ListPaneBrush") ?? configured : configured;
+            // The opaque page face would cover that inked page, so on Trash Polka it is see-through.
+            if (inked) Background = Brushes.Transparent;
+            else this.SetResourceReference(Grid.BackgroundProperty, "MenuBackgroundBrush");
         }
 
         private void DisposeCounters()
@@ -702,10 +708,10 @@ namespace KillerShell.Tools
                 Child = cellHost,
             };
             cell.SetResourceReference(Border.BackgroundProperty, "MonitorCellBrush");
-            // Trash Polka: each tile shows its window-pinned stretch of the ink, at the fainter screen strength so the
-            // readouts sit clear of it; other themes keep the plain cell.
+            // Trash Polka: each tile shows its window-pinned stretch of the ink on the darker face, at the faint tile
+            // strength so the readouts sit clear of it; other themes keep the plain cell.
             Controls.ThemeMotif.SetBaseBrush(cell, "MonitorCellBrush");
-            Controls.ThemeMotif.SetScreen(cell, true);
+            Controls.ThemeMotif.SetCell(cell, true);
             Controls.ThemeMotif.SetPart(cell, Controls.MotifPart.Window);
             cell.SetResourceReference(Border.BorderBrushProperty, "PaneBorderBrush");
             cell.SetResourceReference(FrameworkElement.MarginProperty, "MonitorTileMargin");
@@ -1457,7 +1463,7 @@ namespace KillerShell.Tools
                 Host.SetResourceReference(Border.BackgroundProperty, "MonitorCellBrush");
                 // The well paints the same pinned picture as its tile, so the ink runs straight through it.
                 Controls.ThemeMotif.SetBaseBrush(Host, "MonitorCellBrush");
-                Controls.ThemeMotif.SetScreen(Host, true);
+                Controls.ThemeMotif.SetCell(Host, true);
                 Controls.ThemeMotif.SetPart(Host, Controls.MotifPart.Window);
                 Host.SetResourceReference(Border.BorderBrushProperty, "PaneBorderBrush");
             }

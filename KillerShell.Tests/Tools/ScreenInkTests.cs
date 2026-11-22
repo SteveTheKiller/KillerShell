@@ -24,6 +24,8 @@ public sealed class ScreenInkTests
     {
         Assert.True(TrashPolkaInk.ScreenOpacity < TrashPolkaInk.PaneOpacity);
         Assert.True(TrashPolkaInk.ScreenOpacity > 0);
+        Assert.True(TrashPolkaInk.CellOpacity < TrashPolkaInk.ScreenOpacity);
+        Assert.True(TrashPolkaInk.CellOpacity > 0);
     }
 
     [Fact]
@@ -86,7 +88,8 @@ public static class ScreenInkScenario
         var tiles = Descendants(monitor).OfType<Border>()
             .Where(b => ThemeMotif.GetBaseBrush(b) == "MonitorCellBrush" && ThemeMotif.GetPart(b) == MotifPart.Window).ToArray();
         Assert.NotEmpty(tiles);
-        Assert.All(tiles, tile => Assert.True(ThemeMotif.GetScreen(tile)));
+        // The monitor tiles are dashboard cells: darker faces on the lighter page, at the faint tile strength.
+        Assert.All(tiles, tile => Assert.True(ThemeMotif.GetCell(tile)));
     }
 
     private static System.Collections.Generic.IEnumerable<DependencyObject> Descendants(DependencyObject root)

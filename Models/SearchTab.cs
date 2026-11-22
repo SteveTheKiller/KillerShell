@@ -75,7 +75,14 @@ namespace KillerShell.Models
         // owns its editor: the control holds a live refresh timer, a filter and the grid's own
         // sort/scroll state, and rebuilding it on every tab switch would throw all of that away.
         // Internal, not public: ProcessListControl is internal, and this model is public.
-        internal KillerShell.Tools.ProcessListControl? Procs;
+        // A property that announces its flag: the tab is in the strip before its tool attaches, and the
+        // tab template keys its face on these flags (FilePane.xaml), so a silent field left that face stale.
+        internal KillerShell.Tools.ProcessListControl? Procs
+        {
+            get => _procs;
+            set { _procs = value; Notify(nameof(IsProcessList)); }
+        }
+        private KillerShell.Tools.ProcessListControl? _procs;
 
         /// <summary>True when this tab is a Task Manager rather than a folder, search, shell or document.</summary>
         public bool IsProcessList => Procs != null;
@@ -86,7 +93,12 @@ namespace KillerShell.Models
         // background load loop that would restart from nothing on every tab switch if this were
         // rebuilt instead of moved. Internal, not public: EventViewerControl is internal, and
         // this model is public.
-        internal KillerShell.Tools.EventViewerControl? Events;
+        internal KillerShell.Tools.EventViewerControl? Events
+        {
+            get => _events;
+            set { _events = value; Notify(nameof(IsEventViewer)); }
+        }
+        private KillerShell.Tools.EventViewerControl? _events;
 
         /// <summary>True when this tab is an Event Viewer rather than a folder, search, shell,
         /// document or Task Manager.</summary>
@@ -98,7 +110,12 @@ namespace KillerShell.Models
         // static hardware info - rebuilding it on every tab switch would throw the graph history
         // away and re-run the WMI hardware query for no reason. Internal, not public:
         // PerformanceMonitorControl is internal, and this model is public.
-        internal KillerShell.Tools.PerformanceMonitorControl? Perf;
+        internal KillerShell.Tools.PerformanceMonitorControl? Perf
+        {
+            get => _perf;
+            set { _perf = value; Notify(nameof(IsPerformanceMonitor)); }
+        }
+        private KillerShell.Tools.PerformanceMonitorControl? _perf;
 
         /// <summary>True when this tab is the Performance Monitor rather than a folder, search,
         /// shell, document, Task Manager or Event Viewer.</summary>
@@ -109,7 +126,12 @@ namespace KillerShell.Models
         // the loaded tree (which keys are expanded, which values are cached for the selected
         // key) and rebuilding it on every tab switch would throw the whole browse position away.
         // Internal, not public: RegistryEditorControl is internal, and this model is public.
-        internal KillerShell.Tools.RegistryEditorControl? Registry;
+        internal KillerShell.Tools.RegistryEditorControl? Registry
+        {
+            get => _registry;
+            set { _registry = value; Notify(nameof(IsRegistryEditor)); }
+        }
+        private KillerShell.Tools.RegistryEditorControl? _registry;
 
         /// <summary>True when this tab is the Registry Editor rather than a folder, search,
         /// shell, document, Task Manager, Event Viewer or Performance Monitor. Admin-only -
@@ -121,7 +143,12 @@ namespace KillerShell.Models
         // the whole scanned tree - a full drive walk - and rebuilding it on a tab switch
         // would throw the entire scan away. Internal, not public: StorageAnalyzerControl is
         // internal, and this model is public.
-        internal KillerShell.Tools.StorageAnalyzerControl? Storage;
+        internal KillerShell.Tools.StorageAnalyzerControl? Storage
+        {
+            get => _storage;
+            set { _storage = value; Notify(nameof(IsStorageAnalyzer)); }
+        }
+        private KillerShell.Tools.StorageAnalyzerControl? _storage;
 
         /// <summary>True when this tab is the Storage Analyzer rather than any other kind.</summary>
         public bool IsStorageAnalyzer => Storage != null;
