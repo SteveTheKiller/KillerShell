@@ -33,20 +33,23 @@ public static class ClassicCheckboxScenario
             ThemeManager.Apply(Theme.SE98);
             var checkbox = new CheckBox { Content = "", UseLayoutRounding = true, SnapsToDevicePixels = true };
             if (styleName != null) checkbox.Style = (Style)app.FindResource(styleName);
+            // The theme row's hover backdrop reaches 8 px left of the checkbox (Margin -8), which puts the box itself
+            // a few pixels left of the checkbox's own origin, so it is rendered inside a padded host to stay on the bitmap.
+            var host = new Border { Padding = new Thickness(10), Child = checkbox, UseLayoutRounding = true, SnapsToDevicePixels = true };
             foreach (var theme in new[] { Theme.SE98, Theme.Dark, Theme.SE98 })
             {
                 ThemeManager.Apply(theme);
                 foreach (bool selected in new[] { false, true })
                 {
                     checkbox.IsChecked = selected;
-                    checkbox.Measure(new Size(100, 100));
-                    checkbox.Arrange(new Rect(0, 0, checkbox.DesiredSize.Width, checkbox.DesiredSize.Height));
-                    checkbox.UpdateLayout();
+                    host.Measure(new Size(100, 100));
+                    host.Arrange(new Rect(0, 0, host.DesiredSize.Width, host.DesiredSize.Height));
+                    host.UpdateLayout();
                     var bitmap = new RenderTargetBitmap(100, 100, 96, 96, PixelFormats.Pbgra32);
-                    bitmap.Render(checkbox);
+                    bitmap.Render(host);
                     if (theme != Theme.SE98) continue;
                     var indicator = (FrameworkElement)checkbox.Template.FindName(styleName == null ? "box" : "ring", checkbox);
-                    Point origin = indicator.TranslatePoint(new Point(), checkbox);
+                    Point origin = indicator.TranslatePoint(new Point(), host);
                     int left = (int)Math.Round(origin.X);
                     int top = (int)Math.Round(origin.Y);
                     int width = (int)Math.Round(indicator.ActualWidth);

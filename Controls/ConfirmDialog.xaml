@@ -8,7 +8,7 @@
         xmlns:theme="clr-namespace:KillerFamily.Theming"
         xmlns:local="clr-namespace:KillerShell.Controls"
         Title="KillerShell"
-        Width="390" SizeToContent="Height"
+        SizeToContent="WidthAndHeight" MinWidth="300"
         WindowStartupLocation="CenterOwner"
         WindowStyle="None"
         AllowsTransparency="True"
@@ -118,8 +118,13 @@
                     <Border x:Name="NoticeRing" Width="28" Height="28" CornerRadius="14" BorderThickness="2" HorizontalAlignment="Left" VerticalAlignment="Top">
                         <TextBlock x:Name="NoticeGlyph" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="17" FontWeight="SemiBold"/>
                     </Border>
-                    <StackPanel Grid.Column="1">
-                    <TextBlock x:Name="HeadingText" Foreground="{DynamicResource TextBrush}"
+                    <!-- The dialog sizes to its content: a short prompt like Quit stays narrow, and
+                         MaxWidth caps the body so a long detail wraps at the old 390 px dialog width
+                         instead of stretching the window. -->
+                    <StackPanel Grid.Column="1" MaxWidth="284">
+                    <!-- Lifted 4 px with the 4 given back below, so the heading rides higher
+                         beside the ring and the first checkbox gets room under it. -->
+                    <TextBlock x:Name="HeadingText" Foreground="{DynamicResource TextBrush}" Margin="0,-4,0,4"
                                FontFamily="{DynamicResource HeadingFont}" FontSize="18"
                                                TextOptions.TextFormattingMode="Ideal" TextWrapping="Wrap"/>
                     <TextBlock x:Name="DetailText" Foreground="{DynamicResource MutedTextBrush}"
