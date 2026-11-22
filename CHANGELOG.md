@@ -6,37 +6,23 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ## [1.6.2] - Unreleased
 
-1.6.2 fixes the 98SE title bar and tabs and the Trash Polka tool pages, and gives This PC drive tiles with usage bars.
+1.6.2 makes clicks respond right away again, gives This PC drive tiles with usage bars, and fixes the Trash Polka tool pages and the 98SE look.
 
 ### Fixed
 
 - Clicks respond right away again. The window draws on the graphics card and falls back to the CPU only under Remote Desktop or a screen-sharing agent.
-- On 98SE the minimize and maximize buttons show Windows 98's own drawn glyphs again, matching KillerScan.
-- On 98SE the tab titles sit centered in their tabs instead of low.
-- On Trash Polka the Performance page shows the file browser's lighter surface around its darker tiles. It could come up as dark as the tiles.
-- On Trash Polka the Storage map uses the file browser's lighter surface, with the darker one around it.
-- On Trash Polka a hovered file row keeps its film grain.
-- The status bar has a divider between the view buttons and the version, as in the other apps.
-- With the tabs below, a list that scrolls has its bottom shadow back. It runs on into the current tab as one shade, so the join stays seamless.
-- The Performance page's cards scroll right to the page's foot instead of stopping 4 px above it.
-- The Performance page wraps on a narrow pane. The top tiles take more rows and the cards stack in one column, so nothing runs off the edge.
-- On a narrow page the GPU card puts its memory graph under utilization, so the memory legend no longer cuts off.
-- On Trash Polka an open dropdown list carries the theme's artwork instead of a flat fill.
-- The calendar's month arrows have tooltips.
-- On 98SE the theme and language flyouts use Windows 98 menu rows, 18 px each with no gaps.
-- On 98SE the confirm and quit dialogs pack their text, checkboxes and 23 px buttons the way a Windows 98 message box does.
-- On 98SE the folder picker and the details, file operation and registry dialogs have the 20 px caption band inside the frame, with the close button placed as in the other dialogs.
-- On 98SE the window frame is 4 px and the icon rail 20 px, so the rail no longer reads wider than on the other themes.
-- A This PC tab restored from the last session lists the drives instead of opening empty.
-- A This PC tab shows the computer icon in the tab strip.
-- The bookmarks drawer in the sidebar has no divider line above it, so it runs straight on from the folder tree.
-- Confirm and quit dialogs size to what they say, so a short prompt like Quit is narrower. The heading sits a few pixels higher, with more room above the checkboxes. On 98SE the wrapped text stops short of the right edge.
-- Under Trash Polka the file picker's places, file list and preview panes carry the ink instead of flat slabs.
-- Making a new folder in the file picker no longer freezes the window on a share that stopped answering. A refused name is read out to a screen reader as well as shown.
+- Making a new folder in the file picker no longer freezes the window on a share that stopped answering.
+- A This PC tab restored from the last session lists the drives instead of opening empty, and shows the computer icon in the tab strip.
+- The Performance page wraps on a narrow pane and its cards scroll to the page's foot, so nothing runs off the edge or gets cut off.
+- Under Trash Polka the Performance page, the Storage map, the file picker, drop-down lists and flyouts show the theme's surfaces and ink instead of flat or too-dark fills.
+- On 98SE the title bar buttons, tabs, menus, dialogs, window frame and icon rail match Windows 98.
+- Confirm and quit dialogs size to what they say, so a short prompt like Quit is narrower.
+- With the tabs below, a list that scrolls has its bottom shadow back.
 
 ### Changed
 
 - The tray icon's card shows the KillerShell logo over one row of tiles, Open and then Exit, like the other cards.
+- Under Trash Polka outline buttons have a solid dark face with white text.
 
 ### Added
 

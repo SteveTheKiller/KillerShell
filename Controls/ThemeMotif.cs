@@ -98,6 +98,24 @@ namespace KillerShell.Controls
         public static bool GetCell(DependencyObject element) => (bool)element.GetValue(CellProperty);
         public static void SetCell(DependencyObject element, bool value) => element.SetValue(CellProperty, value);
 
+        /// <summary>
+        /// The page a document is written on (the note): the element keeps its part's place and piece, but shows it at
+        /// TrashPolkaInk.PageOpacity. Takes precedence over the part's own opacity, Screen and Cell.
+        /// </summary>
+        public static readonly DependencyProperty PageProperty = DependencyProperty.RegisterAttached(
+            "Page", typeof(bool), typeof(ThemeMotif), new PropertyMetadata(false, OnBaseBrushChanged));
+
+        public static bool GetPage(DependencyObject element) => (bool)element.GetValue(PageProperty);
+        public static void SetPage(DependencyObject element, bool value) => element.SetValue(PageProperty, value);
+
+        /// <summary>The rendered view of a document, like Page but at TrashPolkaInk.PreviewOpacity, so the user can set
+        /// the two apart.</summary>
+        public static readonly DependencyProperty PreviewProperty = DependencyProperty.RegisterAttached(
+            "Preview", typeof(bool), typeof(ThemeMotif), new PropertyMetadata(false, OnBaseBrushChanged));
+
+        public static bool GetPreview(DependencyObject element) => (bool)element.GetValue(PreviewProperty);
+        public static void SetPreview(DependencyObject element, bool value) => element.SetValue(PreviewProperty, value);
+
         private static readonly Dictionary<MotifPart, (Color Accent, Size Size, Drawing Piece)> Pieces = [];
 
         // The bitmap pieces, one per set of layers, tinted for the current accent only. A new accent is composed on a
@@ -682,20 +700,25 @@ namespace KillerShell.Controls
             Size window;
             Transform? unflip = null;
             // Popups float free of the window, so they draw from their own corner; everything else is pinned to it.
-            if (part is MotifPart.Popup)
+            // A pane surface inside a popup (a gray swatch in a flyout) has the window as its owner but is not under the
+            // window's root, so it has no place there and draws from its own corner too; pinning it threw.
+            var host = Window.GetWindow(element);
+            if (part is MotifPart.Popup || host is { Content: FrameworkElement outside } && !outside.IsAncestorOf(element))
             {
                 pane = new Rect(0, 0, element.ActualWidth, element.ActualHeight);
                 window = pane.Size;
             }
             else
             {
-                if (Window.GetWindow(element) is not { Content: FrameworkElement root } host) return;
+                if (host is not { Content: FrameworkElement root }) return;
                 (pane, unflip) = MotifPlacement.PlaceInWindow(element, root);
                 window = new Size(root.ActualWidth, root.ActualHeight);
             }
 
             double opacity = part switch
             {
+                _ when GetPreview(element) => TrashPolkaInk.PreviewOpacity,
+                _ when GetPage(element) => TrashPolkaInk.PageOpacity,
                 MotifPart.Chrome => TrashPolkaInk.BackgroundOpacity,
                 MotifPart.Popup => TrashPolkaInk.PopupOpacity,
                 _ when GetCell(element) => TrashPolkaInk.CellOpacity,
