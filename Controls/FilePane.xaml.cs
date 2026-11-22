@@ -183,7 +183,7 @@ namespace KillerShell
         public bool HasBottomTabPeek => (bool)GetValue(HasBottomTabPeekProperty);
 
         // The list's own bottom cue steps aside while the tabs sit below it: a shade at the list's foot stops dead
-        // at the tab and reads as a dark band across the join, which must be seamless (Steve 2026-11-21). The
+        // at the tab and reads as a dark band across the join, which must be seamless. The
         // peek into the tab says "more below" instead. Set on the scroller, not the pane, so the details panel
         // keeps its cue.
         private ScrollViewer? _cueHiddenOn;

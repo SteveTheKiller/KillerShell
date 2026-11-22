@@ -316,7 +316,7 @@
                                              the active tab is part of the folder it shows, so the row of
                                              icons cut off at the list's foot carries on across the tab's
                                              face and fades out about halfway down it. No shadow darkens the
-                                             join: the list and its tab read as one surface (Steve 2026-11-21).
+                                             join: the list and its tab read as one surface.
                                              The brush is a live
                                              view of the list panel just below its viewport, set from the real
                                              positions in FilePane.xaml.cs UpdateBottomTabPeek so the icons

@@ -154,7 +154,7 @@ public static class TabScrollShadowScenario
         ShellWindowFixture.PumpUntil(() => scroller.VerticalOffset > 60);
 
         // No shade sits over the join: the list's own bottom cue is switched off while the tabs
-        // are below it (Steve 2026-11-21: "it needs to be seamless").
+        // are below it.
         Assert.Same(Brushes.Transparent, scroller.Resources["ScrollBottomCueBrush"]);
 
         var tabFace = MenuBarTabBlendScenario.TabBorder(pane, pane.Active);

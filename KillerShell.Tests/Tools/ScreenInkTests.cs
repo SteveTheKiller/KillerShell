@@ -15,7 +15,7 @@ namespace KillerShell.Tests.Terminal;
 /// <summary>
 /// The working screens show the Trash Polka ink at the screen strength, fainter than a pane: the terminal, the text
 /// editor, the monitor tiles, and the admin tool tabs (Processes and Services, Events, Registry, Storage), whose roots
-/// are inked under their translucent rows (Steve 2026-11-21).
+/// are inked under their translucent rows.
 /// </summary>
 public sealed class ScreenInkTests
 {

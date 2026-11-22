@@ -36,7 +36,7 @@ namespace KillerShell.Controls
         internal static double PopupOpacity { get; set; } = 0.18;
 
         /// <summary>Working screens (ThemeMotif.Screen: terminals, the editor, monitor tiles, tool tables): well under a
-        /// pane, since every line on them gets read (Steve, 2026-11-21: "lower the opacity on the screens").</summary>
+        /// pane, since every line on them gets read.</summary>
         internal static double ScreenOpacity { get; set; } = 0.2;
 
         // Every accent-colored mark draws with one of these shared brushes, keyed by its alpha (in 5% steps) and whether

@@ -80,7 +80,7 @@ namespace KillerShell.Controls
 
         /// <summary>
         /// A working screen (a terminal, the text editor, a monitor tile, a tool's table): the element shows its stretch of
-        /// the sleeve at ScreenOpacity, fainter than a pane, because it is read line by line (Steve 2026-11-21).
+        /// the sleeve at ScreenOpacity, fainter than a pane, because it is read line by line.
         /// </summary>
         public static readonly DependencyProperty ScreenProperty = DependencyProperty.RegisterAttached(
             "Screen", typeof(bool), typeof(ThemeMotif), new PropertyMetadata(false, OnBaseBrushChanged));
