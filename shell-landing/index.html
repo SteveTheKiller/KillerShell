@@ -282,26 +282,29 @@ html[data-theme="light"] .blurb h3, html[data-theme="light"] .feature-card h3 { 
 <div class="egg-toast" id="eggToast"></div>
 
 <script src="ks-i18n.js?v=20"></script>
-<script src="ks.js?v=18"></script>
+<script src="ks.js?v=19"></script>
 <script src="feature-carousel.js?v=4"></script>
 <script>
 (function () {
   // Screenshot strip: tries screenshots/01.png .. NN.png, drops any that 404, and shows a
   // placeholder until at least one loads. Drop real screenshots into screenshots/ to populate it.
   var descriptions = [
-    "KillerShell stacked panes: a PowerShell script in the editor above Pictures thumbnails, with the selected photo in the details panel.",
-    "KillerShell stacked panes: invoice search results with the file card open, above Pictures with a photo previewed in the details panel on the right.",
-    "KillerShell Cyanotic theme at 125% app size: searching within earlier results in the details view, above a PowerShell script open in the editor, with the folder tree on the right.",
-    "KillerShell side-by-side panes: Processes on the left and Registry Editor on the right, with fabricated demo data.",
-    "KillerShell Event Viewer listing application events, with the folder tree on the right.",
-    "KillerShell stacked panes in the icon view: screen recordings above the Demo profile folder.",
-    "KillerShell Storage Analyzer treemap of C:\\Windows, colored by file type.",
-    "KillerShell Light theme showing Pictures thumbnails in the icon view.",
+    "KillerShell Trash Polka theme with stacked panes: a PowerShell script in the editor above Documents in the details view, with the selected file in the details panel.",
+    "KillerShell Cyanotic theme with side-by-side panes: a PowerShell terminal on the left and Processes on the right.",
+    "KillerShell Light theme with the teal accent: a PowerShell script open in the text editor.",
+    "KillerShell Delirium theme with side-by-side panes: Registry Editor on the left and Processes on the right, with fabricated demo data.",
+    "KillerShell Greed theme with side-by-side panes and the folder tree: Registry Editor on the left and Processes on the right.",
+    "KillerShell Trash Polka theme with the orange accent: Event Viewer stacked above Processes, with the folder tree on the right.",
+    "KillerShell Ectoplasm theme with the tabs along the bottom: a network triage PowerShell session stacked above Processes.",
+    "KillerShell Black theme with the blue accent: the Storage Analyzer treemap of C:\\Program Files, colored by file type.",
+    "KillerShell Dark theme with the magenta accent: a PowerShell script in the editor stacked above the Performance Monitor graphs.",
     "KillerShell 98SE theme showing invoice search results in the details view, with the tabs along the bottom.",
-    "KillerShell stacked panes with the tabs along the bottom: Documents in the details view above Pictures in the icon view, with wallpaper.jpg in the details panel.",
-    "KillerShell About dialog with the version, publisher, signing thumbprint and EXE SHA-256 above the startup and shell settings, over the Demo profile folder.",
-    "KillerShell running as administrator: the Blood theme with the Escalated Privileges tag and accent ring at 90% app size, Processes beside the Demo profile folder.",
-    "KillerShell stacked panes: a Screenshots folder in the icon view above the Performance Monitor with CPU, RAM, disk, network and GPU graphs."
+    "KillerShell Blood theme at 125% app size with the tabs along the bottom: a PowerShell script in the editor beside the terminal in its repo.",
+    "KillerShell Sepulchre theme showing invoice search results with the file card open on invoice_2026-01.pdf.",
+    "KillerShell Trash Polka theme with the purple accent: Event Viewer stacked above Registry Editor.",
+    "KillerShell Decay theme: the About dialog with the version, publisher, signing thumbprint and EXE SHA-256, over the Demo profile folder.",
+    "KillerShell Mourning theme with stacked panes: invoice search results above the Documents folder in the details view.",
+    "KillerShell Malaise theme: a PowerShell terminal running a network triage session."
   ];
   var MAX = descriptions.length;
   var sbThumbs = document.getElementById('sbThumbs');
@@ -359,7 +362,7 @@ html[data-theme="light"] .blurb h3, html[data-theme="light"] .feature-card h3 { 
 
   for (var i = 1; i <= MAX; i++) {
     (function (n) {
-      var src = 'screenshots/' + (n < 10 ? '0' + n : '' + n) + '.png?v=1.6.0-4';
+      var src = 'screenshots/' + (n < 10 ? '0' + n : '' + n) + '.png?v=1.6.0-5';
       var img = new Image();
       img.onload = function () {
         if (empty) { empty.remove(); empty = null; }
