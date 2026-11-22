@@ -20,12 +20,22 @@ public sealed class ActiveTabMotifTests
     [InlineData("LocationRow")]
     [InlineData("TerminalBarRow")]
     [InlineData("EditorBarRow")]
-    [InlineData("tabInk")]
     public void TabAndBarsShareTheWindowPinnedPaneInk(string name)
     {
         var el = Named(name);
         Assert.Equal("Window", (string?)el.Attribute(Kc + "ThemeMotif.Part"));
         Assert.Equal("MenuBackgroundBrush", (string?)el.Attribute(Kc + "ThemeMotif.BaseBrush"));
+    }
+
+    // The active tab joins a bar from a top row but the page itself from a bottom row, so its ink takes the surface
+    // PaneBars picks for the join instead of one fixed brush.
+    [Fact]
+    public void TabInkPaintsTheSurfaceItJoins()
+    {
+        var ink = Named("tabInk");
+        Assert.Equal("Window", (string?)ink.Attribute(Kc + "ThemeMotif.Part"));
+        Assert.StartsWith("{Binding ActiveTabInkBrush", (string?)ink.Attribute(Kc + "ThemeMotif.BaseBrush"));
+        Assert.StartsWith("{Binding ActiveTabInkScreen", (string?)ink.Attribute(Kc + "ThemeMotif.Screen"));
     }
 
     [Fact]

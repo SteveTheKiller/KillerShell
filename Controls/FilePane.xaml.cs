@@ -617,6 +617,29 @@ namespace KillerShell
             set => SetValue(MenuBarShownBrushProperty, value);
         }
 
+        /// <summary>
+        /// Trash Polka: the surface the active tab's ink is laid on, the same one the bar or page it joins is inked on
+        /// (MainWindow.RefreshActiveTabSurface), so the tab and its neighbour read as one picture.
+        /// </summary>
+        public static readonly DependencyProperty ActiveTabInkBrushProperty = DependencyProperty.Register(
+            nameof(ActiveTabInkBrush), typeof(string), typeof(FilePane), new PropertyMetadata("MenuBackgroundBrush"));
+
+        public string ActiveTabInkBrush
+        {
+            get => (string)GetValue(ActiveTabInkBrushProperty);
+            set => SetValue(ActiveTabInkBrushProperty, value);
+        }
+
+        /// <summary>Whether that neighbour is a screen (terminal, editor, admin tool) and takes the fainter ink.</summary>
+        public static readonly DependencyProperty ActiveTabInkScreenProperty = DependencyProperty.Register(
+            nameof(ActiveTabInkScreen), typeof(bool), typeof(FilePane), new PropertyMetadata(false));
+
+        public bool ActiveTabInkScreen
+        {
+            get => (bool)GetValue(ActiveTabInkScreenProperty);
+            set => SetValue(ActiveTabInkScreenProperty, value);
+        }
+
         public static readonly DependencyProperty MenuBarContentBrushProperty = DependencyProperty.Register(
             nameof(MenuBarContentBrush), typeof(Brush), typeof(FilePane), new PropertyMetadata(null));
 

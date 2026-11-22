@@ -157,6 +157,10 @@ namespace KillerShell.Terminal
                 ?.ShowTerminalTextSize(_fontSize);
         }
 
+        /// <summary>True when the screen leaves its fill off and shows the pane ink behind it (Trash Polka, default
+        /// skin). The LCD skin keeps its own phosphor black on every theme.</summary>
+        internal bool ShowsScreenInk => _palette.Skin == TerminalSkin.Default && Controls.MotifSurface.ShowsInk(this);
+
         public void SetSkin(TerminalSkin skin)
         {
             _palette = TerminalPalette.For(skin);
@@ -646,7 +650,7 @@ namespace KillerShell.Terminal
             var rect = new Rect(0, 0, ActualWidth, ActualHeight);
             // Trash Polka: the default screen leaves its fill off so the pane ink behind it (FilePane.xaml TerminalInk)
             // shows in every blank cell. The LCD skin keeps its own phosphor black.
-            if (!(_palette.Skin == TerminalSkin.Default && Controls.MotifSurface.ShowsInk(this)))
+            if (!ShowsScreenInk)
             {
                 var bg = new SolidColorBrush(_palette.Background);
                 bg.Freeze();

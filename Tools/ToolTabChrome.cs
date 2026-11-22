@@ -22,6 +22,11 @@ namespace KillerShell.Tools
             var host = new Grid();
             var face = new Border();
             face.SetResourceReference(Border.BackgroundProperty, "PaneBrush");
+            // Trash Polka paints the face as the folder LocationRow's: the menu tier with its window-pinned stretch of
+            // the ink, so the bar is never the one flat gray strip on an inked tab. Every other theme keeps PaneBrush.
+            Controls.ThemeMotif.SetBaseBrush(face, "PaneBrush");
+            Controls.ThemeMotif.SetMotifBrush(face, "MenuBackgroundBrush");
+            Controls.ThemeMotif.SetPart(face, Controls.MotifPart.Window);
             host.Children.Add(face);
             // Grain over the opaque face, under the bar's controls - the same layering the
             // folder LocationRow uses (FilePane.xaml): an opaque face covers whatever grain is
@@ -74,7 +79,9 @@ namespace KillerShell.Tools
         /// <summary>One square header band across the full table well, including its filler.</summary>
         internal static Grid WrapTable(DataGrid table, string faceKey)
         {
-            table.Margin = new Thickness(0);
+            // Trash Polka stops the table short of the well's foot (ToolTableInset), so the rows, their dividers and
+            // their stripes never sit on the edge where a bottom tab row joins the page; the inked page meets it.
+            table.SetResourceReference(FrameworkElement.MarginProperty, "ToolTableInset");
             var headerStyle = new Style(typeof(DataGridColumnHeader), table.ColumnHeaderStyle);
             headerStyle.Setters.Add(new EventSetter(FrameworkElement.LoadedEvent,
                 new RoutedEventHandler(TableHeader_Loaded)));

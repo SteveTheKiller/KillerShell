@@ -299,7 +299,9 @@
                                              it draws nothing and the tab face shows as before. -->
                                         <Border x:Name="tabInk" IsHitTestVisible="False" Visibility="Collapsed"
                                                 Margin="{DynamicResource TabGrainMargin}"
-                                                kc:ThemeMotif.Part="Window" kc:ThemeMotif.BaseBrush="MenuBackgroundBrush"/>
+                                                kc:ThemeMotif.Part="Window"
+                                                kc:ThemeMotif.BaseBrush="{Binding ActiveTabInkBrush, RelativeSource={RelativeSource AncestorType=local:FilePane}}"
+                                                kc:ThemeMotif.Screen="{Binding ActiveTabInkScreen, RelativeSource={RelativeSource AncestorType=local:FilePane}}"/>
                                         <!-- Grain follows the tab's radius, or the texture squares
                                              off the corner the border just rounded. -->
                                         <!-- Opacity 0 by default: an INACTIVE tab is transparent, so
@@ -495,30 +497,9 @@
                                         </MultiDataTrigger.Conditions>
                                         <Setter TargetName="tabListPeek" Property="Visibility" Value="Visible"/>
                                     </MultiDataTrigger>
-                                    <!-- A Performance tab has no bar under it: the tab meets the page itself, which is
-                                         inked on the lighter list surface (PerformanceHost), so the tab paints that
-                                         same pinned picture and the two read as one surface. -->
-                                    <DataTrigger Binding="{Binding IsPerformanceMonitor}" Value="True">
-                                        <Setter TargetName="tabInk" Property="kc:ThemeMotif.BaseBrush" Value="ListPaneBrush"/>
-                                    </DataTrigger>
-                                    <!-- The admin tools meet their tab the same way, and their roots are inked on the
-                                         pane surface at screen strength (ToolTabChrome.Ink), so their tab matches that. -->
-                                    <DataTrigger Binding="{Binding IsProcessList}" Value="True">
-                                        <Setter TargetName="tabInk" Property="kc:ThemeMotif.BaseBrush" Value="PaneBrush"/>
-                                        <Setter TargetName="tabInk" Property="kc:ThemeMotif.Screen" Value="True"/>
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding IsEventViewer}" Value="True">
-                                        <Setter TargetName="tabInk" Property="kc:ThemeMotif.BaseBrush" Value="PaneBrush"/>
-                                        <Setter TargetName="tabInk" Property="kc:ThemeMotif.Screen" Value="True"/>
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding IsRegistryEditor}" Value="True">
-                                        <Setter TargetName="tabInk" Property="kc:ThemeMotif.BaseBrush" Value="PaneBrush"/>
-                                        <Setter TargetName="tabInk" Property="kc:ThemeMotif.Screen" Value="True"/>
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding IsStorageAnalyzer}" Value="True">
-                                        <Setter TargetName="tabInk" Property="kc:ThemeMotif.BaseBrush" Value="PaneBrush"/>
-                                        <Setter TargetName="tabInk" Property="kc:ThemeMotif.Screen" Value="True"/>
-                                    </DataTrigger>
+                                    <!-- tabInk paints the surface its tab joins (FilePane.ActiveTabInkBrush), which
+                                         depends on the page kind and on whether the row sits above or below it, so
+                                         PaneBars.RefreshActiveTabSurface sets it rather than a trigger here. -->
                                     <DataTrigger Binding="{Binding IsActive}" Value="True">
                                         <!-- 3px, matched by the pane's corners at each end of the band (Tabs.cs TabRadius). -->
                                         <Setter TargetName="tabBd" Property="CornerRadius" Value="3,3,0,0"/>
@@ -724,6 +705,9 @@
                                             <Condition Binding="{Binding IsActive}" Value="True"/>
                                             <Condition Binding="{Binding IsEditor}" Value="True"/>
                                             <Condition Binding="{Binding UsesContentBackground, ElementName=tabBd}" Value="True"/>
+                                            <!-- Only while the face shows: the editor's own background already carries
+                                                 grain. On Trash Polka tabInk covers the face, so the tab keeps its own. -->
+                                            <Condition Binding="{Binding Background, ElementName=tabInk}" Value="{x:Null}"/>
                                         </MultiDataTrigger.Conditions>
                                         <Setter TargetName="tabGrain" Property="Opacity" Value="0"/>
                                     </MultiDataTrigger>

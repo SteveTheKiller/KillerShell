@@ -802,6 +802,7 @@ namespace KillerShell.Services
             SetIfAbsent("PaneBevelLight2Brush", Transparent);
             SetIfAbsent("PaneBevelLightBrush", Transparent);
             SetIfAbsent("PaneBevelLightThickness", new Thickness(0));
+            SetIfAbsent("ToolTableInset", new Thickness(0));
             Mirror("PaneEdgeBrush", "PaneBorderBrush");
             SetIfAbsent("PaneShadowOpacity", 0.6);
             // TRANSPARENT: a theme radio row has no fill of its own on any ordinary theme.

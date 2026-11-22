@@ -100,8 +100,31 @@ namespace KillerShell.Shell
             else
                 pane.ClearValue(FilePane.MenuBarContentForegroundProperty);
 
+            // The active tab's ink paints the surface it joins. A top row meets the page's bar (the location,
+            // shell or document row); a bottom row, or a listing whose location row is put away, meets the page.
+            var (inkBrush, inkScreen) = TabJoinSurface(t, bottom || (WearsLocationRow(t) && pane.MenuBarHidden));
+            pane.ActiveTabInkBrush = inkBrush;
+            pane.ActiveTabInkScreen = inkScreen;
+
             void Bind(DependencyProperty property, object source, string path)
                 => pane.SetBinding(property, new Binding(path) { Source = source });
+        }
+
+        // The brush key and strength each page is inked with: the listing and Performance on the list surface, the
+        // shell and editor on their own screens, the admin tools on the pane surface at screen strength
+        // (ToolTabChrome.Ink). A tab that meets a bar instead takes the bar's menu surface, the tool tabs' filter bar
+        // (ToolTabChrome.WrapBar) included; Storage keeps its bar on the page, so it always meets the page.
+        private static (string Brush, bool Screen) TabJoinSurface(SearchTab t, bool meetsPage)
+        {
+            if (t.IsPerformanceMonitor) return ("ListPaneBrush", false);
+            if (t.IsStorageAnalyzer) return ("PaneBrush", true);
+            if ((t.IsProcessList || t.IsEventViewer || t.IsRegistryEditor) && meetsPage) return ("PaneBrush", true);
+            if (!meetsPage) return ("MenuBackgroundBrush", false);
+            // A screen that keeps its own fill (the LCD skin) shows no ink, so neither does its tab: an unknown key
+            // leaves tabInk unpainted and the face shows the screen's own color (MenuBarShownBrush).
+            if (t.Term != null) return (t.Term.ShowsScreenInk ? "TerminalBackgroundBrush" : "", t.Term.ShowsScreenInk);
+            if (t.Editor != null) return ("EditorBackgroundBrush", true);
+            return ("ListPaneBrush", false);
         }
 
         /// <summary>
