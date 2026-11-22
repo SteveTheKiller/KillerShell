@@ -112,13 +112,40 @@ namespace KillerShell.Tools
         /// label fits from a 600px page up. Hardware names shorten with an ellipsis, as they are
         /// built to. The GPU card moves its memory graph under utilization when a legend item
         /// would not fit beside it (PerformanceMonitorLayout.cs BuildGpuPanel).</summary>
-        internal const double MinPageWidth = 600;
+        internal const double MinPageWidth = 0;
+
+        /// <summary>Every card fits two across, and all five summary tiles fit in one row, from a
+        /// 600px page up (measured with the widest readings). Narrower than that the panels go to
+        /// one column and the strip wraps, so the page always fits its pane.</summary>
+        internal const double TwoColumnWidth = 600;
+
+        private bool _narrow;
+        private int _stripColumns;
+
+        /// <summary>Re-flows the strip and the panels for the page's width. Display only: the
+        /// user's saved arrangement is untouched and comes back when the page widens.</summary>
+        private void FitToWidth(double width)
+        {
+            if (width <= 0) return;
+            bool narrow = width < TwoColumnWidth;
+            int columns = narrow ? System.Math.Max(1, (int)(width / (TwoColumnWidth / 5))) : 0;
+            if (columns != _stripColumns)
+            {
+                _stripColumns = columns;
+                _summaryStrip.Rows = columns == 0 ? 1 : 0;
+                _summaryStrip.Columns = columns;
+            }
+            if (narrow == _narrow) return;
+            _narrow = narrow;
+            ArrangePanels();
+        }
 
         internal PerformanceMonitorControl(Func<CancellationToken, Task<Services.PerformanceHardwareInfo>>? discoverHardware = null)
         {
             _discoverHardware = discoverHardware ?? (token => Task.Factory.StartNew(
                 () => Services.PerformanceHardwareService.Gather(token), token,
                 TaskCreationOptions.LongRunning, TaskScheduler.Default));
+            SizeChanged += (_, e) => FitToWidth(e.NewSize.Width);
             RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });   // summary strip
             RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) }); // the panels
             RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });   // status line

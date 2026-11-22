@@ -195,7 +195,11 @@ namespace KillerShell.Tools
             _panelSlots = Slots(Services.DashboardLayout.Panels, _panelCards);
             _panelColumns = new Dictionary<string, int>(StringComparer.Ordinal);
             _emptyColumns.Clear();
-            foreach (var columns in Services.DashboardLayout.Bands(_panelSlots, IsWide, PanelColumn))
+            // A narrow page: one column, every card in the user's order, one band each.
+            var bands = _narrow
+                ? _panelSlots.Select(slot => new[] { new List<CardSlot> { slot } }).ToList()
+                : Services.DashboardLayout.Bands(_panelSlots, IsWide, PanelColumn);
+            foreach (var columns in bands)
             {
                 for (int c = 0; c < columns.Length; c++)
                     foreach (var card in columns[c].SelectMany(slot => slot.Cards)) _panelColumns[card.Id] = c;

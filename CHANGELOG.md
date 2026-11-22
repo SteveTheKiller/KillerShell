@@ -18,7 +18,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - The status bar has a divider between the view buttons and the version, as in the other apps.
 - With the tabs below, a list that scrolls has its bottom shadow back. It runs on into the current tab as one shade, so the join stays seamless.
 - The Performance page's cards scroll right to the page's foot instead of stopping 4 px above it.
-- The Performance page has a minimum width. The window edge and the split gutter stop there, so the cards never squeeze until their labels cut off.
+- The Performance page wraps on a narrow pane. The top tiles take more rows and the cards stack in one column, so nothing runs off the edge.
 - On a narrow page the GPU card puts its memory graph under utilization, so the memory legend no longer cuts off.
 - On Trash Polka an open dropdown list carries the theme's artwork instead of a flat fill.
 - The calendar's month arrows have tooltips.
