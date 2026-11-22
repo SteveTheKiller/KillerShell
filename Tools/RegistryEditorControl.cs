@@ -216,6 +216,7 @@ namespace KillerShell.Tools
             // MenuBackgroundBrush through, which read as the whole tab sitting on black. Same
             // fix in spirit as EditorControl painting PaneBrush on itself.
             SetResourceReference(BackgroundProperty, "PaneBrush");
+            ToolTabChrome.Ink(this);
 
             RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });   // address bar
             RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });   // find bar (collapsed)

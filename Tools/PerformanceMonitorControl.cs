@@ -702,8 +702,10 @@ namespace KillerShell.Tools
                 Child = cellHost,
             };
             cell.SetResourceReference(Border.BackgroundProperty, "MonitorCellBrush");
-            // Trash Polka: each tile shows its window-pinned stretch of the pane ink; other themes keep the plain cell.
+            // Trash Polka: each tile shows its window-pinned stretch of the ink, at the fainter screen strength so the
+            // readouts sit clear of it; other themes keep the plain cell.
             Controls.ThemeMotif.SetBaseBrush(cell, "MonitorCellBrush");
+            Controls.ThemeMotif.SetScreen(cell, true);
             Controls.ThemeMotif.SetPart(cell, Controls.MotifPart.Window);
             cell.SetResourceReference(Border.BorderBrushProperty, "PaneBorderBrush");
             cell.SetResourceReference(FrameworkElement.MarginProperty, "MonitorTileMargin");
@@ -1455,6 +1457,7 @@ namespace KillerShell.Tools
                 Host.SetResourceReference(Border.BackgroundProperty, "MonitorCellBrush");
                 // The well paints the same pinned picture as its tile, so the ink runs straight through it.
                 Controls.ThemeMotif.SetBaseBrush(Host, "MonitorCellBrush");
+                Controls.ThemeMotif.SetScreen(Host, true);
                 Controls.ThemeMotif.SetPart(Host, Controls.MotifPart.Window);
                 Host.SetResourceReference(Border.BorderBrushProperty, "PaneBorderBrush");
             }

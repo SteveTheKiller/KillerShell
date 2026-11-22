@@ -119,6 +119,7 @@ namespace KillerShell.Tools
             // MenuBackgroundBrush through its transparent grid and read gray instead of the
             // pane color, and an opaque root then needs its own grain or it comes up flat.
             SetResourceReference(BackgroundProperty, "PaneBrush");
+            ToolTabChrome.Ink(this);
             var grain = ToolTabChrome.Grain();
             SetRowSpan(grain, 3);
             Children.Add(grain);

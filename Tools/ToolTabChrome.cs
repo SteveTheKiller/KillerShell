@@ -35,6 +35,16 @@ namespace KillerShell.Tools
             return host;
         }
 
+        /// <summary>Trash Polka: the tool tab's PaneBrush root shows its window-pinned stretch of the ink at the
+        /// screen strength (ThemeMotif.Screen), under the tables' translucent rows. Other themes keep the plain
+        /// pane. Processes, Services, Events, Registry and Storage all take it (Steve 2026-11-21).</summary>
+        internal static void Ink(FrameworkElement root)
+        {
+            Controls.ThemeMotif.SetBaseBrush(root, "PaneBrush");
+            Controls.ThemeMotif.SetScreen(root, true);
+            Controls.ThemeMotif.SetPart(root, Controls.MotifPart.Window);
+        }
+
         /// <summary>Film grain overlay for an opaque tool-tab surface. Non-hit-testable, sized
         /// by its host; the caller sets Grid.SetRowSpan when it must cover multiple rows.</summary>
         internal static Border Grain()

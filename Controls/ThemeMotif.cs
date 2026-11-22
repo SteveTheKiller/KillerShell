@@ -78,6 +78,16 @@ namespace KillerShell.Controls
         public static string? GetMotifBrush(DependencyObject element) => (string?)element.GetValue(MotifBrushProperty);
         public static void SetMotifBrush(DependencyObject element, string? value) => element.SetValue(MotifBrushProperty, value);
 
+        /// <summary>
+        /// A working screen (a terminal, the text editor, a monitor tile, a tool's table): the element shows its stretch of
+        /// the sleeve at ScreenOpacity, fainter than a pane, because it is read line by line (Steve 2026-11-21).
+        /// </summary>
+        public static readonly DependencyProperty ScreenProperty = DependencyProperty.RegisterAttached(
+            "Screen", typeof(bool), typeof(ThemeMotif), new PropertyMetadata(false, OnBaseBrushChanged));
+
+        public static bool GetScreen(DependencyObject element) => (bool)element.GetValue(ScreenProperty);
+        public static void SetScreen(DependencyObject element, bool value) => element.SetValue(ScreenProperty, value);
+
         private static readonly Dictionary<MotifPart, (Color Accent, Size Size, Drawing Piece)> Pieces = [];
 
         // The bitmap pieces, one per set of layers, tinted for the current accent only. A new accent is composed on a
@@ -667,6 +677,7 @@ namespace KillerShell.Controls
             {
                 MotifPart.Chrome => TrashPolkaInk.BackgroundOpacity,
                 MotifPart.Popup => TrashPolkaInk.PopupOpacity,
+                _ when GetScreen(element) => TrashPolkaInk.ScreenOpacity,
                 _ => TrashPolkaInk.PaneOpacity,
             };
             var size = InkSize(element);

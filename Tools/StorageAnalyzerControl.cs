@@ -164,6 +164,7 @@ namespace KillerShell.Tools
             RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });   // storage-info footer
 
             this.SetResourceReference(BackgroundProperty, "PaneBrush");
+            ToolTabChrome.Ink(this);
             // Grain over the opaque root, all four rows - same as the other tool tabs: an
             // opaque face hides the pane's own grain layer, so it repaints its own. The map
             // and its well are opaque surfaces above this; the bar and footer rows show it.
@@ -294,6 +295,11 @@ namespace KillerShell.Tools
             };
             mapWell.SetResourceReference(Border.BorderBrushProperty, "PaneBorderBrush");
             mapWell.SetResourceReference(Border.BackgroundProperty, "MonitorCellBrush");
+            // Trash Polka: the map's empty ground shows the ink too, at screen strength; the file blocks keep their
+            // own colors on top of it.
+            Controls.ThemeMotif.SetBaseBrush(mapWell, "MonitorCellBrush");
+            Controls.ThemeMotif.SetScreen(mapWell, true);
+            Controls.ThemeMotif.SetPart(mapWell, Controls.MotifPart.Window);
 
             // The sunken tier is the MAP, not the whole tab: StorageHost deliberately carries
             // no host-level well (a well around everything wrapped the target bar too, and on

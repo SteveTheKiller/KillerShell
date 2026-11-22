@@ -96,6 +96,7 @@ namespace KillerShell.Tools
             // active tab above it - gray on a teal theme. The grid and its host are transparent
             // by design, so what shows through them is THIS brush.
             SetResourceReference(BackgroundProperty, "PaneBrush");
+            ToolTabChrome.Ink(this);
             // Grain over that opaque face, spanning all three rows - an opaque root hides the
             // pane's own grain layer, so the surface has to repaint it or the tab is flat.
             // The toolbar's WrapBar face is opaque above this and carries its own grain.
