@@ -132,8 +132,7 @@ namespace KillerShell.Tools
             if (columns != _stripColumns)
             {
                 _stripColumns = columns;
-                _summaryStrip.Rows = columns == 0 ? 1 : 0;
-                _summaryStrip.Columns = columns;
+                _summaryStrip.MaxPerRow = columns;
             }
             if (narrow == _narrow) return;
             _narrow = narrow;

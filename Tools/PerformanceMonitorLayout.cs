@@ -34,7 +34,7 @@ namespace KillerShell.Tools
 {
     internal sealed partial class PerformanceMonitorControl
     {
-        private UniformGrid _summaryStrip = null!;
+        private FillRowsPanel _summaryStrip = null!;
         private StackPanel _panels = null!;
         private ScrollViewer _panelsScroller = null!;
 
@@ -55,9 +55,9 @@ namespace KillerShell.Tools
         // ═══════════════════════════════════════════════════════════
         //  SHELLS  -  built with the control, filled once the hardware is known
         // ═══════════════════════════════════════════════════════════
-        private UniformGrid BuildSummaryStrip()
+        private FillRowsPanel BuildSummaryStrip()
         {
-            _summaryStrip = new UniformGrid { Rows = 1 };
+            _summaryStrip = new FillRowsPanel();
             // Same side inset as the panels below, so the strip's first and last tiles line up
             // with the panels' outer edges: 8 from the pane with each card's MonitorTileMargin.
             _summaryStrip.SetResourceReference(FrameworkElement.MarginProperty, "MonitorStripMargin");
