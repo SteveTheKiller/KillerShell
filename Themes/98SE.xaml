@@ -451,8 +451,9 @@
     <Thickness x:Key="ThemeFlyoutInnerMargin">11,6,3,3</Thickness>
     <Thickness x:Key="AccentStripDotMargin">0,0,0,2</Thickness>
 
-    <!-- Win98 message box: 11 px in from the frame, 75x23 buttons 6 px apart. -->
-    <Thickness x:Key="ConfirmBodyMargin">11,11,11,8</Thickness>
+    <!-- Win98 message box: 11 px in from the frame, 75x23 buttons 6 px apart. The body keeps
+         20 px on the right so wrapped text stops short of the frame instead of running to it. -->
+    <Thickness x:Key="ConfirmBodyMargin">11,11,20,8</Thickness>
     <Thickness x:Key="ConfirmCheckMargin">0,4,0,0</Thickness>
     <Thickness x:Key="ConfirmButtonsMargin">11,0,11,11</Thickness>
     <Thickness x:Key="ConfirmButtonGap">0,0,6,0</Thickness>
