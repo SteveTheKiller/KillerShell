@@ -4,45 +4,41 @@ All notable changes to KillerShell are documented here.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.6.1] - Unreleased
+## [1.6.1] - 2026-11-21
 
-1.6.1 adds the Trash Polka theme, turns the right-click cards into tiles that open quickly and show every shortcut and can be customized, tightens update signature checks, keeps the footer's copyright the same distance from the corner grip as every other Killer app, clears the status line after opening a PowerShell profile and fixes the version in the demo Event Viewer.
+1.6.1 adds the Trash Polka theme, turns the right-click menus into fast tile cards you can customize, and tightens the update checks.
 
 ### Security
 
-- Updates check the installer's signer more strictly, the install lock can only be taken by the user who installs, and an update only accepts a release tag in the expected shape.
+- Updates check the installer's signer more strictly and only accept a release tag in the expected shape.
+- Only the user who is installing can take the install lock.
 
 ### Fixed
 
-- Theme and language menu labels line up with their radio buttons and check boxes again, instead of sitting a pixel high.
-- The theme and language menus keep 8px between their rows and the card edge on every side, and the language menu's divider has the same gap on each side.
-- Right-clicking a file opens its card quickly again, even on folders with hundreds of files.
-- The Performance Monitor shows each reading's label and value on one line, so the counters no longer crowd the bottom of the card.
+- Right-clicking a file opens its card quickly again, even in folders with hundreds of files.
 - The Mourning theme highlights selections in its original peach with dark text again, instead of pink.
-- Opening a PowerShell profile clears the "Asking PowerShell where its profile is" status once the profile opens, instead of leaving it on the footer.
-- The demo Event Viewer's KillerShell startup event names the running version instead of 1.1.0.
-- With the tabs below, the sidebar's corner menus open 8 px above the tab row instead of covering it, in single and dual pane.
-- A sidebar menu taller than the file pane, such as the theme menu in a short window, keeps its foot in the corner and rises above the pane as far as it needs. It scrolls only when the window itself is too short.
+- With the tabs below, the sidebar's corner menus open above the tab row instead of covering it.
+- A sidebar menu taller than the file pane rises above it instead of scrolling. It scrolls only when the window itself is too short.
+- The Performance Monitor shows each reading's label and value on one line, so the counters no longer crowd the card.
+- Opening a PowerShell profile clears the "Asking PowerShell where its profile is" status from the footer.
+- On 98SE, dialog and card close buttons are sized to the dialog's title band.
+- Theme and language menu labels line up with their radio buttons and check boxes again, with even 8 px edges.
+- The demo Event Viewer's startup event names the running version instead of 1.1.0.
 
 ### Changed
 
-- The file and folder right-click card shows its commands as tiles, each with its keyboard shortcut. Delete sits in the card's header, the copy variants are under Copy as, and the archive verbs are under one tile.
-- The tab, terminal, document, folder tree and saved place cards show their commands as tiles too, as do the Process List, Services, Event Viewer, Registry Editor, Storage Analyzer and Performance Monitor cards. A command that does not apply stays in its place, dimmed, and a card for one thing keeps its Delete in the header. The System Tools rail button opens a tile card of the five tools, and right-clicking it opens a card of the elevated launches.
-- The terminal and document cards are customizable like the file card: the pencil moves tiles between the card and its Hidden drawer, and the drawer closes with the same X as the app's small windows. The terminal card's Clear tile is captioned Clear, with Clear scrollback in its tooltip.
-- The tab, folder tree, saved place and empty folder space cards are customizable too. Rarely used tiles, such as the admin terminal and Analyze storage, start in the Hidden drawer.
-- While editing a card, Alt+arrow keys move the focused tile one slot or one row, and a screen reader hears its new place.
-- The Copy chips on the file card and the Export menu rows show the theme's grain over their hover fill.
-- Trash Polka check boxes and radio wells are solid black.
-- The sidebar side and details pane layout choices are small tile cards with the choice in use lit, and right-clicking a menu bar shows Hide menu bar as a tile with Alt+M under it.
-- Shared Killer app controls, themes and dialogs are updated to the current family versions.
-- The copyright at the right end of the footer ends 8 px before the corner grip, the same gap in every Killer app.
-- With the tabs below, the list and the current tab meet without a shadow, so the join is seamless. The row of icons cut off at the list's foot still carries on into the tab and fades there.
+- Right-click menus are tile cards that show each command's keyboard shortcut. A command that doesn't apply stays in its place, dimmed.
+- The System Tools rail button opens a tile card of the five tools, and right-clicking it opens the elevated launches.
+- The sidebar side, details pane and menu bar choices are small tile cards with the current choice lit.
+- With the tabs below, the list and the current tab join without a shadow.
+- The footer copyright ends 8 px before the corner grip, the same gap as every Killer app.
+- The Copy chips and Export menu rows show the theme's grain on hover.
 
 ### Added
 
-- The file card can be customized: the pencil in its corner moves tiles between the card and a Hidden drawer, and Reset brings back the default.
-- The file picker has a New folder button that checks the name before it creates the folder.
-- Trash Polka, a new theme under 98SE: black with a tattoo-style ink background in your accent color, from eight accents with Blood red as the default. Under a Windows high contrast theme the ink steps aside for the system colors. The active tab carries on the ink of the bar or page it joins with no seam, with the tab row above or below the page, in one pane or two. The Performance Monitor's page uses the lighter file list surface, and its tiles and graphs keep the darker one with fainter ink. The terminal screen and the text editor show the ink behind their text, and the LCD terminal keeps its own black. Working screens show the ink fainter than the panes: the terminal, the text editor, the Performance Monitor's tiles, and the Processes, Services, Event Viewer, Registry Editor and Storage Analyzer tabs, whose file blocks keep their own colors. The ink is saved to disk after it is first drawn, so later switches to Trash Polka load it instead of drawing it again.
+- Trash Polka, a new theme: black with a tattoo-style ink background in any of eight accents, Blood red by default. The ink runs seamlessly from the tabs into their pages, and it fades behind the terminal, the text editor and the admin tools.
+- Right-click cards can be customized. The pencil moves tiles to a Hidden drawer and back, Alt+arrow keys move a tile, and Reset restores the default.
+- The file picker has a New folder button that checks the name before creating the folder.
 
 ## [1.6.0] - 2026-11-14
 
