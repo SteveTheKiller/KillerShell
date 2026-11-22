@@ -1323,7 +1323,7 @@
         <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
         <Setter Property="FontFamily" Value="{DynamicResource UiFont}"/>
         <Setter Property="FontSize" Value="12"/>
-        <Setter Property="Margin" Value="0,0,0,8"/>
+        <Setter Property="Margin" Value="{DynamicResource ThemeRadioMargin}"/>
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="HorizontalAlignment" Value="Stretch"/>
         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
@@ -1342,7 +1342,7 @@
                             Margin="-8,0,2,0"/>
                     <!-- Grain over the hover fill, under the ring and label, as on menu rows and card tiles. -->
                     <Border x:Name="RadioGrain" IsHitTestVisible="False" Visibility="Collapsed" CornerRadius="3" Margin="-8,0,2,0" Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
-                    <Border Margin="-8,0,2,0" Padding="4,4,10,4">
+                    <Border Margin="-8,0,2,0" Padding="{DynamicResource ThemeRadioPadding}">
                         <!-- DockPanel (not a horizontal StackPanel) so the content fills the row
                              width, letting a right-aligned column (e.g. language codes) reach the
                              right edge. -->
@@ -1396,7 +1396,7 @@
         <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
         <Setter Property="FontFamily" Value="{DynamicResource UiFont}"/>
         <Setter Property="FontSize" Value="12"/>
-        <Setter Property="Margin" Value="0,0,0,8"/>
+        <Setter Property="Margin" Value="{DynamicResource ThemeRadioMargin}"/>
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="HorizontalAlignment" Value="Stretch"/>
         <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
@@ -1409,7 +1409,7 @@
                             Margin="-8,0,2,0"/>
                     <!-- Grain over the hover fill, under the box and label, as on menu rows and card tiles. -->
                     <Border x:Name="CheckGrain" IsHitTestVisible="False" Visibility="Collapsed" CornerRadius="3" Margin="-8,0,2,0" Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
-                    <Border Margin="-8,0,2,0" Padding="4,4,10,4">
+                    <Border Margin="-8,0,2,0" Padding="{DynamicResource ThemeRadioPadding}">
                         <DockPanel LastChildFill="True" Background="Transparent">
                             <!-- Centered on the label's capitals for whatever font the theme uses (Controls/CapCenterMargin.cs). A fixed nudge only fits one face. -->
                             <Grid Width="16" Height="16" Margin="0,0,8,0" VerticalAlignment="Center" DockPanel.Dock="Left">

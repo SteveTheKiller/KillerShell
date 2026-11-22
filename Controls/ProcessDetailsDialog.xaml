@@ -33,7 +33,7 @@
                  or the user drags the frame. Auto is therefore only used to decide the OPENING
                  size, and the row is released to Star once that is settled. -->
             <Grid.RowDefinitions>
-                <RowDefinition Height="40"/>
+                <RowDefinition Height="{DynamicResource DialogCaptionRow40}"/>
                 <RowDefinition x:Name="BodyRow" Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
@@ -54,9 +54,9 @@
                     BorderBrush="{DynamicResource FrameInnerDarkBrush}" BorderThickness="{DynamicResource FrameInnerDarkThickness}"/>
 
 
-            <Border Grid.Row="0" Background="{DynamicResource DialogTitleBarBrush}" MouseLeftButtonDown="TitleBar_MouseLeftButtonDown" Panel.ZIndex="1">
+            <Border Grid.Row="0" Background="{DynamicResource DialogTitleBarBrush}" Margin="{DynamicResource DialogCaptionInset}" MouseLeftButtonDown="TitleBar_MouseLeftButtonDown" Panel.ZIndex="1">
                 <Grid>
-                <Grid Margin="16,0">
+                <Grid Margin="{DynamicResource DialogCaptionPadding16}">
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center" IsHitTestVisible="False">
                         <!-- The app icon leads the caption, as it does in the main title bar. -->
                         <icons:AppIcon x:Name="TitleIcon" VerticalAlignment="Center"

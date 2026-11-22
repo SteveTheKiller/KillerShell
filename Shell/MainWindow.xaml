@@ -288,7 +288,7 @@
                      never moves, which is the whole reason it sits between the tree and the
                      content rather than on the window's outer edge. -->
                 <ColumnDefinition x:Name="TreeCol" Width="240" MinWidth="0" MaxWidth="420"/>
-                <ColumnDefinition x:Name="RailCol" Width="24"/>
+                <ColumnDefinition x:Name="RailCol" Width="{DynamicResource RailColumnWidth}"/>
                 <ColumnDefinition x:Name="TreeGapCol" Width="0"/>
                 <ColumnDefinition Width="*" MinWidth="220"/>
                 <ColumnDefinition x:Name="SearchGapCol" Width="0"/>
@@ -820,7 +820,7 @@
                                      the row's -8, 7 top and bottom, and 5 right plus the row's or
                                      pill's own 2. The theme column fills the menu (*) so the hover
                                      reaches across when the menu is wider than the list. -->
-                                <Grid Margin="15,7,5,7">
+                                <Grid Margin="{DynamicResource ThemeFlyoutInnerMargin}">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
@@ -928,7 +928,7 @@
                                          with the theme rows; the wider left padding keeps the glyph
                                          and label where they were. -->
                                     <Button x:Name="FontsRowBtn" Click="FontsRow_Click"
-                                            Style="{StaticResource MenuRowButton}" Margin="-8,0,2,0" Padding="14,5,6,5">
+                                            Style="{StaticResource MenuRowButton}" Margin="-8,0,2,0" Padding="{DynamicResource ThemeCommandRowPadding}">
                                         <StackPanel Orientation="Horizontal">
                                             <a11y:Glyph Text="&#xE8D2;" FontFamily="Segoe MDL2 Assets" FontSize="12"
                                                        Margin="0,0,8,0" VerticalAlignment="Center"/>
@@ -937,7 +937,7 @@
                                         </StackPanel>
                                     </Button>
                                     <Button x:Name="AssocRowBtn" Click="AssocRow_Click"
-                                            Style="{StaticResource MenuRowButton}" Margin="-8,0,2,0" Padding="14,5,6,5">
+                                            Style="{StaticResource MenuRowButton}" Margin="-8,0,2,0" Padding="{DynamicResource ThemeCommandRowPadding}">
                                         <StackPanel Orientation="Horizontal">
                                             <a11y:Glyph Text="&#xE71B;" FontFamily="Segoe MDL2 Assets" FontSize="12"
                                                        Margin="0,0,8,0" VerticalAlignment="Center"/>
@@ -956,13 +956,13 @@
                                                 <RowDefinition Height="*"/><RowDefinition Height="*"/>
                                                 <RowDefinition Height="*"/><RowDefinition Height="*"/>
                                             </Grid.RowDefinitions>
-                                            <Border x:Name="AccentStripDot0" Grid.Row="0" Style="{StaticResource AccentDot}" Width="26" Height="Auto" VerticalAlignment="Stretch" Margin="0,0,0,8" MouseLeftButtonUp="AccentStripDot_Click"/>
-                                            <Border x:Name="AccentStripDot1" Grid.Row="1" Style="{StaticResource AccentDot}" Width="26" Height="Auto" VerticalAlignment="Stretch" Margin="0,0,0,8" MouseLeftButtonUp="AccentStripDot_Click"/>
-                                            <Border x:Name="AccentStripDot2" Grid.Row="2" Style="{StaticResource AccentDot}" Width="26" Height="Auto" VerticalAlignment="Stretch" Margin="0,0,0,8" MouseLeftButtonUp="AccentStripDot_Click"/>
-                                            <Border x:Name="AccentStripDot3" Grid.Row="3" Style="{StaticResource AccentDot}" Width="26" Height="Auto" VerticalAlignment="Stretch" Margin="0,0,0,8" MouseLeftButtonUp="AccentStripDot_Click"/>
-                                            <Border x:Name="AccentStripDot4" Grid.Row="4" Style="{StaticResource AccentDot}" Width="26" Height="Auto" VerticalAlignment="Stretch" Margin="0,0,0,8" MouseLeftButtonUp="AccentStripDot_Click"/>
-                                            <Border x:Name="AccentStripDot5" Grid.Row="5" Style="{StaticResource AccentDot}" Width="26" Height="Auto" VerticalAlignment="Stretch" Margin="0,0,0,8" MouseLeftButtonUp="AccentStripDot_Click"/>
-                                            <Border x:Name="AccentStripDot6" Grid.Row="6" Style="{StaticResource AccentDot}" Width="26" Height="Auto" VerticalAlignment="Stretch" Margin="0,0,0,8" MouseLeftButtonUp="AccentStripDot_Click"/>
+                                            <Border x:Name="AccentStripDot0" Grid.Row="0" Style="{StaticResource AccentDot}" Width="26" Height="Auto" VerticalAlignment="Stretch" Margin="{DynamicResource AccentStripDotMargin}" MouseLeftButtonUp="AccentStripDot_Click"/>
+                                            <Border x:Name="AccentStripDot1" Grid.Row="1" Style="{StaticResource AccentDot}" Width="26" Height="Auto" VerticalAlignment="Stretch" Margin="{DynamicResource AccentStripDotMargin}" MouseLeftButtonUp="AccentStripDot_Click"/>
+                                            <Border x:Name="AccentStripDot2" Grid.Row="2" Style="{StaticResource AccentDot}" Width="26" Height="Auto" VerticalAlignment="Stretch" Margin="{DynamicResource AccentStripDotMargin}" MouseLeftButtonUp="AccentStripDot_Click"/>
+                                            <Border x:Name="AccentStripDot3" Grid.Row="3" Style="{StaticResource AccentDot}" Width="26" Height="Auto" VerticalAlignment="Stretch" Margin="{DynamicResource AccentStripDotMargin}" MouseLeftButtonUp="AccentStripDot_Click"/>
+                                            <Border x:Name="AccentStripDot4" Grid.Row="4" Style="{StaticResource AccentDot}" Width="26" Height="Auto" VerticalAlignment="Stretch" Margin="{DynamicResource AccentStripDotMargin}" MouseLeftButtonUp="AccentStripDot_Click"/>
+                                            <Border x:Name="AccentStripDot5" Grid.Row="5" Style="{StaticResource AccentDot}" Width="26" Height="Auto" VerticalAlignment="Stretch" Margin="{DynamicResource AccentStripDotMargin}" MouseLeftButtonUp="AccentStripDot_Click"/>
+                                            <Border x:Name="AccentStripDot6" Grid.Row="6" Style="{StaticResource AccentDot}" Width="26" Height="Auto" VerticalAlignment="Stretch" Margin="{DynamicResource AccentStripDotMargin}" MouseLeftButtonUp="AccentStripDot_Click"/>
                                             <Border x:Name="AccentStripDot7" Grid.Row="7" Style="{StaticResource AccentDot}" Width="26" Height="Auto" VerticalAlignment="Stretch" Margin="0" MouseLeftButtonUp="AccentStripDot_Click"/>
                                         </Grid>
                                     </Grid>

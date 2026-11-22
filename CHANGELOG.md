@@ -23,6 +23,10 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - On a narrow page the GPU card puts its memory graph under utilization, so the memory legend no longer cuts off.
 - On Trash Polka an open dropdown list carries the theme's artwork instead of a flat fill.
 - The calendar's month arrows have tooltips.
+- On 98SE the theme and language flyouts use Windows 98 menu rows, 18 px each with no gaps.
+- On 98SE the confirm and quit dialogs pack their text, checkboxes and 23 px buttons the way a Windows 98 message box does.
+- On 98SE the folder picker and the details, file operation and registry dialogs have the 20 px caption band inside the frame, with the close button placed as in the other dialogs.
+- On 98SE the window frame is 4 px and the icon rail 20 px, so the rail no longer reads wider than on the other themes.
 
 ## [1.6.1] - 2026-11-21
 

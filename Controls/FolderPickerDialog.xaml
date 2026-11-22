@@ -25,7 +25,7 @@
 <picker:PickerBorder x:Name="RootBorder" Tag="{DynamicResource UseDialogCaption}" Opacity="0" BorderBrush="{DynamicResource CardBorderBrush}" BorderThickness="{DynamicResource DialogOuterBorderThickness}" CornerRadius="0">
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="40"/>
+                <RowDefinition Height="{DynamicResource DialogCaptionRow40}"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
@@ -58,9 +58,9 @@
                  keep showing the card's own face here exactly as before. 98SE sets
                  UseDialogCaption, and ThemeManager then points this key at the accent's
                  TitleBarBrush, which is what gives the dialog a real Win98 caption. -->
-            <Border Grid.Row="0" Background="{DynamicResource DialogTitleBarBrush}" MouseLeftButtonDown="TitleBar_MouseLeftButtonDown" Panel.ZIndex="1">
+            <Border Grid.Row="0" Background="{DynamicResource DialogTitleBarBrush}" Margin="{DynamicResource DialogCaptionInset}" MouseLeftButtonDown="TitleBar_MouseLeftButtonDown" Panel.ZIndex="1">
                 <Grid>
-                <Grid Margin="16,0">
+                <Grid Margin="{DynamicResource DialogCaptionPadding16}">
                     <!-- KillerScan-style wordmark: a blurred dark copy behind the crisp text,
                          faded by WordmarkShadowOpacity (off on 98SE). -->
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
