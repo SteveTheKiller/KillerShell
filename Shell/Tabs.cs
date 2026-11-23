@@ -703,6 +703,12 @@ namespace KillerShell.Shell
                 };
             }
 
+            // A document with no file to ask the shell about (untitled, or one that went away)
+            // wears the bundled text document art, not a dot: it is still a document, and the dot's
+            // centered box pushed the card title a dot-width right of where an icon puts it.
+            if (tab.Editor != null && Services.IconCache.Art("text_document_icon", size) is { } doc)
+                return new Image { Width = size, Height = size, Source = doc };
+
             // A Processes tab, an Event Viewer tab, a Performance tab, or a document/shell with no
             // real file to ask Explorer about (untitled, demo mode, a folder that has since been
             // deleted/unplugged): nothing real to show an icon of, so a small color dot stands

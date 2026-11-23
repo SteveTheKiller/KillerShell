@@ -18,6 +18,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - With the tabs at the bottom, the active tab under search results matches the status row it joins instead of showing a lighter face.
 - On the 98SE theme the active tab's corners are square, so the neighboring tab's outline no longer shows as a black dot beside it.
 - The footer's pane layout buttons stay visible after a click instead of filling in solid, and 98SE drops the extra divider beside them.
+- An untitled document's card and tab list row show a text document icon instead of a white dot, and its title lines up with the other cards.
 - On the 98SE theme the Performance page has a clean tab-page edge instead of a striped border of stacked gray lines.
 - Under Trash Polka the Performance page, the Storage map, the file picker, drop-down lists and flyouts show the theme's surfaces and ink instead of flat or too-dark fills.
 - On 98SE the title bar buttons, tabs, menus, dialogs, window frame and icon rail match Windows 98.
