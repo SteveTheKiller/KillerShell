@@ -1495,8 +1495,12 @@
                                             <Setter TargetName="Icon" Property="Stroke" Value="{DynamicResource PrimaryBrush}"/>
                                             <Setter TargetName="Icon" Property="Opacity" Value="1"/>
                                         </Trigger>
+                                        <!-- Focus lights the icon, as hover does. It used to fill the cell with
+                                             MenuHoverBrush, which a click also triggers, and on 98SE the green
+                                             icon vanished into the fill. -->
                                         <Trigger Property="IsKeyboardFocused" Value="True">
-                                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource MenuHoverBrush}"/>
+                                            <Setter TargetName="Icon" Property="Stroke" Value="{DynamicResource PrimaryBrush}"/>
+                                            <Setter TargetName="Icon" Property="Opacity" Value="1"/>
                                         </Trigger>
                                         <Trigger Property="IsChecked" Value="True">
                                             <Setter TargetName="Icon" Property="Stroke" Value="{DynamicResource PrimaryBrush}"/>
@@ -1530,8 +1534,9 @@
                                  AutomationProperties.Name="{DynamicResource Str_Layout_TopBottom}">
                         <RadioButton.ToolTip><TextBlock><Run Text="{DynamicResource Str_Layout_TopBottom}"/><Run Text="  (Ctrl+Alt+Up)"/></TextBlock></RadioButton.ToolTip>
                     </RadioButton>
-                    <!-- The family's divider between the view buttons and the version, as in KillerNotes. -->
-                    <Border Width="1" Height="12" Margin="4,0,8,0" VerticalAlignment="Center" IsHitTestVisible="False"
+                    <!-- The family's divider between the view buttons and the version, as in KillerNotes.
+                         Hidden on 98SE, whose sunken cells already divide them (MainWindow.xaml.cs). -->
+                    <Border x:Name="PaneLayoutDivider" Width="1" Height="12" Margin="4,0,8,0" VerticalAlignment="Center" IsHitTestVisible="False"
                             Background="{DynamicResource TextFooter}" Opacity="0.35"/>
                 </StackPanel>
             </Grid>

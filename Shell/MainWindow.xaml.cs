@@ -77,12 +77,14 @@ namespace KillerShell.Shell
                 SyncTreeFade();
                 Controls.TreeSideFade.Refresh(FolderTree);
                 SyncBookmarksEdgeFades();
+                SyncPaneLayoutDivider();
                 // Timed so one theme click prints this next to CrossfadeSwap's heavy work and the
                 // slow half of the pause before the fade can be identified instead of guessed at
                 // (ThemeFlyout.cs TimedStep). DEBUG only; a release build prints nothing.
                 Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background,
                     (Action)(() => TimedStep("RepaintIcons", RepaintIcons)));
             };
+            SyncPaneLayoutDivider();
 
             var ver = Assembly.GetExecutingAssembly()
                 .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion ?? "1.0.0";
@@ -1633,6 +1635,12 @@ namespace KillerShell.Shell
         //
         // Called from every place that writes those three fields; cheap enough to sit on the
         // progress callback.
+        // 98SE's footer is a row of sunken cells, which already divide the layout buttons from the version, so the
+        // family's thin divider would be a second line in the same place.
+        private void SyncPaneLayoutDivider()
+            => PaneLayoutDivider.Visibility = Services.ThemeManager.Current == Services.Theme.SE98
+                ? Visibility.Collapsed : Visibility.Visible;
+
         private void UpdatePaneStatusBar()
         {
             // This bar belongs to the FILE BROWSER - item counts, the search query, "No item
