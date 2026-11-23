@@ -12,19 +12,37 @@ namespace KillerShell.Shell
 {
     public partial class MainWindow
     {
-        // The toolbar's export icon: one button, the format chosen from a flyout, so the
-        // location row is not carrying two text buttons. Same Popup + Anim.FadeIn pattern as
-        // the theme flyout (ThemeFlyout.cs), so every flyout in the app opens the same way.
+        // The toolbar's export icon: one button, the format chosen from a small tile card under it
+        // (CSV and HTML, each with its shortcut), so the location row is not carrying two text buttons.
         internal void ExportButton_Click(object sender, RoutedEventArgs e)
         {
-            var p = Pane.ExportPopup;
-            p.IsOpen = !p.IsOpen;
-            if (p.IsOpen && p.Child is UIElement child) Anim.FadeIn(child);
+            if (sender is not FrameworkElement button) return;
+            var card = CardMenus.TileCard();
+            card.Tag = "exportcard";
+            CardMenus.WatchKeyboardStart(card);
+            card.Items.Add(CardMenus.Tiles(card, new[]
+            {
+                new KillerFamily.Controls.CardTile(((char)0xE80A).ToString(), Loc("Str_Export_TitleCsv"), "Ctrl+Alt+Shift+E",
+                    () => ExportCsv_Click(this, new RoutedEventArgs())) { Id = "csv", Shown = "CSV" },
+                new KillerFamily.Controls.CardTile(((char)0xE943).ToString(), Loc("Str_Export_TitleHtml"), "Ctrl+Alt+E",
+                    () => Export_Click(this, new RoutedEventArgs())) { Id = "html", Shown = "HTML" },
+            }));
+            OpenUnder(card, button);
+        }
+
+        /// <summary>Opens a card or drop-down just under its button, the visible card's left edge on the button's
+        /// (the menu's shadow halo, 22px at the side and 18px on top, is taken off).</summary>
+        internal static void OpenUnder(System.Windows.Controls.ContextMenu menu, FrameworkElement button)
+        {
+            menu.PlacementTarget = button;
+            menu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
+            menu.HorizontalOffset = -22;
+            menu.VerticalOffset = -16;
+            menu.IsOpen = true;
         }
 
         internal void ExportCsv_Click(object sender, RoutedEventArgs e)
         {
-            Pane.ExportPopup.IsOpen = false;   // before the empty-results early return
             var tab = _active;
             if (tab.Results.Count == 0)
             {
@@ -53,7 +71,6 @@ namespace KillerShell.Shell
 
         internal void Export_Click(object sender, RoutedEventArgs e)
         {
-            Pane.ExportPopup.IsOpen = false;   // before the empty-results early return
             var tab = _active;
             if (tab.Results.Count == 0)
             {

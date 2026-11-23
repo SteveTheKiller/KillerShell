@@ -24,8 +24,10 @@ $manager = $assembly.GetType('KillerShell.Services.ThemeManager')
 $themeType = $assembly.GetType('KillerShell.Services.Theme')
 $localeManager = $assembly.GetType('KillerShell.Services.LocaleManager')
 $localeType = $assembly.GetType('KillerShell.Services.Locale')
-$manager.GetMethod('LoadDict', $static).Invoke($null, @([Enum]::Parse($themeType, 'Malaise')))
-$type = $assembly.GetType('KillerShell.Shell.MainWindow')
+# LoadDict(theme, accent override): reflection fills no optional arguments, so the accent's null is passed.
+function Load-Theme($name) { $manager.GetMethod('LoadDict', $static).Invoke($null, @([Enum]::Parse($themeType, $name), $null)) | Out-Null }
+Load-Theme 'Malaise'
+$type =$assembly.GetType('KillerShell.Shell.MainWindow')
 $type.GetProperty('DemoMode', $static).SetValue($null, $true, $null)
 $window = [Activator]::CreateInstance($type)
 $root = $window.Content
@@ -79,7 +81,7 @@ $address = PaneField $left 'AddressBox'
 $strip = PaneField $left 'ToolStrip'
 $overflow = PaneField $left 'OverflowPanel'
 $label.Text = 'C:\Users\Demo\Documents\Quarterly reports\2026 final report'
-$fileButtons = @('ViewListBtn', 'ViewIconsBtn', 'ViewDetailsBtn', 'FileDensityBtn', 'SortControlsHost', 'ExpandAllButton', 'ShowHiddenBtn', 'FoldersTopBtn', 'DetailsPaneBtn', 'PipeBtn', 'ExportBtn')
+$fileButtons = @('ViewListBtn', 'ViewIconsBtn', 'ViewDetailsBtn', 'FileDensityBtn', 'SortControlsHost', 'ExpandAllButton', 'ShowHiddenBtn', 'FoldersTopBtn', 'DetailsPaneBtn', 'ExportBtn')
 $originals = @{}
 foreach ($name in $fileButtons) { $originals[$name] = PaneField $left $name }
 Set-Dual $false
@@ -123,7 +125,7 @@ for ($round = 0; $round -lt 8; $round++) {
 }
 Check ((PaneField $left 'SortChoice') -is [Windows.Controls.ComboBox]) 'Sort options are not a standard dropdown'
 foreach ($theme in @('Malaise', 'Light', 'SE98')) {
-    $manager.GetMethod('LoadDict', $static).Invoke($null, @([Enum]::Parse($themeType, $theme)))
+    Load-Theme $theme
     foreach ($locale in @('EnUS', 'De', 'ZhTW')) {
         $localeManager.GetMethod('Apply', $static).Invoke($null, @([Enum]::Parse($localeType, $locale)))
         foreach ($scale in @(0.7, 1.0, 1.5, 2.5)) {
@@ -138,7 +140,7 @@ foreach ($theme in @('Malaise', 'Light', 'SE98')) {
     }
 }
 $localeManager.GetMethod('Apply', $static).Invoke($null, @([Enum]::Parse($localeType, 'EnUS')))
-$manager.GetMethod('LoadDict', $static).Invoke($null, @([Enum]::Parse($themeType, 'Malaise')))
+Load-Theme 'Malaise'
 Call 'ApplyAppScale' @([double]1.0, $false)
 Call 'FocusPaneQuiet' @($right)
 $terminalTab = Call 'CreateDemoTerminalTab' @('C:\Users\Demo\Documents\Quarterly reports', "Responsive path fixture`r`n")
@@ -172,7 +174,7 @@ Layout 650
 Check ([double]::IsNaN((PaneField $right 'TerminalBarRow').Height)) 'Alt+M restoration froze responsive terminal height'
 Check ([Math]::Abs((PaneField $right 'TerminalBarRow').ActualHeight - 32) -lt 1) 'Restored terminal stopped using one row'
 Check ((PaneField $left 'SortChoice') -is [Windows.Controls.ComboBox]) 'Sort dropdown was replaced during reflow'
-Check ([object]::ReferenceEquals((PaneField $left 'ExportPopup').PlacementTarget, (PaneField $left 'ExportBtn'))) 'Export flyout lost its button anchor'
+Check ((PaneField $left 'ExportBtn') -is [Windows.Controls.Button]) 'Export button was replaced during reflow'
 Call 'DisposeShellEnv'
 Write-Output "PASS: $checks checks; file/terminal, single/dual/stacked, overflow, 36 theme/locale/scale cases, command identity, address edit/logical focus, dropdown and flyout anchors, and bar restoration. Native keyboard and popup placement remain unverified."
 [Environment]::Exit(0)

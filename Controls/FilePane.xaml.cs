@@ -847,8 +847,6 @@ namespace KillerShell
         // Dual pane's two handlers are gone from here: the button moved to the window's icon
         // rail, where it is wired straight to MainWindow and needs no forward.
         private void ExportButton_Click(object s, RoutedEventArgs e)       => Owner.ExportButton_Click(s, e);
-        private void Export_Click(object s, RoutedEventArgs e)             => Owner.Export_Click(s, e);
-        private void ExportCsv_Click(object s, RoutedEventArgs e)          => Owner.ExportCsv_Click(s, e);
 
         // ── Tabs ─────────────────────────────────────────────────
         private void Tab_MouseDown(object s, MouseButtonEventArgs e)       => Owner.Tab_MouseDown(s, e);
@@ -894,7 +892,6 @@ namespace KillerShell
         private void EditorPathBox_KeyDown(object s, KeyEventArgs e)       => Owner.EditorPathBox_KeyDown(s, e);
         private void EditorPathBox_LostFocus(object s, RoutedEventArgs e)  => Owner.EditorPathBox_LostFocus(s, e);
         private void EditorEncoding_Click(object s, RoutedEventArgs e)     => Owner.EditorEncoding_Click(s, e);
-        private void EdEncoding_Click(object s, RoutedEventArgs e)         => Owner.EdEncoding_Click(s, e);
 
         // ── Menu bars (MenuBar.cs) ───────────────────────────────
         // THIS pane, not the focused one: the right-click can land on the unfocused pane's bar,

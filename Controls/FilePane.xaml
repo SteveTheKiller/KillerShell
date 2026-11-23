@@ -1112,89 +1112,14 @@
                              control in this strip that acts on the WINDOW rather than on this
                              pane, so there were two of them - one per pane - both doing the
                              identical thing, and either could be shed into the overflow. -->
-                        <!-- Export: ONE icon, the format picked from a flyout. Two text buttons
+                        <!-- Export: ONE icon, the format picked from a card. Two text buttons
                              (CSV + HTML) took enough of this row to crush the location path
                              beside them; a 26px icon sits with the rest of the toolbar. -->
                         <Button x:Name="ExportBtn" Content="&#xE72D;" Width="26" Height="24" Padding="0"
                                 FontFamily="Segoe MDL2 Assets" FontSize="15" Style="{StaticResource SurfaceButton}"
                                 ToolTip="{DynamicResource Str_Btn_Export}" Click="ExportButton_Click"/>
-                        <!-- StaysOpen="False" so an outside click dismisses it - what a two-item
-                             format picker should do. The theme flyout deliberately keeps capture
-                             instead so the results list scrolls under it; this one has no reason
-                             to. A Popup takes no layout space, so it can sit in the row itself.
-                             Shadow on its own border, per the family standard: text must never
-                             render through a bitmap effect or it loses ClearType. -->
-                        <!-- Restyled as a regular CONTEXT-MENU look: grained
-                             surface, transparent hover-wash rows instead of pill buttons, an
-                             icon gutter on the left (a cell grid for CSV, literal <> for HTML)
-                             and each row's real keyboard shortcut right-aligned - Ctrl+Alt+E and
-                             Ctrl+Alt+Shift+E are the bindings the shortcuts card already lists.
-                             Shadow rides the MenuShadow tokens like the editor popups. -->
-                        <Popup x:Name="ExportPopup" PlacementTarget="{Binding ElementName=ExportBtn}" Placement="Bottom"
-                               StaysOpen="False" AllowsTransparency="True" HorizontalOffset="-14" VerticalOffset="-2">
-                            <Grid Margin="14">
-                                <Grid.Resources>
-                                    <Style x:Key="ExportRow" TargetType="Button">
-                                        <Setter Property="Cursor" Value="Hand"/>
-                                        <Setter Property="Foreground" Value="{DynamicResource MenuTextBrush}"/>
-                                        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-                                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                                        <Setter Property="Template">
-                                            <Setter.Value>
-                                                <ControlTemplate TargetType="Button">
-                                                    <Border x:Name="bg" Background="Transparent" CornerRadius="{DynamicResource SmallCornerRadius}">
-                                                        <Grid>
-                                                            <!-- Grain over the hover fill, under the row's words, as on menu rows. -->
-                                                            <Border x:Name="ExportGrain" IsHitTestVisible="False" Visibility="Collapsed"
-                                                                    CornerRadius="{DynamicResource SmallCornerRadius}"
-                                                                    Background="{DynamicResource GrainTileBrush}" Opacity="{DynamicResource GrainOpacity}"/>
-                                                            <ContentPresenter Margin="8,4,10,4"/>
-                                                        </Grid>
-                                                    </Border>
-                                                    <ControlTemplate.Triggers>
-                                                        <Trigger Property="IsMouseOver" Value="True">
-                                                            <Setter TargetName="bg" Property="Background" Value="{DynamicResource RowHoverBrush}"/>
-                                                            <Setter TargetName="ExportGrain" Property="Visibility" Value="Visible"/>
-                                                        </Trigger>
-                                                    </ControlTemplate.Triggers>
-                                                </ControlTemplate>
-                                            </Setter.Value>
-                                        </Setter>
-                                    </Style>
-                                </Grid.Resources>
-                                <Border Background="{DynamicResource MenuBackgroundBrush}" CornerRadius="{DynamicResource PanelCornerRadius}" IsHitTestVisible="False"
-                                        Opacity="{DynamicResource MenuShadowOpacity}"
-                                        Effect="{DynamicResource MenuShadowEffect}"/>
-                                <Border Background="{DynamicResource MenuBackgroundBrush}" BorderBrush="{DynamicResource MenuBorderBrush}"
-                                        BorderThickness="1" CornerRadius="{DynamicResource PanelCornerRadius}" Padding="6">
-                                    <StackPanel MinWidth="200">
-                                        <!-- Format names, not prose - deliberately unlocalized,
-                                             the same way the old two buttons were. -->
-                                        <Button Style="{StaticResource ExportRow}" Margin="0,0,0,2" Click="ExportCsv_Click">
-                                            <DockPanel LastChildFill="True">
-                                                <a11y:Glyph DockPanel.Dock="Left" Text="&#xE80A;" FontFamily="Segoe MDL2 Assets" FontSize="12"
-                                                           Width="22" VerticalAlignment="Center"/>
-                                                <TextBlock DockPanel.Dock="Right" Text="Ctrl+Alt+Shift+E" Foreground="{DynamicResource DimTextBrush}"
-                                                           FontFamily="{DynamicResource MonoFont}" FontSize="10" VerticalAlignment="Center" Margin="18,0,0,0"/>
-                                                <TextBlock Text="CSV" FontFamily="{DynamicResource MonoFont}" FontSize="11" VerticalAlignment="Center"/>
-                                            </DockPanel>
-                                        </Button>
-                                        <Button Style="{StaticResource ExportRow}" Click="Export_Click">
-                                            <DockPanel LastChildFill="True">
-                                                <TextBlock DockPanel.Dock="Left" Text="&lt;&gt;" FontFamily="{DynamicResource MonoFont}" FontSize="11" FontWeight="Bold"
-                                                           Width="22" VerticalAlignment="Center"/>
-                                                <TextBlock DockPanel.Dock="Right" Text="Ctrl+Alt+E" Foreground="{DynamicResource DimTextBrush}"
-                                                           FontFamily="{DynamicResource MonoFont}" FontSize="10" VerticalAlignment="Center" Margin="18,0,0,0"/>
-                                                <TextBlock Text="HTML" FontFamily="{DynamicResource MonoFont}" FontSize="11" VerticalAlignment="Center"/>
-                                            </DockPanel>
-                                        </Button>
-                                    </StackPanel>
-                                </Border>
-                                <!-- The grain, OVER the rows like every menu - this popup was the
-                                     one untextured surface left. -->
-                                <Border Style="{StaticResource FlyoutGrain}" IsHitTestVisible="False"/>
-                            </Grid>
-                        </Popup>
+                        <!-- The format card (CSV and HTML tiles with their shortcuts) is built in
+                             Export.cs ExportButton_Click and opens under this button. -->
                         <!-- Overflow chevron. Collapsed until something is actually shed, so a
                              wide pane looks exactly as it did. Kept LAST in the strip and
                              excluded from the shed list, or it could push itself out. -->
@@ -1901,53 +1826,16 @@
 
                                 <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
                                     <!-- The encoding readout is a picker, not just a label - click
-                                         it to change what the NEXT save writes (EditorBar.cs
-                                         EditorEncoding_Click / EdEncoding_Click). Same borderless-
-                                         chip treatment as the readout it replaces at rest;
-                                         SurfaceButton's own hover/press states are what says it is
-                                         now clickable. Popup anchored to THIS button, not a fixed
-                                         point (the locked family flyout rule) - Placement="Bottom"
-                                         because the bar sits at the top of the pane, same as the
-                                         gear and go-to popups right next to it. -->
+                                         it to change what the NEXT save writes. EditorBar.cs
+                                         EditorEncoding_Click opens a kit drop-down under this button
+                                         with the document's encoding checked. Same borderless-chip
+                                         treatment as the readout it replaces at rest;
+                                         SurfaceButton's own hover/press states say it is clickable. -->
                                     <Button x:Name="EditorEncodingBtn" Style="{StaticResource SurfaceButton}"
                                             Background="Transparent" BorderThickness="0" Padding="4,2"
                                             Foreground="{DynamicResource DimTextBrush}"
                                             FontFamily="{DynamicResource MonoFont}" FontSize="10.5" VerticalAlignment="Center"
                                             ToolTip="{DynamicResource Str_TT_EdEncoding}" Click="EditorEncoding_Click"/>
-                                    <Popup x:Name="EditorEncodingPopup" PlacementTarget="{Binding ElementName=EditorEncodingBtn}"
-                                           Placement="Bottom" StaysOpen="False" AllowsTransparency="True"
-                                           HorizontalOffset="-14" VerticalOffset="-2">
-                                        <Grid Margin="14">
-                                            <!-- MenuShadow tokens, not FlyoutShadowOpacity: that key is 0 on
-                                                 98SE, which erased these popups' shadows there - the tokens keep
-                                                 the ordinary themes' soft shadow and give 98SE the Win98 offset
-                                                 shadow. -->
-                                            <Border Background="{DynamicResource MenuBackgroundBrush}" CornerRadius="{DynamicResource PanelCornerRadius}" IsHitTestVisible="False"
-                                                    Opacity="{DynamicResource MenuShadowOpacity}"
-                                                    Effect="{DynamicResource MenuShadowEffect}"/>
-                                            <Border Background="{DynamicResource MenuBackgroundBrush}" BorderBrush="{DynamicResource MenuBorderBrush}"
-                                                    BorderThickness="1" CornerRadius="{DynamicResource PanelCornerRadius}" Padding="6">
-                                                <!-- CheckRow - same conversion as the gear popup: the picked
-                                                     encoding wears the check instead of an accent fill.
-                                                     SyncEditorEncodingMenu already sets Tag="on". -->
-                                                <StackPanel MinWidth="168">
-                                                    <Button x:Name="EdEncUtf8" CommandParameter="utf8" Content="{DynamicResource Str_Ed_EncUtf8}"
-                                                            Style="{StaticResource CheckRow}" Margin="0,0,0,2" Click="EdEncoding_Click"/>
-                                                    <Button x:Name="EdEncUtf8Bom" CommandParameter="utf8bom" Content="{DynamicResource Str_Ed_EncUtf8Bom}"
-                                                            Style="{StaticResource CheckRow}" Margin="0,0,0,2" Click="EdEncoding_Click"/>
-                                                    <Button x:Name="EdEncUtf16Le" CommandParameter="utf16le" Content="{DynamicResource Str_Ed_EncUtf16Le}"
-                                                            Style="{StaticResource CheckRow}" Margin="0,0,0,2" Click="EdEncoding_Click"/>
-                                                    <Button x:Name="EdEncUtf16Be" CommandParameter="utf16be" Content="{DynamicResource Str_Ed_EncUtf16Be}"
-                                                            Style="{StaticResource CheckRow}" Margin="0,0,0,2" Click="EdEncoding_Click"/>
-                                                    <Button x:Name="EdEncAnsi" CommandParameter="ansi" Content="{DynamicResource Str_Ed_EncAnsi}"
-                                                            Style="{StaticResource CheckRow}" Click="EdEncoding_Click"/>
-                                                </StackPanel>
-                                            </Border>
-                                            <!-- The grain, OVER the rows like every menu - same
-                                                 gap as the gear popup above. -->
-                                            <Border Style="{StaticResource FlyoutGrain}" IsHitTestVisible="False"/>
-                                        </Grid>
-                                    </Popup>
                                     <TextBlock x:Name="EditorEolText" Margin="10,0,0,0"
                                                Foreground="{DynamicResource DimTextBrush}"
                                                FontFamily="{DynamicResource MonoFont}" FontSize="10.5" VerticalAlignment="Center"/>

@@ -303,7 +303,7 @@ namespace KillerShell.Editing
         /// <summary>
         /// Change this document's ACTIVE encoding - what the next save writes - without touching
         /// the text already loaded into it. Wired to the encoding readout's new picker
-        /// (EditorBar.cs EdEncoding_Click).
+        /// (EditorBar.cs SetEditorEncoding).
         /// </summary>
         /// <remarks>
         /// Single-mode by design: this is "reopen" and "save as" folded into one, the simpler

@@ -24,12 +24,15 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - On 98SE the title bar buttons, tabs, menus, dialogs, window frame and icon rail match Windows 98.
 - Confirm and quit dialogs size to what they say, so a short prompt like Quit is narrower.
 - With the tabs below, a list that scrolls has its bottom shadow back.
+- On 98SE with the Yellow accent, turned-on card tiles show dark text instead of white on yellow.
 
 ### Changed
 
 - The tray icon's card shows the KillerShell logo over one row of tiles, Open and then Exit, like the other cards.
 - Under Trash Polka outline buttons have a solid dark face with white text.
 - The document bar's settings gear opens a tile card like the other cards. The reading options flip in place and keep it open, and Indent picks its width from a list.
+- The document bar's encoding picker is a regular drop-down with the current encoding checked.
+- The Export button opens a small card with CSV and HTML tiles and their shortcuts.
 
 ### Added
 

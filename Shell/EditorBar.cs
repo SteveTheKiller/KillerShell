@@ -63,7 +63,6 @@ namespace KillerShell.Shell
 
             pane.EditorEncodingBtn.Content = editor.EncodingLabel;
             pane.EditorEolText.Text        = editor.NewLineLabel;
-            SyncEditorEncodingMenu(pane, editor.EncodingLabel);
 
             // Tag="on" is what SurfaceButton's trigger reads to light a button in the accent -
             // the same signal the tab title's dot carries, so the two never disagree.
@@ -74,16 +73,6 @@ namespace KillerShell.Shell
             // that comes and goes makes the two beside it move under the pointer.
             pane.EditorUndoBtn.IsEnabled = editor.CanUndo;
             pane.EditorRedoBtn.IsEnabled = editor.CanRedo;
-        }
-
-        /// <summary>Lights whichever row in the encoding popup matches the document's own label.</summary>
-        private static void SyncEditorEncodingMenu(FilePane pane, string label)
-        {
-            pane.EdEncUtf8.Tag    = label == "UTF-8"     ? "on" : null;
-            pane.EdEncUtf8Bom.Tag = label == "UTF-8 BOM" ? "on" : null;
-            pane.EdEncUtf16Le.Tag = label == "UTF-16 LE" ? "on" : null;
-            pane.EdEncUtf16Be.Tag = label == "UTF-16 BE" ? "on" : null;
-            pane.EdEncAnsi.Tag    = label == "ANSI"      ? "on" : null;
         }
 
         /// <summary>
@@ -390,13 +379,7 @@ namespace KillerShell.Shell
             var pane = LivePanes().FirstOrDefault(p => ReferenceEquals(p.EditorSlot.Content, BarEditor));
             if (pane == null) return;
 
-            var card = EditorGearCard();
-            card.PlacementTarget = pane.EditorGearBtn;
-            card.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
-            // The card's shadow halo is taken off, so the visible card sits under the button's left edge.
-            card.HorizontalOffset = -22;
-            card.VerticalOffset = -16;
-            card.IsOpen = true;
+            OpenUnder(EditorGearCard(), pane.EditorGearBtn);   // Export.cs
         }
 
         internal ContextMenu EditorGearCard()
@@ -451,31 +434,58 @@ namespace KillerShell.Shell
         // ═══════════════════════════════════════════════════════════
         //  THE ENCODING PICKER
         // ═══════════════════════════════════════════════════════════
+        // The five choices, keyed as the drop-down rows are tagged, with the EncodingLabel each one reads as.
+        private static readonly (string Key, string Label, string Header)[] EncodingChoices =
+        {
+            ("utf8",    "UTF-8",     "Str_Ed_EncUtf8"),
+            ("utf8bom", "UTF-8 BOM", "Str_Ed_EncUtf8Bom"),
+            ("utf16le", "UTF-16 LE", "Str_Ed_EncUtf16Le"),
+            ("utf16be", "UTF-16 BE", "Str_Ed_EncUtf16Be"),
+            ("ansi",    "ANSI",      "Str_Ed_EncAnsi"),
+        };
+
         /// <summary>
-        /// Open (or close) the encoding readout's own popup - same shape as the gear
-        /// (EditorGear_Click): anchored to the button that was clicked, not a fixed point.
+        /// Opens the encoding readout's drop-down: a kit menu with the document's own encoding checked,
+        /// anchored under the button the way Storage's depth and size pickers are.
         /// </summary>
         internal void EditorEncoding_Click(object sender, RoutedEventArgs e)
         {
-            if (BarEditor == null) return;
-            var pane = LivePanes().FirstOrDefault(p => ReferenceEquals(p.EditorSlot.Content, BarEditor));
+            var ed = BarEditor;
+            if (ed == null) return;
+            var pane = LivePanes().FirstOrDefault(p => ReferenceEquals(p.EditorSlot.Content, ed));
             if (pane == null) return;
 
-            SyncEditorEncodingMenu(pane, BarEditor.EncodingLabel);
-            pane.EditorEncodingPopup.IsOpen = !pane.EditorEncodingPopup.IsOpen;
-            if (pane.EditorEncodingPopup.IsOpen && pane.EditorEncodingPopup.Child is UIElement encChild) Anim.FadeIn(encChild);
+            var menu = new ContextMenu { Tag = "editorencoding" };
+            foreach (var choice in EncodingChoices)
+            {
+                string key = choice.Key;
+                var row = new MenuItem
+                {
+                    IsCheckable = true,
+                    IsChecked = ed.EncodingLabel == choice.Label,
+                    Header = Loc(choice.Header),
+                    Tag = key,
+                };
+                // Closed here rather than left to menu mode: a screen reader's Invoke clicks the row without it.
+                row.Click += (_, _) => { menu.IsOpen = false; SetEditorEncoding(key); };
+                menu.Items.Add(row);
+            }
+            menu.PlacementTarget = pane.EditorEncodingBtn;
+            menu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
+            menu.VerticalOffset = 4;
+            menu.IsOpen = true;
         }
 
         /// <summary>
-        /// A row in the encoding popup was picked. Changes what the NEXT save writes
+        /// An encoding was picked. Changes what the NEXT save writes
         /// (EditorControl.SetEncoding) - a single "change encoding" action rather than VS Code's
         /// separate reopen/save-with-encoding pair, which is more subsystem than a first pass
         /// needs. The five keys mirror the standard set VS Code itself defaults to.
         /// </summary>
-        internal void EdEncoding_Click(object sender, RoutedEventArgs e)
+        private void SetEditorEncoding(string key)
         {
             var ed = BarEditor;
-            if (ed == null || sender is not Button b || b.CommandParameter is not string key) return;
+            if (ed == null) return;
 
             Encoding? encoding = key switch
             {
@@ -490,8 +500,6 @@ namespace KillerShell.Shell
 
             ed.SetEncoding(encoding);
             SyncEditorBar(_active);
-
-            foreach (var p in LivePanes()) p.EditorEncodingPopup.IsOpen = false;
         }
     }
 }
