@@ -434,19 +434,20 @@ namespace KillerShell.Shell
         // ═══════════════════════════════════════════════════════════
         //  THE ENCODING PICKER
         // ═══════════════════════════════════════════════════════════
-        // The five choices, keyed as the drop-down rows are tagged, with the EncodingLabel each one reads as.
-        private static readonly (string Key, string Label, string Header)[] EncodingChoices =
+        // The five choices: the tile id, the EncodingLabel it reads as (also the short text under the glyph),
+        // the full name for the tooltip, and the glyph. ANSI is the locale's code page, so it gets the globe.
+        private static readonly (string Key, string Label, string Header, int Glyph)[] EncodingChoices =
         {
-            ("utf8",    "UTF-8",     "Str_Ed_EncUtf8"),
-            ("utf8bom", "UTF-8 BOM", "Str_Ed_EncUtf8Bom"),
-            ("utf16le", "UTF-16 LE", "Str_Ed_EncUtf16Le"),
-            ("utf16be", "UTF-16 BE", "Str_Ed_EncUtf16Be"),
-            ("ansi",    "ANSI",      "Str_Ed_EncAnsi"),
+            ("utf8",    "UTF-8",     "Str_Ed_EncUtf8",    0xE8C1),
+            ("utf8bom", "UTF-8 BOM", "Str_Ed_EncUtf8Bom", 0xE8C1),
+            ("utf16le", "UTF-16 LE", "Str_Ed_EncUtf16Le", 0xE8C1),
+            ("utf16be", "UTF-16 BE", "Str_Ed_EncUtf16Be", 0xE8C1),
+            ("ansi",    "ANSI",      "Str_Ed_EncAnsi",    0xE909),
         };
 
         /// <summary>
-        /// Opens the encoding readout's drop-down: a kit menu with the document's own encoding checked,
-        /// anchored under the button the way Storage's depth and size pickers are.
+        /// Opens the encoding readout's tile card under the button: one tile per encoding, the document's own
+        /// filled. Picking one sets it and closes the card.
         /// </summary>
         internal void EditorEncoding_Click(object sender, RoutedEventArgs e)
         {
@@ -455,25 +456,17 @@ namespace KillerShell.Shell
             var pane = LivePanes().FirstOrDefault(p => ReferenceEquals(p.EditorSlot.Content, ed));
             if (pane == null) return;
 
-            var menu = new ContextMenu { Tag = "editorencoding" };
-            foreach (var choice in EncodingChoices)
+            var card = Controls.CardMenus.TileCard();
+            card.Tag = "editorencoding";
+            Controls.CardMenus.WatchKeyboardStart(card);
+            card.Items.Add(Controls.CardMenus.Tiles(card, EncodingChoices.Select(choice =>
             {
                 string key = choice.Key;
-                var row = new MenuItem
-                {
-                    IsCheckable = true,
-                    IsChecked = ed.EncodingLabel == choice.Label,
-                    Header = Loc(choice.Header),
-                    Tag = key,
-                };
-                // Closed here rather than left to menu mode: a screen reader's Invoke clicks the row without it.
-                row.Click += (_, _) => { menu.IsOpen = false; SetEditorEncoding(key); };
-                menu.Items.Add(row);
-            }
-            menu.PlacementTarget = pane.EditorEncodingBtn;
-            menu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
-            menu.VerticalOffset = 4;
-            menu.IsOpen = true;
+                return new KillerFamily.Controls.CardTile(((char)choice.Glyph).ToString(), Loc(choice.Header), null,
+                    () => SetEditorEncoding(key))
+                { Id = key, Shown = choice.Label, Checked = ed.EncodingLabel == choice.Label };
+            }).ToArray()));
+            OpenUnder(card, pane.EditorEncodingBtn);   // Export.cs
         }
 
         /// <summary>

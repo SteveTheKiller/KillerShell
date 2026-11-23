@@ -11,7 +11,7 @@ using Xunit;
 namespace KillerShell.Tests.Terminal;
 
 /// <summary>
-/// The document bar's encoding readout opens a kit drop-down with the current encoding checked, and the pane
+/// The document bar's encoding readout opens a tile card with the current encoding's tile filled, and the pane
 /// toolbar's Export button opens a small tile card with CSV and HTML. Both anchor to the button that opened them.
 /// </summary>
 [Collection(NativeAccessibilityCollection.Name)]
@@ -51,15 +51,15 @@ public static class PaneDropdownCardScenario
         ContextMenu? encodings = null;
         ShellWindowFixture.PumpUntil(() => (encodings = Open("editorencoding")) != null && encodings.ActualWidth > 0);
         Assert.Same(pane.EditorEncodingBtn, encodings!.PlacementTarget);
-        var rows = encodings.Items.OfType<MenuItem>().ToArray();
-        Assert.Equal(new[] { "utf8", "utf8bom", "utf16le", "utf16be", "ansi" }, rows.Select(r => (string)r.Tag).ToArray());
-        Assert.Single(rows, r => r.IsChecked);
+        Assert.Equal(new[] { "utf8", "utf8bom", "utf16le", "utf16be", "ansi" },
+            CardMenus.Buttons(encodings).Select(b => b.CommandParameter as string).OfType<string>().ToArray());
+        Assert.Equal(new[] { "utf8" }, FilledTiles(encodings));
 
         // A changed encoding makes the document dirty, and a dirty document stops the fixture's window close on a
         // save prompt, which would turn any failed assert below into a hang. The finally puts it back first.
         try
         {
-            PickAndReopen(window, pane, editor, rows, before);
+            PickAndReopen(window, pane, editor, encodings, before);
         }
         catch (System.Exception failure)
         {
@@ -74,28 +74,33 @@ public static class PaneDropdownCardScenario
     }
 
     private static void PickAndReopen(KillerShell.Shell.MainWindow window, FilePane pane, KillerShell.Editing.EditorControl editor,
-        MenuItem[] rows, string before)
+        ContextMenu card, string before)
     {
         ContextMenu? encodings = null;
-        var utf16 = rows.Single(r => (string)r.Tag == "utf16le");
-        ((IInvokeProvider)UIElementAutomationPeer.CreatePeerForElement(utf16).GetPattern(PatternInterface.Invoke)).Invoke();
+        Invoke(CardMenus.TileButton(card, "utf16le")!);
         ShellWindowFixture.PumpUntil(() => editor.EncodingLabel == "UTF-16 LE");
         Assert.NotEqual(before, editor.EncodingLabel);
         Assert.Equal("UTF-16 LE", pane.EditorEncodingBtn.Content);
         Assert.True(editor.Dirty);
         ShellWindowFixture.PumpUntil(() => Open("editorencoding") == null);
 
-        // Reopened, the drop-down checks the new encoding; picking UTF-8 again puts the document back as it
+        // Reopened, the card fills the new encoding's tile; picking UTF-8 again puts the document back as it
         // was saved, so it is clean and the window closes without a save prompt.
         window.EditorEncoding_Click(pane.EditorEncodingBtn, new RoutedEventArgs());
         ShellWindowFixture.PumpUntil(() => (encodings = Open("editorencoding")) != null && encodings.ActualWidth > 0);
-        rows = encodings!.Items.OfType<MenuItem>().ToArray();
-        Assert.Equal("utf16le", (string)rows.Single(r => r.IsChecked).Tag);
-        var utf8 = rows.Single(r => (string)r.Tag == "utf8");
-        ((IInvokeProvider)UIElementAutomationPeer.CreatePeerForElement(utf8).GetPattern(PatternInterface.Invoke)).Invoke();
+        Assert.Equal(new[] { "utf16le" }, FilledTiles(encodings!));
+        Invoke(CardMenus.TileButton(encodings!, "utf8")!);
         ShellWindowFixture.PumpUntil(() => editor.EncodingLabel == "UTF-8" && Open("editorencoding") == null);
         Assert.False(editor.Dirty);
     }
+
+    private static void Invoke(Button tile)
+        => ((IInvokeProvider)UIElementAutomationPeer.CreatePeerForElement(tile).GetPattern(PatternInterface.Invoke)).Invoke();
+
+    // A turned-on tile carries its accent fill as a local Background; the others keep the style's.
+    private static string[] FilledTiles(ContextMenu card)
+        => CardMenus.Buttons(card).Where(b => b.ReadLocalValue(Control.BackgroundProperty) != DependencyProperty.UnsetValue)
+            .Select(b => b.CommandParameter as string).OfType<string>().ToArray();
 
     private static ContextMenu? Open(string tag)
     {

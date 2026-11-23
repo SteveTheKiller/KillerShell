@@ -31,7 +31,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - The tray icon's card shows the KillerShell logo over one row of tiles, Open and then Exit, like the other cards.
 - Under Trash Polka outline buttons have a solid dark face with white text.
 - The document bar's settings gear opens a tile card like the other cards. The reading options flip in place and keep it open, and Indent picks its width from a list.
-- The document bar's encoding picker is a regular drop-down with the current encoding checked.
+- The document bar's encoding picker opens a tile card with one tile per encoding, the current one filled.
 - The Export button opens a small card with CSV and HTML tiles and their shortcuts.
 
 ### Added
