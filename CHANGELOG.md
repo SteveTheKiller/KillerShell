@@ -4,7 +4,7 @@ All notable changes to KillerShell are documented here.
 
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.6.2] - 2026-11-22
+## [1.6.2] - 2026-11-23
 
 1.6.2 makes clicks respond right away again, gives This PC drive tiles with usage bars, puts program icons in the Processes list, and fixes the Trash Polka tool pages and the 98SE look.
 
