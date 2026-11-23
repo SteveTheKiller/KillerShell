@@ -67,8 +67,8 @@ App data is processed locally, with no telemetry or automatic uploads. Update ch
 Themes & accents
 14 themes, 49 looks: Dark, Light, Black, 98SE and Trash Polka each have 8 accent colors. The other 9 have fixed palettes. Switch live without restarting. The theme menu can turn Film Grain on or off.
 
-Twenty languages
-The interface is localized in twenty languages (English, Slovenian, Spanish, German, French, Hungarian, Italian, Turkish, Vietnamese, Polish, Czech, Japanese, Chinese Traditional and Simplified, Bengali, Russian, Kazakh, Ukrainian, Norwegian (Bokmål) and Brazilian Portuguese), switchable live from the toolbar.","একটি কম্পিউটার আর তার ভেতরের সবকিছু সামলানোর জন্য একটিমাত্র পোর্টেবল Windows exe। ফাইল, শেল, টেক্সট এডিটিং, স্টোরেজ আর সিস্টেম অ্যাডমিন - সবই এক উইন্ডোতে, এক সেট কি-তে।
+Twenty-two languages
+The interface is localized in twenty-two languages (English, Slovenian, Spanish, German, French, Hungarian, Italian, Turkish, Vietnamese, Polish, Czech, Japanese, Chinese Traditional and Simplified, Bengali, Russian, Kazakh, Korean, Ukrainian, Norwegian (Bokmål), Swedish and Brazilian Portuguese), switchable live from the toolbar.","একটি কম্পিউটার আর তার ভেতরের সবকিছু সামলানোর জন্য একটিমাত্র পোর্টেবল Windows exe। ফাইল, শেল, টেক্সট এডিটিং, স্টোরেজ আর সিস্টেম অ্যাডমিন - সবই এক উইন্ডোতে, এক সেট কি-তে।
 
 ইনস্টল করুন বা পোর্টেবল চালান। ফ্রি, ওপেন সোর্স, GPLv3। কোনো এজেন্ট নেই, অ্যাকাউন্ট নেই, সাবস্ক্রিপশন নেই। কোনো টেলিমেট্রি পাঠানো হয় না, বিজ্ঞাপনও নেই... কখনোই না।
 
@@ -135,8 +135,8 @@ HTML ও CSV এক্সপোর্ট
 থিম ও অ্যাকসেন্ট
 14টি থিম, 49টি রূপ: Dark, Light, Black, 98SE ও Trash Polka-তে 8টি করে অ্যাকসেন্ট রং আছে। অন্য 9টির স্থির প্যালেট। পুনরায় চালু না করেই বদলান। থিম মেনু থেকে ফিল্ম গ্রেইন চালু বা বন্ধ করা যায়।
 
-বিশটি ভাষা
-ইন্টারফেস বিশটি ভাষায় স্থানীয়কৃত (ইংরেজি, স্লোভেনীয়, স্প্যানিশ, জার্মান, ফরাসি, হাঙ্গেরীয়, ইতালীয়, তুর্কি, ভিয়েতনামি, পোলিশ, চেক, জাপানি, সনাতন ও সরলীকৃত চীনা, বাংলা, রুশ, কাজাখ, ইউক্রেনীয়, নরওয়েজীয় (বোকমাল) এবং ব্রাজিলীয় পর্তুগিজ), টুলবার থেকে লাইভ বদলানো যায়।","Jedno přenosné exe pro Windows, kterým spravujete počítač a všechno, co je na něm. Soubory, shelly, úpravy textu, úložiště a správa systému sdílejí jedno okno a jednu sadu kláves.
+বাইশটি ভাষা
+ইন্টারফেস বাইশটি ভাষায় স্থানীয়কৃত (ইংরেজি, স্লোভেনীয়, স্প্যানিশ, জার্মান, ফরাসি, হাঙ্গেরীয়, ইতালীয়, তুর্কি, ভিয়েতনামি, পোলিশ, চেক, জাপানি, সনাতন ও সরলীকৃত চীনা, বাংলা, রুশ, কাজাখ, কোরিয়ান, ইউক্রেনীয়, নরওয়েজীয় (বোকমাল), সুইডিশ এবং ব্রাজিলীয় পর্তুগিজ), টুলবার থেকে লাইভ বদলানো যায়।","Jedno přenosné exe pro Windows, kterým spravujete počítač a všechno, co je na něm. Soubory, shelly, úpravy textu, úložiště a správa systému sdílejí jedno okno a jednu sadu kláves.
 
 Nainstalujte nebo spusťte přenosně. Zdarma, open source, GPLv3. Žádný agent, žádný účet, žádné předplatné. Žádná telemetrie a žádné reklamy... nikdy.
 
@@ -203,8 +203,8 @@ Data aplikace se zpracovávají místně, bez telemetrie a automatického odesí
 Motivy & akcenty
 14 motivů, 49 vzhledů: Dark, Light, Black, 98SE a Trash Polka má každý 8 barev akcentu. Ostatních 9 má pevné palety. Přepínejte bez restartu. Nabídka motivů umožňuje zapnout nebo vypnout filmové zrno.
 
-Dvacet jazyků
-Rozhraní je lokalizováno do dvaceti jazyků (angličtina, slovinština, španělština, němčina, francouzština, maďarština, italština, turečtina, vietnamština, polština, čeština, japonština, tradiční a zjednodušená čínština, bengálština, ruština, kazaština, ukrajinština, norština (bokmål) a brazilská portugalština) a přepíná se za běhu z panelu nástrojů.","Eine portable Windows-exe, um einen Rechner und alles darauf zu verwalten. Dateien, Shells, Textbearbeitung, Speicher und Systemadministration teilen sich ein Fenster und einen Satz Tasten.
+Dvaadvacet jazyků
+Rozhraní je lokalizováno do dvaadvaceti jazyků (angličtina, slovinština, španělština, němčina, francouzština, maďarština, italština, turečtina, vietnamština, polština, čeština, japonština, tradiční a zjednodušená čínština, bengálština, ruština, kazaština, korejština, ukrajinština, norština (bokmål), švédština a brazilská portugalština) a přepíná se za běhu z panelu nástrojů.","Eine portable Windows-exe, um einen Rechner und alles darauf zu verwalten. Dateien, Shells, Textbearbeitung, Speicher und Systemadministration teilen sich ein Fenster und einen Satz Tasten.
 
 Installieren oder portabel nutzen. Kostenlos, Open Source, GPLv3. Kein Agent, kein Konto, kein Abo. Keine Telemetrie und keine Werbung... niemals.
 
@@ -271,8 +271,8 @@ App-Daten werden lokal verarbeitet, ohne Telemetrie oder automatische Uploads. U
 Themes & Akzente
 14 Designs, 49 Varianten: Dark, Light, Black, 98SE und Trash Polka haben jeweils 8 Akzentfarben. Die anderen 9 haben feste Paletten. Wechsel ohne Neustart. Im Themenmenü lässt sich Filmkorn ein- oder ausschalten.
 
-Zwanzig Sprachen
-Die Oberfläche ist in zwanzig Sprachen lokalisiert (Englisch, Slowenisch, Spanisch, Deutsch, Französisch, Ungarisch, Italienisch, Türkisch, Vietnamesisch, Polnisch, Tschechisch, Japanisch, Chinesisch traditionell und vereinfacht, Bengalisch, Russisch, Kasachisch, Ukrainisch, Norwegisch (Bokmål) und Portugiesisch (Brasilien)), live umschaltbar aus der Symbolleiste.","Un único .exe portátil de Windows para gestionar un equipo y todo lo que hay en el. Archivos, shells, edición de texto, almacenamiento y administracion del sistema comparten una ventana y un mismo juego de teclas.
+Zweiundzwanzig Sprachen
+Die Oberfläche ist in zweiundzwanzig Sprachen lokalisiert (Englisch, Slowenisch, Spanisch, Deutsch, Französisch, Ungarisch, Italienisch, Türkisch, Vietnamesisch, Polnisch, Tschechisch, Japanisch, Chinesisch traditionell und vereinfacht, Bengalisch, Russisch, Kasachisch, Koreanisch, Ukrainisch, Norwegisch (Bokmål), Schwedisch und Portugiesisch (Brasilien)), live umschaltbar aus der Symbolleiste.","Un único .exe portátil de Windows para gestionar un equipo y todo lo que hay en el. Archivos, shells, edición de texto, almacenamiento y administracion del sistema comparten una ventana y un mismo juego de teclas.
 
 Instalalo o úsalo portátil. Gratis, código abierto, GPLv3. Sin agente, sin cuenta, sin suscripción. No se envía telemetría y no hay anuncios... nunca.
 
@@ -339,8 +339,8 @@ Los datos se procesan localmente, sin telemetría ni subidas automáticas. Las c
 Temas y acentos
 14 temas, 49 apariencias: Dark, Light, Black, 98SE y Trash Polka tienen 8 colores de acento cada uno. Los otros 9 tienen paletas fijas. Cambia sin reiniciar. El menú de temas permite activar o desactivar Grano de película.
 
-Veinte idiomas
-La interfaz está localizada en veinte idiomas (inglés, esloveno, español, alemán, francés, húngaro, italiano, turco, vietnamita, polaco, checo, japonés, chino tradicional y simplificado, bengalí, ruso, kazajo, ucraniano, noruego (bokmål) y portugués brasileño), cambiables en vivo desde la barra de herramientas.","Un seul exe portable Windows pour gérer un ordinateur et tout ce qu'il contient. Fichiers, shells, édition de texte, stockage et administration système partagent une fenêtre et un meme jeu de touches.
+Veintidós idiomas
+La interfaz está localizada en veintidós idiomas (inglés, esloveno, español, alemán, francés, húngaro, italiano, turco, vietnamita, polaco, checo, japonés, chino tradicional y simplificado, bengalí, ruso, kazajo, coreano, ucraniano, noruego (bokmål), sueco y portugués brasileño), cambiables en vivo desde la barra de herramientas.","Un seul exe portable Windows pour gérer un ordinateur et tout ce qu'il contient. Fichiers, shells, édition de texte, stockage et administration système partagent une fenêtre et un meme jeu de touches.
 
 Installez-le ou utilisez-le en portable. Gratuit, open source, GPLv3. Pas d'agent, pas de compte, pas d'abonnement. Aucune télémétrie envoyée et aucune pub... jamais.
 
@@ -407,8 +407,8 @@ Les données sont traitées localement, sans télémétrie ni envoi automatique.
 Thèmes & accents
 14 thèmes, 49 apparences : Dark, Light, Black, 98SE et Trash Polka ont chacun 8 couleurs d'accent. Les 9 autres ont une palette fixe. Changez sans redémarrer. Le menu des thèmes permet d'activer ou de désactiver le grain de film.
 
-Vingt langues
-L'interface est localisée en vingt langues (anglais, slovène, espagnol, allemand, français, hongrois, italien, turc, vietnamien, polonais, tchèque, japonais, chinois traditionnel et simplifié, bengali, russe, kazakh, ukrainien, norvégien (bokmål) et portugais brésilien), commutables en direct depuis la barre d'outils.","Egy hordozható Windows exe a számítógép és minden rajta lévő összes kezeléséhez. A fájlok, a parancsértelmezők, a szövegszerkesztés, a tárolás és a rendszergazda egy ablakon és egy kulcskészleten osztozik.
+Vingt-deux langues
+L'interface est localisée en vingt-deux langues (anglais, slovène, espagnol, allemand, français, hongrois, italien, turc, vietnamien, polonais, tchèque, japonais, chinois traditionnel et simplifié, bengali, russe, kazakh, coréen, ukrainien, norvégien (bokmål), suédois et portugais brésilien), commutables en direct depuis la barre d'outils.","Egy hordozható Windows exe a számítógép és minden rajta lévő összes kezeléséhez. A fájlok, a parancsértelmezők, a szövegszerkesztés, a tárolás és a rendszergazda egy ablakon és egy kulcskészleten osztozik.
 
 Telepítse vagy futtassa a hordozható eszközt. Ingyenes, nyílt forráskódú, GPLv3. Nincs ügynök, nincs fiók, nincs előfizetés. Nem küldenek telemetriát és nincsenek hirdetések... soha.
 
@@ -475,8 +475,8 @@ Az adatok helyben dolgozódnak fel, telemetria és automatikus feltöltés nélk
 Témák és hangsúlyok
 14 téma, 49 megjelenés: a Dark, Light, Black, 98SE és Trash Polka egyenként 8 kiemelőszínt kínál. A többi 9 rögzített palettát használ. Váltás újraindítás nélkül. A témamenüben be- és kikapcsolható a filmszemcsézettség.
 
-Húsz nyelv
-Az interfész húsz nyelvre lokalizált (angol, szlovén, spanyol, német, francia, magyar, olasz, török, vietnámi, lengyel, cseh, japán, hagyományos és egyszerűsített kínai, valamint bengáli, orosz, kazah, ukrán, norvég (bokmål) és brazil portugál), élőben váltható az eszköztárról.","Un solo exe portatile per Windows per gestire un computer e tutto ciò che contiene. File, shell, editor di testo, spazio su disco e amministrazione di sistema condividono una finestra e un solo set di tasti.
+Huszonkét nyelv
+Az interfész huszonkét nyelvre lokalizált (angol, szlovén, spanyol, német, francia, magyar, olasz, török, vietnámi, lengyel, cseh, japán, hagyományos és egyszerűsített kínai, valamint bengáli, orosz, kazah, koreai, ukrán, norvég (bokmål), svéd és brazil portugál), élőben váltható az eszköztárról.","Un solo exe portatile per Windows per gestire un computer e tutto ciò che contiene. File, shell, editor di testo, spazio su disco e amministrazione di sistema condividono una finestra e un solo set di tasti.
 
 Installa o usa in modalità portatile. Gratuito, open source, GPLv3. Nessun agente, nessun account, nessun abbonamento. Nessuna telemetria inviata e niente pubblicità... mai.
 
@@ -543,8 +543,8 @@ I dati sono elaborati localmente, senza telemetria o caricamenti automatici. I c
 Temi e accenti
 14 temi, 49 aspetti: Dark, Light, Black, 98SE e Trash Polka hanno 8 colori di accento ciascuno. Gli altri 9 hanno tavolozze fisse. Cambia senza riavviare. Il menu dei temi permette di attivare o disattivare la grana della pellicola.
 
-Venti lingue
-L'interfaccia è localizzata in venti lingue (inglese, sloveno, spagnolo, tedesco, francese, ungherese, italiano, turco, vietnamita, polacco, ceco, giapponese, cinese tradizionale e semplificato, bengalese, russo, kazako, ucraino, norvegese (bokmål) e portoghese brasiliano), commutabili dal vivo dalla barra degli strumenti.","コンピューターとその中のすべてを管理するための、一つのポータブルな Windows exe。ファイル、シェル、テキスト編集、ストレージ、システム管理が、一つのウィンドウと一つのキー体系を共有します。
+Ventidue lingue
+L'interfaccia è localizzata in ventidue lingue (inglese, sloveno, spagnolo, tedesco, francese, ungherese, italiano, turco, vietnamita, polacco, ceco, giapponese, cinese tradizionale e semplificato, bengalese, russo, kazako, coreano, ucraino, norvegese (bokmål), svedese e portoghese brasiliano), commutabili dal vivo dalla barra degli strumenti.","コンピューターとその中のすべてを管理するための、一つのポータブルな Windows exe。ファイル、シェル、テキスト編集、ストレージ、システム管理が、一つのウィンドウと一つのキー体系を共有します。
 
 インストールしてもポータブルでも。無料、オープンソース、GPLv3。エージェントなし、アカウントなし、サブスクリプションなし。テレメトリーは送信せず、広告もありません...この先もずっと。
 
@@ -611,8 +611,8 @@ Explorer の流儀があるところはそれに従い、ないところは組�
 テーマとアクセント
 14 テーマ、49 通りの外観。Dark、Light、Black、98SE、Trash Polka は各 8 色のアクセントカラーを持ち、残る 9 テーマは固定パレットです。再起動せずに切り替えられます。 テーマメニューでフィルムグレインをオンまたはオフにできます。
 
-20 言語
-インターフェイスは 20 言語 (英語、スロベニア語、スペイン語、ドイツ語、フランス語、ハンガリー語、イタリア語、トルコ語、ベトナム語、ポーランド語、チェコ語、日本語、繁体字と簡体字の中国語、ベンガル語、ロシア語、カザフ語、ウクライナ語、ノルウェー語 (ブークモール)、ブラジルのポルトガル語) にローカライズされ、ツールバーからライブで切り替えられます。","Компьютерді және ондағы барлық нәрсені басқаруға арналған бір тасымалды Windows exe файлы. Файлдар, қабықшалар, мәтін өңдеу, жинақтауыш және жүйелік әкімшілік бір терезе мен бір пернелер жинағын бөліседі.
+22 言語
+インターフェイスは 22 言語 (英語、スロベニア語、スペイン語、ドイツ語、フランス語、ハンガリー語、イタリア語、トルコ語、ベトナム語、ポーランド語、チェコ語、日本語、繁体字と簡体字の中国語、ベンガル語、ロシア語、カザフ語、韓国語、ウクライナ語、ノルウェー語 (ブークモール)、スウェーデン語、ブラジルのポルトガル語) にローカライズされ、ツールバーからライブで切り替えられます。","Компьютерді және ондағы барлық нәрсені басқаруға арналған бір тасымалды Windows exe файлы. Файлдар, қабықшалар, мәтін өңдеу, жинақтауыш және жүйелік әкімшілік бір терезе мен бір пернелер жинағын бөліседі.
 
 Орнатыңыз немесе тасымалды түрде іске қосыңыз. Тегін, ашық бастапқы кодты, GPLv3. Агентсіз, тіркелгісіз, жазылымсыз. Телеметрия жіберілмейді және жарнама жоқ... ешқашан.
 
@@ -679,8 +679,8 @@ Explorer-дің дағдылары бар жерде солар, ал жоқ ж�
 Тақырыптар және акценттер
 14 тақырып, 49 көрініс: Dark, Light, Black, 98SE және Trash Polka әрқайсысында 8 екпін түсі бар. Қалған 9 тақырыптың палитрасы тұрақты. Қайта іске қоспай ауыстырыңыз. Тақырыптар мәзірінде пленка түйіршігін қосуға немесе өшіруге болады.
 
-Жиырма тіл
-Интерфейс жиырма тілге аударылған (ағылшын, словен, испан, неміс, француз, венгр, итальян, түрік, вьетнам, поляк, чех, жапон, дәстүрлі және жеңілдетілген қытай, бенгал, орыс, қазақ, украин, норвег (букмол) және португал (Бразилия)) және құралдар тақтасынан бірден ауысады.","Én portabel Windows-exe for å administrere en datamaskin og alt på den. Filer, skall, tekstredigering, lagring og systemadministrasjon deler ett vindu og ett sett med taster.
+Жиырма екі тіл
+Интерфейс жиырма екі тілге аударылған (ағылшын, словен, испан, неміс, француз, венгр, итальян, түрік, вьетнам, поляк, чех, жапон, дәстүрлі және жеңілдетілген қытай, бенгал, орыс, қазақ, корей, украин, норвег (букмол), швед және португал (Бразилия)) және құралдар тақтасынан бірден ауысады.","Én portabel Windows-exe for å administrere en datamaskin og alt på den. Filer, skall, tekstredigering, lagring og systemadministrasjon deler ett vindu og ett sett med taster.
 
 Installer eller kjør portabelt. Gratis, åpen kildekode, GPLv3. Ingen agent, ingen konto, intet abonnement. Ingen telemetri sendes og ingen annonser... aldri.
 
@@ -747,8 +747,8 @@ Appdata behandles lokalt, uten telemetri eller automatisk opplasting. Oppdaterin
 Temaer & aksenter
 14 temaer, 49 uttrykk: Dark, Light, Black, 98SE og Trash Polka har 8 aksentfarger hver. De andre 9 har faste paletter. Bytt uten omstart. Temamenyen kan slå filmkorn av eller på.
 
-Tjue språk
-Grensesnittet er lokalisert til tjue språk (engelsk, slovensk, spansk, tysk, fransk, ungarsk, italiensk, tyrkisk, vietnamesisk, polsk, tsjekkisk, japansk, tradisjonell og forenklet kinesisk, bengali, russisk, kasakhisk, ukrainsk, norsk bokmål og brasiliansk portugisisk), og kan byttes live fra verktøylinjen.","Jeden przenośny plik .exe dla Windows do zarządzania komputerem i wszystkim, co się na nim znajduje. Pliki, powłoki, edycja tekstu, pamięć masowa i administracja systemem dzielą jedno okno i jeden zestaw klawiszy.
+Tjueto språk
+Grensesnittet er lokalisert til tjueto språk (engelsk, slovensk, spansk, tysk, fransk, ungarsk, italiensk, tyrkisk, vietnamesisk, polsk, tsjekkisk, japansk, tradisjonell og forenklet kinesisk, bengali, russisk, kasakhisk, koreansk, ukrainsk, norsk bokmål, svensk og brasiliansk portugisisk), og kan byttes live fra verktøylinjen.","Jeden przenośny plik .exe dla Windows do zarządzania komputerem i wszystkim, co się na nim znajduje. Pliki, powłoki, edycja tekstu, pamięć masowa i administracja systemem dzielą jedno okno i jeden zestaw klawiszy.
 
 Zainstaluj lub uruchom w trybie przenośnym. Bezpłatny, otwartoźródłowy, GPLv3. Bez agenta, bez konta, bez subskrypcji. Bez telemetrii i bez reklam... nigdy.
 
@@ -815,8 +815,8 @@ Dane są przetwarzane lokalnie, bez telemetrii i automatycznego wysyłania. Spra
 Motywy i akcenty
 14 motywów, 49 wyglądów: Dark, Light, Black, 98SE i Trash Polka mają po 8 kolorów akcentu. Pozostałe 9 ma stałe palety. Zmieniaj bez restartu. Menu motywów pozwala włączyć lub wyłączyć ziarno filmowe.
 
-Dwadzieścia języków
-Interfejs jest przetłumaczony na dwadzieścia języków (angielski, słoweński, hiszpański, niemiecki, francuski, węgierski, włoski, turecki, wietnamski, polski, czeski, japoński, chiński tradycyjny i uproszczony, bengalski, rosyjski, kazachski, ukraiński, norweski (bokmål) oraz portugalski brazylijski), przełączanych na żywo z paska narzędzi.","Um único executável portátil do Windows para gerenciar um computador e tudo o que há nele. Arquivos, shells, edição de texto, armazenamento e administração do sistema compartilham uma só janela e um só conjunto de teclas.
+Dwadzieścia dwa języki
+Interfejs jest przetłumaczony na dwadzieścia dwa języki (angielski, słoweński, hiszpański, niemiecki, francuski, węgierski, włoski, turecki, wietnamski, polski, czeski, japoński, chiński tradycyjny i uproszczony, bengalski, rosyjski, kazachski, koreański, ukraiński, norweski (bokmål), szwedzki oraz portugalski brazylijski), przełączanych na żywo z paska narzędzi.","Um único executável portátil do Windows para gerenciar um computador e tudo o que há nele. Arquivos, shells, edição de texto, armazenamento e administração do sistema compartilham uma só janela e um só conjunto de teclas.
 
 Instale ou execute como portátil. Gratuito, código aberto, GPLv3. Sem agente, sem conta, sem assinatura. Nenhuma telemetria é enviada e nenhum anúncio... nunca.
 
@@ -883,8 +883,8 @@ Os dados são processados localmente, sem telemetria nem envios automáticos. Ve
 Temas & destaques
 14 temas, 49 visuais: Dark, Light, Black, 98SE e Trash Polka têm 8 cores de destaque cada. Os outros 9 têm paletas fixas. Troque sem reiniciar. O menu de temas permite ativar ou desativar o grão de filme.
 
-Vinte idiomas
-A interface está localizada em vinte idiomas (inglês, esloveno, espanhol, alemão, francês, húngaro, italiano, turco, vietnamita, polonês, tcheco, japonês, chinês tradicional e simplificado, bengali, russo, cazaque, ucraniano, norueguês bokmål e português do Brasil), com troca ao vivo pela barra de ferramentas.","Одна портативная Windows-программа в виде exe для управления компьютером и всем, что на нём есть. Файлы, оболочки, редактирование текста, хранилище и системное администрирование делят одно окно и один набор клавиш.
+Vinte e dois idiomas
+A interface está localizada em vinte e dois idiomas (inglês, esloveno, espanhol, alemão, francês, húngaro, italiano, turco, vietnamita, polonês, tcheco, japonês, chinês tradicional e simplificado, bengali, russo, cazaque, coreano, ucraniano, norueguês bokmål, sueco e português do Brasil), com troca ao vivo pela barra de ferramentas.","Одна портативная Windows-программа в виде exe для управления компьютером и всем, что на нём есть. Файлы, оболочки, редактирование текста, хранилище и системное администрирование делят одно окно и один набор клавиш.
 
 Установите или запускайте портативно. Бесплатно, с открытым исходным кодом, GPLv3. Без агента, без учётной записи, без подписки. Телеметрия не отправляется, и рекламы нет... никогда.
 
@@ -951,8 +951,8 @@ Ctrl+F12 открывает журналы Приложение, Система 
 Темы и акценты
 14 тем, 49 вариантов: Dark, Light, Black, 98SE и Trash Polka имеют по 8 акцентных цветов. Остальные 9 используют фиксированные палитры. Переключение без перезапуска. В меню тем можно включить или выключить зернистость плёнки.
 
-Двадцать языков
-Интерфейс переведён на двадцать языков (английский, словенский, испанский, немецкий, французский, венгерский, итальянский, турецкий, вьетнамский, польский, чешский, японский, китайский традиционный и упрощённый, бенгальский, русский, казахский, украинский, норвежский (букмол) и португальский (Бразилия)) и переключается на лету с панели инструментов.","Bir bilgisayari ve icindeki her şeyi yönetmek için tek bir taşinabİlİr Windows exe. Dosyalar, kabuklar, metin düzenleme, depolama ve sistem yonetimi tek bir pencereyi ve tek bir tus takimini paylasir.
+Двадцать два языка
+Интерфейс переведён на двадцать два языка (английский, словенский, испанский, немецкий, французский, венгерский, итальянский, турецкий, вьетнамский, польский, чешский, японский, китайский традиционный и упрощённый, бенгальский, русский, казахский, корейский, украинский, норвежский (букмол), шведский и португальский (Бразилия)) и переключается на лету с панели инструментов.","Bir bilgisayari ve icindeki her şeyi yönetmek için tek bir taşinabİlİr Windows exe. Dosyalar, kabuklar, metin düzenleme, depolama ve sistem yonetimi tek bir pencereyi ve tek bir tus takimini paylasir.
 
 Kurun ya da taşinabİlİr calistirin. Ücretsiz, acik kaynak, GPLv3. Ajan yok, hesap yok, abonelik yok. Telemetri gönderilmez, reklam da yok... asla.
 
@@ -1019,8 +1019,8 @@ Uygulama verileri telemetri ve otomatik yükleme olmadan yerel olarak işlenir. 
 Temalar ve vurgular
 14 tema, 49 görünüm: Dark, Light, Black, 98SE ve Trash Polka için 8'er vurgu rengi vardır. Diğer 9 tema sabit palet kullanır. Yeniden başlatmadan değiştirin. Tema menüsünden Film Tanesi açılıp kapatılabilir.
 
-Yirmi dil
-Arayuz yirmi dilde yerellestirildi (Ingilizce, Ispanyolca, Almanca, Fransizca, Macarca, İtalyanca, Türkçe, Vietnamca, Lehçe, Cekce, Japonca, Geleneksel ve Basitlestirilmis Çince, Bengalce, Rusça, Kazakça, Ukraynaca, Norveççe (Bokmål) ve Brezilya Portekizcesi) ve araç çubuğundan canli değiştirilebilir.","Один портативний exe для Windows, щоб керувати комп'ютером і всім, що на ньому є. Файли, оболонки, редагування тексту, сховище та системне адміністрування в одному вікні з єдиним набором клавіш.
+Yirmi iki dil
+Arayuz yirmi iki dilde yerellestirildi (Ingilizce, Ispanyolca, Almanca, Fransizca, Macarca, İtalyanca, Türkçe, Vietnamca, Lehçe, Cekce, Japonca, Geleneksel ve Basitlestirilmis Çince, Bengalce, Rusça, Kazakça, Korece, Ukraynaca, Norveççe (Bokmål), İsveççe ve Brezilya Portekizcesi) ve araç çubuğundan canli değiştirilebilir.","Один портативний exe для Windows, щоб керувати комп'ютером і всім, що на ньому є. Файли, оболонки, редагування тексту, сховище та системне адміністрування в одному вікні з єдиним набором клавіш.
 
 Установіть або запускайте портативно. Безкоштовно, з відкритим кодом, GPLv3. Без агента, без облікового запису, без підписки. Жодної телеметрії та жодної реклами... ніколи.
 
@@ -1087,8 +1087,8 @@ Ctrl+F12 відкриває журнали «Програма», «Систем�
 Теми & акценти
 14 тем, 49 виглядів: Dark, Light, Black, 98SE і Trash Polka мають по 8 кольорів акценту. Інші 9 мають фіксовані палітри. Перемикайте без перезапуску. У меню тем можна ввімкнути або вимкнути зернистість плівки.
 
-Двадцять мов
-Інтерфейс локалізовано двадцятьма мовами (англійська, словенська, іспанська, німецька, французька, угорська, італійська, турецька, в'єтнамська, польська, чеська, японська, китайська традиційна та спрощена, бенгальська, російська, казахська, українська, норвезька (букмол) та бразильська португальська), перемикання наживо на панелі інструментів.","Một tệp exe Windows di động để quản lý máy tính và mọi thứ trên đó. Tệp, shell, chỉnh sửa văn bản, lưu trữ và quản trị hệ thống cùng nằm trong một cửa sổ và dùng chung một bộ phím.
+Двадцять дві мови
+Інтерфейс локалізовано двадцятьма двома мовами (англійська, словенська, іспанська, німецька, французька, угорська, італійська, турецька, в'єтнамська, польська, чеська, японська, китайська традиційна та спрощена, бенгальська, російська, казахська, корейська, українська, норвезька (букмол), шведська та бразильська португальська), перемикання наживо на панелі інструментів.","Một tệp exe Windows di động để quản lý máy tính và mọi thứ trên đó. Tệp, shell, chỉnh sửa văn bản, lưu trữ và quản trị hệ thống cùng nằm trong một cửa sổ và dùng chung một bộ phím.
 
 Cài đặt hoặc chạy ở chế độ di động. Miễn phí, mã nguồn mở, GPLv3. Không tác nhân, không tài khoản, không thuê bao. Không gửi dữ liệu đo từ xa và không bao giờ có quảng cáo.
 
@@ -1155,8 +1155,8 @@ Dữ liệu được xử lý cục bộ, không có đo từ xa hay tự độn
 Giao diện & màu nhấn
 14 giao diện, 49 kiểu: Dark, Light, Black, 98SE và Trash Polka có 8 màu nhấn mỗi giao diện. 9 giao diện còn lại có bảng màu cố định. Chuyển ngay không cần khởi động lại. Menu chủ đề cho phép bật hoặc tắt hạt phim.
 
-Hai mươi ngôn ngữ
-Giao diện được bản địa hóa sang hai mươi ngôn ngữ (tiếng Anh, tiếng Slovenia, tiếng Tây Ban Nha, tiếng Đức, tiếng Pháp, tiếng Hungary, tiếng Ý, tiếng Thổ Nhĩ Kỳ, tiếng Việt, tiếng Ba Lan, tiếng Séc, tiếng Nhật, tiếng Trung Phồn thể và Giản thể, tiếng Bengal, tiếng Nga, tiếng Kazakh, tiếng Ukraina, tiếng Na Uy (Bokmål) và tiếng Bồ Đào Nha (Brazil)), có thể chuyển đổi theo thời gian thực từ thanh công cụ.","一个便携的 Windows exe，用来管理一台电脑和它上面的一切。文件、shell、文本编辑、存储和系统管理共用一个窗口、一套按键。
+Hai mươi hai ngôn ngữ
+Giao diện được bản địa hóa sang hai mươi hai ngôn ngữ (tiếng Anh, tiếng Slovenia, tiếng Tây Ban Nha, tiếng Đức, tiếng Pháp, tiếng Hungary, tiếng Ý, tiếng Thổ Nhĩ Kỳ, tiếng Việt, tiếng Ba Lan, tiếng Séc, tiếng Nhật, tiếng Trung Phồn thể và Giản thể, tiếng Bengal, tiếng Nga, tiếng Kazakh, tiếng Hàn, tiếng Ukraina, tiếng Na Uy (Bokmål), tiếng Thụy Điển và tiếng Bồ Đào Nha (Brazil)), có thể chuyển đổi theo thời gian thực từ thanh công cụ.","一个便携的 Windows exe，用来管理一台电脑和它上面的一切。文件、shell、文本编辑、存储和系统管理共用一个窗口、一套按键。
 
 可安装也可便携运行。免费、开源、GPLv3。无代理、无账户、无订阅。不发送任何遥测，也没有广告……永远没有。
 
@@ -1223,8 +1223,8 @@ HTML 与 CSV 导出
 主题与强调色
 14 种主题，49 种外观：Dark、Light、Black、98SE 和 Trash Polka 各有 8 种强调色，其他 9 种主题使用固定调色板。无需重启即可切换。 主题菜单可开启或关闭胶片颗粒。
 
-二十种语言
-界面已本地化为二十种语言（英语、斯洛文尼亚语、西班牙语、德语、法语、匈牙利语、意大利语、土耳其语、越南语、波兰语、捷克语、日语、繁简中文、孟加拉语、俄语、哈萨克语、乌克兰语、挪威语（博克马尔语）和巴西葡萄牙语），可从工具栏实时切换。","一個可攜的 Windows exe，用來管理一台電腦和它上面的一切。檔案、shell、文字編輯、儲存空間和系統管理共用一個視窗、一套按鍵。
+二十二种语言
+界面已本地化为二十二种语言（英语、斯洛文尼亚语、西班牙语、德语、法语、匈牙利语、意大利语、土耳其语、越南语、波兰语、捷克语、日语、繁简中文、孟加拉语、俄语、哈萨克语、韩语、乌克兰语、挪威语（博克马尔语）、瑞典语和巴西葡萄牙语），可从工具栏实时切换。","一個可攜的 Windows exe，用來管理一台電腦和它上面的一切。檔案、shell、文字編輯、儲存空間和系統管理共用一個視窗、一套按鍵。
 
 可安裝也可攜帶執行。免費、開源、GPLv3。無代理程式、無帳號、無訂閱。不傳送任何遙測，也沒有廣告……永遠沒有。
 
@@ -1291,8 +1291,8 @@ HTML 與 CSV 匯出
 主題與強調色
 14 種主題，49 種外觀：Dark、Light、Black、98SE 和 Trash Polka 各有 8 種強調色，其他 9 種主題使用固定調色盤。不必重新啟動即可切換。 主題選單可開啟或關閉膠片顆粒。
 
-二十種語言
-介面已在地化為二十種語言（英語、スロベニア語、西班牙語、德語、法語、匈牙利語、義大利語、土耳其語、越南語、波蘭語、捷克語、日語、繁簡中文、孟加拉語、俄語、哈薩克語、烏克蘭語、挪威語（博克馬爾語）與巴西葡萄牙語），可從工具列即時切換。","Ena prenosna datoteka exe za Windows za upravljanje računalnika in vsega v njem. Datoteke, lupine, urejanje besedila, shramba in sistemsko upravljanje v enem oknu z enotnimi tipkami.
+二十二種語言
+介面已在地化為二十二種語言（英語、スロベニア語、西班牙語、德語、法語、匈牙利語、義大利語、土耳其語、越南語、波蘭語、捷克語、日語、繁簡中文、孟加拉語、俄語、哈薩克語、韓語、烏克蘭語、挪威語（博克馬爾語）、瑞典語與巴西葡萄牙語），可從工具列即時切換。","Ena prenosna datoteka exe za Windows za upravljanje računalnika in vsega v njem. Datoteke, lupine, urejanje besedila, shramba in sistemsko upravljanje v enem oknu z enotnimi tipkami.
 
 Namestite ali zaženite prenosno. Brezplačno, odprtokodno, GPLv3. Brez agenta, računa ali naročnine. Brez pošiljanja telemetrije in brez oglasov. Vedno.
 
@@ -1359,8 +1359,8 @@ Podatki aplikacije se obdelujejo lokalno brez telemetrije ali samodejnega pošil
 Teme in poudarki
 14 tem, 49 videzov: Temna, Svetla, Črna, 98SE in Trash Polka imajo vsaka 8 poudarkov. Drugih 9 ima določene palete. Preklopite takoj brez ponovnega zagona. Meni tem omogoča vklop ali izklop filmske zrnatosti.
 
-Dvajset jezikov
-Vmesnik je preveden v dvajset jezikov: angleščino, španščino, nemščino, francoščino, madžarščino, italijanščino, turščino, vietnamščino, poljščino, češčino, japonščino, tradicionalno in poenostavljeno kitajščino, bengalščino, ruščino, kazaščino, ukrajinščino, norveščino (bokmål), brazilsko portugalščino in slovenščino. Preklop je takojšen iz orodne vrstice.","En portabel Windows-exe för att hantera en dator och allt på den. Filer, skal, textredigering, lagring och systemadministration delar ett fönster och en uppsättning tangenter.
+Dvaindvajset jezikov
+Vmesnik je preveden v dvaindvajset jezikov: angleščino, španščino, nemščino, francoščino, madžarščino, italijanščino, turščino, vietnamščino, poljščino, češčino, japonščino, tradicionalno in poenostavljeno kitajščino, bengalščino, ruščino, kazaščino, korejščino, ukrajinščino, norveščino (bokmål), brazilsko portugalščino, švedščino in slovenščino. Preklop je takojšen iz orodne vrstice.","En portabel Windows-exe för att hantera en dator och allt på den. Filer, skal, textredigering, lagring och systemadministration delar ett fönster och en uppsättning tangenter.
 
 Installera eller kör portabelt. Gratis, öppen källkod, GPLv3. Ingen agent, inget konto, ingen prenumeration. Ingen telemetri skickas och inga annonser... någonsin.
 
@@ -1427,8 +1427,8 @@ Appdata behandlas lokalt, utan telemetri eller automatisk uppladdning. Uppdateri
 Teman och accenter
 14 teman, 49 utseenden: Mörkt, Ljust, Svart, 98SE och Trash Polka har vardera 8 accentfärger. De övriga 9 har fasta paletter. Byt live utan omstart. I temamenyn kan du slå på eller av Filmkorn.
 
-Tjugo språk
-Gränssnittet är lokaliserat till tjugo språk (engelska, slovenska, spanska, tyska, franska, ungerska, italienska, turkiska, vietnamesiska, polska, tjeckiska, japanska, kinesiska traditionell och förenklad, bengali, ryska, kazakiska, ukrainska, norska (bokmål) och brasiliansk portugisiska), och kan bytas live från verktygsfältet. ","컴퓨터와 그 안의 모든 것을 관리하는 포터블 Windows exe 하나입니다. 파일, 셸, 텍스트 편집, 저장 공간, 시스템 관리가 하나의 창과 하나의 키 체계를 공유합니다.
+Tjugotvå språk
+Gränssnittet är lokaliserat till tjugotvå språk (engelska, slovenska, spanska, tyska, franska, ungerska, italienska, turkiska, vietnamesiska, polska, tjeckiska, japanska, kinesiska traditionell och förenklad, bengali, ryska, kazakiska, koreanska, ukrainska, norska (bokmål), svenska och brasiliansk portugisiska), och kan bytas live från verktygsfältet. ","컴퓨터와 그 안의 모든 것을 관리하는 포터블 Windows exe 하나입니다. 파일, 셸, 텍스트 편집, 저장 공간, 시스템 관리가 하나의 창과 하나의 키 체계를 공유합니다.
 
 설치하거나 포터블로 실행하세요. 무료, 오픈 소스, GPLv3. 에이전트도 계정도 구독도 없습니다. 원격 측정 데이터는 전송되지 않고 광고도 없습니다. 앞으로도 계속 그렇습니다.
 
@@ -1495,8 +1495,8 @@ HTML 및 CSV 내보내기
 테마와 강조 색
 14가지 테마, 49가지 모습. 어두운 테마, 밝은 테마, 검정, 98SE, Trash Polka는 각각 8가지 강조 색을 제공합니다. 나머지 9가지는 고정된 팔레트를 씁니다. 다시 시작하지 않고 즉시 전환할 수 있습니다. 테마 메뉴에서 필름 그레인을 켜거나 끌 수 있습니다.
 
-스무 가지 언어
-인터페이스는 스무 가지 언어로 현지화되어 있으며(영어, 슬로베니아어, 스페인어, 독일어, 프랑스어, 헝가리어, 이탈리아어, 튀르키예어, 베트남어, 폴란드어, 체코어, 일본어, 중국어 번체 및 간체, 벵골어, 러시아어, 카자흐어, 우크라이나어, 노르웨이어(보크몰), 브라질 포르투갈어) 도구 모음에서 즉시 전환할 수 있습니다."
+스물두 가지 언어
+인터페이스는 스물두 가지 언어로 현지화되어 있으며(영어, 슬로베니아어, 스페인어, 독일어, 프랑스어, 헝가리어, 이탈리아어, 튀르키예어, 베트남어, 폴란드어, 체코어, 일본어, 중국어 번체 및 간체, 벵골어, 러시아어, 카자흐어, 한국어, 우크라이나어, 노르웨이어(보크몰), 스웨덴어, 브라질 포르투갈어) 도구 모음에서 즉시 전환할 수 있습니다."
 WhatsNew,Text,,,,,,,,,,,,,,,,,,,,"","",""
 ProductFeatures1,Text,"Browse - list, icon and details views","ব্রাউজ - লিস্ট, আইকন ও ডিটেইলস ভিউ","Procházení - zobrazení seznamu, ikon a podrobností","Blättern - Listen-, Symbol- und Detailansicht","Explorar - vistas de lista, iconos y detalles","Parcourir - vues liste, icônes et détails","Tallózás - lista-, ikon- és részletek nézetek","Esplora - viste elenco, icone e dettagli",ブラウズ：リスト、アイコン、詳細の各表示,"Шолу - тізім, таңбаша және кесте көріністері","Bla gjennom - liste-, ikon- og detaljvisning","Przeglądanie - widok listy, ikon i szczegółów","Navegar - visualizações em lista, ícones e detalhes","Обзор - список, значки и таблица","Gezin - liste, simge ve ayrinti görünümü","Перегляд - режими списку, значків і таблиці","Duyệt - chế độ xem danh sách, biểu tượng và chi tiết",浏览：列表、图标和详细信息视图,瀏覽：清單、圖示和詳細資料檢視,"Brskanje: seznam, ikone in podrobnosti","Bläddra - lista-, ikon- och detaljvyer ","탐색 - 목록, 아이콘, 자세히 보기"
 ProductFeatures2,Text,"Search - names or contents, with no index","সার্চ - নাম বা লেখা, ইনডেক্স ছাড়াই","Hledání - názvy nebo obsah, bez indexu","Suchen - Namen oder Inhalt, ohne Index","Buscar - nombres o contenido, sin índice","Chercher - noms ou contenu, sans index",Keresés - nevek vagy tartalom index nélkül,"Cerca - nomi o contenuti, senza indice",検索：名前でも内容でも、インデックス不要,"Іздеу - атаулар немесе мазмұн бойынша, индекссіз","Søk - navn eller innhold, uten indeks","Wyszukiwanie - nazwy lub zawartość, bez indeksu","Pesquisar - por nomes ou conteúdo, sem índice","Поиск - по именам или содержимому, без индекса","Arayin - ad ya da icerik, dizin yok","Пошук - за назвами або вмістом, без індексу","Tìm kiếm - theo tên hoặc nội dung, không cần chỉ mục",搜索：按文件名或内容，无需索引,搜尋：依檔名或內容，不必建索引,Iskanje po imenih ali vsebini brez indeksa,"Sök - namn eller innehåll, utan index ","검색 - 이름 또는 내용, 인덱스 불필요"
