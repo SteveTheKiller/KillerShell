@@ -152,7 +152,7 @@
     <sys:String x:Key="Str_About_ShowShortcutsInMenus">Mostra le scorciatoie nei menu</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminal">Usa KillerShell come terminale predefinito</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalHint">I programmi console avviati da Explorer, Esegui o un collegamento si aprono in una finestra di KillerShell. Disattivandolo torna il terminale che usavi prima.</sys:String>
-    <sys:String x:Key="Str_About_DefaultTerminalPortable">Installa KillerShell per usarlo come terminale predefinito. Una copia portatile può essere spostata o eliminata.</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalPortable">Installa KillerShell per usarlo come terminale predefinito.</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalNoHost">Richiede Windows Terminal, che passa i programmi console a KillerShell.</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalChanged">Nel frattempo è stato scelto un altro terminale predefinito, ad esempio nelle Impostazioni di Windows.</sys:String>
     <sys:String x:Key="Str_About_OpenFolders">Apri le cartelle in KillerShell</sys:String>

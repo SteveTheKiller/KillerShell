@@ -160,7 +160,7 @@
     <sys:String x:Key="Str_About_ShowShortcutsInMenus">Показувати сполучення клавіш у меню</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminal">Використовувати KillerShell як термінал за замовчуванням</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalHint">Консольні програми, запущені з Провідника, вікна «Виконати» або ярлика, відкриваються у вікні KillerShell. Якщо вимкнути, повернеться термінал, який був раніше.</sys:String>
-    <sys:String x:Key="Str_About_DefaultTerminalPortable">Установіть KillerShell, щоб використовувати його як термінал за замовчуванням. Портативну копію можна перемістити або видалити.</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalPortable">Установіть KillerShell, щоб використовувати його як термінал за замовчуванням.</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalNoHost">Потрібен Windows Terminal, який передає консольні програми в KillerShell.</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalChanged">Відтоді було вибрано інший термінал за замовчуванням, наприклад у Параметрах Windows.</sys:String>
     <sys:String x:Key="Str_About_OpenFolders">Відкривати папки в KillerShell</sys:String>

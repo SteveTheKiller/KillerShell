@@ -527,7 +527,7 @@
     <sys:String x:Key="Str_About_ShowShortcutsInMenus">মেনুতে শর্টকাট দেখান</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminal">KillerShell-কে ডিফল্ট টার্মিনাল হিসেবে ব্যবহার করুন</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalHint">এক্সপ্লোরার, Run বা কোনো শর্টকাট থেকে চালু করা কনসোল প্রোগ্রাম KillerShell উইন্ডোতে খুলবে। এটি বন্ধ করলে আগের টার্মিনালটি ফিরে আসবে।</sys:String>
-    <sys:String x:Key="Str_About_DefaultTerminalPortable">ডিফল্ট টার্মিনাল হিসেবে ব্যবহার করতে KillerShell ইনস্টল করুন। পোর্টেবল কপি সরানো বা মুছে ফেলা হতে পারে।</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalPortable">ডিফল্ট টার্মিনাল হিসেবে ব্যবহার করতে KillerShell ইনস্টল করুন।</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalNoHost">Windows Terminal প্রয়োজন, যা কনসোল প্রোগ্রামগুলি KillerShell-এ পাঠায়।</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalChanged">এরপর অন্য একটি ডিফল্ট টার্মিনাল বেছে নেওয়া হয়েছে, যেমন Windows সেটিংসে।</sys:String>
     <sys:String x:Key="Str_About_OpenFolders">ফোল্ডার KillerShell-এ খুলুন</sys:String>

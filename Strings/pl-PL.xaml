@@ -33,7 +33,7 @@
     <sys:String x:Key="Str_About_ShowShortcutsInMenus">Pokazuj skróty w menu</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminal">Używaj KillerShell jako domyślnego terminala</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalHint">Programy konsolowe uruchamiane z Eksploratora, okna Uruchom lub skrótu otwierają się w oknie KillerShell. Wyłączenie tej opcji przywraca terminal używany wcześniej.</sys:String>
-    <sys:String x:Key="Str_About_DefaultTerminalPortable">Zainstaluj KillerShell, aby używać go jako domyślnego terminala. Kopię przenośną można przenieść lub usunąć.</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalPortable">Zainstaluj KillerShell, aby używać go jako domyślnego terminala.</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalNoHost">Wymaga programu Windows Terminal, który przekazuje programy konsolowe do KillerShell.</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalChanged">Od tego czasu wybrano inny domyślny terminal, na przykład w Ustawieniach systemu Windows.</sys:String>
     <sys:String x:Key="Str_About_OpenFolders">Otwieraj foldery w KillerShell</sys:String>

@@ -150,7 +150,7 @@
     <sys:String x:Key="Str_About_ShowShortcutsInMenus">Hiển thị phím tắt trong menu</sys:String>
   <sys:String x:Key="Str_About_DefaultTerminal">Dùng KillerShell làm terminal mặc định</sys:String>
   <sys:String x:Key="Str_About_DefaultTerminalHint">Các chương trình console mở từ Explorer, hộp Run hoặc lối tắt sẽ mở trong cửa sổ KillerShell. Tắt tùy chọn này sẽ khôi phục terminal bạn dùng trước đó.</sys:String>
-  <sys:String x:Key="Str_About_DefaultTerminalPortable">Hãy cài đặt KillerShell để dùng làm terminal mặc định. Bản di động có thể bị di chuyển hoặc xóa.</sys:String>
+  <sys:String x:Key="Str_About_DefaultTerminalPortable">Hãy cài đặt KillerShell để dùng làm terminal mặc định.</sys:String>
   <sys:String x:Key="Str_About_DefaultTerminalNoHost">Cần có Windows Terminal để chuyển các chương trình console sang KillerShell.</sys:String>
   <sys:String x:Key="Str_About_DefaultTerminalChanged">Sau đó đã có một terminal mặc định khác được chọn, ví dụ trong Cài đặt Windows.</sys:String>
   <sys:String x:Key="Str_About_OpenFolders">Mở thư mục trong KillerShell</sys:String>

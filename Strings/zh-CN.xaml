@@ -527,7 +527,7 @@
     <sys:String x:Key="Str_About_ShowShortcutsInMenus">在菜单中显示快捷键</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminal">将 KillerShell 用作默认终端</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalHint">从 Explorer、“运行”或快捷方式启动的控制台程序会在 KillerShell 窗口中打开。关闭此项会恢复之前使用的终端。</sys:String>
-    <sys:String x:Key="Str_About_DefaultTerminalPortable">安装 KillerShell 后才能将其用作默认终端。便携版可能会被移动或删除。</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalPortable">安装 KillerShell 后才能将其用作默认终端。</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalNoHost">需要 Windows Terminal，由它把控制台程序交给 KillerShell。</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalChanged">此后已选择了其他默认终端，例如在 Windows 设置中。</sys:String>
     <sys:String x:Key="Str_About_OpenFolders">在 KillerShell 中打开文件夹</sys:String>

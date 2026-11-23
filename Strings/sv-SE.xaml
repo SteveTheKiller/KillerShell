@@ -161,7 +161,7 @@
     <sys:String x:Key="Str_About_ShowShortcutsInMenus">Visa kortkommandon i menyer</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminal">Använd KillerShell som standardterminal</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalHint">Konsolprogram som startas från Utforskaren, Kör eller en genväg öppnas i ett KillerShell-fönster. Om du stänger av det här återställs terminalen du hade tidigare.</sys:String>
-    <sys:String x:Key="Str_About_DefaultTerminalPortable">Installera KillerShell för att använda det som standardterminal. En portabel kopia kan flyttas eller tas bort.</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalPortable">Installera KillerShell för att använda det som standardterminal.</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalNoHost">Kräver Windows Terminal, som skickar konsolprogram vidare till KillerShell.</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalChanged">En annan standardterminal har valts sedan dess, till exempel i Inställningar i Windows.</sys:String>
     <sys:String x:Key="Str_About_OpenFolders">Öppna mappar i KillerShell</sys:String>

@@ -530,7 +530,7 @@
     <sys:String x:Key="Str_About_ShowShortcutsInMenus">Menülerde kısayolları göster</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminal">KillerShell'i varsayılan terminal olarak kullan</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalHint">Explorer, Çalıştır veya bir kısayoldan başlatılan konsol programları KillerShell penceresinde açılır. Bunu kapatmak önceki terminalinizi geri getirir.</sys:String>
-    <sys:String x:Key="Str_About_DefaultTerminalPortable">Varsayılan terminal olarak kullanmak için KillerShell'i yükleyin. Taşınabilir bir kopyanın yeri değişebilir veya silinebilir.</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalPortable">Varsayılan terminal olarak kullanmak için KillerShell'i yükleyin.</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalNoHost">Konsol programlarını KillerShell'e aktaran Windows Terminal gerekir.</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalChanged">O zamandan beri, örneğin Windows Ayarları'nda, başka bir varsayılan terminal seçildi.</sys:String>
     <sys:String x:Key="Str_About_OpenFolders">Klasörleri KillerShell'de aç</sys:String>

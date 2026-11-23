@@ -160,7 +160,7 @@
     <sys:String x:Key="Str_About_ShowShortcutsInMenus">Mostrar atalhos nos menus</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminal">Usar o KillerShell como terminal padrão</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalHint">Programas de console iniciados pelo Explorador de Arquivos, Executar ou um atalho abrem em uma janela do KillerShell. Desativar traz de volta o terminal que você usava antes.</sys:String>
-    <sys:String x:Key="Str_About_DefaultTerminalPortable">Instale o KillerShell para usá-lo como terminal padrão. Uma cópia portátil pode ser movida ou excluída.</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalPortable">Instale o KillerShell para usá-lo como terminal padrão.</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalNoHost">Requer o Windows Terminal, que repassa os programas de console ao KillerShell.</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalChanged">Outro terminal padrão foi escolhido depois, por exemplo nas Configurações do Windows.</sys:String>
     <sys:String x:Key="Str_About_OpenFolders">Abrir pastas no KillerShell</sys:String>

@@ -525,7 +525,7 @@
     <sys:String x:Key="Str_About_ShowShortcutsInMenus">メニューにショートカットを表示</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminal">KillerShell を既定のターミナルとして使用する</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalHint">エクスプローラー、[ファイル名を指定して実行]、ショートカットから起動したコンソール プログラムが KillerShell のウィンドウで開きます。オフにすると以前のターミナルに戻ります。</sys:String>
-    <sys:String x:Key="Str_About_DefaultTerminalPortable">既定のターミナルとして使用するには KillerShell をインストールしてください。ポータブル版は移動や削除される可能性があります。</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalPortable">既定のターミナルとして使用するには KillerShell をインストールしてください。</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalNoHost">コンソール プログラムを KillerShell に渡す Windows Terminal が必要です。</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalChanged">その後、Windows の設定などで別の既定のターミナルが選択されました。</sys:String>
     <sys:String x:Key="Str_About_OpenFolders">フォルダーを KillerShell で開く</sys:String>

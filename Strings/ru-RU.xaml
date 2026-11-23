@@ -154,7 +154,7 @@
     <sys:String x:Key="Str_About_ShowShortcutsInMenus">Показывать сочетания клавиш в меню</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminal">Использовать KillerShell как терминал по умолчанию</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalHint">Консольные программы, запущенные из Проводника, окна «Выполнить» или ярлыка, открываются в окне KillerShell. При отключении возвращается терминал, который был раньше.</sys:String>
-    <sys:String x:Key="Str_About_DefaultTerminalPortable">Установите KillerShell, чтобы использовать его как терминал по умолчанию. Портативную копию можно переместить или удалить.</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalPortable">Установите KillerShell, чтобы использовать его как терминал по умолчанию.</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalNoHost">Требуется Windows Terminal, который передаёт консольные программы в KillerShell.</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalChanged">С тех пор был выбран другой терминал по умолчанию, например в параметрах Windows.</sys:String>
     <sys:String x:Key="Str_About_OpenFolders">Открывать папки в KillerShell</sys:String>

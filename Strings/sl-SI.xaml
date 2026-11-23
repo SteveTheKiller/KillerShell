@@ -131,7 +131,7 @@
     <sys:String x:Key="Str_About_ShowShortcutsInMenus">Prikaži bližnjice v menijih</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminal">Uporabi KillerShell kot privzeti terminal</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalHint">Konzolni programi, zagnani iz Raziskovalca, okna Zaženi ali bližnjice, se odprejo v oknu KillerShell. Ko to izklopite, se vrne terminal, ki ste ga uporabljali prej.</sys:String>
-    <sys:String x:Key="Str_About_DefaultTerminalPortable">Namestite KillerShell, če ga želite uporabljati kot privzeti terminal. Prenosno kopijo je mogoče premakniti ali izbrisati.</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalPortable">Namestite KillerShell, če ga želite uporabljati kot privzeti terminal.</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalNoHost">Potreben je Windows Terminal, ki konzolne programe preda programu KillerShell.</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalChanged">Medtem je bil izbran drug privzeti terminal, na primer v nastavitvah sistema Windows.</sys:String>
     <sys:String x:Key="Str_About_OpenFolders">Odpiraj mape v KillerShell</sys:String>

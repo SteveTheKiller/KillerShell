@@ -528,7 +528,7 @@
     <sys:String x:Key="Str_About_ShowShortcutsInMenus">Zobrazovat zkratky v nabídkách</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminal">Používat KillerShell jako výchozí terminál</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalHint">Konzolové programy spuštěné z Průzkumníka, okna Spustit nebo zástupce se otevřou v okně KillerShell. Vypnutím se vrátí terminál, který jste používali předtím.</sys:String>
-    <sys:String x:Key="Str_About_DefaultTerminalPortable">Chcete-li KillerShell používat jako výchozí terminál, nainstalujte jej. Přenosnou kopii lze přesunout nebo smazat.</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalPortable">Chcete-li KillerShell používat jako výchozí terminál, nainstalujte jej.</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalNoHost">Vyžaduje Windows Terminal, který předává konzolové programy aplikaci KillerShell.</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalChanged">Mezitím byl zvolen jiný výchozí terminál, například v Nastavení Windows.</sys:String>
     <sys:String x:Key="Str_About_OpenFolders">Otevírat složky v KillerShell</sys:String>

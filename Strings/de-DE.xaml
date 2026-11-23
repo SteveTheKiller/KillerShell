@@ -530,7 +530,7 @@
     <sys:String x:Key="Str_About_ShowShortcutsInMenus">Tastenkürzel in Menüs anzeigen</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminal">KillerShell als Standardterminal verwenden</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalHint">Konsolenprogramme, die aus dem Explorer, über Ausführen oder eine Verknüpfung gestartet werden, öffnen sich in einem KillerShell-Fenster. Beim Ausschalten kehrt das vorherige Terminal zurück.</sys:String>
-    <sys:String x:Key="Str_About_DefaultTerminalPortable">Installieren Sie KillerShell, um es als Standardterminal zu verwenden. Eine portable Kopie kann verschoben oder gelöscht werden.</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalPortable">Installieren Sie KillerShell, um es als Standardterminal zu verwenden.</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalNoHost">Erfordert Windows Terminal, das Konsolenprogramme an KillerShell übergibt.</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalChanged">Inzwischen wurde ein anderes Standardterminal gewählt, zum Beispiel in den Windows-Einstellungen.</sys:String>
     <sys:String x:Key="Str_About_OpenFolders">Ordner in KillerShell öffnen</sys:String>

@@ -161,7 +161,7 @@
     <sys:String x:Key="Str_About_ShowShortcutsInMenus">Show Shortcuts in Menus</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminal">Use KillerShell as the default terminal</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalHint">Console programs started from Explorer, Run or a shortcut open in a KillerShell window. Turning this off puts back the terminal you had before.</sys:String>
-    <sys:String x:Key="Str_About_DefaultTerminalPortable">Install KillerShell to use it as the default terminal. A portable copy can be moved or deleted.</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalPortable">Install KillerShell to use it as the default terminal.</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalNoHost">Needs Windows Terminal, which passes console programs to KillerShell.</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalChanged">A different default terminal was chosen since, for example in Windows Settings.</sys:String>
     <sys:String x:Key="Str_About_OpenFolders">Open folders in KillerShell</sys:String>

@@ -154,7 +154,7 @@
     <sys:String x:Key="Str_About_ShowShortcutsInMenus">Мәзірлерде пернелер тіркесімін көрсету</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminal">KillerShell-ді әдепкі терминал ретінде пайдалану</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalHint">Explorer-ден, «Орындау» терезесінен немесе төте жолдан іске қосылған консоль бағдарламалары KillerShell терезесінде ашылады. Өшірсеңіз, бұрын пайдаланған терминалыңыз қайтарылады.</sys:String>
-    <sys:String x:Key="Str_About_DefaultTerminalPortable">Әдепкі терминал ретінде пайдалану үшін KillerShell-ді орнатыңыз. Тасымалды көшірмені жылжытуға немесе жоюға болады.</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalPortable">Әдепкі терминал ретінде пайдалану үшін KillerShell-ді орнатыңыз.</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalNoHost">Консоль бағдарламаларын KillerShell-ге беретін Windows Terminal қажет.</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalChanged">Содан бері басқа әдепкі терминал таңдалды, мысалы, Windows параметрлерінде.</sys:String>
     <sys:String x:Key="Str_About_OpenFolders">Қалталарды KillerShell-де ашу</sys:String>

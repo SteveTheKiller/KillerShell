@@ -527,7 +527,7 @@
     <sys:String x:Key="Str_About_ShowShortcutsInMenus">在功能表中顯示快速鍵</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminal">將 KillerShell 設為預設終端機</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalHint">從檔案總管、[執行] 或捷徑啟動的主控台程式會在 KillerShell 視窗中開啟。關閉此選項會還原之前使用的終端機。</sys:String>
-    <sys:String x:Key="Str_About_DefaultTerminalPortable">請安裝 KillerShell 才能將其設為預設終端機。可攜版可能會被移動或刪除。</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalPortable">請安裝 KillerShell 才能將其設為預設終端機。</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalNoHost">需要 Windows Terminal，由它將主控台程式交給 KillerShell。</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalChanged">之後已選擇其他預設終端機，例如在 Windows 設定中。</sys:String>
     <sys:String x:Key="Str_About_OpenFolders">在 KillerShell 中開啟資料夾</sys:String>

@@ -160,7 +160,7 @@
     <sys:String x:Key="Str_About_ShowShortcutsInMenus">Billentyűparancsok megjelenítése a menükben</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminal">A KillerShell használata alapértelmezett terminálként</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalHint">Az Intézőből, a Futtatás ablakból vagy parancsikonról indított konzolprogramok KillerShell-ablakban nyílnak meg. Kikapcsolásakor visszaáll a korábban használt terminál.</sys:String>
-    <sys:String x:Key="Str_About_DefaultTerminalPortable">Telepítse a KillerShellt, hogy alapértelmezett terminálként használhassa. Egy hordozható példány áthelyezhető vagy törölhető.</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalPortable">Telepítse a KillerShellt, hogy alapértelmezett terminálként használhassa.</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalNoHost">A Windows Terminal szükséges hozzá, amely átadja a konzolprogramokat a KillerShellnek.</sys:String>
     <sys:String x:Key="Str_About_DefaultTerminalChanged">Azóta egy másik alapértelmezett terminált választottak, például a Windows Gépházban.</sys:String>
     <sys:String x:Key="Str_About_OpenFolders">Mappák megnyitása a KillerShellben</sys:String>
