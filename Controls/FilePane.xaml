@@ -528,8 +528,9 @@
                                          depends on the page kind and on whether the row sits above or below it, so
                                          PaneBars.RefreshActiveTabSurface sets it rather than a trigger here. -->
                                     <DataTrigger Binding="{Binding IsActive}" Value="True">
-                                        <!-- 3px, matched by the pane's corners at each end of the band (Tabs.cs TabRadius). -->
-                                        <Setter TargetName="tabBd" Property="CornerRadius" Value="3,3,0,0"/>
+                                        <!-- 3px, matched by the pane's corners at each end of the band (Tabs.cs TabRadius).
+                                             Square on 98SE (TabActiveCornerRadius), whose bevel is square. -->
+                                        <Setter TargetName="tabBd" Property="CornerRadius" Value="{DynamicResource TabActiveCornerRadius}"/>
                                         <Setter TargetName="tabClose" Property="Style" Value="{StaticResource DangerButton}"/>
                                         <Setter TargetName="tabBd" Property="BlendProgress" Value="{Binding MenuBarBlend, RelativeSource={RelativeSource AncestorType=local:FilePane}}"/>
                                         <!-- Only the active tab draws its own grain - it is opaque,

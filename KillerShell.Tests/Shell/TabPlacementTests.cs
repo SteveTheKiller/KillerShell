@@ -133,8 +133,10 @@ public static class TabPlacementScenario
                 Assert.Equal(left.Active.IsLast ? 0 : soft, left.ResultsPane.CornerRadius.BottomRight);
                 var selected = MenuBarTabBlendScenario.TabBorder(left, left.Active);
                 Assert.Equal(0, selected.Margin.Top);
-                Assert.Equal(3, selected.CornerRadius.TopLeft);
-                Assert.Equal(3, selected.CornerRadius.TopRight);
+                // 98SE's bevel is square, so its face is too: a rounded face left the corner open to the neighbour's outline.
+                double tabRadius = theme == Theme.SE98 ? 0 : 3;
+                Assert.Equal(tabRadius, selected.CornerRadius.TopLeft);
+                Assert.Equal(tabRadius, selected.CornerRadius.TopRight);
             }
             Assert.Contains(settings, pair => pair.Key.StartsWith("WindowView.")
                 && pair.Key.EndsWith(".TabsAtBottom") && pair.Value == "1");

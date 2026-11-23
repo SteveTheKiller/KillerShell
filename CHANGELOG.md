@@ -16,6 +16,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - The Performance page wraps on a narrow pane and its cards scroll to the page's foot, so nothing runs off the edge or gets cut off.
 - At 110% and 125% app size the active tab joins its page without a line, with the tabs above or below.
 - With the tabs at the bottom, the active tab under search results matches the status row it joins instead of showing a lighter face.
+- On the 98SE theme the active tab's corners are square, so the neighboring tab's outline no longer shows as a black dot beside it.
 - Under Trash Polka the Performance page, the Storage map, the file picker, drop-down lists and flyouts show the theme's surfaces and ink instead of flat or too-dark fills.
 - On 98SE the title bar buttons, tabs, menus, dialogs, window frame and icon rail match Windows 98.
 - Confirm and quit dialogs size to what they say, so a short prompt like Quit is narrower.

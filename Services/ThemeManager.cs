@@ -904,6 +904,11 @@ namespace KillerShell.Services
             SetIfAbsent("TabActiveBevelLightMargin", new Thickness(-12, -4, -5, -5));
             SetIfAbsent("RetroTabJoinVisibility", Visibility.Collapsed);
             SetIfAbsent("RetroActiveTabOutlineVisibility", Visibility.Collapsed);
+            // The active tab's top corners (FilePane.xaml tabBd). A theme that outlines its tabs the retro way
+            // (98SE) has a square bevel, so the face is square too: a rounded face left its corner pixels open and
+            // the neighbouring tab's black outline showed through as a dot. Every other theme keeps 3px.
+            SetIfAbsent("TabActiveCornerRadius", combined["RetroActiveTabOutlineVisibility"] is Visibility.Visible
+                ? new CornerRadius(0) : new CornerRadius(3, 3, 0, 0));
             SetIfAbsent("TabBandHeight", double.NaN);
             // The ACTIVE tab's dark-bevel margin. Defaults to the same family literal the shared
             // TabBevelMargin uses (harmless - only a flat theme draws tab bevels at all); 98SE
