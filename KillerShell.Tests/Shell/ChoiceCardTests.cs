@@ -34,6 +34,9 @@ public static class ChoiceCardScenario
         var minSize = storage.BuildMinSizeMenu();
         Assert.Equal(new[] { "0", "1048576", "10485760", "104857600" }, Ids(minSize));
         string minBefore = Assert.Single(Filled(minSize));
+        // Five tiles keep the three-across card; exactly four are one row, a tile wider.
+        Assert.Equal(CardMenus.TileWidth + 44, depth.MaxWidth);
+        Assert.Equal(CardMenus.TileWidth / 3 * 4 + 44, minSize.MaxWidth);
         try
         {
             string depthPick = depthBefore == "2" ? "3" : "2";

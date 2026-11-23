@@ -36,6 +36,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Storage's depth and minimum-size pickers open tile cards with the current value filled.
 - The search scope chooser opens a tile card, with a fourth tile for searching within the current results.
 - The terminal profile picker opens a tile card with a tile per profile and one for managing them.
+- A card with exactly four tiles shows them in one row instead of three and one.
 
 ### Added
 

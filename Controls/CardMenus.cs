@@ -89,7 +89,8 @@ namespace KillerShell.Controls
         }
 
         // ── Tile cards (KillerUI CardBuilder.TileGroups, KillerShot's ShotCards the reference) ──
-        // 1. Three tiles across, each an MDL2 glyph over a short caption, its shortcut on a second line.
+        // 1. Three tiles across, each an MDL2 glyph over a short caption, its shortcut on a second line. A small card
+        //    of exactly four tiles is one row of four instead (Steve 2026-11-23), at the same tile width.
         // 2. Tiles run on in order, related ones side by side, so every row is full but the last.
         // 3. Most used first, destructive last; Delete on a card for one thing sits in the header.
         // 4. A tile that only sometimes applies stays in its place, dimmed, so the rows never shift.
@@ -101,6 +102,9 @@ namespace KillerShell.Controls
 
         /// <summary>Tiles across a card row.</summary>
         internal const int TileColumns = 3;
+
+        /// <summary>A fixed card with exactly this many tiles lays them out as one row.</summary>
+        internal const int RowOfFour = 4;
 
         /// <summary>The tag on a card header's Delete button.</summary>
         internal const string HeaderDeleteTag = "carddelete";
@@ -216,7 +220,10 @@ namespace KillerShell.Controls
         {
             // The tiles run on as one list, so every row is full but the last.
             var tiles = groups.SelectMany(g => g).ToList();
-            var strip = CardBuilder.TileGroups(card, Loc("Str_Card_Actions"), tiles.Count > 0 ? new[] { tiles } : Array.Empty<List<CardTile>>(), edit, TileColumns);
+            // Four tiles would leave one alone on a second row, so a fixed card of four is a single row, wider by one tile.
+            int columns = edit == null && tiles.Count == RowOfFour ? RowOfFour : TileColumns;
+            card.MinWidth = card.MaxWidth = TileWidth / TileColumns * columns + 44;
+            var strip = CardBuilder.TileGroups(card, Loc("Str_Card_Actions"), tiles.Count > 0 ? new[] { tiles } : Array.Empty<List<CardTile>>(), edit, columns);
             var slot = CardBuilder.Slot(strip, new Thickness(0));
             slot.Tag = "cardtiles";
             AutomationProperties.SetName(slot, Loc("Str_Card_Actions"));
