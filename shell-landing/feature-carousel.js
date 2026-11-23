@@ -16,6 +16,8 @@
   var index = 0;
   var labels = {
     "sl": ["Možnosti programa", "Prejšnja možnost", "Naslednja možnost", "Izberi možnost", "vrtiljak", "diapozitiv"],
+    "sv": ["Produktfunktioner", "Föregående funktion", "Nästa funktion", "Välj en funktion", "karusell", "bild"],
+    "ko": ["제품 기능", "이전 기능", "다음 기능", "기능 선택", "캐러셀", "슬라이드"],
     "en": ["Product features", "Previous feature", "Next feature", "Choose a feature", "carousel", "slide"],
     "bn": ["পণ্যের বৈশিষ্ট্য", "আগের বৈশিষ্ট্য", "পরের বৈশিষ্ট্য", "একটি বৈশিষ্ট্য বেছে নিন", "ক্যারোসেল", "স্লাইড"],
     "cs": ["Funkce produktu", "Předchozí funkce", "Další funkce", "Vybrat funkci", "karusel", "snímek"],

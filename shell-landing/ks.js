@@ -347,8 +347,11 @@
   var I18N = (typeof window !== 'undefined' && window.I18N) ? window.I18N : {};
   var EN = {};
   document.querySelectorAll('[data-i18n]').forEach(function (n) { EN[n.getAttribute('data-i18n')] = n.innerHTML; });
-  var LANGS = ['en','es','de','fr','it','tr','vi','zh','zh-cn','bn','hu','pl','cs','ja','ru','uk','nb','pt','kk','sl'];
+  var LANGS = ['en','es','de','fr','it','tr','vi','zh','zh-cn','bn','hu','pl','cs','ja','ru','uk','nb','pt','kk','sl','sv','ko'];
   var FLAGS = {
+    sv: '<svg viewBox="0 0 24 24"><rect width="24" height="24" fill="#006aa7"/><rect x="7" width="4" height="24" fill="#fecc00"/><rect y="10" width="24" height="4" fill="#fecc00"/></svg>',
+    // Taegeuk in the middle, a trigram in each corner; solid bars are one rect, broken bars two.
+    ko: '<svg viewBox="0 0 24 24"><rect width="24" height="24" fill="#fff"/><g transform="rotate(34 12 12)"><circle cx="12" cy="12" r="5.2" fill="#0047a0"/><path d="M6.8 12a5.2 5.2 0 0 1 10.4 0a2.6 2.6 0 0 0-5.2 0a2.6 2.6 0 0 1-5.2 0Z" fill="#cd2e3a"/></g><g fill="#000"><g transform="translate(4.3 4.3) rotate(-45)"><rect x="-1.8" y="-1.75" width="3.6" height=".7"/><rect x="-1.8" y="-.35" width="3.6" height=".7"/><rect x="-1.8" y="1.05" width="3.6" height=".7"/></g><g transform="translate(4.3 19.7) rotate(45)"><rect x="-1.8" y="-1.75" width="3.6" height=".7"/><rect x="-1.8" y="-.35" width="1.5" height=".7"/><rect x=".3" y="-.35" width="1.5" height=".7"/><rect x="-1.8" y="1.05" width="3.6" height=".7"/></g><g transform="translate(19.7 4.3) rotate(45)"><rect x="-1.8" y="-1.75" width="1.5" height=".7"/><rect x=".3" y="-1.75" width="1.5" height=".7"/><rect x="-1.8" y="-.35" width="3.6" height=".7"/><rect x="-1.8" y="1.05" width="1.5" height=".7"/><rect x=".3" y="1.05" width="1.5" height=".7"/></g><g transform="translate(19.7 19.7) rotate(-45)"><rect x="-1.8" y="-1.75" width="1.5" height=".7"/><rect x=".3" y="-1.75" width="1.5" height=".7"/><rect x="-1.8" y="-.35" width="1.5" height=".7"/><rect x=".3" y="-.35" width="1.5" height=".7"/><rect x="-1.8" y="1.05" width="1.5" height=".7"/><rect x=".3" y="1.05" width="1.5" height=".7"/></g></g></svg>',
     sl: '<svg viewBox="0 0 24 24"><rect width="24" height="8" fill="#fff"/><rect y="8" width="24" height="8" fill="#005da4"/><rect y="16" width="24" height="8" fill="#ed1c24"/><path d="M5 4h6v5c0 3-3 4-3 4S5 12 5 9Z" fill="#005da4" stroke="#ed1c24" stroke-width=".6"/><path d="m5.5 9 1.2-1.7L8 9l1.3-1.7 1.2 1.7v1H5.5Z" fill="#fff"/><g fill="#ffdd00"><circle cx="7" cy="5.3" r=".35"/><circle cx="9" cy="5.3" r=".35"/><circle cx="8" cy="6.3" r=".35"/></g></svg>',
     en: '<svg viewBox="0 0 24 24"><rect width="24" height="24" fill="#fff"/><g fill="#b22234"><rect width="24" height="1.85"/><rect y="3.7" width="24" height="1.85"/><rect y="7.4" width="24" height="1.85"/><rect y="11.1" width="24" height="1.85"/><rect y="14.8" width="24" height="1.85"/><rect y="18.5" width="24" height="1.85"/><rect y="22.2" width="24" height="1.8"/></g><rect width="11" height="12.95" fill="#3c3b6e"/></svg>',
     cs: '<svg viewBox="0 0 24 24"><rect width="24" height="12" fill="#fff"/><rect y="12" width="24" height="12" fill="#d7141a"/><polygon points="0,0 12,12 0,24" fill="#11457e"/></svg>',
@@ -550,7 +553,7 @@
     fr: 'Grain de film', hu: 'Filmszemcse', it: 'Grana pellicola', ja: 'フィルムグレイン',
     kk: 'Пленка түйіршігі', nb: 'Filmkorn', no: 'Filmkorn', pl: 'Ziarno filmowe', pt: 'Granulação de filme',
     ru: 'Зернистость плёнки', sl: 'Filmska zrnatost', tr: 'Film greni', uk: 'Зернистість плівки',
-    vi: 'Hạt phim', 'zh-hant': '底片顆粒', 'zh-hans': '胶片颗粒'
+    vi: 'Hạt phim', 'zh-hant': '底片顆粒', 'zh-hans': '胶片颗粒', sv: 'Filmkorn', ko: '필름 그레인'
   };
   var box = null, text = null;
   function apply(on) {
