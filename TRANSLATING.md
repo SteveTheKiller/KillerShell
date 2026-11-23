@@ -13,11 +13,19 @@ Each language is a single XAML `ResourceDictionary` in the `Strings/` folder, na
 - `Strings/es.xaml` - Spanish
 - `Strings/fr-FR.xaml` - French
 - `Strings/hu-HU.xaml` - Hungarian
-- `Strings/sl-SI.xaml`: Slovenian
 - `Strings/it-IT.xaml` - Italian
 - `Strings/ja-JP.xaml` - Japanese
+- `Strings/kk-KZ.xaml` - Kazakh
+- `Strings/ko-KR.xaml` - Korean
+- `Strings/nb-NO.xaml` - Norwegian Bokmål
 - `Strings/pl-PL.xaml` - Polish
+- `Strings/pt-BR.xaml` - Portuguese (Brazil)
+- `Strings/ru-RU.xaml` - Russian
+- `Strings/sl-SI.xaml` - Slovenian
+- `Strings/sv-SE.xaml` - Swedish
 - `Strings/tr-TR.xaml` - Turkish
+- `Strings/uk-UA.xaml` - Ukrainian
+- `Strings/vi-VN.xaml` - Vietnamese
 - `Strings/zh-CN.xaml` - Simplified Chinese
 - `Strings/zh-TW.xaml` - Traditional Chinese
 

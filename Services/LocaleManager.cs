@@ -5,12 +5,12 @@ using System.Windows;
 
 namespace KillerShell.Services
 {
-    // The family's 20 UI languages, KillerPDF's set and names. en-US is always the base layer, so a
+    // The family's 22 UI languages, KillerPDF's set and names. en-US is always the base layer, so a
     // locale that omits a key falls back to English; the chosen locale's file layers on top.
     //
     // The choice is saved by NAME, not ordinal, so members can be reordered freely - but keep these
     // names, because they are the "Locale" setting every app already has stored.
-    internal enum Locale { EnUS, Bn, CsCZ, De, Es, Fr, HuHU, ItIT, JaJP, KkKZ, PlPL, RuRU, NbNO, PtBR, TrTR, UkUA, ViVN, ZhCN, ZhTW, SlSI }
+    internal enum Locale { EnUS, Bn, CsCZ, De, Es, Fr, HuHU, ItIT, JaJP, KkKZ, PlPL, RuRU, NbNO, PtBR, TrTR, UkUA, ViVN, ZhCN, ZhTW, SlSI, SvSE, KoKR }
 
     /// <summary>
     /// Hot-swaps the string dictionaries at runtime. Persistence goes through the same
@@ -135,9 +135,11 @@ namespace KillerShell.Services
                 "it" => Locale.ItIT,
                 "ja" => Locale.JaJP,
                 "kk" => Locale.KkKZ,
+                "ko" => Locale.KoKR,
                 "pl" => Locale.PlPL,
                 "ru" => Locale.RuRU,
                 "sl" => Locale.SlSI,
+                "sv" => Locale.SvSE,
                 "tr" => Locale.TrTR,
                 "vi" => Locale.ViVN,
                 "uk" => Locale.UkUA,
@@ -178,6 +180,8 @@ namespace KillerShell.Services
             Locale.ViVN => "vi-VN",
             Locale.ZhCN => "zh-CN",
             Locale.ZhTW => "zh-TW",
+            Locale.SvSE => "sv-SE",
+            Locale.KoKR => "ko-KR",
             _           => null,
         };
 
@@ -206,6 +210,8 @@ namespace KillerShell.Services
             Locale.ViVN => "vi-VN",
             Locale.ZhCN => "zh-CN",
             Locale.ZhTW => "zh-TW",
+            Locale.SvSE => "sv-SE",
+            Locale.KoKR => "ko-KR",
             _           => "en-US",
         });
 

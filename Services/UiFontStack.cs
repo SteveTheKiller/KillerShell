@@ -4,9 +4,9 @@ namespace KillerShell.Services
 {
     /// <summary>
     /// The family UI font stack for an interface language. Neither Killer Sans UI nor Segoe UI has
-    /// CJK glyphs, so the first CJK face after them decides how Chinese and Japanese text is drawn:
-    /// Simplified Chinese takes Microsoft YaHei UI and Japanese Yu Gothic UI, the faces Windows uses
-    /// for those languages. Microsoft JhengHei UI and Nirmala UI stay at the end for characters the
+    /// CJK glyphs, so the first CJK face after them decides how Chinese, Japanese and Korean text is
+    /// drawn: Simplified Chinese takes Microsoft YaHei UI, Japanese Yu Gothic UI and Korean Malgun
+    /// Gothic (which has no separate UI cut), the faces Windows uses for those languages. Microsoft JhengHei UI and Nirmala UI stay at the end for characters the
     /// chosen face lacks, and every other language keeps exactly the stack it always had.
     /// </summary>
     internal static class UiFontStack
@@ -27,6 +27,7 @@ namespace KillerShell.Services
         private static string CjkFace(string name)
         {
             if (IsLanguage(name, "ja")) return "Yu Gothic UI, ";
+            if (IsLanguage(name, "ko")) return "Malgun Gothic, ";
             if (!IsLanguage(name, "zh")) return "";
             bool traditional = name.IndexOf("-Hans", StringComparison.OrdinalIgnoreCase) < 0 &&
                                (name.IndexOf("-Hant", StringComparison.OrdinalIgnoreCase) >= 0 ||

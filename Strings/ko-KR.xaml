@@ -1,0 +1,1152 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <!-- ================================================================
+         KillerShell - Korean (ko-KR) strings. x:Key values are looked up at
+         runtime; never change them. This file layers over en-US.xaml; any
+         key omitted here falls back to English. {0}/{1} placeholders are
+         filled by the app - keep them.
+         ================================================================ -->
+
+    <!-- Title bar / flyout -->
+    <sys:String x:Key="Str_TT_Language">언어  (Alt+L)</sys:String>
+    <sys:String x:Key="Str_TT_Theme">테마  (Alt+T)</sys:String>
+    <!-- App-wide accessibility zoom: wheel over the title-bar wordmark (AppScale.cs) -->
+    <sys:String x:Key="Str_TT_AppSize">워드마크 위에서 스크롤하여 앱 크기 조정  (Ctrl+Shift +/- / 0)</sys:String>
+    <sys:String x:Key="Str_St_AppSize">앱 크기 {0}%</sys:String>
+    <sys:String x:Key="Str_Lbl_Theme">테마</sys:String>
+    <sys:String x:Key="Str_Lbl_Accent">강조색</sys:String>
+    <sys:String x:Key="Str_Theme_Dark">어둡게</sys:String>
+    <sys:String x:Key="Str_Theme_Light">밝게</sys:String>
+    <sys:String x:Key="Str_Theme_Black">블랙</sys:String>
+    <sys:String x:Key="Str_Theme_Blood">블러드</sys:String>
+    <sys:String x:Key="Str_Theme_Greed">탐욕</sys:String>
+    <sys:String x:Key="Str_Theme_Cyanotic">청색증</sys:String>
+    <!-- 98SE is a product name, not a word - it stays untranslated in every locale. -->
+    <sys:String x:Key="Str_Theme_SE98">98SE</sys:String>
+    <sys:String x:Key="Str_Theme_Ectoplasm">엑토플라즘</sys:String>
+    <sys:String x:Key="Str_Theme_Decay">부패</sys:String>
+    <sys:String x:Key="Str_Theme_Mourning">애도</sys:String>
+    <sys:String x:Key="Str_Theme_FilmGrain">필름 그레인</sys:String>
+    <!-- Key names in the Film Grain tooltip chord (Shell/ThemeFlyout.cs). -->
+    <sys:String x:Key="Str_Key_Alt">Alt</sys:String>
+    <sys:String x:Key="Str_Key_Shift">Shift</sys:String>
+    <sys:String x:Key="Str_Theme_Sepulchre">무덤</sys:String>
+    <sys:String x:Key="Str_Theme_Delirium">섬망</sys:String>
+    <sys:String x:Key="Str_Theme_Malaise">권태</sys:String>
+    <sys:String x:Key="Str_Theme_TrashPolka">Trash Polka</sys:String>
+
+    <!-- Scope bar -->
+    <sys:String x:Key="Str_Lbl_In">위치:</sys:String>
+    <sys:String x:Key="Str_Scope_Empty">(선택한 폴더 없음 - 클릭하여 선택)</sys:String>
+    <!-- Source name in the scope breadcrumb when a tab was made by dropping files on the window -->
+    <sys:String x:Key="Str_Scope_Dropped">끌어 놓은 파일</sys:String>
+    <sys:String x:Key="Str_TT_Scope">클릭하여 검색 폴더 변경  (Ctrl+L)</sys:String>
+    <!-- Browsing (Browse.cs) -->
+    <sys:String x:Key="Str_TT_SearchPanel">검색 패널 표시 또는 숨기기  (Ctrl+Shift+S)</sys:String>
+    <sys:String x:Key="Str_TT_TreePanel">폴더 트리 표시 또는 숨기기</sys:String>
+    <sys:String x:Key="Str_TT_CollapseSidebar">사이드 패널 접기  (Ctrl+Shift+B)</sys:String>
+    <!-- Bookmarks (Bookmarks.cs) -->
+    <sys:String x:Key="Str_TT_Bookmarks">책갈피  (Ctrl+B)</sys:String>
+    <sys:String x:Key="Str_TT_Favorite">이 폴더를 책갈피에 추가  (Ctrl+D)</sys:String>
+    <sys:String x:Key="Str_TT_ShowHidden">숨겨진 항목 및 시스템 항목 표시  (Ctrl+H)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsPane">아래쪽에 세부 정보 / 오른쪽에 세부 정보 / 세부 정보 끄기 (Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_FoldersTop">폴더를 파일 위에 표시  (Alt+O)</sys:String>
+    <sys:String x:Key="Str_Menu_AddFavorite">책갈피에 추가</sys:String>
+    <sys:String x:Key="Str_Menu_RemoveFavorite">책갈피에서 제거</sys:String>
+    <sys:String x:Key="Str_Menu_AddNickname">별칭 추가</sys:String>
+    <sys:String x:Key="Str_Menu_ChangeNickname">별칭 변경</sys:String>
+    <sys:String x:Key="Str_Menu_RemoveNickname">별칭 제거</sys:String>
+    <sys:String x:Key="Str_Menu_HideMenuBar">메뉴 모음 숨기기</sys:String>
+    <sys:String x:Key="Str_Ks_Bookmarks">책갈피 표시 또는 숨기기</sys:String>
+    <sys:String x:Key="Str_Ks_JumpBookmark">책갈피 1-10으로 이동 (0 = 열 번째)</sys:String>
+    <sys:String x:Key="Str_TT_Back">뒤로  (Alt+왼쪽 화살표)</sys:String>
+    <sys:String x:Key="Str_TT_Forward">앞으로  (Alt+오른쪽 화살표)</sys:String>
+    <!-- Up reuses the folder picker's own Str_TT_Up, further down this file -->
+    <sys:String x:Key="Str_Status_Listing">{0}을(를) 여는 중...</sys:String>
+    <sys:String x:Key="Str_Status_Listed">항목 {0}개</sys:String>
+    <sys:String x:Key="Str_Status_BadPath">{0}을(를) 열 수 없습니다</sys:String>
+    <sys:String x:Key="Str_Dlg_SelectFolder">검색할 루트 폴더 선택</sys:String>
+
+    <!-- Search config -->
+    <sys:String x:Key="Str_Lbl_Filters">필터</sys:String>
+    <sys:String x:Key="Str_Lbl_Include">포함</sys:String>
+    <sys:String x:Key="Str_Lbl_Exclude">제외</sys:String>
+    <sys:String x:Key="Str_TT_Include">세미콜론으로 구분한 패턴(예: *.txt;*.log)</sys:String>
+    <sys:String x:Key="Str_TT_Exclude">건너뛸 경로 또는 패턴(세미콜론으로 구분)</sys:String>
+    <sys:String x:Key="Str_Chk_CaseSensitive">대/소문자 구분</sys:String>
+    <sys:String x:Key="Str_Btn_AddFilter">+ 필터 추가</sys:String>
+    <sys:String x:Key="Str_Lbl_Advanced">고급</sys:String>
+    <sys:String x:Key="Str_Filter_Ext">확장자</sys:String>
+    <sys:String x:Key="Str_Filter_Date">수정한 날짜</sys:String>
+    <sys:String x:Key="Str_Filter_Size">크기</sys:String>
+    <sys:String x:Key="Str_Cond_Is">같음</sys:String>
+    <sys:String x:Key="Str_Cond_IsNot">같지 않음</sys:String>
+    <sys:String x:Key="Str_Cond_Before">이전</sys:String>
+    <sys:String x:Key="Str_Cond_After">이후</sys:String>
+    <sys:String x:Key="Str_Cond_Larger">초과</sys:String>
+    <sys:String x:Key="Str_Cond_Smaller">미만</sys:String>
+
+    <!-- Pattern help card -->
+    <sys:String x:Key="Str_TT_PatternHelp">패턴 도움말</sys:String>
+    <sys:String x:Key="Str_Help_Title">패턴</sys:String>
+    <sys:String x:Key="Str_Help_Star">.log로 끝나는 모든 항목</sys:String>
+    <sys:String x:Key="Str_Help_Prefix">report로 시작하는 이름</sys:String>
+    <sys:String x:Key="Str_Help_Middle">2024가 들어 있는 이름</sys:String>
+    <sys:String x:Key="Str_Help_Q">?는 정확히 한 문자를 나타냅니다</sys:String>
+    <sys:String x:Key="Str_Help_List">여러 패턴은 ;로 구분하여 입력</sys:String>
+    <sys:String x:Key="Str_Help_Plain">일반 텍스트도 됩니다 - 그 텍스트가 들어 있는 이름과 일치</sys:String>
+    <sys:String x:Key="Str_Help_Exclude">제외는 이름이 같은 폴더 전체도 건너뜁니다</sys:String>
+
+    <!-- Tabs -->
+    <sys:String x:Key="Str_Tab_New">새 검색</sys:String>
+    <!-- Tab title for a tab created by dropping files on the window; {0} = file count -->
+    <sys:String x:Key="Str_Tab_Dropped">끌어 놓은 항목 ({0})</sys:String>
+    <sys:String x:Key="Str_TT_NewTab">새 탭  (Ctrl+T)</sys:String>
+    <sys:String x:Key="Str_TT_CloseTab">탭 닫기  (Ctrl+W)</sys:String>
+
+    <!-- Folder picker -->
+    <sys:String x:Key="Str_Btn_Cancel">취소</sys:String>
+    <sys:String x:Key="Str_Btn_Select">선택</sys:String>
+    <sys:String x:Key="Str_QA_Home">Home</sys:String>
+    <sys:String x:Key="Str_QA_Desktop">바탕 화면</sys:String>
+    <sys:String x:Key="Str_QA_Documents">문서</sys:String>
+    <sys:String x:Key="Str_QA_Downloads">다운로드</sys:String>
+    <sys:String x:Key="Str_QA_Pictures">사진</sys:String>
+    <sys:String x:Key="Str_TT_Up">상위 폴더로</sys:String>
+    <sys:String x:Key="Str_Dlg_NoSubfolders">(하위 폴더 없음 - 이 폴더를 사용하려면 선택을 클릭하세요)</sys:String>
+    <sys:String x:Key="Str_Col_Name">이름</sys:String>
+    <sys:String x:Key="Str_Col_Folder">위치</sys:String>
+    <sys:String x:Key="Str_Sort_Found">찾은 순서</sys:String>
+    <sys:String x:Key="Str_TT_FilterResults">이 결과 필터링 (Ctrl+F)</sys:String>
+    <sys:String x:Key="Str_TT_Pipe">이 결과 안에서 검색  (Ctrl+Shift+F)</sys:String>
+    <sys:String x:Key="Str_TT_MoreTools">추가 도구</sys:String>
+    <sys:String x:Key="Str_TT_SystemTools">시스템 도구</sys:String>
+    <sys:String x:Key="Str_TT_Sort">정렬 기준  (Alt+S)</sys:String>
+    <sys:String x:Key="Str_Nav_ThisPc">내 PC</sys:String>
+    <sys:String x:Key="Str_Drive_FreeOf">{1} 중 {0} 사용 가능</sys:String>
+    <sys:String x:Key="Str_Nav_RecycleBin">휴지통</sys:String>
+    <sys:String x:Key="Str_Bm_Unreachable" xml:space="preserve">{0}&#10;지금은 연결할 수 없습니다. 드라이브가 연결되어 있는지 또는 공유가 온라인 상태인지 확인하세요.</sys:String>
+    <sys:String x:Key="Str_Menu_PipeTab">이 결과 안에서 검색</sys:String>
+    <sys:String x:Key="Str_Pipe_Scope">{1}의 결과 {0}개  |  {2}</sys:String>
+    <sys:String x:Key="Str_Status_NoPipe">아직 검색할 결과가 없습니다.</sys:String>
+
+    <sys:String x:Key="Str_Status_ElevateFailed">관리자 권한 셸을 시작할 수 없습니다: {0}</sys:String>
+    <sys:String x:Key="Str_Status_TearOutHandoff">Windows가 KillerShell에 넘긴 프로그램은 자체 창에 그대로 남습니다</sys:String>
+    <sys:String x:Key="Str_Status_TearOutNeedsSave">다른 창으로 끌기 전에 문서를 저장하세요</sys:String>
+    <sys:String x:Key="Str_Status_TermCwdNotFound">{0}은(는) 존재하는 폴더가 아닙니다</sys:String>
+    <sys:String x:Key="Str_Status_EdPathNotFound">{0}은(는) 존재하는 위치가 아닙니다</sys:String>
+
+    <!-- Portable install + quit dialog -->
+    <sys:String x:Key="Str_Portable">포터블</sys:String>
+    <sys:String x:Key="Str_Btn_Install">KillerShell 설치</sys:String>
+    <sys:String x:Key="Str_Btn_DoInstall">설치</sys:String>
+    <sys:String x:Key="Str_Btn_DoUpdate">업데이트</sys:String>
+    <sys:String x:Key="Str_Dlg_InstallMsg">이 컴퓨터에 KillerShell을 설치하시겠습니까?</sys:String>
+    <sys:String x:Key="Str_Dlg_InstallBullets">포터블 앱이 프로그램 폴더에 복사됩니다. 시작 메뉴 바로 가기와 프로그램 추가/제거 항목이 추가됩니다. 이 포터블 파일은 나중에 그대로 두거나 삭제할 수 있습니다.</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateUserMsg">기존 KillerShell 설치를 업데이트하시겠습니까?</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateUserBullets">내 계정에 설치된 사본을 교체합니다. 설정과 저장된 세션은 유지됩니다. 이 포터블 파일은 나중에 그대로 두거나 삭제할 수 있습니다.</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateMachineMsg">모든 사용자용으로 설치된 기존 KillerShell을 업데이트하시겠습니까?</sys:String>
+    <sys:String x:Key="Str_Dlg_UpdateMachineBullets">Program Files에 있는 사본을 교체합니다. KillerShell이 한 번만 표시되도록 이 계정의 사용자별 사본은 제거됩니다. 설정과 저장된 세션은 유지됩니다.</sys:String>
+    <sys:String x:Key="Str_Chk_Desktop">바탕 화면 바로 가기</sys:String>
+    <sys:String x:Key="Str_Chk_AllUsers">모든 사용자용으로 설치(관리자 권한 필요)</sys:String>
+    <sys:String x:Key="Str_Dlg_AlreadyAllUsers">KillerShell이 이미 이 PC의 모든 사용자용으로 설치되어 있으므로 해당 사본을 업데이트합니다. Windows에서 권한을 요청합니다.</sys:String>
+    <sys:String x:Key="Str_St_InstallCanceled">설치가 취소되었습니다</sys:String>
+    <sys:String x:Key="Str_About_UpdateHeading">{0} {1}을(를) 다운로드하여 설치하시겠습니까?</sys:String>
+    <sys:String x:Key="Str_About_UpdateDetail">앱이 자동으로 닫혔다가 다시 열립니다.</sys:String>
+    <sys:String x:Key="Str_About_StartupUpdateCheck">시작할 때 업데이트 확인</sys:String>
+    <sys:String x:Key="Str_About_StartWithWindows">Windows 시작 시 실행</sys:String>
+    <sys:String x:Key="Str_About_CloseToTray">닫을 때 시스템 트레이로</sys:String>
+    <sys:String x:Key="Str_About_ShowShortcutsInMenus">메뉴에 바로 가기 키 표시</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminal">KillerShell을 기본 터미널로 사용</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalHint">파일 탐색기, 실행 또는 바로 가기에서 시작한 콘솔 프로그램이 KillerShell 창에서 열립니다. 이 옵션을 끄면 이전에 쓰던 터미널로 돌아갑니다.</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalPortable">기본 터미널로 사용하려면 KillerShell을 설치하세요. 포터블 사본은 옮겨지거나 삭제될 수 있습니다.</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalNoHost">콘솔 프로그램을 KillerShell로 넘겨 주는 Windows 터미널이 필요합니다.</sys:String>
+    <sys:String x:Key="Str_About_DefaultTerminalChanged">그 뒤로 다른 기본 터미널이 선택되었습니다(예: Windows 설정에서).</sys:String>
+    <sys:String x:Key="Str_About_OpenFolders">KillerShell에서 폴더 열기</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersHint">파일 탐색기나 다른 곳에서 폴더나 드라이브를 두 번 클릭하면 KillerShell 창에서 열립니다. 내 PC, 휴지통, 제어판과 바탕 화면은 파일 탐색기에서 그대로 열립니다. 이 옵션을 끄면 이전에 폴더를 열던 프로그램으로 돌아갑니다.</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersPortable">폴더를 KillerShell에서 열려면 설치하세요. 포터블 사본은 옮겨지거나 삭제될 수 있습니다.</sys:String>
+    <sys:String x:Key="Str_About_OpenFoldersChanged">그 뒤로 다른 프로그램이 폴더를 열도록 설정되었습니다.</sys:String>
+    <sys:String x:Key="Str_About_CloseToTrayHint">이 옵션을 켜면 창을 닫아도 앱이 알림 영역에서 계속 실행됩니다.</sys:String>
+    <sys:String x:Key="Str_Tray_Open">{0} 열기</sys:String>
+    <sys:String x:Key="Str_Tray_Exit">끝내기</sys:String>
+    <sys:String x:Key="Str_About_StartupUpdateHeading">{0} {1}을(를) 사용할 수 있습니다</sys:String>
+    <sys:String x:Key="Str_About_StartupUpdateDetail">지금 다운로드하여 설치하시겠습니까? 앱이 자동으로 닫혔다가 다시 열립니다.</sys:String>
+    <sys:String x:Key="Str_About_UpdateNow">업데이트</sys:String>
+    <sys:String x:Key="Str_About_NotNow">나중에</sys:String>
+    <sys:String x:Key="Str_About_AlwaysCheckOnStartup">시작할 때 항상 확인</sys:String>
+    <sys:String x:Key="Str_Dlg_QuitMsg">KillerShell을 종료하시겠습니까?</sys:String>
+    <sys:String x:Key="Str_Chk_RememberTabs">열려 있는 탭 기억</sys:String>
+    <sys:String x:Key="Str_Chk_RememberChoice">내 선택 기억</sys:String>
+    <sys:String x:Key="Str_Btn_Quit">종료</sys:String>
+    <sys:String x:Key="Str_Col_Size">크기</sys:String>
+    <sys:String x:Key="Str_Col_Modified">수정한 날짜</sys:String>
+    <sys:String x:Key="Str_Col_Type">유형</sys:String>
+    <sys:String x:Key="Str_Col_Created">만든 날짜</sys:String>
+    <sys:String x:Key="Str_GroupByDate">날짜별로 그룹화</sys:String>
+    <sys:String x:Key="Str_DateGroup_Today">오늘</sys:String>
+    <sys:String x:Key="Str_DateGroup_Yesterday">어제</sys:String>
+    <sys:String x:Key="Str_DateGroup_ThisWeek">이번 주 초</sys:String>
+    <sys:String x:Key="Str_DateGroup_LastWeek">지난주</sys:String>
+    <sys:String x:Key="Str_DateGroup_ThisMonth">이번 달 초</sys:String>
+    <sys:String x:Key="Str_DateGroup_LastMonth">지난달</sys:String>
+    <sys:String x:Key="Str_DateGroup_ThisYear">올해 초</sys:String>
+    <sys:String x:Key="Str_DateGroup_LongAgo">오래 전</sys:String>
+    <sys:String x:Key="Str_Details_Empty">선택한 항목 없음</sys:String>
+    <sys:String x:Key="Str_Details_Created">만든 날짜</sys:String>
+    <sys:String x:Key="Str_Details_Type">유형</sys:String>
+    <sys:String x:Key="Str_Details_Attributes">특성</sys:String>
+    <sys:String x:Key="Str_Details_Path">경로</sys:String>
+    <sys:String x:Key="Str_Details_Folder">파일 폴더</sys:String>
+    <sys:String x:Key="Str_Details_NoExt">파일</sys:String>
+    <sys:String x:Key="Str_Details_ExtFile">{0} 파일</sys:String>
+    <sys:String x:Key="Str_Details_AttrReadOnly">읽기 전용</sys:String>
+    <sys:String x:Key="Str_Details_AttrHidden">숨김</sys:String>
+    <sys:String x:Key="Str_Details_AttrSystem">시스템</sys:String>
+    <sys:String x:Key="Str_Sum_Counts">폴더 {0}개, 파일 {1}개</sys:String>
+    <sys:String x:Key="Str_TT_ViewList">목록 보기</sys:String>
+    <sys:String x:Key="Str_TT_ViewIcons">아이콘 보기</sys:String>
+    <sys:String x:Key="Str_TT_ViewDetails">자세히 보기</sys:String>
+    <sys:String x:Key="Str_Lbl_SearchTerms">검색어</sys:String>
+    <sys:String x:Key="Str_Btn_AddTerm">+ 검색어 추가</sys:String>
+    <sys:String x:Key="Str_Btn_AddGroup">+ 그룹 추가</sys:String>
+    <sys:String x:Key="Str_Btn_Clear">지우기</sys:String>
+
+    <!-- Search button (code-behind swaps idle/stop; keep the brackets) -->
+    <sys:String x:Key="Str_Btn_Search">검색</sys:String>
+    <sys:String x:Key="Str_Btn_Stop">중지</sys:String>
+
+    <!-- Results -->
+    <sys:String x:Key="Str_Lbl_Results">결과</sys:String>
+    <sys:String x:Key="Str_Lbl_ResultsCount">결과  ({0})</sys:String>
+    <sys:String x:Key="Str_Btn_Export">결과 내보내기  (Ctrl+Alt+E)  |  CSV는 Ctrl+Alt+Shift+E</sys:String>
+    <sys:String x:Key="Str_TT_Result">클릭하여 펼치기  |  두 번 클릭하여 파일 탐색기에서 보기  |  마우스 오른쪽 단추로 더 보기</sys:String>
+    <sys:String x:Key="Str_Btn_ExpandAll">모두 펼치기</sys:String>
+    <sys:String x:Key="Str_Btn_CollapseAll">모두 접기</sys:String>
+    <sys:String x:Key="Str_Menu_OpenFile">파일 열기</sys:String>
+    <sys:String x:Key="Str_Menu_OpenWith">연결 프로그램...</sys:String>
+    <sys:String x:Key="Str_Menu_ShowExplorer">파일 탐색기에서 보기</sys:String>
+    <!-- Results context menu (ResultsMenu.cs). Copy commands act on the whole selection. -->
+    <sys:String x:Key="Str_Menu_OpenAdmin">관리자 권한으로 열기</sys:String>
+    <sys:String x:Key="Str_Menu_SearchHere">이 폴더 안에서 검색</sys:String>
+    <sys:String x:Key="Str_Menu_AnalyzeStorage">저장 공간 분석</sys:String>
+    <sys:String x:Key="Str_Menu_TreeShowHidden">숨겨진 폴더 및 점 폴더 표시</sys:String>
+    <sys:String x:Key="Str_Menu_OpenInNewTab">새 탭에서 열기</sys:String>
+    <sys:String x:Key="Str_Status_TreeHiddenOn">트리: 숨겨진 폴더 및 점 폴더 표시 중</sys:String>
+    <sys:String x:Key="Str_Status_TreeHiddenOff">트리: 숨겨진 폴더 및 점 폴더 숨기는 중</sys:String>
+    <sys:String x:Key="Str_Ks_TreeHidden">트리에서 숨겨진 폴더 및 점 폴더 표시 또는 숨기기</sys:String>
+    <sys:String x:Key="Str_Menu_OpenTerminal">여기에서 터미널 열기</sys:String>
+    <sys:String x:Key="Str_Menu_OpenTerminalAdmin">여기에서 관리자 권한으로 터미널 열기</sys:String>
+    <sys:String x:Key="Str_Menu_ExcludeFolder">검색에서 폴더 제외</sys:String>
+    <sys:String x:Key="Str_Menu_ArchiveOptions">압축 파일 옵션</sys:String>
+    <sys:String x:Key="Str_Menu_CopySpecial">복사...</sys:String>
+    <sys:String x:Key="Str_Menu_AddToArchive">{0}에 추가</sys:String>
+    <sys:String x:Key="Str_Menu_CopyPath">전체 경로 복사</sys:String>
+    <sys:String x:Key="Str_Menu_CopyName">파일 이름 복사</sys:String>
+    <sys:String x:Key="Str_Menu_CopyFolder">폴더 경로 복사</sys:String>
+    <sys:String x:Key="Str_Menu_CopyLines">일치하는 줄 복사</sys:String>
+    <sys:String x:Key="Str_Menu_CopyHash">SHA-256 복사</sys:String>
+    <sys:String x:Key="Str_Menu_Properties">속성</sys:String>
+    <sys:String x:Key="Str_Menu_ShellMenu">기타 Windows 옵션...</sys:String>
+    <!-- Status lines those commands write; {0} is a count or a file name -->
+    <sys:String x:Key="Str_Status_Copied">{0}을(를) 클립보드에 복사했습니다</sys:String>
+    <sys:String x:Key="Str_Status_CopiedLines">일치하는 줄 {0}개를 복사했습니다</sys:String>
+    <sys:String x:Key="Str_Status_CopiedFiles">파일 {0}개를 복사했습니다 - 파일 탐색기에 붙여 넣으세요</sys:String>
+    <sys:String x:Key="Str_Status_NoLines">복사할 일치하는 줄이 없습니다(이름 일치에는 줄이 없음)</sys:String>
+    <sys:String x:Key="Str_Status_ClipboardBusy">클립보드에 접근할 수 없습니다 - 다른 앱이 사용 중입니다</sys:String>
+    <sys:String x:Key="Str_Status_Hashing">{0}의 해시 계산 중...</sys:String>
+    <sys:String x:Key="Str_Status_HashCopied">{0}의 SHA-256을 복사했습니다</sys:String>
+    <sys:String x:Key="Str_Status_HashFailed">해시를 계산할 파일을 읽을 수 없습니다</sys:String>
+    <sys:String x:Key="Str_Status_ElevationDeclined">권한 상승이 거부되었습니다</sys:String>
+    <sys:String x:Key="Str_Status_FileOnly">이 명령은 폴더가 아닌 파일에서만 작동합니다</sys:String>
+    <sys:String x:Key="Str_Status_ShellFailed">Windows에서 열지 못했습니다</sys:String>
+    <sys:String x:Key="Str_Status_ShellSelectionNeedsOneFolder">Windows 메뉴를 쓰려면 한 폴더에 있는 항목만 선택하세요</sys:String>
+    <sys:String x:Key="Str_Status_Excluded">{0}을(를) 제외합니다 - 적용하려면 검색을 다시 실행하세요</sys:String>
+    <sys:String x:Key="Str_Status_AlreadyExcluded">{0}은(는) 이미 제외되었습니다</sys:String>
+    <sys:String x:Key="Str_Menu_Minimize">최소화</sys:String>
+    <sys:String x:Key="Str_Menu_Maximize">최대화</sys:String>
+    <sys:String x:Key="Str_Sys_Restore">이전 크기로</sys:String>
+    <sys:String x:Key="Str_Sys_Move">이동</sys:String>
+    <sys:String x:Key="Str_Sys_Size">크기</sys:String>
+    <sys:String x:Key="Str_Sys_Minimize">최소화</sys:String>
+    <sys:String x:Key="Str_Sys_Maximize">최대화</sys:String>
+    <sys:String x:Key="Str_Sys_Close">닫기</sys:String>
+    <sys:String x:Key="Str_Menu_Restore">이전 크기로</sys:String>
+    <sys:String x:Key="Str_Menu_Close">닫기</sys:String>
+
+    <!-- Status messages -->
+    <sys:String x:Key="Str_Status_Ready">준비</sys:String>
+    <sys:String x:Key="Str_Status_InvalidRoot">루트 경로가 잘못되었거나 없습니다.</sys:String>
+    <sys:String x:Key="Str_Status_NoTerms">검색어나 필터를 하나 이상 추가하세요.</sys:String>
+    <sys:String x:Key="Str_Status_Done">{0}초 만에 완료  -  파일 {1}개 일치.</sys:String>
+    <sys:String x:Key="Str_Status_Stopped">중지되었습니다.</sys:String>
+    <sys:String x:Key="Str_Status_Cleared">지웠습니다.</sys:String>
+    <sys:String x:Key="Str_Status_NothingExport">아직 내보낼 항목이 없습니다.</sys:String>
+    <sys:String x:Key="Str_Status_Exported">내보냄: {0}</sys:String>
+    <sys:String x:Key="Str_Status_ExportFailed">내보내기 실패: {0}</sys:String>
+    <sys:String x:Key="Str_Status_Scanned">파일 {0}개 검사함</sys:String>
+    <sys:String x:Key="Str_Count_Match">{0}개 일치</sys:String>
+    <sys:String x:Key="Str_Count_Matches">{0}개 일치</sys:String>
+
+    <!-- About overlay -->
+    <!-- Tagline is composed in XAML: DescA + "GPLv3 " + [Killer Tools link] + DescB.
+         GPLv3 and the product name stay out of the translatable text (family standard). -->
+    <sys:String x:Key="Str_About_Title">KillerShell 정보</sys:String>
+    <sys:String x:Key="Str_Status_TextSize">텍스트 크기: {0}%</sys:String>
+    <sys:String x:Key="Str_About_DescA" xml:space="preserve">터미널, 텍스트 편집기, 관리 도구를 갖춘 파워 유저용 고급 파일 브라우저입니다. </sys:String>
+    <sys:String x:Key="Str_About_DescB" xml:space="preserve"> 유틸리티입니다.</sys:String>
+    <sys:String x:Key="Str_About_Version">버전</sys:String>
+    <sys:String x:Key="Str_About_Publisher">게시자</sys:String>
+    <sys:String x:Key="Str_About_Thumbprint">지문</sys:String>
+    <sys:String x:Key="Str_About_Sha">EXE SHA-256</sys:String>
+    <sys:String x:Key="Str_About_ConfirmFolderDelete">폴더를 휴지통으로 보내기 전에 확인</sys:String>
+    <!-- Clear all Data: the link, its confirm and its result. Kept with the About keys rather than
+         split across three sections - one feature, and a translator needs to see them together. -->
+    <sys:String x:Key="Str_About_ClearData">모든 데이터 지우기</sys:String>
+    <sys:String x:Key="Str_Dlg_ClearDataMsg">저장된 모든 설정(테마, 언어, 글꼴, 저장한 위치, 최근 항목, 세션)과 압축 파일에서 추출한 임시 파일을 삭제합니다. 사용자의 파일은 건드리지 않습니다. 계속하시겠습니까?</sys:String>
+    <sys:String x:Key="Str_Status_DataCleared">데이터를 지웠습니다 - 아직 사용 중인 항목까지 지우려면 KillerShell을 다시 시작하세요</sys:String>
+    <sys:String x:Key="Str_About_Footer">GPLv3  |  현장 기술자가 만들었습니다</sys:String>
+
+    <!-- HTML report (exported in the app's current language) -->
+    <sys:String x:Key="Str_Rpt_Meta">생성 {0} &#183; 파일 {1}개 &#183; 일치 {2}개</sys:String>
+    <!-- Browsing export: a folder listing counts items and has no matches or query -->
+    <sys:String x:Key="Str_Rpt_MetaList">생성 {0} &#183; 항목 {1}개</sys:String>
+    <sys:String x:Key="Str_Rpt_Listing">{0}의 목록입니다.</sys:String>
+    <sys:String x:Key="Str_Rpt_Query">{0}에서 {1}을(를) 검색했습니다.</sys:String>
+    <sys:String x:Key="Str_Rpt_TermName">{0}이(가) 들어 있는 파일 이름</sys:String>
+    <sys:String x:Key="Str_Rpt_TermContent">{0}이(가) 들어 있는 파일 내용</sys:String>
+    <sys:String x:Key="Str_Rpt_Everything">모든 항목</sys:String>
+    <sys:String x:Key="Str_Rpt_Or">또는</sys:String>
+    <sys:String x:Key="Str_Rpt_Found">찾은 조건</sys:String>
+    <sys:String x:Key="Str_Rpt_More">... 외 {0}개</sys:String>
+    <sys:String x:Key="Str_Rpt_GenBy">{0}에서 생성</sys:String>
+
+    <!-- Term/group chips + tooltips (computed in the models, re-raised on language switch) -->
+    <sys:String x:Key="Str_Mode_Name">이름</sys:String>
+    <sys:String x:Key="Str_Mode_Content">내용</sys:String>
+    <sys:String x:Key="Str_TT_ModeName">파일 이름 / 와일드카드  (예: *.log)</sys:String>
+    <sys:String x:Key="Str_TT_ModeContent">내용 검색  (파일 안의 텍스트)</sys:String>
+    <sys:String x:Key="Str_Group_Any">하나라도</sys:String>
+    <sys:String x:Key="Str_Group_All">모두</sys:String>
+    <sys:String x:Key="Str_TT_GroupAny">하나라도: 이 그룹의 검색어 중 하나만 맞아도 파일이 일치합니다</sys:String>
+    <sys:String x:Key="Str_TT_GroupAll">모두: 파일이 이 그룹의 모든 검색어와 일치해야 합니다</sys:String>
+    <sys:String x:Key="Str_Join_And">그리고</sys:String>
+    <sys:String x:Key="Str_Join_Or">또는</sys:String>
+    <!-- Quit dialog: opt-out tab checkbox (unchecked = tabs are remembered) -->
+    <sys:String x:Key="Str_Chk_CloseTabs">열려 있는 탭 닫기</sys:String>
+
+    <!-- Help card: keyboard shortcuts section (F1) -->
+    <sys:String x:Key="Str_Help_Shortcuts">바로 가기 키</sys:String>
+    <sys:String x:Key="Str_Ks_Run">검색 실행</sys:String>
+    <sys:String x:Key="Str_Ks_Esc">팝업 닫기, 검색 중지, 그다음 종료 제안</sys:String>
+    <sys:String x:Key="Str_Ks_FilterResults">결과 필터링</sys:String>
+    <sys:String x:Key="Str_Ks_NewTab">Home에서 새 탭 열기</sys:String>
+    <sys:String x:Key="Str_Ks_CloseTab">현재 탭 닫기</sys:String>
+    <sys:String x:Key="Str_Ks_NextTab">다음 탭 (Shift: 이전 탭)</sys:String>
+    <sys:String x:Key="Str_Ks_JumpTab">탭 1-9로 이동 (9 = 마지막)</sys:String>
+    <sys:String x:Key="Str_Ks_AddTerm">검색어 추가</sys:String>
+    <sys:String x:Key="Str_Ks_AddFilter">필터 추가</sys:String>
+    <sys:String x:Key="Str_Ks_Folder">폴더 선택</sys:String>
+    <sys:String x:Key="Str_Ks_Help">이 카드 표시</sys:String>
+    <sys:String x:Key="Str_Ks_CaseSensitive">대/소문자 구분 전환</sys:String>
+    <sys:String x:Key="Str_Ks_Clear">결과 지우기</sys:String>
+    <sys:String x:Key="Str_Ks_Address">위치 편집 - 경로를 입력하고 Enter 누르기</sys:String>
+    <sys:String x:Key="Str_Ks_Pipe">이 결과 안에서 새 탭으로 검색</sys:String>
+    <sys:String x:Key="Str_Ks_SearchPanel">검색 패널 표시 또는 숨기기</sys:String>
+    <sys:String x:Key="Str_Ks_ExpandAll">모든 결과 펼치기</sys:String>
+    <sys:String x:Key="Str_Ks_CollapseAll">모든 결과 접기</sys:String>
+    <sys:String x:Key="Str_Ks_Shell">기본 프로필로 터미널 열기</sys:String>
+    <sys:String x:Key="Str_Ks_ShellCmd">이 폴더에서 CMD 탭 열기</sys:String>
+    <sys:String x:Key="Str_Ks_ShellAdmin">관리자 권한으로 PowerShell 열기</sys:String>
+    <sys:String x:Key="Str_Ks_ShellCmdAdmin">관리자 권한으로 CMD 열기</sys:String>
+    <sys:String x:Key="Str_Ks_ExportHtml">결과를 HTML로 내보내기</sys:String>
+    <sys:String x:Key="Str_Ks_ExportCsv">결과를 CSV로 내보내기</sys:String>
+    <sys:String x:Key="Str_Ks_TaskManager">프로세스/서비스 탭 열기</sys:String>
+    <sys:String x:Key="Str_Ks_TaskManagerAdmin">관리자 권한으로 프로세스/서비스 탭 열기</sys:String>
+    <sys:String x:Key="Str_Ks_Performance">성능 탭 열기</sys:String>
+    <sys:String x:Key="Str_Ks_ProcToggle">프로세스와 서비스 간 전환</sys:String>
+    <sys:String x:Key="Str_Ks_EventViewer">이벤트 뷰어 탭 열기 (항상 관리자 권한)</sys:String>
+    <sys:String x:Key="Str_Ks_RegistryEditor">레지스트리 편집기 탭 열기 (항상 관리자 권한)</sys:String>
+    <sys:String x:Key="Str_Ks_RegFind">키 또는 값 이름 찾기 (레지스트리 편집기 탭)</sys:String>
+    <sys:String x:Key="Str_Ks_Hint">바로 가기 키는 창 어디에서나 작동합니다. 열려 있는 드롭다운, 날짜 상자, 결과 필터에서는 Enter를 자체적으로 사용합니다.</sys:String>
+
+    <!-- Font dialog, reached from the row under the theme flyout -->
+    <sys:String x:Key="Str_Fonts_Row">글꼴...</sys:String>
+    <sys:String x:Key="Str_Fonts_Title">글꼴</sys:String>
+    <sys:String x:Key="Str_Fonts_App">앱</sys:String>
+    <sys:String x:Key="Str_Fonts_Terminal">터미널</sys:String>
+    <sys:String x:Key="Str_Fonts_Editor">편집기 텍스트</sys:String>
+    <sys:String x:Key="Str_Fonts_Default">기본값</sys:String>
+    <sys:String x:Key="Str_Fonts_Hint">목록 위에서 휠을 굴려 글꼴을 둘러보세요. 모든 변경 사항이 바로 적용됩니다.</sys:String>
+    <sys:String x:Key="Str_Fonts_Unreadable">{0}에는 읽을 수 있는 글자가 없습니다 - 이전 글꼴을 유지합니다</sys:String>
+
+    <!-- Associations card (Associations.cs, AssociationsCard.cs). Registering is something we
+         can do; DEFAULTING is the user's call in Settings, and the wording has to keep those
+         two apart or the card is promising something Windows will not let it deliver. -->
+    <sys:String x:Key="Str_Assoc_Row">파일 연결...</sys:String>
+    <sys:String x:Key="Str_Assoc_Title">파일 연결</sys:String>
+    <sys:String x:Key="Str_Assoc_Intro">KillerShell을 Windows에 등록하면 "연결 프로그램", 설정의 기본 앱, 모든 폴더와 드라이브의 오른쪽 클릭 메뉴에 표시됩니다.</sys:String>
+    <sys:String x:Key="Str_Assoc_What">텍스트 형식</sys:String>
+    <sys:String x:Key="Str_Assoc_Safe">.bat, .cmd, .reg에는 대신 "KillerShell로 편집" 항목이 추가됩니다. 두 번 클릭하면 여전히 실행되거나 병합됩니다. 그걸 몰래 바꿨다간 누군가의 오후가 통째로 날아가기 때문입니다.</sys:String>
+    <sys:String x:Key="Str_Assoc_AllUsers">이 PC의 모든 사용자용으로 등록</sys:String>
+    <sys:String x:Key="Str_Assoc_NeedsAdmin">모든 사용자용으로 등록하려면 KillerShell을 관리자 권한으로 실행하세요</sys:String>
+    <sys:String x:Key="Str_Assoc_Register">등록</sys:String>
+    <sys:String x:Key="Str_Assoc_Remove">등록 제거</sys:String>
+    <sys:String x:Key="Str_Assoc_OpenSettings">Windows 기본 앱 열기...</sys:String>
+    <sys:String x:Key="Str_Assoc_StateNone">등록되지 않았습니다. Windows에서 아직 어떤 파일 형식에도 KillerShell을 제안하지 않습니다.</sys:String>
+    <sys:String x:Key="Str_Assoc_StateUser">내 계정에 등록되었습니다. Windows는 기본값을 대신 바꾸지 않습니다 - 설정에서 파일 형식별로 KillerShell을 선택하세요.</sys:String>
+    <sys:String x:Key="Str_Assoc_StateMachine">이 PC의 모든 사용자용으로 등록되었습니다. Windows는 기본값을 대신 바꾸지 않습니다 - 설정에서 파일 형식별로 KillerShell을 선택하세요.</sys:String>
+    <sys:String x:Key="Str_Assoc_DefaultTerminal">콘솔 프로그램이나 폴더를 KillerShell에서 열려면 KillerShell 정보(F12)에서 해당 설정을 켜세요.</sys:String>
+    <sys:String x:Key="Str_Assoc_Portable">이 사본은 포터블입니다. 연결은 지금 이 .exe가 있는 위치를 가리키므로, 옮기거나 삭제하면 끊어집니다.</sys:String>
+    <sys:String x:Key="Str_Assoc_Registered">Windows에 등록됨</sys:String>
+    <sys:String x:Key="Str_Assoc_Removed">등록이 제거됨</sys:String>
+    <sys:String x:Key="Str_Assoc_Failed">Windows에서 해당 변경을 받아들이지 않았습니다</sys:String>
+
+    <!-- Title-bar caption on an elevated window, beside the wordmark -->
+    <sys:String x:Key="Str_Title_Elevated">상승된 권한</sys:String>
+    <sys:String x:Key="Str_Ks_MenuBar">창 메뉴 모음 숨기기 또는 표시</sys:String>
+    <sys:String x:Key="Str_Ks_NewWindow">새 창 열기</sys:String>
+
+    <!-- Recently visited folders, behind the address bar's chevron (Recents.cs) -->
+    <sys:String x:Key="Str_TT_Recents">최근 방문한 폴더  (Alt+R)</sys:String>
+    <sys:String x:Key="Str_Recents_Empty">아직 최근 폴더가 없습니다</sys:String>
+    <sys:String x:Key="Str_Recents_Clear">목록 지우기</sys:String>
+
+    <!-- Results density, on the rail (Density.cs) -->
+    <sys:String x:Key="Str_TT_Density">결과 밀도 - 클릭하여 순환, 휠로 단계 이동  (Ctrl+Shift+4)</sys:String>
+    <sys:String x:Key="Str_St_DensityRoomy">밀도: 넉넉하게</sys:String>
+    <sys:String x:Key="Str_St_DensityFull">밀도: 편안하게</sys:String>
+    <sys:String x:Key="Str_St_DensityCompact">밀도: 촘촘하게</sys:String>
+    <sys:String x:Key="Str_St_DensityTight">밀도: 빽빽하게</sys:String>
+    <sys:String x:Key="Str_St_DensityMin">밀도: 최소</sys:String>
+
+    <!-- Terminal right-click menu (Terminal/TerminalMenu.cs) -->
+    <sys:String x:Key="Str_Term_Copy">복사</sys:String>
+    <sys:String x:Key="Str_Term_Paste">붙여넣기</sys:String>
+    <sys:String x:Key="Str_Term_SelectAll">모두 선택</sys:String>
+    <sys:String x:Key="Str_Term_Clear">스크롤백 지우기</sys:String>
+    <sys:String x:Key="Str_Term_NewShell">새 터미널</sys:String>
+    <sys:String x:Key="Str_Term_OpenFolder">여기에서 폴더 열기</sys:String>
+    <sys:String x:Key="Str_Term_Fonts">글꼴...</sys:String>
+    <sys:String x:Key="Str_Term_EditPrompt">프롬프트 편집...</sys:String>
+    <sys:String x:Key="Str_Term_ResetPrompt">프롬프트 초기화</sys:String>
+    <sys:String x:Key="Str_Term_Close">터미널 닫기</sys:String>
+    <sys:String x:Key="Str_Dlg_ResetPromptMsg">기본 제공 프롬프트 스크립트로 되돌리시겠습니까? 이 파일에 적용한 편집 내용은 사라집니다.</sys:String>
+    <sys:String x:Key="Str_Btn_Reset">초기화</sys:String>
+
+    <!-- PowerShell $PROFILE (ProfileMenu.cs, Terminal/ShellProfiles.cs) -->
+    <sys:String x:Key="Str_Prof_Reload">PowerShell 프로필 다시 로드</sys:String>
+    <sys:String x:Key="Str_Prof_Edit">PowerShell 프로필 편집</sys:String>
+    <sys:String x:Key="Str_Prof_Asking">{0}에 프로필 위치를 묻는 중...</sys:String>
+    <sys:String x:Key="Str_Prof_Failed">{0}이(가) 응답하지 않아 프로필을 찾을 수 없습니다.</sys:String>
+    <sys:String x:Key="Str_Prof_None">PowerShell을 찾을 수 없습니다</sys:String>
+
+    <!-- Editor tabs (EditorTabs.cs, Editing/EditorControl.cs) -->
+    <sys:String x:Key="Str_Menu_Edit">편집</sys:String>
+    <sys:String x:Key="Str_Ed_TooBig">{0}은(는) 너무 커서 편집할 수 없습니다({1}MB).</sys:String>
+    <sys:String x:Key="Str_Ed_BadEncoding">바이트가 올바른 {0} 텍스트가 아닙니다. 파일은 변경되지 않았습니다.</sys:String>
+    <sys:String x:Key="Str_Ed_IncompleteSnapshot">파일을 열 때 아직 쓰는 중이었습니다. 저장하기 전에 다시 로드하세요.</sys:String>
+    <sys:String x:Key="Str_Ed_LossyEncoding">선택한 인코딩으로는 이 텍스트의 모든 문자를 나타낼 수 없습니다. UTF-8을 선택하고 다시 저장하세요.</sys:String>
+    <sys:String x:Key="Str_TT_EdSave">저장  (Ctrl+S)</sys:String>
+    <sys:String x:Key="Str_TT_EdUndo">실행 취소  (Ctrl+Z)</sys:String>
+    <sys:String x:Key="Str_TT_EdRedo">다시 실행  (Ctrl+Y)</sys:String>
+    <sys:String x:Key="Str_TT_EdFind">찾기  (Ctrl+F)</sys:String>
+    <sys:String x:Key="Str_TT_EdGoto">줄로 이동  (Ctrl+G)</sys:String>
+    <sys:String x:Key="Str_TT_EdWrap">자동 줄 바꿈  (Alt+Z)</sys:String>
+    <sys:String x:Key="Str_TT_EdSettings">편집기 설정</sys:String>
+    <sys:String x:Key="Str_TT_EdEncoding">다음 저장 때 쓸 인코딩을 바꾸려면 클릭</sys:String>
+    <sys:String x:Key="Str_Ed_GotoLabel">줄</sys:String>
+    <sys:String x:Key="Str_Ed_EncUtf8">UTF-8</sys:String>
+    <sys:String x:Key="Str_Ed_EncUtf8Bom">UTF-8(BOM 포함)</sys:String>
+    <sys:String x:Key="Str_Ed_EncUtf16Le">UTF-16 LE</sys:String>
+    <sys:String x:Key="Str_Ed_EncUtf16Be">UTF-16 BE</sys:String>
+    <sys:String x:Key="Str_Ed_EncAnsi">ANSI (Windows-1252)</sys:String>
+
+    <!-- Gear flyout -->
+    <sys:String x:Key="Str_Ed_OptLineNumbers">줄 번호</sys:String>
+    <sys:String x:Key="Str_Ed_OptCurrentLine">현재 줄 강조</sys:String>
+    <sys:String x:Key="Str_Ed_OptWhitespace">공백 및 탭 표시</sys:String>
+    <sys:String x:Key="Str_Ed_OptSpaces">탭 대신 공백 삽입</sys:String>
+    <sys:String x:Key="Str_Ed_OptWrap">자동 줄 바꿈</sys:String>
+    <sys:String x:Key="Str_Ed_OptIndent">들여쓰기</sys:String>
+    <sys:String x:Key="Str_Ed_OptFonts">글꼴 및 크기...</sys:String>
+
+    <!-- Right-click menu (Editing/EditorMenu.cs) -->
+    <sys:String x:Key="Str_Ed_Undo">실행 취소</sys:String>
+    <sys:String x:Key="Str_Ed_Redo">다시 실행</sys:String>
+    <sys:String x:Key="Str_Ed_Cut">잘라내기</sys:String>
+    <sys:String x:Key="Str_Ed_Copy">복사</sys:String>
+    <sys:String x:Key="Str_Ed_Paste">붙여넣기</sys:String>
+    <sys:String x:Key="Str_Ed_SelectAll">모두 선택</sys:String>
+    <sys:String x:Key="Str_Ed_Find">찾기...</sys:String>
+    <sys:String x:Key="Str_Ed_Goto">줄로 이동...</sys:String>
+    <sys:String x:Key="Str_Ed_Save">저장</sys:String>
+    <sys:String x:Key="Str_Ed_Settings">설정...</sys:String>
+    <sys:String x:Key="Str_Ed_CloseTab">파일 닫기</sys:String>
+
+    <!-- Shell bar (TerminalBar.cs) -->
+    <sys:String x:Key="Str_TT_TermCwd">클릭하여 편집 - 폴더를 입력하고 Enter를 누르면 cd로 이동합니다</sys:String>
+    <sys:String x:Key="Str_TT_TermNew">새 터미널  (F8)</sys:String>
+    <sys:String x:Key="Str_TT_TermAdmin">관리자 권한으로 새 터미널  (Ctrl+F8)</sys:String>
+    <sys:String x:Key="Str_TT_TermFolder">이 폴더를 탭에서 열기  (Ctrl+Shift+T)</sys:String>
+    <sys:String x:Key="Str_TT_TermClear">스크롤백 지우기  (Ctrl+Shift+L)</sys:String>
+    <sys:String x:Key="Str_TT_TermFonts">글꼴...  (Ctrl+Shift+,)</sys:String>
+    <sys:String x:Key="Str_TT_EdPath">클릭하여 편집 - 경로를 입력하고 Enter를 누르면 파일 이름이 바뀌거나 이동됩니다. 기존 파일을 입력하면 그 파일이 열립니다.</sys:String>
+    <sys:String x:Key="Str_Ed_WrapOn">자동 줄 바꿈 켜짐.</sys:String>
+    <sys:String x:Key="Str_Ed_WrapOff">자동 줄 바꿈 꺼짐 - 긴 줄은 스크롤하여 보세요.</sys:String>
+    <sys:String x:Key="Str_Ed_Saved">{0}을(를) 저장했습니다.</sys:String>
+    <sys:String x:Key="Str_Ed_SaveFailed">{0}을(를) 저장할 수 없습니다: {1}</sys:String>
+    <sys:String x:Key="Str_Ed_ChangedOnDisk">디스크에서 {0}이(가) 변경되었습니다</sys:String>
+    <sys:String x:Key="Str_Ed_ChangedOnDiskDetail">파일을 연 뒤에 다른 프로그램이 이 파일을 저장했습니다. 유지할 버전을 선택하세요.</sys:String>
+    <sys:String x:Key="Str_Btn_Reload">다시 로드</sys:String>
+    <sys:String x:Key="Str_Ed_Reloaded">디스크에서 {0}을(를) 다시 로드했습니다.</sys:String>
+    <sys:String x:Key="Str_Ed_ChangedBeforeAdminSave">관리자 권한 저장 전에 디스크에서 {0}이(가) 변경되었습니다. 아무것도 저장되지 않았습니다. 유지할 내용을 고르려면 다시 저장하세요.</sys:String>
+    <sys:String x:Key="Str_Ed_OpenFailed">{0}을(를) 열 수 없습니다: {1}</sys:String>
+
+    <!-- New blank document: the rail's pencil, its tab title, and the first save's dialog -->
+    <sys:String x:Key="Str_TT_TabOverflow">모든 탭</sys:String>
+    <sys:String x:Key="Str_TT_ColResize">끌어서 크기 조정  -  두 번 클릭하여 초기화</sys:String>
+    <sys:String x:Key="Str_TT_NewDoc">새 문서  (F7)  |  저장이 거부되면 Ctrl+F7로 관리자 권한 저장을 다시 시도</sys:String>
+    <sys:String x:Key="Str_TT_NewDocAdmin">새 문서, 관리자 권한 저장 다시 시도  (Ctrl+F7)</sys:String>
+    <sys:String x:Key="Str_Ed_Untitled">제목 없음</sys:String>
+    <sys:String x:Key="Str_Ed_SaveAs">다른 이름으로 저장</sys:String>
+    <sys:String x:Key="Str_Ed_AllFiles">모든 파일</sys:String>
+
+    <sys:String x:Key="Str_Dlg_DiscardMsg">저장하지 않고 이 파일을 닫으시겠습니까? 변경 내용이 사라집니다.</sys:String>
+    <sys:String x:Key="Str_Btn_Discard">버리기</sys:String>
+
+    <!-- Rail button: left click opens PowerShell, right click picks -->
+    <sys:String x:Key="Str_TT_Terminal">터미널 열기  (F8)  -  마우스 오른쪽 단추로 선택</sys:String>
+    <sys:String x:Key="Str_Term_PowerShell">PowerShell</sys:String>
+    <sys:String x:Key="Str_Term_PowerShellAdmin">관리자 권한 PowerShell</sys:String>
+    <sys:String x:Key="Str_Term_Cmd">명령 프롬프트</sys:String>
+    <sys:String x:Key="Str_Term_CmdAdmin">관리자 권한 명령 프롬프트</sys:String>
+
+    <!-- Shortcuts card: category headings, the LIST / KEYBOARD toggle, and the keyboard's hint -->
+    <sys:String x:Key="Str_Ks_About">정보 카드 표시</sys:String>
+    <sys:String x:Key="Str_Ks_CatSearch">검색</sys:String>
+    <sys:String x:Key="Str_Ks_CatNav">탐색</sys:String>
+    <sys:String x:Key="Str_Ks_CatTabs">탭</sys:String>
+    <sys:String x:Key="Str_Ks_CatView">보기</sys:String>
+    <sys:String x:Key="Str_Ks_CatFile">파일</sys:String>
+    <sys:String x:Key="Str_Ks_CatEdit">편집</sys:String>
+    <sys:String x:Key="Str_Ks_CatHelp">도움말</sys:String>
+    <sys:String x:Key="Str_Ks_ViewList">목록</sys:String>
+    <sys:String x:Key="Str_Ks_ViewKeyboard">키보드</sys:String>
+    <sys:String x:Key="Str_Ks_HoldHint">Ctrl, Shift 또는 Alt를 누르고 있으면 해당 레이어를 미리 봅니다</sys:String>
+    <!-- Shortcuts card: SCOPE section headings. A binding belongs to one applet or to the whole
+         window, which is a separate question from its category (SEARCH/NAVIGATION/...) and gets
+         its own headings. Only four are here: the Processes, Event Viewer, Registry Editor and
+         Storage Analyzer sections reuse those tabs' own Str_TabTitle_* strings rather than
+         translating the same nouns a second time. Str_Ks_ScopeShown labels the applet name above
+         the keyboard map, which can only draw one meaning per keycap and so has to say which. -->
+    <sys:String x:Key="Str_Ks_ScopeGlobal">어디서나</sys:String>
+    <sys:String x:Key="Str_Ks_ScopeFiles">파일 브라우저</sys:String>
+    <sys:String x:Key="Str_Ks_ScopeTerminal">터미널</sys:String>
+    <sys:String x:Key="Str_Ks_ScopeEditor">편집기</sys:String>
+    <sys:String x:Key="Str_Ks_ScopeShown">표시 중인 키:</sys:String>
+
+    <!-- Explorer-convention bindings -->
+    <sys:String x:Key="Str_Ks_BackForward">뒤로 / 앞으로 이동</sys:String>
+    <sys:String x:Key="Str_Ks_Back">뒤로 이동</sys:String>
+    <sys:String x:Key="Str_Ks_Up">상위 폴더로 이동</sys:String>
+    <sys:String x:Key="Str_Ks_Refresh">새로 고침 - 폴더를 다시 나열하거나 검색을 다시 실행</sys:String>
+    <sys:String x:Key="Str_Ks_SelectAll">모든 결과 선택</sys:String>
+    <sys:String x:Key="Str_Ks_FocusSearch">검색 상자에 커서 놓기</sys:String>
+
+    <!-- File operations: progress, conflicts, and their buttons -->
+    <sys:String x:Key="Str_Fo_Copying">복사 중...</sys:String>
+    <sys:String x:Key="Str_Fo_Moving">이동 중...</sys:String>
+    <sys:String x:Key="Str_Fo_Deleting">삭제 중...</sys:String>
+    <sys:String x:Key="Str_Fo_OfCount">{1} 중 {0}</sys:String>
+    <sys:String x:Key="Str_Fo_ConflictTitle">여기에 {0}이(가) 이미 있습니다. 어느 쪽을 유지하시겠습니까?</sys:String>
+    <sys:String x:Key="Str_Fo_Existing">이미 있는 항목</sys:String>
+    <sys:String x:Key="Str_Fo_Incoming">복사해 오는 항목</sys:String>
+    <sys:String x:Key="Str_Fo_ApplyAll">이 작업의 나머지 항목에도 똑같이 적용</sys:String>
+    <sys:String x:Key="Str_Btn_Replace">바꾸기</sys:String>
+    <sys:String x:Key="Str_Btn_Skip">건너뛰기</sys:String>
+    <sys:String x:Key="Str_Btn_KeepBoth">둘 다 유지</sys:String>
+    <sys:String x:Key="Str_Btn_Rename">이름 바꾸기</sys:String>
+    <sys:String x:Key="Str_Btn_Delete">삭제</sys:String>
+    <sys:String x:Key="Str_Fo_RenameTitle">새 이름</sys:String>
+    <sys:String x:Key="Str_Fo_NicknameTitle">별칭</sys:String>
+    <sys:String x:Key="Str_Fo_NewFolderName">새 폴더</sys:String>
+    <sys:String x:Key="Str_Dlg_DeleteMsg">항목 {0}개를 영구적으로 삭제하시겠습니까? 되돌릴 수 없습니다 - 휴지통으로 가지 않습니다.</sys:String>
+    <sys:String x:Key="Str_Dlg_RecycleFolderMsg">항목 {0}개를 휴지통으로 보내시겠습니까? 선택 항목에 폴더가 있으며, 그 안의 모든 항목도 함께 보내집니다.</sys:String>
+    <sys:String x:Key="Str_Chk_DontAskAgain">다시 묻지 않음</sys:String>
+    <sys:String x:Key="Str_Dlg_DeleteDeniedMsg">Windows에서 삭제를 거부했습니다. 제어된 폴더 액세스가 켜져 있다면 관리자 권한으로 다시 시도해도 소용이 없습니다. 이 기능은 권한 수준이 아니라 앱 단위로 차단하므로, Windows 보안에서 허용된 앱 목록에 KillerShell을 추가해야 합니다. 그래도 관리자 권한으로 다시 시도하시겠습니까?</sys:String>
+    <sys:String x:Key="Str_Btn_RetryAdmin">관리자 권한으로 다시 시도</sys:String>
+    <sys:String x:Key="Str_Status_DeleteDenied">삭제가 거부되었습니다 - 권한이 없습니다</sys:String>
+    <sys:String x:Key="Str_Status_Selected">{0}개 항목 선택됨</sys:String>
+    <sys:String x:Key="Str_Status_ElevatedDeleteFailed">관리자 권한 삭제도 거부되었습니다 - Windows 보안에서 제어된 폴더 액세스를 확인하세요</sys:String>
+    <sys:String x:Key="Str_Status_ElevatedSaveFailed">{0}의 관리자 권한 저장도 거부되었습니다 - Windows 보안에서 제어된 폴더 액세스를 확인하세요</sys:String>
+
+    <!-- File-operation shortcuts and their outcomes -->
+    <sys:String x:Key="Str_Ks_CutCopyPaste">파일 잘라내기 / 복사 / 붙여넣기</sys:String>
+    <sys:String x:Key="Str_Ks_Rename">이름 바꾸기</sys:String>
+    <sys:String x:Key="Str_Ks_Recycle">휴지통으로 보내기</sys:String>
+    <sys:String x:Key="Str_Ks_DeleteForever">영구 삭제</sys:String>
+    <sys:String x:Key="Str_Ks_NewFolder">새 폴더</sys:String>
+    <sys:String x:Key="Str_Status_PasteNeedsFolder">먼저 폴더를 여세요 - 검색 탭에는 붙여 넣을 곳이 없습니다</sys:String>
+    <sys:String x:Key="Str_Status_DropIntoSelf">폴더를 자기 자신 안에 놓을 수 없습니다</sys:String>
+    <sys:String x:Key="Str_Status_OpDone">완료 - 항목 {0}개</sys:String>
+    <sys:String x:Key="Str_Status_OpCanceled">항목 {0}개 처리 후 취소됨</sys:String>
+    <sys:String x:Key="Str_Status_OpPartial">{0}개 완료, {1}개 실패</sys:String>
+    <sys:String x:Key="Str_Status_OpFailed">작업에 실패했습니다</sys:String>
+    <sys:String x:Key="Str_Status_RenameFailed">이름을 바꿀 수 없습니다 - {0}</sys:String>
+
+    <!-- File-operation context menu -->
+    <sys:String x:Key="Str_Menu_Cut">잘라내기</sys:String>
+    <sys:String x:Key="Str_Menu_Copy">복사</sys:String>
+    <sys:String x:Key="Str_Menu_Paste">붙여넣기</sys:String>
+    <sys:String x:Key="Str_Menu_Rename">이름 바꾸기</sys:String>
+    <sys:String x:Key="Str_Menu_Delete">삭제  (Shift: 영구 삭제)</sys:String>
+    <sys:String x:Key="Str_Menu_NewFolder">새 폴더</sys:String>
+    <sys:String x:Key="Str_Menu_Compress">ZIP으로 압축</sys:String>
+    <sys:String x:Key="Str_Menu_ExtractHere">여기에 압축 풀기</sys:String>
+    <sys:String x:Key="Str_Menu_ExtractTo">"{0}"에 압축 풀기</sys:String>
+
+
+    <!-- Themed file dialog (FileDialog.xaml): replaces the Win32 open/save boxes. -->
+    <sys:String x:Key="Str_Btn_Open">열기</sys:String>
+    <sys:String x:Key="Str_Btn_Save">저장</sys:String>
+    <sys:String x:Key="Str_Dlg_FileName">파일 이름:</sys:String>
+    <sys:String x:Key="Str_Dlg_FileType">파일 형식:</sys:String>
+    <sys:String x:Key="Str_Dlg_Places">위치</sys:String>
+    <sys:String x:Key="Str_Dlg_AllFiles">모든 파일</sys:String>
+    <sys:String x:Key="Str_Dlg_NoMatchingFiles">현재 파일 형식과 일치하는 항목이 없습니다.</sys:String>
+    <sys:String x:Key="Str_Dlg_NoSuchFolder">해당 폴더가 없습니다.</sys:String>
+    <sys:String x:Key="Str_Dlg_InvalidPath">올바른 파일 이름이나 경로를 입력하세요.</sys:String>
+    <sys:String x:Key="Str_Dlg_ListingTooMany">처음 {0:N0}개 항목을 표시합니다. 나머지 항목은 이름이나 경로를 입력하여 찾으세요.</sys:String>
+    <sys:String x:Key="Str_Dlg_ListingTooSlow">이 폴더는 읽는 속도가 느렸습니다. 10초 동안 읽어 온 항목을 표시합니다.</sys:String>
+    <sys:String x:Key="Str_Dlg_NoSuchFile">해당 파일이 없습니다.</sys:String>
+    <sys:String x:Key="Str_Dlg_OverwriteMsg">{0}을(를) 바꾸시겠습니까?</sys:String>
+
+    <!-- Processes/Services tab (Shell/ProcessTabs.cs, Tools/ProcessListControl.cs). The tab's
+         user-facing label is "Processes/Services" now that it shows a Services view too - the
+         underlying mechanism (ProcessListControl, OpenTaskManager, RelaunchElevatedProcesses, the
+         command-line flag that opens it directly) all keep their existing "Process"/"TaskManager"
+         names, unchanged. -->
+    <sys:String x:Key="Str_TT_TaskManager">프로세스/서비스  (F9)  -  마우스 오른쪽 단추로 선택</sys:String>
+    <sys:String x:Key="Str_TabTitle_TaskManager">프로세스/서비스</sys:String>
+    <!-- The tab shows ONE of the two views at a time, so its title names that one. The combined
+         key above is still used for the rail button and its tooltips, where it describes the
+         tool rather than the current view. -->
+    <sys:String x:Key="Str_TabTitle_Processes">프로세스</sys:String>
+    <sys:String x:Key="Str_TabTitle_Services">서비스</sys:String>
+    <sys:String x:Key="Str_Rail_ProcessesOpen">프로세스/서비스</sys:String>
+    <sys:String x:Key="Str_Rail_ProcessesAdmin">관리자 권한 프로세스/서비스</sys:String>
+    <sys:String x:Key="Str_TT_ProcFilter">이름, 경로 또는 사용자로 필터링</sys:String>
+    <sys:String x:Key="Str_Col_ProcName">이름</sys:String>
+    <sys:String x:Key="Str_Col_ProcPid">PID</sys:String>
+    <sys:String x:Key="Str_Col_ProcUser">사용자</sys:String>
+    <sys:String x:Key="Str_Col_ProcCpu">CPU %</sys:String>
+    <sys:String x:Key="Str_Col_ProcMemory">메모리</sys:String>
+    <sys:String x:Key="Str_Col_ProcCommandLine">명령줄</sys:String>
+    <sys:String x:Key="Str_Col_ProcPath">경로</sys:String>
+    <sys:String x:Key="Str_Menu_ProcOpenLocation">파일 위치 열기</sys:String>
+    <sys:String x:Key="Str_Menu_ProcKill">프로세스 끝내기</sys:String>
+    <sys:String x:Key="Str_Menu_ProcRestart">다시 시작</sys:String>
+    <sys:String x:Key="Str_Menu_ProcRunAsAdmin">관리자 권한으로 다시 시작</sys:String>
+    <sys:String x:Key="Str_Dlg_ProcKillMsg">{0}(PID {1})을(를) 끝내시겠습니까? 해당 프로세스에서 저장하지 않은 작업은 사라집니다.</sys:String>
+    <sys:String x:Key="Str_Proc_Killed">{0}을(를) 끝냈습니다</sys:String>
+    <sys:String x:Key="Str_Proc_AlreadyExited">{0}은(는) 이미 종료되었습니다</sys:String>
+    <sys:String x:Key="Str_Proc_KillFailed">{0}을(를) 끝낼 수 없습니다 - {1}</sys:String>
+    <sys:String x:Key="Str_Proc_Restarted">{0}을(를) 다시 시작했습니다</sys:String>
+    <sys:String x:Key="Str_Proc_RestartFailed">{0}을(를) 다시 시작할 수 없습니다 - {1}</sys:String>
+    <sys:String x:Key="Str_Proc_RefreshFailed">프로세스 목록을 새로 고칠 수 없습니다 - {0}</sys:String>
+    <sys:String x:Key="Str_Proc_Loading">프로세스 목록 로드 중...</sys:String>
+    <sys:String x:Key="Str_Proc_DetailsTitle">프로세스 세부 정보</sys:String>
+    <sys:String x:Key="Str_Proc_DetailsParentPid">부모 PID</sys:String>
+    <sys:String x:Key="Str_Proc_DetailsStartTime">시작 시간</sys:String>
+    <sys:String x:Key="Str_TT_ProcPrev">이전 프로세스  (왼쪽 화살표)</sys:String>
+    <sys:String x:Key="Str_TT_ProcNext">다음 프로세스  (오른쪽 화살표)</sys:String>
+    <sys:String x:Key="Str_TT_ProcCopyDetails">세부 정보 복사  (Ctrl+C)</sys:String>
+    <sys:String x:Key="Str_TT_ProcClose">닫기  (Esc)</sys:String>
+
+    <!-- The Processes/Services mode toggle above the filter box: one icon button, its glyph the
+         current mode, its tooltip naming what clicking switches TO next. -->
+    <sys:String x:Key="Str_TT_ProcToggleToServices">서비스로 전환  (Ctrl+.)</sys:String>
+    <sys:String x:Key="Str_TT_ProcToggleToProcesses">프로세스로 전환  (Ctrl+.)</sys:String>
+
+    <!-- The Services view of the same tab. -->
+    <sys:String x:Key="Str_TT_SvcFilter">이름, 표시 이름, 경로 또는 계정으로 필터링</sys:String>
+    <sys:String x:Key="Str_Col_SvcName">이름</sys:String>
+    <sys:String x:Key="Str_Col_SvcDisplayName">표시 이름</sys:String>
+    <sys:String x:Key="Str_Col_SvcStatus">상태</sys:String>
+    <sys:String x:Key="Str_Col_SvcStartType">시작 유형</sys:String>
+    <sys:String x:Key="Str_Col_SvcLogOnAs">다음 계정으로 로그온</sys:String>
+    <sys:String x:Key="Str_Col_SvcPath">경로</sys:String>
+    <sys:String x:Key="Str_Col_SvcDescription">설명</sys:String>
+    <sys:String x:Key="Str_Menu_SvcStart">시작</sys:String>
+    <sys:String x:Key="Str_Menu_SvcStop">중지</sys:String>
+    <sys:String x:Key="Str_Dlg_SvcStartMsg">{0}({1})을(를) 시작하시겠습니까?</sys:String>
+    <sys:String x:Key="Str_Dlg_SvcStopMsg">{0}({1})을(를) 중지하시겠습니까? 이 서비스에 의존하는 항목이 작동을 멈출 수 있습니다.</sys:String>
+    <sys:String x:Key="Str_Dlg_SvcRestartMsg">{0}({1})을(를) 다시 시작하시겠습니까? 이 서비스에 의존하는 항목을 잠시 사용할 수 없습니다.</sys:String>
+    <sys:String x:Key="Str_Svc_Started">{0}을(를) 시작했습니다</sys:String>
+    <sys:String x:Key="Str_Svc_StartFailed">{0}을(를) 시작할 수 없습니다 - {1}</sys:String>
+    <sys:String x:Key="Str_Svc_Stopped">{0}을(를) 중지했습니다</sys:String>
+    <sys:String x:Key="Str_Svc_StopFailed">{0}을(를) 중지할 수 없습니다 - {1}</sys:String>
+    <sys:String x:Key="Str_Svc_Restarted">{0}을(를) 다시 시작했습니다</sys:String>
+    <sys:String x:Key="Str_Svc_RestartFailed">{0}을(를) 다시 시작할 수 없습니다 - {1}</sys:String>
+    <sys:String x:Key="Str_Svc_RefreshFailed">서비스 목록을 새로 고칠 수 없습니다 - {0}</sys:String>
+    <sys:String x:Key="Str_Svc_Loading">서비스 목록 로드 중...</sys:String>
+    <sys:String x:Key="Str_Svc_DetailsTitle">서비스 세부 정보</sys:String>
+    <sys:String x:Key="Str_TT_SvcPrev">이전 서비스  (왼쪽 화살표)</sys:String>
+    <sys:String x:Key="Str_TT_SvcNext">다음 서비스  (오른쪽 화살표)</sys:String>
+    <sys:String x:Key="Str_TT_SvcCopyDetails">세부 정보 복사  (Ctrl+C)</sys:String>
+    <sys:String x:Key="Str_TT_SvcClose">닫기  (Esc)</sys:String>
+
+    <!-- Event Viewer tab (Shell/EventViewerTabs.cs, Tools/EventViewerControl.cs) -->
+    <sys:String x:Key="Str_TT_EventViewer">이벤트 뷰어  (Ctrl+F12)</sys:String>
+    <sys:String x:Key="Str_TabTitle_EventViewer">이벤트 뷰어</sys:String>
+    <sys:String x:Key="Str_TT_EvtFilter">원본, 메시지, 범주 또는 이벤트 ID로 필터링</sys:String>
+    <sys:String x:Key="Str_TT_EvtLogPicker">읽을 로그</sys:String>
+    <sys:String x:Key="Str_TT_EvtLevelPicker">표시할 수준</sys:String>
+    <sys:String x:Key="Str_TT_EvtRefresh">현재 로그와 수준 다시 로드</sys:String>
+    <sys:String x:Key="Str_Col_EvtLevel">수준</sys:String>
+    <sys:String x:Key="Str_Col_EvtLog">로그</sys:String>
+    <sys:String x:Key="Str_Col_EvtTime">날짜 및 시간</sys:String>
+    <sys:String x:Key="Str_Col_EvtSource">원본</sys:String>
+    <sys:String x:Key="Str_Col_EvtId">이벤트 ID</sys:String>
+    <sys:String x:Key="Str_Col_EvtCategory">작업 범주</sys:String>
+    <sys:String x:Key="Str_Col_EvtMessage">메시지</sys:String>
+    <sys:String x:Key="Str_EvtLog_Application">응용 프로그램</sys:String>
+    <sys:String x:Key="Str_EvtLog_System">시스템</sys:String>
+    <sys:String x:Key="Str_EvtLog_Security">보안</sys:String>
+    <sys:String x:Key="Str_EvtLog_All">모든 로그</sys:String>
+    <sys:String x:Key="Str_EvtLevel_All">모든 수준</sys:String>
+    <sys:String x:Key="Str_EvtLevel_Error">오류</sys:String>
+    <sys:String x:Key="Str_EvtLevel_Warning">경고</sys:String>
+    <sys:String x:Key="Str_EvtLevel_Information">정보</sys:String>
+    <sys:String x:Key="Str_Menu_EvtCopyMessage">메시지 복사</sys:String>
+    <sys:String x:Key="Str_Menu_EvtCopyDetails">세부 정보 복사</sys:String>
+    <sys:String x:Key="Str_Evt_Loading">이벤트 로그 로드 중...</sys:String>
+    <sys:String x:Key="Str_Evt_RefreshFailed">이벤트 로그를 읽을 수 없습니다 - {0}</sys:String>
+    <sys:String x:Key="Str_Evt_AccessDenied">보안 로그를 읽으려면 관리자 권한 창이 필요합니다 - 일부 항목이 빠질 수 있습니다</sys:String>
+    <sys:String x:Key="Str_Evt_NoMessage">(메시지 데이터를 사용할 수 없음)</sys:String>
+    <sys:String x:Key="Str_Evt_MessageCopied">메시지를 복사했습니다</sys:String>
+    <sys:String x:Key="Str_Evt_DetailsCopied">세부 정보를 복사했습니다</sys:String>
+    <sys:String x:Key="Str_Evt_CopyFailed">클립보드에 복사할 수 없습니다 - {0}</sys:String>
+    <sys:String x:Key="Str_Evt_DetailsLevel">수준</sys:String>
+    <sys:String x:Key="Str_Evt_DetailsTime">시간</sys:String>
+    <sys:String x:Key="Str_Evt_DetailsSource">원본</sys:String>
+    <sys:String x:Key="Str_Evt_DetailsId">이벤트 ID</sys:String>
+    <sys:String x:Key="Str_Evt_DetailsCategory">작업 범주</sys:String>
+    <sys:String x:Key="Str_Evt_DetailsMessage">메시지</sys:String>
+
+    <!-- Performance Monitor tab (Shell/PerformanceTabs.cs, Tools/PerformanceMonitorControl.cs) -->
+    <sys:String x:Key="Str_TT_Performance">성능  (F11)</sys:String>
+    <sys:String x:Key="Str_TabTitle_Performance">성능</sys:String>
+    <sys:String x:Key="Str_Perf_Gathering">하드웨어 정보 읽는 중...</sys:String>
+    <sys:String x:Key="Str_Perf_GatherFailed">하드웨어 정보를 읽을 수 없습니다 - {0}</sys:String>
+    <sys:String x:Key="Str_Perf_CountersUnavailable">성능 카운터를 사용할 수 없습니다 - {0}</sys:String>
+    <sys:String x:Key="Str_Perf_Cpu">CPU</sys:String>
+    <sys:String x:Key="Str_Perf_Ram">RAM</sys:String>
+    <sys:String x:Key="Str_Perf_Network">네트워크</sys:String>
+    <sys:String x:Key="Str_Perf_Disk">디스크</sys:String>
+    <sys:String x:Key="Str_Perf_Gpu">GPU</sys:String>
+    <sys:String x:Key="Str_Perf_GpuUnassigned">할당되지 않은 GPU 카운터</sys:String>
+    <sys:String x:Key="Str_Perf_ResetLayout">레이아웃 초기화</sys:String>
+    <sys:String x:Key="Str_Perf_OneColumn">한 열</sys:String>
+    <sys:String x:Key="Str_Perf_TwoColumns">두 열</sys:String>
+    <sys:String x:Key="Str_Perf_Cached">캐시됨</sys:String>
+    <sys:String x:Key="Str_Perf_Utilization">사용률</sys:String>
+    <sys:String x:Key="Str_Perf_Throughput">처리량</sys:String>
+    <sys:String x:Key="Str_Perf_Send">보내기</sys:String>
+    <sys:String x:Key="Str_Perf_Receive">받기</sys:String>
+    <sys:String x:Key="Str_Perf_ActiveTime">활성 시간</sys:String>
+    <sys:String x:Key="Str_Perf_TransferRate">전송 속도</sys:String>
+    <sys:String x:Key="Str_Perf_ReadSpeed">읽기 속도</sys:String>
+    <sys:String x:Key="Str_Perf_WriteSpeed">쓰기 속도</sys:String>
+    <sys:String x:Key="Str_Perf_DedicatedMemory">전용 GPU 메모리</sys:String>
+    <sys:String x:Key="Str_Perf_SharedMemory">공유 GPU 메모리</sys:String>
+    <sys:String x:Key="Str_Perf_InUse">사용 중</sys:String>
+    <sys:String x:Key="Str_Perf_Available">사용 가능</sys:String>
+    <sys:String x:Key="Str_Perf_Committed">커밋됨</sys:String>
+    <sys:String x:Key="Str_Perf_Cores">코어</sys:String>
+    <sys:String x:Key="Str_Perf_LogicalProcessors">논리 프로세서</sys:String>
+    <sys:String x:Key="Str_Perf_BaseSpeed">기본 속도</sys:String>
+    <sys:String x:Key="Str_Perf_Speed">속도</sys:String>
+    <sys:String x:Key="Str_Perf_Processes">프로세스</sys:String>
+    <sys:String x:Key="Str_Perf_Threads">스레드</sys:String>
+    <sys:String x:Key="Str_Perf_UpTime">작동 시간</sys:String>
+    <sys:String x:Key="Str_Perf_Free">여유 공간</sys:String>
+    <sys:String x:Key="Str_About_Computing">계산 중...</sys:String>
+    <sys:String x:Key="Str_About_Downloading">다운로드 중...</sys:String>
+    <sys:String x:Key="Str_About_UpdateAvailable">업데이트 사용 가능: {0}</sys:String>
+    <sys:String x:Key="Str_About_UpdateNotVerified">다운로드한 업데이트를 확인할 수 없어 삭제했습니다. 아무것도 설치되지 않았습니다.</sys:String>
+    <sys:String x:Key="Str_About_UpdateHandoffFailed" xml:space="preserve">업데이트를 시작할 수 없습니다.&#10;{0}&#10;&#10;릴리스 페이지를 열어 직접 다운로드하시겠습니까?</sys:String>
+    <sys:String x:Key="Str_About_UpdateHelperRefused">다운로드한 파일이나 설치 폴더가 안전 검사를 통과하지 못해 업데이트가 거부되었습니다. 아무것도 설치되지 않았습니다.</sys:String>
+    <sys:String x:Key="Str_About_UpdateHelperBusy">다른 KillerShell 설치 또는 업데이트가 진행 중입니다. 아무것도 설치되지 않았습니다.</sys:String>
+    <sys:String x:Key="Str_About_UpdateHelperDiskFull">업데이트를 설치할 디스크 공간이 부족합니다.</sys:String>
+    <sys:String x:Key="Str_About_UpdateHelperDenied">Windows에서 설치 폴더에 대한 액세스를 거부했습니다.</sys:String>
+    <sys:String x:Key="Str_About_UpdateHelperFailed">업데이트 도우미가 코드 {0}(으)로 중지되었습니다.</sys:String>
+    <sys:String x:Key="Str_TT_RecentLocations">최근 위치</sys:String>
+    <sys:String x:Key="Str_Dlg_Preview">미리 보기</sys:String>
+    <sys:String x:Key="Str_About_Unsigned">(서명되지 않았거나 체인 확인 실패)</sys:String>
+    <sys:String x:Key="Str_About_None">(없음)</sys:String>
+    <sys:String x:Key="Str_About_Unavailable">(사용할 수 없음)</sys:String>
+    <sys:String x:Key="Str_TT_About">정보  (F12)</sys:String>
+    <sys:String x:Key="Str_Export_TitleCsv">결과를 CSV로 저장</sys:String>
+    <sys:String x:Key="Str_Export_TitleHtml">결과를 HTML로 저장</sys:String>
+    <sys:String x:Key="Str_Export_TitleStorage">저장 공간 보고서를 HTML로 저장</sys:String>
+    <sys:String x:Key="Str_Dlg_SelectFile">파일 선택</sys:String>
+    <sys:String x:Key="Str_Term_StartFailed">셸을 시작할 수 없습니다.</sys:String>
+    <sys:String x:Key="Str_Term_InputBusy">입력이 사용 중입니다. 새 텍스트를 보내지 않았습니다. 잠시 후 다시 시도하세요.</sys:String>
+    <sys:String x:Key="Str_Term_Exited">[프로세스가 코드 {0}(으)로 종료됨]</sys:String>
+    <sys:String x:Key="Str_Term_ProfileReloaded">PowerShell 프로필을 다시 로드했습니다.</sys:String>
+    <sys:String x:Key="Str_StRpt_Title">KillerShell 저장 공간 보고서</sys:String>
+    <sys:String x:Key="Str_StRpt_Generated">생성 {0}</sys:String>
+    <sys:String x:Key="Str_StRpt_Partial">부분 검사: 검사가 일찍 멈췄거나 일부 폴더를 읽지 못해 합계가 실제보다 작을 수 있습니다. 읽지 못한 폴더: {0}</sys:String>
+    <sys:String x:Key="Str_StRpt_View">보기: {0}</sys:String>
+    <sys:String x:Key="Str_StRpt_ScanRoot">검사 루트: {0}</sys:String>
+    <sys:String x:Key="Str_StRpt_TotalShown">표시된 합계</sys:String>
+    <sys:String x:Key="Str_StRpt_DepthFilter">깊이 필터</sys:String>
+    <sys:String x:Key="Str_StRpt_MinSize">최소 크기</sys:String>
+    <sys:String x:Key="Str_StRpt_Treemap">트리맵</sys:String>
+    <sys:String x:Key="Str_StRpt_BigFolders">가장 큰 폴더</sys:String>
+    <sys:String x:Key="Str_StRpt_BigFiles">가장 큰 파일</sys:String>
+    <sys:String x:Key="Str_StRpt_Path">경로</sys:String>
+    <sys:String x:Key="Str_StRpt_Size">크기</sys:String>
+    <sys:String x:Key="Str_StRpt_Percent">비율</sys:String>
+    <sys:String x:Key="Str_Err_EmptyName">이름이 비어 있음</sys:String>
+    <sys:String x:Key="Str_Err_InvalidChars">잘못된 문자</sys:String>
+    <sys:String x:Key="Str_Err_AlreadyExists">이미 있음</sys:String>
+    <sys:String x:Key="Str_Err_NoFileName">파일 이름 없음</sys:String>
+    <sys:String x:Key="Str_Err_NoFolderName">폴더 이름 없음</sys:String>
+    <sys:String x:Key="Str_Err_EntryNotFound">항목을 찾을 수 없음</sys:String>
+    <sys:String x:Key="Str_Err_EntryEscaped">항목이 압축 풀기 폴더 밖으로 벗어남</sys:String>
+    <sys:String x:Key="Str_Err_ArchiveSamePath">두 항목이 같은 파일로 풀림</sys:String>
+    <sys:String x:Key="Str_Err_ArchiveNamesCollide">Windows에서 별도 파일로 쓸 수 없는 이름이 이미 들어 있습니다: {0}</sys:String>
+    <sys:String x:Key="Str_Dlg_InstalledTwiceUser">KillerShell이 두 번 설치되어 있습니다. 다른 사용자별 사본을 지금 제거하시겠습니까?&#x0A;&#x0A;설정은 제거되지 않습니다.</sys:String>
+    <sys:String x:Key="Str_Dlg_InstalledTwiceMachine">KillerShell이 두 번 설치되어 있습니다. 다른 모든 사용자용 사본을 지금 제거하시겠습니까?&#x0A;&#x0A;설정은 제거되지 않습니다.</sys:String>
+    <sys:String x:Key="Str_Dlg_InstallFailed">설치하지 못했습니다:&#x0A;{0}</sys:String>
+    <sys:String x:Key="Str_Btn_Yes">예</sys:String>
+    <sys:String x:Key="Str_Btn_OK">확인</sys:String>
+    <sys:String x:Key="Str_Dlg_UninstallElevateFailed">제거 프로그램이 관리자 권한을 요청할 수 없습니다:&#x0A;{0}</sys:String>
+    <sys:String x:Key="Str_Dlg_UninstallConfirm">이 컴퓨터에서 KillerShell을 제거하시겠습니까?</sys:String>
+    <sys:String x:Key="Str_Btn_Uninstall">제거</sys:String>
+    <sys:String x:Key="Str_Perf_MbFree">{0}MB 사용 가능</sys:String>
+    <sys:String x:Key="Str_Perf_Idle">유휴</sys:String>
+
+    <!-- Storage Analyzer tab (Shell/StorageTabs.cs, Tools/StorageAnalyzerControl.cs) -->
+    <sys:String x:Key="Str_TT_Storage">저장 공간 분석기  (F4)</sys:String>
+    <sys:String x:Key="Str_TabTitle_Storage">저장 공간 분석기</sys:String>
+    <sys:String x:Key="Str_Rail_StorageOpen">저장 공간 분석기</sys:String>
+    <sys:String x:Key="Str_Rail_StorageAdmin">저장 공간 분석기 (관리자 권한 검사)</sys:String>
+    <sys:String x:Key="Str_Ks_Storage">저장 공간 분석기</sys:String>
+    <sys:String x:Key="Str_Ks_StorageAdmin">저장 공간 분석기, 관리자 권한 검사</sys:String>
+    <!-- Local to the Storage Analyzer tab, only while it has focus -->
+    <sys:String x:Key="Str_Ks_StorageScan">검사 시작 (저장 공간 분석기)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageDepth">트리맵 깊이 순환 (저장 공간 분석기)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageMin">표시할 최소 크기 순환 (저장 공간 분석기)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageColor">형식별 또는 폴더별 색 지정 전환 (저장 공간 분석기)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageZoomIn">선택한 폴더 확대 (저장 공간 분석기)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageZoomOut">한 단계 축소 (저장 공간 분석기)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageHome">검사 루트로 돌아가기 (저장 공간 분석기)</sys:String>
+    <sys:String x:Key="Str_Ks_StorageRecycle">선택한 항목을 휴지통으로 보내기 (저장 공간 분석기)</sys:String>
+    <sys:String x:Key="Str_Ks_AppSize">앱 전체 확대/축소 (0은 초기화)</sys:String>
+    <sys:String x:Key="Str_Ks_Sidebar">사이드 패널 표시 또는 숨기기</sys:String>
+    <sys:String x:Key="Str_Sidebar">사이드바</sys:String>
+    <sys:String x:Key="Str_Sidebar_Left">왼쪽</sys:String>
+    <sys:String x:Key="Str_Sidebar_Right">오른쪽</sys:String>
+    <sys:String x:Key="Str_Ks_TreeSide">폴더 트리를 왼쪽 또는 오른쪽으로 이동</sys:String>
+    <sys:String x:Key="Str_Ks_Theme">테마 및 강조색 선택기 열기</sys:String>
+    <sys:String x:Key="Str_Ks_Language">언어 선택기 열기</sys:String>
+    <sys:String x:Key="Str_Ks_FilmGrain">필름 그레인 켜기 또는 끄기</sys:String>
+    <sys:String x:Key="Str_Ks_DualPane">두 번째 창 열기 또는 닫기</sys:String>
+    <sys:String x:Key="Str_Ks_SwitchPane">다른 창으로 전환</sys:String>
+    <sys:String x:Key="Str_Ks_ShowHidden">숨겨진 항목 및 시스템 항목 표시 또는 숨기기</sys:String>
+    <sys:String x:Key="Str_Ks_DetailsPane">아래쪽에 세부 정보 / 오른쪽에 세부 정보 / 세부 정보 끄기</sys:String>
+    <sys:String x:Key="Str_Ks_ResultsViews">목록, 아이콘 또는 자세히 보기</sys:String>
+    <sys:String x:Key="Str_Ks_Density">결과 밀도 순환</sys:String>
+    <sys:String x:Key="Str_Ks_IconSize">아이콘 크게 또는 작게 (Ctrl+휠과 같음)</sys:String>
+    <sys:String x:Key="Str_Ks_Sort">정렬 순서 선택</sys:String>
+    <sys:String x:Key="Str_Ks_SortDir">정렬 순서 반대로</sys:String>
+    <sys:String x:Key="Str_Ks_FoldersTop">폴더를 파일 위에 표시</sys:String>
+    <sys:String x:Key="Str_Ks_Recents">최근 방문한 폴더 표시</sys:String>
+    <sys:String x:Key="Str_Ks_ExtractTo">각 압축 파일을 자체 폴더에 압축 풀기</sys:String>
+    <sys:String x:Key="Str_Ks_NewDocAdmin">새 문서, 관리자 권한 저장 다시 시도</sys:String>
+    <sys:String x:Key="Str_Ks_TermTextSize">텍스트 크게, 작게 또는 기본 크기</sys:String>
+    <sys:String x:Key="Str_Ks_TermScroll">출력을 한 줄 또는 한 페이지 스크롤</sys:String>
+    <sys:String x:Key="Str_Ks_TermScrollEnds">출력의 맨 위 또는 맨 아래로 스크롤</sys:String>
+    <sys:String x:Key="Str_Ks_OpenDetails">세부 정보 카드 열기</sys:String>
+    <sys:String x:Key="Str_Ks_RegRefresh">선택한 키를 디스크에서 다시 로드</sys:String>
+    <sys:String x:Key="Str_Ks_StorageCancel">진행 중인 검사 중지 (저장 공간 분석기)</sys:String>
+    <sys:String x:Key="Str_TT_SortDir">정렬 순서 반대로  (Alt+Shift+S)</sys:String>
+    <sys:String x:Key="Str_A11y_SortAsc">오름차순</sys:String>
+    <sys:String x:Key="Str_A11y_SortDesc">내림차순</sys:String>
+    <sys:String x:Key="Str_Storage_Scan">스캔</sys:String>
+    <sys:String x:Key="Str_Storage_Stop">중지</sys:String>
+    <sys:String x:Key="Str_Storage_Browse">검사할 폴더나 드라이브 선택</sys:String>
+    <sys:String x:Key="Str_Storage_Prompt">폴더나 드라이브를 선택한 다음 스캔</sys:String>
+    <sys:String x:Key="Str_Storage_BadTarget">해당 폴더가 없습니다</sys:String>
+    <sys:String x:Key="Str_Storage_Stopped">검사가 중지되었습니다 - 읽은 항목까지 표시합니다</sys:String>
+    <sys:String x:Key="Str_Storage_Skipped">건너뜀</sys:String>
+    <sys:String x:Key="Str_Storage_ScanCounts" xml:space="preserve">폴더 {0}개  파일 {1}개</sys:String>
+    <sys:String x:Key="Str_Storage_OpenInTab">새 탭에서 열기</sys:String>
+    <sys:String x:Key="Str_Storage_RevealExplorer">파일 탐색기에서 열기</sys:String>
+    <sys:String x:Key="Str_Storage_CopyPath">경로 복사</sys:String>
+    <sys:String x:Key="Str_Storage_Delete">삭제 (휴지통)</sys:String>
+    <sys:String x:Key="Str_Storage_Rescan">다시 스캔</sys:String>
+    <sys:String x:Key="Str_Storage_ColorByType">파일 형식별 색</sys:String>
+    <sys:String x:Key="Str_Storage_ColorByFolder">최상위 폴더별 색</sys:String>
+    <sys:String x:Key="Str_Storage_Depth">깊이</sys:String>
+    <sys:String x:Key="Str_Storage_DepthAll">모두</sys:String>
+    <sys:String x:Key="Str_Storage_DepthTip">자체 사각형으로 표시할 폴더 단계 수 - 낮을수록 지도가 큰 폴더 위주로 단순해집니다</sys:String>
+    <sys:String x:Key="Str_Storage_Min">최소</sys:String>
+    <sys:String x:Key="Str_Storage_MinAll">모두</sys:String>
+    <sys:String x:Key="Str_Storage_MinSizeTip">이보다 작은 항목 숨기기 - 해당 바이트는 그 항목이 들어 있는 폴더에 계속 포함됩니다</sys:String>
+    <sys:String x:Key="Str_Storage_Total">합계</sys:String>
+
+    <!-- Archives browsed as folders (Services/ArchiveProvider.cs, Shell/Browse.cs) -->
+    <sys:String x:Key="Str_Status_Extracting">{0} 압축 푸는 중...</sys:String>
+    <sys:String x:Key="Str_Status_ExtractFailed">{0}의 압축을 풀 수 없습니다</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveFailed">압축 파일을 읽을 수 없습니다 - {0}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveReadOnly">.zip 압축 파일만 변경할 수 있습니다 - 이 파일은 읽기 전용으로 열립니다</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveNoDrag">압축 파일에서는 파일만 끌어낼 수 있습니다 - 폴더를 열고 안에 있는 항목을 끌어 오세요</sys:String>
+
+    <!-- Writing inside an archive (Services/ArchiveWriter.cs, Shell/ArchiveEdit.cs) -->
+    <sys:String x:Key="Str_Status_ArchiveWriting">압축 파일 다시 쓰는 중 - {0}%</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveAdded">압축 파일에 {0}을(를) 추가했습니다</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveDeleted">압축 파일에서 {0}을(를) 제거했습니다</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveRenamed">이름을 {0}(으)로 바꿨습니다</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveSomeRejected">{0}개를 추가했습니다 - {1}개는 올바른 이름을 붙일 수 없어 건너뛰었습니다</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveWriteFailed">압축 파일을 업데이트할 수 없습니다 - {0}. 원본은 그대로입니다.</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveCompressed">{0}을(를) 만들었습니다</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveExtracted">{0}에 압축을 풀었습니다</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveExtractFailed">{0}의 압축을 풀 수 없습니다: {1}</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveExtracting">압축 푸는 중</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveFileReadOnly">이 압축 파일은 읽기 전용으로 표시되어 있습니다 - 해제한 뒤 다시 시도하세요</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveInUse">이 압축 파일이 다른 프로그램에서 열려 있습니다 - 닫은 뒤 다시 시도하세요</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveDenied">이 압축 파일에 쓸 권한이 없습니다</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveNameTaken">압축 파일에 같은 이름의 항목이 이미 있습니다</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveEntryGone">해당 항목이 더 이상 압축 파일에 없습니다</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveBadName">압축 파일 안에서는 그 이름을 사용할 수 없습니다</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveNothingAdded">추가할 항목이 없습니다</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveCanceled">압축 파일을 변경하지 않았습니다</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveCollide">그중 일부가 이미 압축 파일에 있습니다</sys:String>
+    <sys:String x:Key="Str_Status_ArchiveDragCopy">압축 파일에서 복사했습니다 - 항목은 그대로 남아 있습니다</sys:String>
+    <sys:String x:Key="Str_Dlg_ArchiveCollideMsg">이 중 {0}개가 이미 압축 파일에 있습니다.</sys:String>
+    <sys:String x:Key="Str_Dlg_ArchiveDeleteMsg">압축 파일에서 항목 {0}개를 제거하시겠습니까? 압축 파일 전체를 다시 쓰며 되돌릴 수 없습니다.</sys:String>
+    <sys:String x:Key="Str_Chk_ArchiveReplace">둘 다 유지하지 않고 바꾸기</sys:String>
+    <sys:String x:Key="Str_Btn_ArchiveAdd">추가</sys:String>
+
+    <sys:String x:Key="Str_Storage_Free">여유 공간</sys:String>
+
+    <!-- Registry Editor tab (Shell/RegistryEditorTabs.cs, Tools/RegistryEditorControl.cs) -->
+    <sys:String x:Key="Str_TT_RegistryEditor">레지스트리 편집기  (Ctrl+F11)</sys:String>
+    <sys:String x:Key="Str_TabTitle_RegistryEditor">레지스트리 편집기</sys:String>
+    <sys:String x:Key="Str_TT_RegFind">키 또는 값 이름 찾기  (Ctrl+F)</sys:String>
+    <sys:String x:Key="Str_TT_RegRefresh">선택한 키를 디스크에서 다시 로드  (F5)</sys:String>
+    <sys:String x:Key="Str_RegEd_FindNext">다음 찾기</sys:String>
+    <sys:String x:Key="Str_RegEd_ComputerRoot">컴퓨터</sys:String>
+    <sys:String x:Key="Str_RegEd_PathNotFound">해당 키가 없습니다</sys:String>
+    <sys:String x:Key="Str_RegEd_AccessDenied">액세스가 거부되었습니다 - 이 키에는 관리자 권한 창보다도 높은 수준의 액세스가 필요합니다</sys:String>
+    <sys:String x:Key="Str_RegEd_NothingSelected">먼저 키를 선택하세요</sys:String>
+    <sys:String x:Key="Str_RegEd_Refreshed">새로 고침 완료</sys:String>
+    <sys:String x:Key="Str_RegEd_NoMatches">현재 로드된 트리 부분에서 일치하는 항목이 없습니다</sys:String>
+    <sys:String x:Key="Str_RegEd_NameEmpty">이름을 입력하세요</sys:String>
+    <sys:String x:Key="Str_RegEd_NameHasBackslash">이름에 백슬래시를 사용할 수 없습니다</sys:String>
+    <sys:String x:Key="Str_RegEd_NameExists">이 위치에 같은 이름의 키나 값이 이미 있습니다</sys:String>
+    <sys:String x:Key="Str_RegEd_NewKeyDefaultName">새 키 #1</sys:String>
+    <sys:String x:Key="Str_RegEd_NewValueDefaultName">새 값</sys:String>
+    <sys:String x:Key="Str_RegEd_CreateFailed">만들 수 없습니다 - {0}</sys:String>
+    <sys:String x:Key="Str_RegEd_RenameFailed">이름을 바꿀 수 없습니다 - {0}</sys:String>
+    <sys:String x:Key="Str_RegEd_DeleteFailed">삭제할 수 없습니다 - {0}</sys:String>
+    <sys:String x:Key="Str_RegEd_SaveFailed">값을 저장할 수 없습니다 - {0}</sys:String>
+    <sys:String x:Key="Str_RegEd_KeyDeleted">"{0}"와(과) 그 안의 모든 항목을 삭제했습니다</sys:String>
+    <sys:String x:Key="Str_RegEd_ValueDeleted">"{0}"을(를) 삭제했습니다</sys:String>
+    <sys:String x:Key="Str_RegEd_ValueSaved">"{0}"을(를) 저장했습니다</sys:String>
+    <sys:String x:Key="Str_RegEd_KindReadOnly">"{0}"은(는) KillerShell이 다시 쓸 수 없는 값 형식이라 수정할 수 없습니다</sys:String>
+    <sys:String x:Key="Str_RegEd_NameCopied">이름을 복사했습니다</sys:String>
+    <sys:String x:Key="Str_RegEd_PathCopied">경로를 복사했습니다</sys:String>
+    <sys:String x:Key="Str_RegEd_CopyFailed">클립보드에 복사할 수 없습니다 - {0}</sys:String>
+    <sys:String x:Key="Str_Col_RegName">이름</sys:String>
+    <sys:String x:Key="Str_Col_RegType">유형</sys:String>
+    <sys:String x:Key="Str_Col_RegData">데이터</sys:String>
+    <sys:String x:Key="Str_Menu_RegNew">새로 만들기</sys:String>
+    <sys:String x:Key="Str_Menu_RegNewKey">키</sys:String>
+    <sys:String x:Key="Str_Menu_RegNewString">문자열 값</sys:String>
+    <sys:String x:Key="Str_Menu_RegNewExpandString">확장 가능한 문자열 값</sys:String>
+    <sys:String x:Key="Str_Menu_RegNewMultiString">다중 문자열 값</sys:String>
+    <sys:String x:Key="Str_Menu_RegNewBinary">이진 값</sys:String>
+    <sys:String x:Key="Str_Menu_RegNewDWord">DWORD 값</sys:String>
+    <sys:String x:Key="Str_Menu_RegNewQWord">QWORD 값</sys:String>
+    <sys:String x:Key="Str_Menu_RegModify">수정...</sys:String>
+    <sys:String x:Key="Str_Menu_RegRename">이름 바꾸기</sys:String>
+    <sys:String x:Key="Str_Menu_RegDelete">삭제</sys:String>
+    <sys:String x:Key="Str_Menu_RegCopyName">이름 복사</sys:String>
+    <sys:String x:Key="Str_Menu_RegCopyPath">전체 경로 복사</sys:String>
+    <sys:String x:Key="Str_Dlg_RegNewKeyMsg">새 키의 이름 지정</sys:String>
+    <sys:String x:Key="Str_Dlg_RegNewValueMsg">새 값의 이름 지정</sys:String>
+    <sys:String x:Key="Str_Dlg_RegRenameKeyMsg">키 "{0}"의 이름 바꾸기</sys:String>
+    <sys:String x:Key="Str_Dlg_RegRenameValueMsg">값 "{0}"의 이름 바꾸기</sys:String>
+    <sys:String x:Key="Str_Dlg_RegDeleteKeyMsg">키 "{0}"와(과) 그 안의 모든 항목을 영구적으로 삭제하시겠습니까? 이 키 하나만이 아니라 그 아래에 있는 모든 하위 키와 값도 삭제됩니다 - 되돌릴 수 없으며, 잘못된 키를 지우면 프로그램이 시작되지 않거나 Windows 자체가 손상될 수 있습니다.</sys:String>
+    <sys:String x:Key="Str_Dlg_RegDeleteValueMsg">값 "{0}"을(를) 영구적으로 삭제하시겠습니까? 되돌릴 수 없습니다.</sys:String>
+    <!-- Value edit dialog (Controls/RegistryValueEditDialog.xaml) - adapts its input to the
+         value's RegistryValueKind, one dialog for all six editable types. -->
+    <sys:String x:Key="Str_RegEd_Save">저장</sys:String>
+    <sys:String x:Key="Str_RegEd_ValueData">값 데이터</sys:String>
+    <sys:String x:Key="Str_RegEd_MultiHint">한 줄에 항목 하나</sys:String>
+    <sys:String x:Key="Str_RegEd_BinaryHint">공백으로 구분한 16진수 바이트 쌍(예: 01 A4 FF 00)</sys:String>
+    <sys:String x:Key="Str_RegEd_Base">단위:</sys:String>
+    <sys:String x:Key="Str_RegEd_Hexadecimal">16진수</sys:String>
+    <sys:String x:Key="Str_RegEd_Decimal">10진수</sys:String>
+    <sys:String x:Key="Str_RegEd_InvalidNumber">선택한 단위에 맞는 올바른 숫자가 아닙니다</sys:String>
+    <sys:String x:Key="Str_RegEd_OutOfRangeDword">32비트 DWORD에 비해 값이 너무 큽니다</sys:String>
+    <sys:String x:Key="Str_RegEd_InvalidByte">"{0}"은(는) 올바른 16진수 바이트가 아닙니다</sys:String>
+
+    <!-- Event details dialog (Controls/EventDetailsDialog.xaml) - double-click a row -->
+    <sys:String x:Key="Str_Evt_DetailsTitle">이벤트 세부 정보</sys:String>
+    <sys:String x:Key="Str_Evt_Keywords">키워드</sys:String>
+    <sys:String x:Key="Str_Evt_Computer">컴퓨터</sys:String>
+    <sys:String x:Key="Str_Evt_User">사용자 / SID</sys:String>
+    <sys:String x:Key="Str_Evt_ProcessId">프로세스 ID</sys:String>
+    <sys:String x:Key="Str_Evt_ThreadId">스레드 ID</sys:String>
+    <sys:String x:Key="Str_Evt_ActivityId">활동 ID</sys:String>
+    <sys:String x:Key="Str_Evt_RecordId">이벤트 레코드 ID</sys:String>
+    <sys:String x:Key="Str_Evt_Opcode">Opcode</sys:String>
+    <sys:String x:Key="Str_Evt_ViewXml">원시 XML 보기</sys:String>
+    <sys:String x:Key="Str_Evt_ViewFormatted">서식 있는 보기</sys:String>
+    <sys:String x:Key="Str_Evt_SearchOnline">이 이벤트를 온라인에서 검색</sys:String>
+    <sys:String x:Key="Str_Btn_Close">닫기</sys:String>
+    <sys:String x:Key="Str_TT_EvtPrev">이전 이벤트  (왼쪽 화살표)</sys:String>
+    <sys:String x:Key="Str_TT_EvtNext">다음 이벤트  (오른쪽 화살표)</sys:String>
+    <sys:String x:Key="Str_TT_EvtViewXml">원시 XML 보기  (Alt+X)</sys:String>
+    <sys:String x:Key="Str_TT_EvtViewFormatted">서식 있는 보기  (Alt+X)</sys:String>
+    <sys:String x:Key="Str_TT_EvtSearchOnline">이 이벤트를 온라인에서 검색  (Alt+S)</sys:String>
+    <sys:String x:Key="Str_TT_EvtCopyDetails">세부 정보 복사  (Ctrl+C)</sys:String>
+    <sys:String x:Key="Str_TT_EvtClose">닫기  (Esc)</sys:String>
+
+    <sys:String x:Key="Str_Term_Profiles">터미널 프로필</sys:String>
+    <sys:String x:Key="Str_Term_ManageProfiles">터미널 프로필 관리...</sys:String>
+    <sys:String x:Key="Str_Term_ProfileName">이름</sys:String>
+    <sys:String x:Key="Str_Term_Executable">실행 파일</sys:String>
+    <sys:String x:Key="Str_Term_Arguments">인수</sys:String>
+    <sys:String x:Key="Str_Term_StartFolder">시작 폴더</sys:String>
+    <sys:String x:Key="Str_Term_DefaultProfile">기본 터미널</sys:String>
+    <sys:String x:Key="Str_Term_HideProfile">메뉴에서 숨기기</sys:String>
+    <sys:String x:Key="Str_Term_RunElevated">관리자 권한으로 실행</sys:String>
+    <sys:String x:Key="Str_Term_AddProfile">프로필 추가</sys:String>
+    <sys:String x:Key="Str_Term_RemoveProfile">프로필 제거</sys:String>
+    <sys:String x:Key="Str_Term_MoveUp">위로 이동</sys:String>
+    <sys:String x:Key="Str_Term_MoveDown">아래로 이동</sys:String>
+    <sys:String x:Key="Str_Term_ProfileInvalid">이름과 실행 파일을 입력하세요. 프로필마다 고유한 이름이 필요합니다.</sys:String>
+    <sys:String x:Key="Str_Term_Linux">Linux</sys:String>
+    <sys:String x:Key="Str_Term_ProfileSave">저장</sys:String>
+    <sys:String x:Key="Str_Term_ProfileHint">PowerShell과 명령 프롬프트는 기본으로 들어 있습니다. 설치된 WSL 배포판은 자동으로 표시되며 Bash를 사용합니다.</sys:String>
+    <sys:String x:Key="Str_Term_ShellType">셸 유형</sys:String>
+    <sys:String x:Key="Str_Term_Custom">사용자 지정</sys:String>
+
+    <sys:String x:Key="Str_Menu_PinPlace">위치에 고정</sys:String>
+    <sys:String x:Key="Str_Menu_UnpinPlace">위치에서 제거</sys:String>
+    <sys:String x:Key="Str_KS_OnlineHelp">온라인 전체 가이드 및 사용 방법</sys:String>
+    <sys:String x:Key="Str_Scroll_Up">위로 스크롤</sys:String>
+    <sys:String x:Key="Str_Cal_PrevMonth">이전 달</sys:String>
+    <sys:String x:Key="Str_Cal_NextMonth">다음 달</sys:String>
+    <sys:String x:Key="Str_Scroll_Down">아래로 스크롤</sys:String>
+    <sys:String x:Key="Str_Scroll_Left">왼쪽으로 스크롤</sys:String>
+    <sys:String x:Key="Str_Scroll_Right">오른쪽으로 스크롤</sys:String>
+    <sys:String x:Key="Str_Scroll_PageUp">페이지 위로</sys:String>
+    <sys:String x:Key="Str_Scroll_PageDown">페이지 아래로</sys:String>
+    <sys:String x:Key="Str_Scroll_PageLeft">페이지 왼쪽으로</sys:String>
+    <sys:String x:Key="Str_Scroll_PageRight">페이지 오른쪽으로</sys:String>
+    <sys:String x:Key="Str_Status_SearchPartial">부분 결과: 파일 {0}개 일치, 경로 {1}개를 끝까지 검색하지 못함, 디렉터리 링크 {2}개 건너뜀.</sys:String>
+    <sys:String x:Key="Str_Status_DirectoryLinksSkipped">디렉터리 링크 {0}개를 건너뛰었습니다.</sys:String>
+    <sys:String x:Key="Str_TT_PanesTopBottom">위쪽과 아래쪽 창 (Ctrl+Alt+위쪽 화살표)</sys:String>
+    <sys:String x:Key="Str_TT_PanesLeftRight">왼쪽과 오른쪽 창 (Ctrl+Alt+왼쪽 화살표)</sys:String>
+    <sys:String x:Key="Str_Layout_DetailsBottom">아래쪽에 세부 정보</sys:String>
+    <sys:String x:Key="Str_Layout_DetailsRight">오른쪽에 세부 정보</sys:String>
+    <sys:String x:Key="Str_Layout_DetailsOff">세부 정보 끄기</sys:String>
+    <sys:String x:Key="Str_Layout_OnePane">단일 창</sys:String>
+    <sys:String x:Key="Str_Layout_TabsTop">위쪽에 탭</sys:String>
+    <sys:String x:Key="Str_Layout_TabsBottom">아래쪽에 탭</sys:String>
+    <sys:String x:Key="Str_Layout_LeftRight">왼쪽과 오른쪽 창</sys:String>
+    <sys:String x:Key="Str_Layout_TopBottom">위쪽과 아래쪽 창</sys:String>
+    <sys:String x:Key="Str_Layout_Panes">창 레이아웃</sys:String>
+    <sys:String x:Key="Str_TitleKind_FileBrowser">파일 브라우저</sys:String>
+    <sys:String x:Key="Str_TitleKind_Search">검색 결과</sys:String>
+    <sys:String x:Key="Str_TitleKind_PowerShell">PowerShell 터미널</sys:String>
+    <sys:String x:Key="Str_TitleKind_Cmd">CMD 터미널</sys:String>
+    <sys:String x:Key="Str_TitleKind_Wsl">WSL 터미널</sys:String>
+    <sys:String x:Key="Str_TitleKind_Editor">텍스트 편집기</sys:String>
+    <sys:String x:Key="Str_TitleKind_Performance">성능 모니터</sys:String>
+    <sys:String x:Key="Str_SearchScope_Window">이 창에서 검색</sys:String>
+    <sys:String x:Key="Str_SearchScope_Tabs">열려 있는 모든 탭에서 검색</sys:String>
+    <sys:String x:Key="Str_SearchScope_Computer">컴퓨터 전체에서 검색</sys:String>
+    <sys:String x:Key="Str_TT_DetailsBottom">아래쪽에 세부 정보 (Ctrl+Alt+아래쪽 화살표; Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsRight">오른쪽에 세부 정보 (Ctrl+Alt+오른쪽 화살표; Alt+P)</sys:String>
+    <sys:String x:Key="Str_TT_DetailsOff">세부 정보 끄기 (Ctrl+Alt+0; Alt+P)</sys:String>
+    <!-- File-specific details -->
+    <sys:String x:Key="Str_Details_Dimensions">크기</sys:String>
+    <sys:String x:Key="Str_Details_AspectRatio">가로세로 비율</sys:String>
+    <sys:String x:Key="Str_Details_ColorDepth">색 농도</sys:String>
+    <sys:String x:Key="Str_Details_Transparency">투명도</sys:String>
+    <sys:String x:Key="Str_Details_TransparencySupported">지원됨</sys:String>
+    <sys:String x:Key="Str_Details_TransparencyNone">없음</sys:String>
+    <sys:String x:Key="Str_Details_Pages">페이지</sys:String>
+    <sys:String x:Key="Str_Details_Duration">길이</sys:String>
+    <sys:String x:Key="Str_Details_FileVersion">파일 버전</sys:String>
+    <!-- File card (FilePane.xaml ResultMenu) -->
+    <sys:String x:Key="Str_Card_Actions">작업</sys:String>
+    <sys:String x:Key="Str_Card_Delete">삭제</sys:String>
+    <sys:String x:Key="Str_Card_CopyLabel">복사</sys:String>
+    <sys:String x:Key="Str_Card_Path">경로</sys:String>
+    <sys:String x:Key="Str_Card_Name">이름</sys:String>
+    <sys:String x:Key="Str_Card_Folder">폴더</sys:String>
+    <sys:String x:Key="Str_Card_Lines">줄</sys:String>
+    <sys:String x:Key="Str_Card_FolderOptions">폴더 옵션</sys:String>
+    <sys:String x:Key="Str_Card_FilesFolders">파일: {0}, 폴더: {1}</sys:String>
+    <sys:String x:Key="Str_Card_NewTab">새 탭</sys:String>
+    <sys:String x:Key="Str_Card_OtherPane">다른 창</sys:String>
+    <sys:String x:Key="Str_Card_NewWindow">새 창</sys:String>
+    <sys:String x:Key="Str_Card_Close">닫기</sys:String>
+    <sys:String x:Key="Str_Card_MoveOtherPane">다른 창으로 이동</sys:String>
+    <sys:String x:Key="Str_Card_MoveNewWindow">새 창으로 이동</sys:String>
+    <sys:String x:Key="Str_Card_Explorer">파일 탐색기</sys:String>
+    <sys:String x:Key="Str_Card_Terminal">터미널</sys:String>
+    <sys:String x:Key="Str_Card_Search">검색</sys:String>
+    <sys:String x:Key="Str_Card_Undo">실행 취소</sys:String>
+    <sys:String x:Key="Str_Card_Redo">다시 실행</sys:String>
+    <sys:String x:Key="Str_Card_Save">저장</sys:String>
+    <sys:String x:Key="Str_Card_Cut">잘라내기</sys:String>
+    <sys:String x:Key="Str_Card_Copy">복사</sys:String>
+    <sys:String x:Key="Str_Card_Edit">편집</sys:String>
+    <sys:String x:Key="Str_Card_Rename">이름 바꾸기</sys:String>
+    <sys:String x:Key="Str_Card_SelectAll">모두 선택</sys:String>
+    <sys:String x:Key="Str_Card_Paste">붙여넣기</sys:String>
+    <sys:String x:Key="Str_Card_Clear">지우기</sys:String>
+    <sys:String x:Key="Str_Card_AsAdmin">관리자 권한</sys:String>
+    <sys:String x:Key="Str_Ks_ContextMenu">상황에 맞는 메뉴 열기</sys:String>
+    <sys:String x:Key="Str_TT_RemoveSearchTerm">검색어 제거</sys:String>
+    <sys:String x:Key="Str_TT_RemoveSearchFilter">필터 제거</sys:String>
+    <sys:String x:Key="Str_A11y_ColumnHeadings">열 머리글</sys:String>
+    <sys:String x:Key="Str_A11y_ColumnHeadingsHelp">표시할 열을 선택하려면 메뉴(응용 프로그램) 키를 누르세요.</sys:String>
+    <!-- Text box menu and the file pickers' New folder button (KillerUI kit). -->
+    <sys:String x:Key="Str_Ctx_Cut">잘라내기</sys:String>
+    <sys:String x:Key="Str_Ctx_Copy">복사</sys:String>
+    <sys:String x:Key="Str_Ctx_Paste">붙여넣기</sys:String>
+    <sys:String x:Key="Str_Ctx_SelectAll">모두 선택</sys:String>
+    <sys:String x:Key="Str_TT_NewFolder">새 폴더 (Ctrl+Shift+N)</sys:String>
+    <sys:String x:Key="Str_FD_NewFolder">새 폴더</sys:String>
+    <sys:String x:Key="Str_FD_FolderEmpty">폴더 이름을 입력하세요.</sys:String>
+    <sys:String x:Key="Str_FD_FolderInvalid">폴더 이름에는 다음 문자를 사용할 수 없습니다: \ / : * ? " &lt; &gt; |</sys:String>
+    <sys:String x:Key="Str_FD_FolderReserved">Windows에서 예약된 이름입니다. 다른 이름을 선택하세요.</sys:String>
+    <sys:String x:Key="Str_FD_FolderTrailing">폴더 이름은 마침표나 공백으로 끝날 수 없습니다.</sys:String>
+    <sys:String x:Key="Str_FD_FolderTooLong">이름이 너무 깁니다. 255자 이하로 입력하세요.</sys:String>
+    <sys:String x:Key="Str_FD_FolderExists">이 위치에 같은 이름의 폴더나 파일이 이미 있습니다.</sys:String>
+    <sys:String x:Key="Str_FD_FolderFailed">폴더를 만들 수 없습니다:</sys:String>
+    <!-- Tile cards (Controls/CardMenus.cs): the customize pencil, its drawer, and the file card's copy flyout. -->
+    <sys:String x:Key="Str_Card_Customize">이 카드 사용자 지정</sys:String>
+    <sys:String x:Key="Str_Card_EditDone">완료</sys:String>
+    <sys:String x:Key="Str_Card_EditReset">기본값으로 초기화</sys:String>
+    <sys:String x:Key="Str_Card_EditResetShort">초기화</sys:String>
+    <sys:String x:Key="Str_Card_Hidden">숨김</sys:String>
+    <sys:String x:Key="Str_Card_HiddenHint">숨기려면 타일을 여기로 드래그하세요</sys:String>
+    <sys:String x:Key="Str_Card_AlwaysShown">항상 표시</sys:String>
+    <sys:String x:Key="Str_Card_TileMoved">{0}, {2}개 중 {1}번째 위치</sys:String>
+    <sys:String x:Key="Str_Card_CopyAs">형식을 선택하여 복사</sys:String>
+</ResourceDictionary>
