@@ -18,6 +18,7 @@
              xmlns:theme="clr-namespace:KillerFamily.Theming"
              xmlns:svc="clr-namespace:KillerShell.Services"
              xmlns:shellns="clr-namespace:KillerShell.Shell"
+             xmlns:tools="clr-namespace:KillerShell.Tools"
              xmlns:models="clr-namespace:KillerShell.Models">
 
             <UserControl.Resources>
@@ -1630,6 +1631,10 @@
                          to exactly the literal it replaced, so the twelve rounded themes keep it. -->
                     <!-- A wide bar stays 32px tall. A narrow pane moves the same cwd controls
                          below the buttons; auto height also lets Alt+M restore that second row. -->
+                    <!-- Solid backing under the inked bar. At app size its first device row is part
+                         covered, and without this the lighter results surface shows there as a line
+                         under the active tab. -->
+                    <Border Grid.Row="0" IsHitTestVisible="False" Background="{DynamicResource MenuBackgroundBrush}"/>
                     <Border x:Name="TerminalBarRow" Grid.Row="0" Background="{DynamicResource MenuBackgroundBrush}"
                             kc:ThemeMotif.Part="Window" kc:ThemeMotif.BaseBrush="MenuBackgroundBrush"
                             BorderBrush="{DynamicResource PaneBorderBrush}"
@@ -1774,6 +1779,8 @@
                          to exactly the literal it replaced, so the twelve rounded themes keep it. -->
                     <!-- Height 32 = the folder LocationRow's natural height, same as the shell bar
                          above, so the content starts at one height whatever kind of tab is up. -->
+                    <!-- Solid backing under the inked bar, as with the shell bar above. -->
+                    <Border Grid.Row="0" IsHitTestVisible="False" Background="{DynamicResource MenuBackgroundBrush}"/>
                     <Border x:Name="EditorBarRow" Grid.Row="0" Height="32" Background="{DynamicResource MenuBackgroundBrush}"
                             kc:ThemeMotif.Part="Window" kc:ThemeMotif.BaseBrush="MenuBackgroundBrush"
                             BorderBrush="{DynamicResource PaneBorderBrush}"
@@ -2109,6 +2116,8 @@
                      footer in one surface (Tools/StorageAnalyzerControl.cs). Same sunken well
                      as PerformanceHost, inert off 98SE. -->
                 <Grid x:Name="StorageHost" Visibility="Collapsed">
+                    <!-- The control's root is the inked face here, so its backing sits in the host. -->
+                    <tools:ToolFaceBacking/>
                     <ContentControl x:Name="StorageSlot" Focusable="False"/>
                     <!-- NO grain layer. PaneContent above already paints grain across the whole
                          content pane, so a second tile inside a tool host DOUBLED it - which is

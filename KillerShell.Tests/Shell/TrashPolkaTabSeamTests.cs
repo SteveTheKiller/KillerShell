@@ -43,6 +43,19 @@ public sealed class TrashPolkaTabSeamTests
         return RuntimeComponentProcess.Run(nameof(TrashPolkaTabSeamScenario), 180000);
     }
 
+    /// <summary>The same join under an app size other than 100%, where the tab and the page sit in scaled units:
+    /// every run above was at 100% and missed a seam that showed at the sizes people use.</summary>
+    [Theory]
+    [InlineData("Red", "bottom", "single", "1.1")]
+    [InlineData("Red", "bottom", "dual", "1.1")]
+    [InlineData("Red", "top", "single", "1.25")]
+    [InlineData("Orange", "bottom", "single", "1.25")]
+    public Task ActiveTabsJoinTheirPagesAtAppSize(string accent, string placement, string layout, string scale)
+    {
+        Environment.SetEnvironmentVariable(CaseVariable, $"{accent},{placement},{layout},{scale}");
+        return RuntimeComponentProcess.Run(nameof(TrashPolkaTabSeamScenario), 180000);
+    }
+
     [Fact]
     public Task PerformancePageUsesTheListSurface()
         => RuntimeComponentProcess.Run(nameof(TrashPolkaPerformanceSurfaceScenario));
@@ -339,6 +352,8 @@ public static class TrashPolkaTabSeamScenario
         ThemeManager.Apply(Theme.TrashPolka);
         window.SetTabPlacement(bottom, persist: false);
         if (window.DualPane != dual) window.ToggleDualPane();
+        double appScale = parts.Length > 3 ? double.Parse(parts[3], System.Globalization.CultureInfo.InvariantCulture) : 1.0;
+        if (appScale != 1.0) window.ApplyAppScale(appScale);
         window.FocusPane(pane);
         Settle(window, 500);
 
@@ -371,7 +386,7 @@ public static class TrashPolkaTabSeamScenario
             Settle(window, 300);
             foreach (var scroller in Visuals(pane).OfType<ScrollViewer>()) scroller.ScrollToEnd();
             pane.RefreshBottomTabPeek();
-            string label = $"seam-{accent}-{(bottom ? "bottom" : "top")}-{(dual ? "dual" : "single")}-{name}".ToLowerInvariant();
+            string label = $"seam-{accent}-{(bottom ? "bottom" : "top")}-{(dual ? "dual" : "single")}{(appScale != 1.0 ? "-" + (int)(appScale * 100) : "")}-{name}".ToLowerInvariant();
             string? failure = Check(window, pane, tab, bottom, label);
             Console.WriteLine($"{DateTime.Now:HH:mm:ss.fff} {label} {failure ?? "ok"}");
             // The whole window as well, for the theme audit: ink strength, page against card tiers and the tab join

@@ -14,12 +14,31 @@ namespace KillerShell.Tools
     /// sinks a content area into the same four-border crossed well the sidebar tree and the file
     /// listing use, over a face brush that is Transparent on every ordinary theme.
     /// </summary>
+    /// <summary>
+    /// Solid backing under an inked tool face. At app size the face's first device row is part covered, and on
+    /// Trash Polka the lighter results surface showed through there as a line under the active tab. The backing
+    /// takes the face's own solid brush: the menu tier on Trash Polka, PaneBrush everywhere else.
+    /// </summary>
+    public sealed class ToolFaceBacking : Border
+    {
+        public ToolFaceBacking()
+        {
+            IsHitTestVisible = false;
+            Loaded += (_, _) => { Paint(); Services.ThemeManager.ThemeChanged += Paint; };
+            Unloaded += (_, _) => Services.ThemeManager.ThemeChanged -= Paint;
+        }
+
+        private void Paint() => SetResourceReference(BackgroundProperty,
+            TryFindResource("ThemeMotif") is true ? "MenuBackgroundBrush" : "PaneBrush");
+    }
+
     internal static class ToolTabChrome
     {
         /// <summary>Raised menu-bar host: PaneBrush face under the bar, BarEdge ring over it.</summary>
         internal static Grid WrapBar(UIElement bar)
         {
             var host = new Grid();
+            host.Children.Add(new ToolFaceBacking());
             var face = new Border();
             face.SetResourceReference(Border.BackgroundProperty, "PaneBrush");
             // Trash Polka paints the face as the folder LocationRow's: the menu tier with its window-pinned stretch of
