@@ -893,12 +893,6 @@ namespace KillerShell
         private void EdPath_Click(object s, MouseButtonEventArgs e)        => Owner.EdPath_Click(s, e);
         private void EditorPathBox_KeyDown(object s, KeyEventArgs e)       => Owner.EditorPathBox_KeyDown(s, e);
         private void EditorPathBox_LostFocus(object s, RoutedEventArgs e)  => Owner.EditorPathBox_LostFocus(s, e);
-        private void EdOptLineNumbers_Click(object s, RoutedEventArgs e)   => Owner.EdOptLineNumbers_Click(s, e);
-        private void EdOptCurrentLine_Click(object s, RoutedEventArgs e)   => Owner.EdOptCurrentLine_Click(s, e);
-        private void EdOptWhitespace_Click(object s, RoutedEventArgs e)    => Owner.EdOptWhitespace_Click(s, e);
-        private void EdOptSpaces_Click(object s, RoutedEventArgs e)        => Owner.EdOptSpaces_Click(s, e);
-        private void EdIndent_Click(object s, RoutedEventArgs e)           => Owner.EdIndent_Click(s, e);
-        private void EdOptFonts_Click(object s, RoutedEventArgs e)         => Owner.EdOptFonts_Click(s, e);
         private void EditorEncoding_Click(object s, RoutedEventArgs e)     => Owner.EditorEncoding_Click(s, e);
         private void EdEncoding_Click(object s, RoutedEventArgs e)         => Owner.EdEncoding_Click(s, e);
 

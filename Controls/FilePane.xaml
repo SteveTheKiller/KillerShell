@@ -1873,66 +1873,9 @@
                                     <Button x:Name="EditorDensityBtn" Content="&#xE8A1;" Width="24" Height="20" Padding="0" Margin="2,0,0,0"
                                             FontFamily="Segoe MDL2 Assets" FontSize="11" Style="{StaticResource SurfaceButton}"
                                             ToolTip="{DynamicResource Str_TT_Density}" Click="Density_Click" MouseWheel="Density_MouseWheel"/>
-                                    <!-- Everything that is a preference about reading code, in
-                                         one place, so the bar keeps only the verbs. Same flyout
-                                         construction as the sort menu above. -->
-                                    <Popup x:Name="EditorGearPopup" PlacementTarget="{Binding ElementName=EditorGearBtn}"
-                                           Placement="Bottom" StaysOpen="False" AllowsTransparency="True"
-                                           HorizontalOffset="-14" VerticalOffset="-2">
-                                        <Grid Margin="14">
-                                            <!-- MenuShadow tokens, not FlyoutShadowOpacity: that key is 0 on
-                                                 98SE, which erased these popups' shadows there - the tokens keep
-                                                 the ordinary themes' soft shadow and give 98SE the Win98 offset
-                                                 shadow. -->
-                                            <Border Background="{DynamicResource MenuBackgroundBrush}" CornerRadius="{DynamicResource PanelCornerRadius}" IsHitTestVisible="False"
-                                                    Opacity="{DynamicResource MenuShadowOpacity}"
-                                                    Effect="{DynamicResource MenuShadowEffect}"/>
-                                            <Border Background="{DynamicResource MenuBackgroundBrush}" BorderBrush="{DynamicResource MenuBorderBrush}"
-                                                    BorderThickness="1" CornerRadius="{DynamicResource PanelCornerRadius}" Padding="6">
-                                                <!-- CheckRow, not accent-filled SurfaceButtons: these are TOGGLED
-                                                     OPTIONS, so they read as check-marked menu rows now, and the
-                                                     indent picker is three more of the same with the check on the
-                                                     active width. Tag="on" comes from the same
-                                                     code that always set it. -->
-                                                <StackPanel MinWidth="188">
-                                                    <Button x:Name="EdOptLineNumbers" Content="{DynamicResource Str_Ed_OptLineNumbers}"
-                                                            Style="{StaticResource CheckRow}" Margin="0,0,0,2" Click="EdOptLineNumbers_Click"/>
-                                                    <Button x:Name="EdOptCurrentLine" Content="{DynamicResource Str_Ed_OptCurrentLine}"
-                                                            Style="{StaticResource CheckRow}" Margin="0,0,0,2" Click="EdOptCurrentLine_Click"/>
-                                                    <Button x:Name="EdOptWhitespace" Content="{DynamicResource Str_Ed_OptWhitespace}"
-                                                            Style="{StaticResource CheckRow}" Margin="0,0,0,2" Click="EdOptWhitespace_Click"/>
-                                                    <Button x:Name="EdOptSpaces" Content="{DynamicResource Str_Ed_OptSpaces}"
-                                                            Style="{StaticResource CheckRow}" Margin="0,0,0,6" Click="EdOptSpaces_Click"/>
-
-                                                    <TextBlock Text="{DynamicResource Str_Ed_OptIndent}" Margin="10,0,0,3"
-                                                               Foreground="{DynamicResource DimTextBrush}"
-                                                               FontFamily="{DynamicResource MonoFont}" FontSize="10"/>
-                                                    <Button x:Name="EdIndent2" CommandParameter="2" Content="2"
-                                                            Style="{StaticResource CheckRow}" Margin="0,0,0,2" Click="EdIndent_Click"/>
-                                                    <Button x:Name="EdIndent4" CommandParameter="4" Content="4"
-                                                            Style="{StaticResource CheckRow}" Margin="0,0,0,2" Click="EdIndent_Click"/>
-                                                    <Button x:Name="EdIndent8" CommandParameter="8" Content="8"
-                                                            Style="{StaticResource CheckRow}" Margin="0,0,0,6" Click="EdIndent_Click"/>
-
-                                                    <!-- Font and size are NOT here. They live in
-                                                         the Fonts dialog beside the app and
-                                                         terminal slots (Fonts.cs), because a
-                                                         font picker belongs with the other font
-                                                         pickers rather than buried in a gear on
-                                                         one surface - and only there can it
-                                                         offer the installed fixed-width faces
-                                                         instead of a nudge button. -->
-                                                    <Button x:Name="EdOptFonts" Content="{DynamicResource Str_Ed_OptFonts}"
-                                                            Style="{StaticResource SurfaceButton}" HorizontalContentAlignment="Left"
-                                                            Padding="10,3" FontSize="11" Click="EdOptFonts_Click"/>
-                                                </StackPanel>
-                                            </Border>
-                                            <!-- The grain, OVER the rows like every menu - a
-                                                 checked row's solid fill painted over it when it
-                                                 sat below the items. -->
-                                            <Border Style="{StaticResource FlyoutGrain}" IsHitTestVisible="False"/>
-                                        </Grid>
-                                    </Popup>
+                                    <!-- The gear opens a tile card built in code (EditorBar.cs
+                                         EditorGear_Click), the family card style, so the bar keeps
+                                         only the verbs and the preferences sit behind it. -->
                                 </StackPanel>
 
                                 <!-- The full path, because the tab only has room for the name and

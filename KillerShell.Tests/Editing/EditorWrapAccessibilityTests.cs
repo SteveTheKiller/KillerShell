@@ -33,16 +33,14 @@ public static class EditorWrapAccessibilityScenario
         ShellWindowFixture.PumpUntil(() => menu.IsOpen && menu.ActualWidth > 0);
         try
         {
-            var wrap = menu.Items.OfType<MenuItem>().Single(item => item.InputGestureText == "Alt+Z");
-            var peer = UIElementAutomationPeer.CreatePeerForElement(wrap);
-            var toggle = Assert.IsAssignableFrom<IToggleProvider>(peer.GetPattern(PatternInterface.Toggle));
+            // The document card is tiles since e1a0758: Word wrap is an on/off tile carrying its shortcut,
+            // filled while wrap is on, and invoking it through automation flips the editor's own state.
+            var wrap = KillerShell.Controls.CardMenus.TileButton(menu, "wrap");
+            Assert.NotNull(wrap);
+            Assert.Equal("Alt+Z", AutomationProperties.GetAcceleratorKey(wrap));
             bool before = editor.WordWrap;
-            Assert.Equal(before ? ToggleState.On : ToggleState.Off, toggle.ToggleState);
-            toggle.Toggle();
-            ShellWindowFixture.PumpUntil(() => editor.WordWrap != before);
-            Assert.Equal(!before ? ToggleState.On : ToggleState.Off, toggle.ToggleState);
-            toggle.Toggle();
-            ShellWindowFixture.PumpUntil(() => editor.WordWrap == before);
+            Assert.Equal(before, wrap!.ReadLocalValue(Control.BackgroundProperty) != System.Windows.DependencyProperty.UnsetValue);
+            var peer = UIElementAutomationPeer.CreatePeerForElement(wrap);
             ((IInvokeProvider)peer.GetPattern(PatternInterface.Invoke)).Invoke();
             ShellWindowFixture.PumpUntil(() => editor.WordWrap != before);
         }

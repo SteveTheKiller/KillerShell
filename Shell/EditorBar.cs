@@ -74,21 +74,6 @@ namespace KillerShell.Shell
             // that comes and goes makes the two beside it move under the pointer.
             pane.EditorUndoBtn.IsEnabled = editor.CanUndo;
             pane.EditorRedoBtn.IsEnabled = editor.CanRedo;
-
-            SyncEditorGear(pane);
-        }
-
-        /// <summary>The gear's own state. Split out because the popup can be open on its own.</summary>
-        private static void SyncEditorGear(FilePane pane)
-        {
-            pane.EdOptLineNumbers.Tag = EditorOptions.LineNumbers   ? "on" : null;
-            pane.EdOptCurrentLine.Tag = EditorOptions.CurrentLine   ? "on" : null;
-            pane.EdOptWhitespace.Tag  = EditorOptions.Whitespace    ? "on" : null;
-            pane.EdOptSpaces.Tag      = EditorOptions.SpacesForTabs ? "on" : null;
-
-            pane.EdIndent2.Tag = EditorOptions.IndentSize == 2 ? "on" : null;
-            pane.EdIndent4.Tag = EditorOptions.IndentSize == 4 ? "on" : null;
-            pane.EdIndent8.Tag = EditorOptions.IndentSize == 8 ? "on" : null;
         }
 
         /// <summary>Lights whichever row in the encoding popup matches the document's own label.</summary>
@@ -389,58 +374,78 @@ namespace KillerShell.Shell
         // ═══════════════════════════════════════════════════════════
         //  THE GEAR
         // ═══════════════════════════════════════════════════════════
+        /// <summary>
+        /// The gear's tile card, under the gear button (also opened from the document's own right-click
+        /// card, so it always anchors to the bar's button rather than the sender). Built fresh on each
+        /// opening, so every tile shows the current settings.
+        /// </summary>
+        /// <remarks>
+        /// The four options are on/off tiles that flip in place and keep the card open, so several can
+        /// be set in one visit. Indent is a flyout tile whose rows check the current width. Fonts hands
+        /// off to the Fonts dialog, which owns every font slot (Fonts.cs), so it closes the card.
+        /// </remarks>
         internal void EditorGear_Click(object sender, RoutedEventArgs e)
         {
             if (BarEditor == null) return;
             var pane = LivePanes().FirstOrDefault(p => ReferenceEquals(p.EditorSlot.Content, BarEditor));
             if (pane == null) return;
 
-            SyncEditorGear(pane);
-            pane.EditorGearPopup.IsOpen = !pane.EditorGearPopup.IsOpen;
-            if (pane.EditorGearPopup.IsOpen && pane.EditorGearPopup.Child is UIElement gearChild) Anim.FadeIn(gearChild);
+            var card = EditorGearCard();
+            card.PlacementTarget = pane.EditorGearBtn;
+            card.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
+            // The card's shadow halo is taken off, so the visible card sits under the button's left edge.
+            card.HorizontalOffset = -22;
+            card.VerticalOffset = -16;
+            card.IsOpen = true;
         }
 
-        internal void EdOptLineNumbers_Click(object sender, RoutedEventArgs e)
+        internal ContextMenu EditorGearCard()
         {
-            EditorOptions.LineNumbers = !EditorOptions.LineNumbers;
-            ApplyEditorOptions();
-        }
+            var card = Controls.CardMenus.TileCard();
+            card.Tag = "editorgear";
+            Controls.CardMenus.WatchKeyboardStart(card);
 
-        internal void EdOptCurrentLine_Click(object sender, RoutedEventArgs e)
-        {
-            EditorOptions.CurrentLine = !EditorOptions.CurrentLine;
-            ApplyEditorOptions();
-        }
+            KillerFamily.Controls.CardTile Toggle(string id, int glyph, string captionKey, bool on, Action flip)
+                => Controls.CardMenus.Tile(id, glyph, captionKey, null, null, () => { flip(); ApplyEditorOptions(); }, on: on)
+                   with { KeepsOpen = true };
 
-        internal void EdOptWhitespace_Click(object sender, RoutedEventArgs e)
-        {
-            EditorOptions.Whitespace = !EditorOptions.Whitespace;
-            ApplyEditorOptions();
-        }
+            // The header word is set in capitals for the old menu's section label; a tile caption reads in
+            // sentence case, so it is lowered in the app language's own casing rules.
+            var culture = Services.LocaleManager.CultureFor(Services.LocaleManager.Current);
+            string indentWord = Loc("Str_Ed_OptIndent");
+            if (indentWord == indentWord.ToUpper(culture))
+                indentWord = culture.TextInfo.ToTitleCase(indentWord.ToLower(culture));
 
-        internal void EdOptSpaces_Click(object sender, RoutedEventArgs e)
-        {
-            EditorOptions.SpacesForTabs = !EditorOptions.SpacesForTabs;
-            ApplyEditorOptions();
-        }
+            var widths = new System.Collections.Generic.List<object>();
+            foreach (int size in new[] { 2, 4, 8 })
+            {
+                int width = size;
+                var row = Controls.CardMenus.FlyoutRow(indentWord + " " + width.ToString(culture), null, null, (_, _) =>
+                {
+                    card.IsOpen = false;
+                    EditorOptions.IndentSize = EditorOptions.ClampIndent(width);
+                    ApplyEditorOptions();
+                }, "indent" + width);
+                row.IsChecked = EditorOptions.IndentSize == width;
+                widths.Add(row);
+            }
 
-        // The size rides on CommandParameter, not on Tag: Tag is spoken for by SurfaceButton's
-        // lit trigger, which is what shows which of the three is current (same split as the sort
-        // menu, Results.cs).
-        internal void EdIndent_Click(object sender, RoutedEventArgs e)
-        {
-            if (sender is not Button b || b.CommandParameter is not string s) return;
-            if (!int.TryParse(s, NumberStyles.Integer, CultureInfo.InvariantCulture, out int size)) return;
-
-            EditorOptions.IndentSize = EditorOptions.ClampIndent(size);
-            ApplyEditorOptions();
-        }
-
-        /// <summary>The last gear row: hands off to the Fonts dialog, which owns both font slots.</summary>
-        internal void EdOptFonts_Click(object sender, RoutedEventArgs e)
-        {
-            foreach (var p in LivePanes()) p.EditorGearPopup.IsOpen = false;
-            FontsRow_Click(this, new RoutedEventArgs());     // Fonts.cs
+            card.Items.Add(Controls.CardMenus.Tiles(card, new[]
+            {
+                Toggle("linenumbers", 0xE8FD, "Str_Ed_OptLineNumbers", EditorOptions.LineNumbers,
+                    () => EditorOptions.LineNumbers = !EditorOptions.LineNumbers),
+                Toggle("currentline", 0xE7E6, "Str_Ed_OptCurrentLine", EditorOptions.CurrentLine,
+                    () => EditorOptions.CurrentLine = !EditorOptions.CurrentLine),
+                Toggle("whitespace", 0xE890, "Str_Ed_OptWhitespace", EditorOptions.Whitespace,
+                    () => EditorOptions.Whitespace = !EditorOptions.Whitespace),
+                Toggle("spaces", 0xE765, "Str_Ed_OptSpaces", EditorOptions.SpacesForTabs,
+                    () => EditorOptions.SpacesForTabs = !EditorOptions.SpacesForTabs),
+                Controls.CardMenus.Flyout("indent", ((char)0xE8E4).ToString(), indentWord,
+                    indentWord + " " + EditorOptions.IndentSize.ToString(culture), widths),
+                Controls.CardMenus.Tile("fonts", 0xE8D2, "Str_Ed_OptFonts", null, null,
+                    () => FontsRow_Click(this, new RoutedEventArgs())),     // Fonts.cs
+            }));
+            return card;
         }
 
         // ═══════════════════════════════════════════════════════════
