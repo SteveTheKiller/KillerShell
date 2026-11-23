@@ -87,7 +87,7 @@ public static class PerformanceCardScenario
             string title = AutomationProperties.GetName(head);
             Assert.False(string.IsNullOrWhiteSpace(title));
             Assert.NotEqual(id, title);
-            Assert.Equal(new[] { "fold", "onecolumn", "twocolumns", "resetlayout" },
+            Assert.Equal(new[] { "fold", "onecolumn", "multicolumn", "resetlayout" },
                 CardMenus.Buttons(card).Select(b => b.CommandParameter).OfType<string>().ToArray());
             card.IsOpen = false;
         }

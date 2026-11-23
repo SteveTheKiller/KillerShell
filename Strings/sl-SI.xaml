@@ -632,7 +632,7 @@
     <sys:String x:Key="Str_Perf_GpuUnassigned">Nedodeljeni števci GPU</sys:String>
     <sys:String x:Key="Str_Perf_ResetLayout">Ponastavi postavitev</sys:String>
     <sys:String x:Key="Str_Perf_OneColumn">En stolpec</sys:String>
-    <sys:String x:Key="Str_Perf_TwoColumns">Dva stolpca</sys:String>
+    <sys:String x:Key="Str_Perf_MultiColumn">Več stolpcev</sys:String>
     <sys:String x:Key="Str_Perf_Cached">Predpomnjeno</sys:String>
     <sys:String x:Key="Str_Perf_Utilization">Izkoriščenost</sys:String>
     <sys:String x:Key="Str_Perf_Throughput">Prepustnost</sys:String>

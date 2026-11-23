@@ -750,7 +750,7 @@
     <sys:String x:Key="Str_Perf_GpuUnassigned">할당되지 않은 GPU 카운터</sys:String>
     <sys:String x:Key="Str_Perf_ResetLayout">레이아웃 초기화</sys:String>
     <sys:String x:Key="Str_Perf_OneColumn">한 열</sys:String>
-    <sys:String x:Key="Str_Perf_TwoColumns">두 열</sys:String>
+    <sys:String x:Key="Str_Perf_MultiColumn">여러 열</sys:String>
     <sys:String x:Key="Str_Perf_Cached">캐시됨</sys:String>
     <sys:String x:Key="Str_Perf_Utilization">사용률</sys:String>
     <sys:String x:Key="Str_Perf_Throughput">처리량</sys:String>

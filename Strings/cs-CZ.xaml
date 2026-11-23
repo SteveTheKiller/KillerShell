@@ -678,7 +678,7 @@
     <sys:String x:Key="Str_Perf_GpuUnassigned">Nepřiřazená počítadla GPU</sys:String>
     <sys:String x:Key="Str_Perf_ResetLayout">Resetovat rozložení</sys:String>
     <sys:String x:Key="Str_Perf_OneColumn">Jeden sloupec</sys:String>
-    <sys:String x:Key="Str_Perf_TwoColumns">Dva sloupce</sys:String>
+    <sys:String x:Key="Str_Perf_MultiColumn">Více sloupců</sys:String>
     <sys:String x:Key="Str_Perf_InUse">Používáno</sys:String>
     <sys:String x:Key="Str_Perf_LogicalProcessors">Logické procesory</sys:String>
     <sys:String x:Key="Str_Perf_Network">Síť</sys:String>

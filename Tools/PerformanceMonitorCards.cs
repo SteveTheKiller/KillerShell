@@ -184,7 +184,7 @@ namespace KillerShell.Tools
             foreach (var slot in _stripSlots) _summaryStrip.Children.Add(slot.Host);
         }
 
-        /// <summary>Two columns that each flow on their own, in the user's order, so a short card
+        /// <summary>Two or three columns that each flow on their own, in the user's order, so a short card
         /// leaves no gap under it: the next card in its column moves up to meet it. A card moved,
         /// added or taken away re-forms the bands; the cards themselves are moved into them, never
         /// rebuilt. A card set to two columns spans a band of its own. A column is as wide as the
@@ -389,7 +389,8 @@ namespace KillerShell.Tools
                     card.Folded ? "Str_Menu_Restore" : "Str_Menu_Minimize", null, null, () => SetCardFolded(card, !card.Folded)),
                 KillerShell.Controls.CardMenus.Tile("onecolumn", 0xE739, "Str_Perf_OneColumn", null, null,
                     () => { if (wide) SetCardWide(card, false); }, panel, on: panel && !wide),
-                KillerShell.Controls.CardMenus.Tile("twocolumns", 0xE8A9, "Str_Perf_TwoColumns", null, null,
+                // Across every column the page shows: two, or three on a wide page.
+                KillerShell.Controls.CardMenus.Tile("multicolumn", 0xE8A9, "Str_Perf_MultiColumn", null, null,
                     () => { if (!wide) SetCardWide(card, true); }, panel, on: wide),
             }, new[]
             {

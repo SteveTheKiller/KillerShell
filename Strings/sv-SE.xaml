@@ -750,7 +750,7 @@
     <sys:String x:Key="Str_Perf_GpuUnassigned">Otilldelade GPU-räknare</sys:String>
     <sys:String x:Key="Str_Perf_ResetLayout">Återställ layout</sys:String>
     <sys:String x:Key="Str_Perf_OneColumn">En kolumn</sys:String>
-    <sys:String x:Key="Str_Perf_TwoColumns">Två kolumner</sys:String>
+    <sys:String x:Key="Str_Perf_MultiColumn">Flera kolumner</sys:String>
     <sys:String x:Key="Str_Perf_Cached">Cachelagrat</sys:String>
     <sys:String x:Key="Str_Perf_Utilization">Användning</sys:String>
     <sys:String x:Key="Str_Perf_Throughput">Dataflöde</sys:String>
