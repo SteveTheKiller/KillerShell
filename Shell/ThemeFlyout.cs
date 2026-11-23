@@ -342,9 +342,9 @@ namespace KillerShell.Shell
         private static readonly (Accent Accent, string Hex)[] SE98StripColors =
             [(Accent.Blue, "#000080"), (Accent.Teal, "#008080"), (Accent.Green, "#006000"),
              (Accent.Orange, "#A05000"), (Accent.Yellow, "#EAD900"), (Accent.Red, "#800000"), (Accent.Purple, "#5A376E"), (Accent.Magenta, "#750052")];
-        // Blood, Ember, Ochre, Moss, Teal, Cobalt, Violet, Rose.
+        // Blood, Ember, Yellow, Moss, Teal, Cobalt, Violet, Rose.
         private static readonly (Accent Accent, string Hex)[] TrashPolkaStripColors =
-            [(Accent.Red, "#D7263D"), (Accent.Orange, "#EE7B22"), (Accent.Yellow, "#D9A21B"), (Accent.Green, "#7A9A3A"),
+            [(Accent.Red, "#D7263D"), (Accent.Orange, "#EE7B22"), (Accent.Yellow, "#EED500"), (Accent.Green, "#7A9A3A"),
              (Accent.Teal, "#1E9A96"), (Accent.Blue, "#3A6FD0"), (Accent.Purple, "#8A4CC2"), (Accent.Magenta, "#E4588E")];
 
         private static (Accent Accent, string Hex)[] StripColorsFor(Theme family) => family switch
