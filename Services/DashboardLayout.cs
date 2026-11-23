@@ -9,8 +9,8 @@ using System.Linq;
 // layout clears it back to the designed dashboard.
 //
 // A slot is one place in the order: usually one card, or a card with others stacked under it.
-// The panels flow down two columns; a slot that has never been moved takes the shorter column of
-// its band, which alternates them from the designed order. Cards are named by a stable id ("cpu", "disks", "gpu:<adapter
+// The panels flow down two columns, or three on a wide page; a slot that has never been moved
+// takes the shortest column of its band, which deals them out in turn from the designed order. Cards are named by a stable id ("cpu", "disks", "gpu:<adapter
 // name>") rather than by position, so a saved layout still fits when hardware comes and goes: a
 // card that is gone is skipped and keeps its saved place for when it returns, and a card that is
 // new joins at the end.
@@ -31,13 +31,16 @@ namespace KillerShell.Services
         private readonly Dictionary<string, HashSet<string>> _wide = new(StringComparer.Ordinal);     // span both columns
         private readonly Dictionary<string, HashSet<string>> _left = new(StringComparer.Ordinal);     // the column a moved card went to
         private readonly Dictionary<string, HashSet<string>> _right = new(StringComparer.Ordinal);
+        private readonly Dictionary<string, HashSet<string>> _third = new(StringComparer.Ordinal);    // the third column of a wide page
 
         internal bool IsDefault => _order.Count == 0 && _stacked.Count == 0 && _folded.Count == 0 && _wide.Count == 0
-                                   && _left.Count == 0 && _right.Count == 0;
+                                   && _left.Count == 0 && _right.Count == 0 && _third.Count == 0;
 
-        /// <summary>The panel column a card was put in, 0 left and 1 right, or null when it has
-        /// never been placed and takes the shorter column of its band.</summary>
-        internal int? Column(string area, string id) => Has(_right, area, id) ? 1 : Has(_left, area, id) ? 0 : null;
+        /// <summary>The panel column a card was put in, 0 left, 1 the next and 2 the third of a wide
+        /// page, or null when it has never been placed and takes the shortest column of its band.
+        /// With fewer columns shown, a card put further right goes in the last one.</summary>
+        internal int? Column(string area, string id)
+            => Has(_third, area, id) ? 2 : Has(_right, area, id) ? 1 : Has(_left, area, id) ? 0 : null;
 
         /// <summary>
         /// Moves <paramref name="id"/> within the panel columns: before or after the slot holding
@@ -77,13 +80,15 @@ namespace KillerShell.Services
             var present = new HashSet<string>(slots.SelectMany(slot => slot), StringComparer.Ordinal);
             var left = Kept(_left, area, present);
             var right = Kept(_right, area, present);
+            var third = Kept(_third, area, present);
             foreach (var slot in slots)
             {
                 if (!columns.TryGetValue(slot[0], out int column)) continue;
-                foreach (string card in slot) (column == 1 ? right : left).Add(card);
+                foreach (string card in slot) (column >= 2 ? third : column == 1 ? right : left).Add(card);
             }
             Store(_left, area, left);
             Store(_right, area, right);
+            Store(_third, area, third);
         }
 
         private static HashSet<string> Kept(Dictionary<string, HashSet<string>> flags, string area, HashSet<string> present)
@@ -215,19 +220,22 @@ namespace KillerShell.Services
             _wide.Clear();
             _left.Clear();
             _right.Clear();
+            _third.Clear();
         }
 
         /// <summary>
-        /// The slots in bands, in order. A slot that spans both columns is a band of one column to
-        /// itself. Between those, the slots go down a left and a right column that each run on
-        /// their own, so a slot sits right under the one above it in its column rather than
-        /// waiting for a taller slot in the other column to end. A slot goes to the column
-        /// <paramref name="column"/> remembers for it, and one with none to the shorter column of
-        /// its band, which alternates them. A lone slot before a spanning one keeps the left
-        /// column of its band rather than stretching across it.
+        /// The slots in bands, in order. A slot that spans the columns is a band of one column to
+        /// itself. Between those, the slots go down <paramref name="count"/> columns (two, or three
+        /// on a wide page) that each run on their own, so a slot sits right under the one above it
+        /// in its column rather than waiting for a taller slot in another column to end. A slot
+        /// goes to the column <paramref name="column"/> remembers for it, or the last column when
+        /// fewer are shown, and one with none to the shortest column of its band, which takes
+        /// them in turn. A lone slot before a spanning one keeps the left column of its band
+        /// rather than stretching across it.
         /// </summary>
-        internal static List<List<T>[]> Bands<T>(IReadOnlyList<T> slots, Func<T, bool> wide, Func<T, int?>? column = null)
+        internal static List<List<T>[]> Bands<T>(IReadOnlyList<T> slots, Func<T, bool> wide, Func<T, int?>? column = null, int count = 2)
         {
+            count = Math.Max(2, count);
             var bands = new List<List<T>[]>();
             List<T>[]? columns = null;
             foreach (var slot in slots)
@@ -240,13 +248,22 @@ namespace KillerShell.Services
                 }
                 if (columns == null)
                 {
-                    columns = [[], []];
+                    columns = Enumerable.Range(0, count).Select(_ => new List<T>()).ToArray();
                     bands.Add(columns);
                 }
-                int side = column?.Invoke(slot) ?? (columns[0].Count <= columns[1].Count ? 0 : 1);
-                columns[side == 1 ? 1 : 0].Add(slot);
+                int side = column?.Invoke(slot) ?? Shortest(columns);
+                columns[Math.Min(Math.Max(side, 0), count - 1)].Add(slot);
             }
             return bands;
+        }
+
+        // The first of the columns holding the fewest slots.
+        private static int Shortest<T>(List<T>[] columns)
+        {
+            int best = 0;
+            for (int c = 1; c < columns.Length; c++)
+                if (columns[c].Count < columns[best].Count) best = c;
+            return best;
         }
 
         // ── The setting ─────────────────────────────────────────
@@ -261,6 +278,7 @@ namespace KillerShell.Services
             Write(parts, "wide.", _wide.Select(area => (area.Key, (IEnumerable<string>)area.Value)));
             Write(parts, "left.", _left.Select(area => (area.Key, (IEnumerable<string>)area.Value)));
             Write(parts, "right.", _right.Select(area => (area.Key, (IEnumerable<string>)area.Value)));
+            Write(parts, "third.", _third.Select(area => (area.Key, (IEnumerable<string>)area.Value)));
             return string.Join(";", parts);
         }
 
@@ -290,6 +308,7 @@ namespace KillerShell.Services
                 else if (Area(key, "wide.") is { } wide) layout._wide[wide] = new HashSet<string>(ids, StringComparer.Ordinal);
                 else if (Area(key, "left.") is { } left) layout._left[left] = new HashSet<string>(ids, StringComparer.Ordinal);
                 else if (Area(key, "right.") is { } right) layout._right[right] = new HashSet<string>(ids, StringComparer.Ordinal);
+                else if (Area(key, "third.") is { } third) layout._third[third] = new HashSet<string>(ids, StringComparer.Ordinal);
             }
             return layout;
         }

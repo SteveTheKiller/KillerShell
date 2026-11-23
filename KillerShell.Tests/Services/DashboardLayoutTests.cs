@@ -274,6 +274,37 @@ namespace KillerShell.Tests.Services
         }
 
         [Fact]
+        public void Bands_FlowSlotsDownThreeColumnsOnAWidePage()
+        {
+            var bands = Bands(new[] { "a", "b", "c", "d", "e" }, _ => false, count: 3);
+            Assert.Equal("a+d / b+e / c", ShowBands(bands));
+        }
+
+        [Fact]
+        public void MoveInColumn_TheThirdColumnSurvivesARestartAndFoldsRightOnTwo()
+        {
+            var layout = Parse(null);
+            var three = Bands(layout.Slots(Panels, Five), _ => false, slot => layout.Column(Panels, slot[0]), count: 3)
+                .SelectMany(band => band.Select((column, c) => (column, c)))
+                .SelectMany(pair => pair.column.SelectMany(slot => slot).Select(id => (id, pair.c)))
+                .ToDictionary(pair => pair.id, pair => pair.c);
+
+            // a under c, at the bottom of the third column.
+            layout.MoveInColumn(Panels, layout.Slots(Panels, Five), three, "a", "c", Drop.After);
+            var reread = Parse(layout.Serialize());
+            Assert.Equal(2, reread.Column(Panels, "a"));
+            Assert.Equal("d / b+e / c+a", ShowBands(Bands(reread.Slots(Panels, Five), _ => false,
+                slot => reread.Column(Panels, slot[0]), count: 3)
+                .Select(band => band.Select(column => column.Select(slot => string.Join("&", slot)).ToList()).ToArray())));
+
+            // On a two-column page the third column's cards go down the right one.
+            Assert.Equal("d / b+c+a+e", Picture(reread, Five));
+
+            reread.Reset();
+            Assert.True(reread.IsDefault);
+        }
+
+        [Fact]
         public void Bands_GiveATwoColumnSlotABandToItself()
         {
             // "a" cannot pair with the wide slot after it, so it keeps the left column of its band.

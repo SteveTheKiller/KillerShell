@@ -119,11 +119,21 @@ namespace KillerShell.Tools
         /// one column and the strip wraps, so the page always fits its pane.</summary>
         internal const double TwoColumnWidth = 600;
 
-        private bool _narrow;
+        /// <summary>From here up the panels go three across. Twice the two-column width, so a
+        /// card in three columns is never narrower than it is in two on a 600px page, and a wide
+        /// window stops stretching every graph out to half the screen (Steve, 2026-11-23).</summary>
+        internal const double ThreeColumnWidth = 1200;
+
+        /// <summary>How many columns the panels flow down at a page width: one when narrow,
+        /// three when wide, two between.</summary>
+        internal static int PanelColumnsFor(double width)
+            => width < TwoColumnWidth ? 1 : width >= ThreeColumnWidth ? 3 : 2;
+
+        private int _panelColumnCount = 2;
         private int _stripColumns;
 
         /// <summary>Re-flows the strip and the panels for the page's width. Display only: the
-        /// user's saved arrangement is untouched and comes back when the page widens.</summary>
+        /// user's saved arrangement is untouched and comes back when the page changes width.</summary>
         private void FitToWidth(double width)
         {
             if (width <= 0) return;
@@ -134,8 +144,9 @@ namespace KillerShell.Tools
                 _stripColumns = columns;
                 _summaryStrip.MaxPerRow = columns;
             }
-            if (narrow == _narrow) return;
-            _narrow = narrow;
+            int panelColumns = PanelColumnsFor(width);
+            if (panelColumns == _panelColumnCount) return;
+            _panelColumnCount = panelColumns;
             ArrangePanels();
         }
 

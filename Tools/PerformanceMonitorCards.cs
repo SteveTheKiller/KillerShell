@@ -195,10 +195,11 @@ namespace KillerShell.Tools
             _panelSlots = Slots(Services.DashboardLayout.Panels, _panelCards);
             _panelColumns = new Dictionary<string, int>(StringComparer.Ordinal);
             _emptyColumns.Clear();
-            // A narrow page: one column, every card in the user's order, one band each.
-            var bands = _narrow
+            // A narrow page: one column, every card in the user's order, one band each. A wide
+            // page: three columns rather than two (PanelColumnsFor).
+            var bands = _panelColumnCount == 1
                 ? _panelSlots.Select(slot => new[] { new List<CardSlot> { slot } }).ToList()
-                : Services.DashboardLayout.Bands(_panelSlots, IsWide, PanelColumn);
+                : Services.DashboardLayout.Bands(_panelSlots, IsWide, PanelColumn, _panelColumnCount);
             foreach (var columns in bands)
             {
                 for (int c = 0; c < columns.Length; c++)
@@ -223,7 +224,7 @@ namespace KillerShell.Tools
                         var zone = new Border { Background = Brushes.Transparent, MinHeight = 48 };
                         SetColumn(zone, c);
                         band.Children.Add(zone);
-                        _emptyColumns.Add((zone, c, columns[1 - c][^1].Cards[^1]));
+                        _emptyColumns.Add((zone, c, columns.Last(other => other.Count > 0)[^1].Cards[^1]));
                         continue;
                     }
                     // Stretched to the band's height, so the room under its last card belongs to
@@ -246,7 +247,7 @@ namespace KillerShell.Tools
         private string PanelPicture(IReadOnlyList<IReadOnlyList<string>> slots, IReadOnlyDictionary<string, int> columns)
             => string.Join("|", Services.DashboardLayout.Bands(slots,
                     slot => slot.Any(id => _layout.IsWide(Services.DashboardLayout.Panels, id)),
-                    slot => columns.TryGetValue(slot[0], out int c) ? c : null)
+                    slot => columns.TryGetValue(slot[0], out int c) ? c : null, _panelColumnCount)
                 .Select(band => string.Join("/", band.Select(column => string.Join(",", column.Select(slot => string.Join("+", slot)))))));
 
         /// <summary>
