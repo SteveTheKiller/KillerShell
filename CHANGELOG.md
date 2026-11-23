@@ -6,7 +6,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 
 ## [1.6.2] - 2026-11-22
 
-1.6.2 makes clicks respond right away again, gives This PC drive tiles with usage bars, and fixes the Trash Polka tool pages and the 98SE look.
+1.6.2 makes clicks respond right away again, gives This PC drive tiles with usage bars, puts program icons in the Processes list, and fixes the Trash Polka tool pages and the 98SE look.
 
 ### Fixed
 
@@ -32,6 +32,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 ### Added
 
 - This PC shows each drive as a tile with a usage bar and its free space, as Explorer does. The bar is green, turns yellow at 80% full and red at 95%.
+- The Processes list shows each program's icon beside its name.
 
 ## [1.6.1] - 2026-11-21
 

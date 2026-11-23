@@ -67,10 +67,14 @@ namespace KillerShell.Models
         public string Path
         {
             get => _path;
-            set { if (_path != value) { _path = value; Notify(); Notify(nameof(HasPath)); } }
+            set { if (_path != value) { _path = value; Notify(); Notify(nameof(HasPath)); Notify(nameof(Icon)); } }
         }
 
         public bool HasPath => Path.Length > 0;
+
+        // The program's icon beside its name. IconCache keys an exe by its path, so a refresh tick
+        // that rebinds the same path costs a dictionary hit, not a shell call.
+        public System.Windows.Media.ImageSource? Icon => Services.IconCache.ForProgram(Path, 16);
 
         // Read from the SAME bulk Win32_Process query CommandLine/Path already come from
         // (ProcessListControl.QueryWmiProcesses just carries one more column now) - never a

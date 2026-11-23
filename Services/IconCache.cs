@@ -322,6 +322,24 @@ namespace KillerShell.Services
             return img;
         }
 
+        /// <summary>
+        /// A running program's icon for the Processes list: the exe's own icon when its path is
+        /// known, and the shell's generic program icon when it is not (System, a protected
+        /// process this app cannot see into) or the exe has none, so every name lines up.
+        /// </summary>
+        public static ImageSource? ForProgram(string exePath, int px)
+        {
+            if (exePath.Length > 0 && For(exePath, px) is { } own) return own;
+            int shil = ShilFor(px);
+            string key = "|program|" + shil;
+            lock (Cache)
+                if (Cache.TryGetValue(key, out var hit)) return hit;
+            // The extension-only lookup, the same synthetic name a demo .exe falls back to above.
+            var img = shil == SHIL_LARGE ? LoadSmallPath("x.exe", false) : LoadFromImageList("x.exe", false, shil);
+            lock (Cache) Cache[key] = img;
+            return img;
+        }
+
         // Only ever asked in demo mode, so the ordinary path pays nothing for it.
         private static bool OnDisk(string filePath, bool isDirectory)
         {

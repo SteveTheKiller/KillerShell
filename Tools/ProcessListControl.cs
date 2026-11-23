@@ -327,7 +327,7 @@ namespace KillerShell.Tools
         /// before either is actually added to the grid.</summary>
         private void BuildProcessColumns()
         {
-            var name   = Col("Str_Col_ProcName", "Name", 180);
+            var name   = NameWithIconCol();
             var pid    = Col("Str_Col_ProcPid", "Pid", 70);
             var user   = Col("Str_Col_ProcUser", "User", 110);
             var cpu    = Col("Str_Col_ProcCpu", "CpuLabel", 70, sortMember: "CpuPercent");
@@ -416,6 +416,40 @@ namespace KillerShell.Tools
                 Width          = new DataGridLength(width),
                 SortMemberPath = sortMember ?? bindingPath,
                 Visibility     = visible ? Visibility.Visible : Visibility.Collapsed,
+            };
+        }
+
+        /// <summary>The Processes view's Name column: the program's icon, then its name, the way
+        /// Task Manager lists them. Sorts and copies by the name alone, like the text column it
+        /// replaced.</summary>
+        private static DataGridTemplateColumn NameWithIconCol()
+        {
+            var header = new TextBlock();
+            header.SetResourceReference(TextBlock.TextProperty, "Str_Col_ProcName");
+
+            var row = new FrameworkElementFactory(typeof(StackPanel));
+            row.SetValue(StackPanel.OrientationProperty, Orientation.Horizontal);
+            var icon = new FrameworkElementFactory(typeof(Image));
+            icon.SetBinding(Image.SourceProperty, new Binding(nameof(ProcessInfo.Icon)));
+            icon.SetValue(WidthProperty, 16.0);
+            icon.SetValue(HeightProperty, 16.0);
+            icon.SetValue(MarginProperty, new Thickness(2, 0, 6, 0));
+            icon.SetValue(VerticalAlignmentProperty, VerticalAlignment.Center);
+            icon.SetValue(RenderOptions.BitmapScalingModeProperty, BitmapScalingMode.HighQuality);
+            var text = new FrameworkElementFactory(typeof(TextBlock));
+            text.SetBinding(TextBlock.TextProperty, new Binding(nameof(ProcessInfo.Name)));
+            text.SetValue(TextBlock.TextTrimmingProperty, TextTrimming.CharacterEllipsis);
+            text.SetValue(VerticalAlignmentProperty, VerticalAlignment.Center);
+            row.AppendChild(icon);
+            row.AppendChild(text);
+
+            return new DataGridTemplateColumn
+            {
+                Header                 = header,
+                CellTemplate           = new DataTemplate { VisualTree = row },
+                Width                  = new DataGridLength(200),
+                SortMemberPath         = nameof(ProcessInfo.Name),
+                ClipboardContentBinding = new Binding(nameof(ProcessInfo.Name)),
             };
         }
 

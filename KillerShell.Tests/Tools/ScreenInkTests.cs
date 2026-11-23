@@ -75,9 +75,11 @@ public static class ScreenInkScenario
         try
         {
             Inked(storage, "PaneBrush");
-            // The map's empty ground is inked too; the file blocks draw over it in their own colors.
+            // The map's empty ground is inked too, as a plain surface rather than a screen since
+            // 9c2a930 (Trash Polka moves it to the lighter file surface); the blocks draw over it.
             var well = Descendants(storage).OfType<Border>().Single(b => ThemeMotif.GetBaseBrush(b) == "MonitorCellBrush");
-            Inked(well, "MonitorCellBrush");
+            Assert.Equal(MotifPart.Window, ThemeMotif.GetPart(well));
+            Assert.False(ThemeMotif.GetScreen(well));
         }
         finally { storage.Shutdown(); Directory.Delete(folder, true); }
 
