@@ -95,14 +95,15 @@ public static class PerformanceSurfaceScenario
         try
         {
             MenuBarTabBlendScenario.SelectTab(pane, tab);
-            ShellWindowFixture.PumpUntil(() => MenuBarTabBlendScenario.Descendants<UniformGrid>(performance)
+            // The summary strip is a FillRowsPanel (d3ce560); a UniformGrid search finds a card's insides.
+            ShellWindowFixture.PumpUntil(() => MenuBarTabBlendScenario.Descendants<FillRowsPanel>(performance)
                 .Any(g => g.Children.Count > 0));
             foreach (var theme in new[] { Theme.Malaise, Theme.SE98, Theme.Dark })
             {
                 ThemeManager.Apply(theme);
                 fixture.Window.UpdateLayout();
                 Assert.Same(performance.FindResource("MenuBackgroundBrush"), performance.Background);
-                var strip = MenuBarTabBlendScenario.Descendants<UniformGrid>(performance).First(g => g.Children.Count > 0);
+                var strip = MenuBarTabBlendScenario.Descendants<FillRowsPanel>(performance).First(g => g.Children.Count > 0);
                 var card = Assert.IsType<Border>(strip.Children[0]);
                 Assert.Same(Application.Current.FindResource(theme == Theme.SE98 ? "MonitorCellBrush" : "ListPaneBrush"), card.Background);
             }

@@ -255,8 +255,8 @@ public static class PerformanceScrollShadowScenario
 }
 
 /// <summary>
-/// Steve 2026-11-22: "perfmon needs a minimum width", and the pane stops there. The page never
-/// scrolls sideways: the window edge and the split gutter stop at the width that keeps it whole.
+/// Steve 2026-11-22: the Performance page never scrolls sideways. It first held a minimum width;
+/// since 8699069 it wraps to whatever room the pane gives it instead, so it always fits its slot.
 /// </summary>
 public static class PerformanceMinimumWidthScenario
 {
@@ -298,26 +298,24 @@ public static class PerformanceMinimumWidthScenario
         PaneRender.Pixels(window, "perf-mid-single", out _, out _, out _);
         AssertLabelsFit(window, perf);
 
-        // Single pane: the window cannot go narrower than the page's minimum allows.
-        // A wide folder tree eats the room the page needs, so the window's own 600 floor is not enough.
+        // Single pane, squeezed by a wide folder tree and a narrow window: the page wraps to the
+        // room it gets instead of holding a minimum width (8699069), so it still fills exactly its
+        // slot, nothing scrolls sideways, and every label still fits.
         var tree = (ColumnDefinition)window.FindName("TreeCol");
         tree.Width = new GridLength(420);
         window.UpdateLayout();
-        ShellWindowFixture.PumpUntil(() => window.MinWidth > 600.5,
-            diagnostic: () => "window MinWidth " + window.MinWidth + ", tree " + tree.ActualWidth);
         window.Width = 400;
         window.UpdateLayout();
         Settle(window);
-        Assert.True(perf.ActualWidth >= PerformanceMonitorControl.MinPageWidth - 0.5,
-            "Single pane, window dragged narrow: the page must keep its minimum: " + perf.ActualWidth);
         Assert.InRange(perf.ActualWidth, pane.PerformanceSlot.ActualWidth - 0.5, pane.PerformanceSlot.ActualWidth + 0.5);
+        Assert.Null(FindAncestorScroller(perf, pane.PerformanceHost));
         PaneRender.Pixels(window, "perf-min-single", out _, out _, out _);
         AssertLabelsFit(window, perf);
 
     }
 
-    /// <summary>Dual pane with the page on the right: pane B's column stops at the page's
-    /// minimum, and the window's minimum makes room for both panes.</summary>
+    /// <summary>Dual pane with the page on the right: the page wraps instead of holding a
+    /// minimum (8699069), so pane B keeps the ordinary pane minimum and the page fits its slot.</summary>
     public static void RunDual()
     {
         using var fixture = new ShellWindowFixture();
@@ -329,6 +327,7 @@ public static class PerformanceMinimumWidthScenario
         var colA = (ColumnDefinition)window.FindName("PaneColA");
         var colB = (ColumnDefinition)window.FindName("PaneColB");
         ShellWindowFixture.PumpUntil(() => right.ActualWidth > 100 && colB.MinWidth > 0);
+        double ordinaryMin = colB.MinWidth;
         window.FocusPane(right);
         window.OpenPerformanceMonitor();
         ShellWindowFixture.PumpUntil(() => right.Active?.Perf != null);
@@ -337,26 +336,24 @@ public static class PerformanceMinimumWidthScenario
         typeof(PerformanceMonitorControl).GetMethod("BuildTiles", BindingFlags.NonPublic | BindingFlags.Instance)!
             .Invoke(perfB, new object[] { hardware });
         window.UpdateLayout();
-        ShellWindowFixture.PumpUntil(() => colB.MinWidth >= PerformanceMonitorControl.MinPageWidth,
-            diagnostic: () => "B MinWidth " + colB.MinWidth + ", slot " + right.PerformanceSlot.ActualWidth);
-        double frameB = colB.ActualWidth - right.PerformanceSlot.ActualWidth;
-        Assert.InRange(colB.MinWidth, PerformanceMonitorControl.MinPageWidth + frameB - 0.5, PerformanceMonitorControl.MinPageWidth + frameB + 0.5);
+        Settle(window);
+        Assert.InRange(colB.MinWidth, ordinaryMin - 0.5, ordinaryMin + 0.5);
         Assert.True(window.MinWidth > colA.MinWidth + colB.MinWidth,
             "The window's minimum must hold both panes at their minimums: " + window.MinWidth);
 
-        // Squeeze: the window at its floor still gives the right page its minimum.
+        // Squeeze: the window at its floor wraps the right page into its slot.
         window.Width = 400;
         window.UpdateLayout();
         Settle(window);
-        Assert.True(perfB.ActualWidth >= PerformanceMonitorControl.MinPageWidth - 0.5,
-            "Dual pane, window dragged narrow: the right page must keep its minimum: " + perfB.ActualWidth);
+        Assert.InRange(perfB.ActualWidth, right.PerformanceSlot.ActualWidth - 0.5, right.PerformanceSlot.ActualWidth + 0.5);
+        Assert.Null(FindAncestorScroller(perfB, right.PerformanceHost));
         PaneRender.Pixels(window, "perf-min-dual", out _, out _, out _);
         AssertLabelsFit(window, perfB);
 
-        // A file listing in pane B again: back to the ordinary pane minimum.
+        // A file listing in pane B again: the minimum stays the ordinary pane minimum.
         window.FocusPane(right);
         right.NewTabBtn.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
-        ShellWindowFixture.PumpUntil(() => right.PerformanceHost.Visibility != Visibility.Visible && colB.MinWidth < PerformanceMonitorControl.MinPageWidth,
+        ShellWindowFixture.PumpUntil(() => right.PerformanceHost.Visibility != Visibility.Visible && Math.Abs(colB.MinWidth - ordinaryMin) < 0.5,
             diagnostic: () => "B MinWidth " + colB.MinWidth);
     }
 

@@ -2084,12 +2084,9 @@
                              (DualPane.cs PaneMinimum), so the page always fits its pane. -->
                         <ContentControl x:Name="PerformanceSlot" Focusable="False"
                                         Margin="{DynamicResource PerformanceContentInset}"/>
-                        <Border IsHitTestVisible="False" Panel.ZIndex="5"
-                                BorderBrush="{DynamicResource PerformancePageFrameDarkBrush}"
-                                BorderThickness="{DynamicResource PerformancePageFrameDarkThickness}"/>
-                        <Border IsHitTestVisible="False" Panel.ZIndex="5"
-                                BorderBrush="{DynamicResource PerformancePageFrameLightBrush}"
-                                BorderThickness="{DynamicResource PerformancePageFrameLightThickness}"/>
+                        <!-- No sunken well around the page. On 98SE the tab page is already a
+                             raised bevel (Shell/Tabs.cs), and a well inside it plus the monitor's
+                             own boxes stacked four gray lines at the edge (2026-11-22). -->
                     </Grid>
                     <!-- NO grain layer. PaneContent above already paints grain across the whole
                          content pane, so a second tile inside a tool host DOUBLED it - which is
