@@ -65,7 +65,7 @@ window.I18N = {
   "f_private_t": "Zasebnost v zasnovi",
   "f_private_d": "Podatki aplikacije se obdelujejo lokalno brez telemetrije ali samodejnega pošiljanja. Preverjanje posodobitev, prenosi in izbrane omrežne funkcije vzpostavljajo zunanje povezave.",
   "f_themes_d": "14 tem, 49 videzov: Temna, Svetla, Črna, 98SE in Trash Polka imajo vsaka 8 poudarkov. Drugih 9 ima določene palete. Preklopite takoj brez ponovnega zagona. Meni tem omogoča vklop ali izklop filmske zrnatosti.",
-  "f_lang_d": "Vmesnik je preveden v dvajset jezikov: angleščino, španščino, nemščino, francoščino, madžarščino, italijanščino, turščino, vietnamščino, poljščino, češčino, japonščino, tradicionalno in poenostavljeno kitajščino, bengalščino, ruščino, kazaščino, ukrajinščino, norveščino (bokmål), brazilsko portugalščino in slovenščino. Preklop je takojšen iz orodne vrstice.",
+  "f_lang_d": "Vmesnik je preveden v dvaindvajset jezikov: angleščino, španščino, nemščino, francoščino, madžarščino, italijanščino, turščino, vietnamščino, poljščino, češčino, japonščino, tradicionalno in poenostavljeno kitajščino, bengalščino, ruščino, kazaščino, korejščino, ukrajinščino, norveščino (bokmål), brazilsko portugalščino, švedščino in slovenščino. Preklop je takojšen iz orodne vrstice.",
   "h_nav_install": "Namestitev in posodobitev",
   "h_nav_windows": "Povezava s sistemom Windows",
   "h_nav_start": "Prvi koraki",
@@ -279,7 +279,7 @@ window.I18N = {
   "h_look_p3": "S koleščkom nad logotipom v naslovni vrstici spreminjate velikost celotnega programa za približno 2 % na korak, med 70 % in 250 %. Postavitev se prilagaja, zato besedilo ostane ostro. Nastavitev se shrani. Gumb za gostoto na stranski vrstici ločeno določa razmik med vrsticami rezultatov.",
   "appsize_keys_p": "S tipkovnico <b>Ctrl+Shift+Plus</b> in <b>Ctrl+Shift+Minus</b> spreminjata velikost po 5 %, <b>Ctrl+Shift+0</b> pa jo vrne na 100 %.",
   "hx_114": "Jezik<span class=\"chev\">&#9656;</span>",
-  "h_look_p4": "Jezikovni meni odpre globus na stranski vrstici nad gumbom za teme. Sproti preklapljate med dvajsetimi jeziki: angleščino, španščino, nemščino, francoščino, madžarščino, italijanščino, turščino, vietnamščino, poljščino, češčino, japonščino, tradicionalno in poenostavljeno kitajščino, bengalščino, ruščino, kazaščino, ukrajinščino, norveščino (bokmål), brazilsko portugalščino in slovenščino.",
+  "h_look_p4": "Jezikovni meni odpre globus na stranski vrstici nad gumbom za teme. Sproti preklapljate med dvaindvajsetimi jeziki: angleščino, španščino, nemščino, francoščino, madžarščino, italijanščino, turščino, vietnamščino, poljščino, češčino, japonščino, tradicionalno in poenostavljeno kitajščino, bengalščino, ruščino, kazaščino, korejščino, ukrajinščino, norveščino (bokmål), brazilsko portugalščino, švedščino in slovenščino.",
   "hx_115": "Nabor ikon<span class=\"chev\">&#9656;</span>",
   "hx_116": "KillerShell riše lastne ikone. Posebne mape imajo prepoznavne podobe: Domov, Namizje, Dokumenti, Prenosi, Slike, Glasba, Videoposnetki, Priljubljene, Program Files in Windows, poleg pogonov in Ta računalnik. Svoje ikone imajo tudi lupina, skrbniška lupina, končana lupina, dokument, Procesi, Pregledovalnik dogodkov, Zmogljivost in Urejevalnik registra. Drevo, zaznamki, seznam datotek, zavihki, seznam skritih zavihkov in nedavne mape uporabljajo isti vir, zato so ikone povsod dosledne.",
   "hx_117": "Tema 98SE sproti zamenja celoten nabor z ikonami tistega obdobja. Uporabljena je zbirka Chicago95, povečana z najbližjim sosedom, da pike ostanejo ostre. Vir vsake ikone je naveden v repozitoriju.",
@@ -398,7 +398,7 @@ window.I18N = {
   "t_admin_p3": "Pregledovalnik dogodkov (Ctrl+F12, vedno kot skrbnik) bere Application, System in Security z System.Diagnostics.Eventing.Reader. EventLogQuery lahko raven filtrira že v poizvedbi in bere od najnovejših vnosov. Vsak dnevnik je omejen na 2.000 zapisov, naloženih v paketih po 50 na namenski dolgotrajni niti. Nit iz bazena bi se lahko ponovno uporabila med čiščenjem COM in povzročila sesutje. Zavihek je dostopen le skrbniško, saj dnevnik Security navadnemu žetonu zavrne dostop.",
   "t_admin_p4": "Urejevalnik registra (Ctrl+F11, vedno kot skrbnik) ne potrebuje niti v ozadju, ker so branja registra dovolj hitra. Drevo sproti nalaga eno raven vseh petih panjev z nadomestnimi vozlišči. Ctrl+F išče imena ključev in vrednosti v že naloženem delu, namesto da bi prehodil cel register in čakal kot regedit. Register nima atomskega preimenovanja, zato preimenovanje ključa najprej kopira poddrevo pod novo ime in nato izbriše staro. Potrditev brisanja posebej opozori na odstranitev celotnega poddrevesa.",
   "t_themes_p": "14 tem, 49 videzov: Temna, Svetla, Črna, 98SE in Trash Polka imajo po 8 poudarjenih barv. Drugih 9 ima stalne palete. Preklapljate lahko sproti brez ponovnega zagona.",
-  "t_themes_p3": "Vmesnik je preveden v dvajset jezikov, med katerimi sproti preklapljate v meniju globusa. Nizi, ki še niso prevedeni, se prikažejo v angleščini.",
+  "t_themes_p3": "Vmesnik je preveden v dvaindvajset jezikov, med katerimi sproti preklapljate v meniju globusa. Nizi, ki še niso prevedeni, se prikažejo v angleščini.",
   "t_themes_p2": "Prilagaja se tudi velikost celotnega programa. Kolešček nad logotipom naslovne vrstice spremeni postavitev vsebine za približno 2 % na korak med 70 % in 250 %. Nastavitev se shrani. Ker gre za prilagoditev postavitve, se besedilo ponovno prelomi in izriše v novi velikosti. Naslovna vrstica in noga ohranita velikost, zato logotip ostane pod kazalcem.",
   "t_gloss_h": "Slovar izrazov",
   "t_gloss_p": "Preproste razlage izrazov na tej strani, urejene po abecednem vrstnem redu izvirnika.",
@@ -540,7 +540,7 @@ window.I18N = {
   "f_reg_t": "Urejevalnik registra",
   "f_evt_t": "Pregledovalnik dogodkov",
   "f_themes_t": "Teme in poudarki",
-  "f_lang_t": "Dvajset jezikov",
+  "f_lang_t": "Dvaindvajset jezikov",
   "sb_empty": "Posnetki zaslona<br>kmalu na voljo",
   "footer_src": "Izvorna koda na GitHubu",
   "h_hero_kicker": "Pomoč",
@@ -7087,111 +7087,111 @@ I18N.pt = {
 
 /* Language count update: twenty locales. */
 if (I18N["vi"]) Object.assign(I18N["vi"], {
- "f_lang_t": "Hai mươi ngôn ngữ",
- "f_lang_d": "Giao diện được bản địa hóa sang hai mươi ngôn ngữ (tiếng Anh, tiếng Slovenia, tiếng Tây Ban Nha, tiếng Đức, tiếng Pháp, tiếng Hungary, tiếng Ý, tiếng Thổ Nhĩ Kỳ, tiếng Việt, tiếng Ba Lan, tiếng Séc, tiếng Nhật, tiếng Trung Phồn thể và Giản thể, tiếng Bengal, tiếng Nga, tiếng Kazakh, tiếng Ukraina, tiếng Na Uy (Bokmål) và tiếng Bồ Đào Nha (Brazil)), có thể chuyển đổi theo thời gian thực từ thanh công cụ.",
- "h_look_p4": "Trình đơn ngôn ngữ là biểu tượng quả địa cầu trên thanh bên, nằm phía trên nút chủ đề. Có hai mươi ngôn ngữ và bạn có thể chuyển đổi trực tiếp: tiếng Anh, tiếng Slovenia, Tây Ban Nha, Đức, Pháp, Hungary, Ý, Thổ Nhĩ Kỳ, Việt, Ba Lan, Séc, Nhật, Trung phồn thể và giản thể, Bengal, Nga, Kazakh, Ukraina, Na Uy (Bokmål) và Bồ Đào Nha (Brazil).",
+ "f_lang_t": "Hai mươi hai ngôn ngữ",
+ "f_lang_d": "Giao diện được bản địa hóa sang hai mươi hai ngôn ngữ (tiếng Anh, tiếng Slovenia, tiếng Tây Ban Nha, tiếng Đức, tiếng Pháp, tiếng Hungary, tiếng Ý, tiếng Thổ Nhĩ Kỳ, tiếng Việt, tiếng Ba Lan, tiếng Séc, tiếng Nhật, tiếng Trung Phồn thể và Giản thể, tiếng Bengal, tiếng Nga, tiếng Kazakh, tiếng Hàn, tiếng Ukraina, tiếng Na Uy (Bokmål), tiếng Thụy Điển và tiếng Bồ Đào Nha (Brazil)), có thể chuyển đổi theo thời gian thực từ thanh công cụ.",
+ "h_look_p4": "Trình đơn ngôn ngữ là biểu tượng quả địa cầu trên thanh bên, nằm phía trên nút chủ đề. Có hai mươi hai ngôn ngữ và bạn có thể chuyển đổi trực tiếp: tiếng Anh, tiếng Slovenia, Tây Ban Nha, Đức, Pháp, Hungary, Ý, Thổ Nhĩ Kỳ, Việt, Ba Lan, Séc, Nhật, Trung phồn thể và giản thể, Bengal, Nga, Kazakh, Hàn, Ukraina, Na Uy (Bokmål), Thụy Điển và Bồ Đào Nha (Brazil).",
  "t_themes_p": "KillerShell đi kèm mười bốn chủ đề: Dark, Light, Black, 98SE, Trash Polka, Blood, Greed, Cyanotic, Ectoplasm, Decay, Malaise, Sepulchre, Delirium và Mourning. Năm chủ đề Dark, Light, Black, 98SE và Trash Polka đều có sáu màu nhấn bổ sung cho bảng màu. Chín chủ đề còn lại có bảng màu riêng. Tất cả đều chuyển đổi trực tiếp từ thanh bên mà không cần khởi động lại. Giao diện được bản địa hóa sang hai mươi ngôn ngữ: tiếng Anh, tiếng Slovenia, tiếng Tây Ban Nha, tiếng Đức, tiếng Pháp, tiếng Hungary, tiếng Ý, tiếng Thổ Nhĩ Kỳ, tiếng Việt, tiếng Ba Lan, tiếng Séc, tiếng Nhật, tiếng Trung Phồn thể và Giản thể, tiếng Bengal, tiếng Nga, tiếng Kazakh, tiếng Ukraina, tiếng Na Uy (Bokmål) và tiếng Bồ Đào Nha (Brazil). Mọi chuỗi hiển thị đều được phân giải thông qua tra cứu tài nguyên, nên khi chuyển ngôn ngữ, toàn bộ cửa sổ sẽ tự bố trí lại mà không cần khởi động lại."
 });
 if (I18N["hu"]) Object.assign(I18N["hu"], {
- "f_lang_t": "Húsz nyelv",
- "f_lang_d": "Az interfész húsz nyelvre lokalizált (angol, szlovén, spanyol, német, francia, magyar, olasz, török, vietnámi, lengyel, cseh, japán, hagyományos és egyszerűsített kínai, valamint bengáli, orosz, kazah, ukrán, norvég (bokmål) és brazil portugál), élőben váltható az eszköztárról.",
- "h_look_p4": "A nyelvi menü a sínen lévő földgömb, a téma gomb felett. Húsz nyelv, élőben váltva: angol, szlovén, spanyol, német, francia, magyar, olasz, török, vietnámi, lengyel, cseh, japán, kínai hagyományos és egyszerűsített nyelven, valamint bengáli, orosz, kazah, ukrán, norvég (bokmål) és brazil portugál.",
+ "f_lang_t": "Huszonkét nyelv",
+ "f_lang_d": "Az interfész huszonkét nyelvre lokalizált (angol, szlovén, spanyol, német, francia, magyar, olasz, török, vietnámi, lengyel, cseh, japán, hagyományos és egyszerűsített kínai, valamint bengáli, orosz, kazah, koreai, ukrán, norvég (bokmål), svéd és brazil portugál), élőben váltható az eszköztárról.",
+ "h_look_p4": "A nyelvi menü a sínen lévő földgömb, a téma gomb felett. Huszonkét nyelv, élőben váltva: angol, szlovén, spanyol, német, francia, magyar, olasz, török, vietnámi, lengyel, cseh, japán, kínai hagyományos és egyszerűsített nyelven, valamint bengáli, orosz, kazah, koreai, ukrán, norvég (bokmål), svéd és brazil portugál.",
  "t_themes_p": "A KillerShell tizennégy témát tartalmaz: sötét, világos, fekete, 98SE, Trash Polka, vér, kapzsiság, cianotikus, ektoplazma, romlás, rossz közérzet, sír, delírium és gyász. Öt közülük - Sötét, Világos, Fekete, 98SE és Trash Polka - mindegyik hat kiemelő színt hordoz a paletta tetején; a többi kilenc önálló paletta. Mindegyik élesben kapcsol a sínről, nincs mit újraindítani. A kezelőfelület húsz nyelvre lokalizálható: angol, szlovén, spanyol, német, francia, magyar, olasz, török, vietnámi, lengyel, cseh, japán, kínai hagyományos és egyszerűsített nyelven, valamint bengáli, orosz, kazah, ukrán, norvég (bokmål) és brazil portugál. Minden látható karakterláncot egy erőforrás-keresés old fel, így a nyelvváltás az egész ablakot újrakezdi, újraindítás nélkül."
 });
 if (I18N["pl"]) Object.assign(I18N["pl"], {
- "f_lang_t": "Dwadzieścia języków",
- "f_lang_d": "Interfejs jest przetłumaczony na dwadzieścia języków (angielski, słoweński, hiszpański, niemiecki, francuski, węgierski, włoski, turecki, wietnamski, polski, czeski, japoński, chiński tradycyjny i uproszczony, bengalski, rosyjski, kazachski, ukraiński, norweski (bokmål) oraz portugalski brazylijski), przełączanych na żywo z paska narzędzi.",
- "h_look_p4": "Menu języka to globus na pasku bocznym, nad przyciskiem motywu. Dwadzieścia języków przełączanych na żywo: angielski, słoweński, hiszpański, niemiecki, francuski, węgierski, włoski, turecki, wietnamski, polski, czeski, japoński, chiński tradycyjny i uproszczony, bengalski, rosyjski, kazachski, ukraiński, norweski (bokmål) oraz portugalski brazylijski.",
+ "f_lang_t": "Dwadzieścia dwa języki",
+ "f_lang_d": "Interfejs jest przetłumaczony na 22 języki (angielski, słoweński, hiszpański, niemiecki, francuski, węgierski, włoski, turecki, wietnamski, polski, czeski, japoński, chiński tradycyjny i uproszczony, bengalski, rosyjski, kazachski, koreański, ukraiński, norweski (bokmål), szwedzki oraz portugalski brazylijski), przełączanych na żywo z paska narzędzi.",
+ "h_look_p4": "Menu języka to globus na pasku bocznym, nad przyciskiem motywu. 22 języki przełączane na żywo: angielski, słoweński, hiszpański, niemiecki, francuski, węgierski, włoski, turecki, wietnamski, polski, czeski, japoński, chiński tradycyjny i uproszczony, bengalski, rosyjski, kazachski, koreański, ukraiński, norweski (bokmål), szwedzki oraz portugalski brazylijski.",
  "t_themes_p": "KillerShell zawiera czternaście motywów: Dark, Light, Black, 98SE, Trash Polka, Blood, Greed, Cyanotic, Ectoplasm, Decay, Malaise, Sepulchre, Delirium i Mourning. Pięć z nich - Dark, Light, Black, 98SE i Trash Polka - niesie dodatkowo po sześć kolorów akcentu; pozostałe dziewięć to palety same w sobie. Wszystko przełącza się na żywo z paska bocznego, bez restartowania czegokolwiek. Interfejs jest przetłumaczony na dwadzieścia języków: angielski, słoweński, hiszpański, niemiecki, francuski, węgierski, włoski, turecki, wietnamski, polski, czeski, japoński, chiński tradycyjny i uproszczony, bengalski, rosyjski, kazachski, ukraiński, norweski (bokmål) oraz portugalski brazylijski. Każdy widoczny tekst jest rozwiązywany przez wyszukanie zasobu, więc zmiana języka odświeża całe okno bez restartu."
 });
 if (I18N["es"]) Object.assign(I18N["es"], {
- "f_lang_t": "Veinte idiomas",
- "f_lang_d": "La interfaz está localizada en veinte idiomas (inglés, esloveno, español, alemán, francés, húngaro, italiano, turco, vietnamita, polaco, checo, japonés, chino tradicional y simplificado, bengalí, ruso, kazajo, ucraniano, noruego (bokmål) y portugués brasileño), cambiables en vivo desde la barra de herramientas.",
+ "f_lang_t": "Veintidós idiomas",
+ "f_lang_d": "La interfaz está localizada en veintidós idiomas (inglés, esloveno, español, alemán, francés, húngaro, italiano, turco, vietnamita, polaco, checo, japonés, chino tradicional y simplificado, bengalí, ruso, kazajo, coreano, ucraniano, noruego (bokmål), sueco y portugués brasileño), cambiables en vivo desde la barra de herramientas.",
  "h_look_p4": "El menu de idioma es el globo de la barra latéral, encima del botón de tema. Veinte idiomas, cambiables en vivo: inglés, esloveno, español, alemán, francés, húngaro, italiano, turco, vietnamita, polaco, checo, japonés, chino tradicional y simplificado, bengalí, ruso, kazajo, ucraniano, noruego (bokmål) y portugués brasileño.",
  "t_themes_p": "KillerShell incluye catorce temas: Dark, Light, Black, 98SE, Trash Polka, Blood, Greed, Cyanotic, Ectoplasm, Decay, Malaise, Sepulchre, Delirium y Mourning. Cinco de ellos - Dark, Light, Black, 98SE y Trash Polka - llevan además seis colorés de acento sobre la paletą; los otros nueve son una paletą por si mismos. Todo cambia en vivo desdé la barra latéral, sin nada que reiniciar. La interfaz está localizada en veinte idiomas: inglés, esloveno, español, alemán, francés, húngaro, italiano, turco, vietnamita, polaco, checo, japonés, chino tradicional y simplificado, bengalí, ruso, kazajo, ucraniano, noruego (bokmål) y portugués brasileño. Cada texto visible se resuelve mediante una búsqueda de recursos, asi que cambiar de idioma refresca toda la ventana sin reiniciar."
 });
 if (I18N["de"]) Object.assign(I18N["de"], {
- "f_lang_t": "Zwanzig Sprachen",
- "f_lang_d": "Die Oberfläche ist in zwanzig Sprachen lokalisiert (Englisch, Slowenisch, Spanisch, Deutsch, Französisch, Ungarisch, Italienisch, Türkisch, Vietnamesisch, Polnisch, Tschechisch, Japanisch, Chinesisch traditionell und vereinfacht, Bengalisch, Russisch, Kasachisch, Ukrainisch, Norwegisch (Bokmål) und Portugiesisch (Brasilien)), live umschaltbar aus der Symbolleiste.",
- "h_look_p4": "Das Sprachmenü ist der Globus in der Seitenleiste, über der Theme-Schaltfläche. Zwanzig Sprachen, live umschaltbar: Englisch, Slowenisch, Spanisch, Deutsch, Französisch, Ungarisch, Italienisch, Türkisch, Vietnamesisch, Polnisch, Tschechisch, Japanisch, Chinesisch traditionell und vereinfacht, Bengalisch, Russisch, Kasachisch, Ukrainisch, Norwegisch (Bokmål) und Portugiesisch (Brasilien).",
+ "f_lang_t": "Zweiundzwanzig Sprachen",
+ "f_lang_d": "Die Oberfläche ist in zweiundzwanzig Sprachen lokalisiert (Englisch, Slowenisch, Spanisch, Deutsch, Französisch, Ungarisch, Italienisch, Türkisch, Vietnamesisch, Polnisch, Tschechisch, Japanisch, Chinesisch traditionell und vereinfacht, Bengalisch, Russisch, Kasachisch, Koreanisch, Ukrainisch, Norwegisch (Bokmål), Schwedisch und Portugiesisch (Brasilien)), live umschaltbar aus der Symbolleiste.",
+ "h_look_p4": "Das Sprachmenü ist der Globus in der Seitenleiste, über der Theme-Schaltfläche. Zweiundzwanzig Sprachen, live umschaltbar: Englisch, Slowenisch, Spanisch, Deutsch, Französisch, Ungarisch, Italienisch, Türkisch, Vietnamesisch, Polnisch, Tschechisch, Japanisch, Chinesisch traditionell und vereinfacht, Bengalisch, Russisch, Kasachisch, Koreanisch, Ukrainisch, Norwegisch (Bokmål), Schwedisch und Portugiesisch (Brasilien).",
  "t_themes_p": "KillerShell bringt vierzehn Themes mit: Dark, Light, Black, 98SE, Trash Polka, Blood, Greed, Cyanotic, Ectoplasm, Decay, Malaise, Sepulchre, Delirium und Mourning. Fünf davon - Dark, Light, Black, 98SE und Trash Polka - tragen zusätzlich je sechs Akzentfarben über der Palette; die anderen neun sind eine Palette für sich. Alles schaltet live aus der Seitenleiste um, ohne dass irgendetwas neu gestartet werden muss. Die Oberfläche ist in zwanzig Sprachen lokalisiert: Englisch, Slowenisch, Spanisch, Deutsch, Französisch, Ungarisch, Italienisch, Türkisch, Vietnamesisch, Polnisch, Tschechisch, Japanisch, Chinesisch traditionell und vereinfacht, Bengalisch, Russisch, Kasachisch, Ukrainisch, Norwegisch (Bokmål) und Portugiesisch (Brasilien). Jeder sichtbare Text läuft über eine Ressourcen-Auflösung, sodass ein Sprachwechsel das ganze Fenster ohne Neustart neu aufbaut."
 });
 if (I18N["fr"]) Object.assign(I18N["fr"], {
- "f_lang_t": "Vingt langues",
- "f_lang_d": "L'interface est localisée en vingt langues (anglais, slovène, espagnol, allemand, français, hongrois, italien, turc, vietnamien, polonais, tchèque, japonais, chinois traditionnel et simplifié, bengali, russe, kazakh, ukrainien, norvégien (bokmål) et portugais brésilien), commutables en direct depuis la barre d'outils.",
+ "f_lang_t": "Vingt-deux langues",
+ "f_lang_d": "L'interface est localisée en vingt-deux langues (anglais, slovène, espagnol, allemand, français, hongrois, italien, turc, vietnamien, polonais, tchèque, japonais, chinois traditionnel et simplifié, bengali, russe, kazakh, coréen, ukrainien, norvégien (bokmål), suédois et portugais brésilien), commutables en direct depuis la barre d'outils.",
  "h_look_p4": "Le menu de langué est le globe de la barré latérale, au-dessus du bouton de thème. Vingt langues, commutables en direct : anglais, slovène, espagnol, allemand, français, hongrois, italien, turc, vietnamien, polonais, tchèque, japonais, chinois traditionnel et simplifié, bengali, russe, kazakh, ukrainien, norvégien (bokmål) et portugais brésilien.",
  "t_themes_p": "KillerShell embarque quatorze thèmes : Dark, Light, Black, 98SE, Trash Polka, Blood, Greed, Cyanotic, Ectoplasm, Decay, Malaisé, Sepulchre, Delirium et Mourning. Cinq d'entre eux - Dark, Light, Black, 98SE et Trash Polka - portent en plus six couleurs d'accent au-dessus de la palette ; les neuf autres sont une palette a eux seuls. Tout se commute en direct depuis la barré latérale, sans rien redémarrer. L'interface est localisée en vingt langues : anglais, slovène, espagnol, allemand, français, hongrois, italien, turc, vietnamien, polonais, tchèque, japonais, chinois traditionnel et simplifié, bengali, russe, kazakh, ukrainien, norvégien (bokmål) et portugais brésilien. Chaque texte visible passé par une résolution de ressources, donc changer de langué reconstruit toute la fenêtre sans redémarrage."
 });
 if (I18N["tr"]) Object.assign(I18N["tr"], {
- "f_lang_t": "Yirmi dil",
+ "f_lang_t": "Yirmi iki dil",
  "f_lang_d": "Arayuz yirmi dilde yerellestirildi (Ingilizce, Ispanyolca, Almanca, Fransizca, Macarca, İtalyanca, Türkçe, Vietnamca, Lehçe, Cekce, Japonca, Geleneksel ve Basitlestirilmis Çince, Bengalce, Rusça, Kazakça, Ukraynaca, Norveççe (Bokmål) ve Brezilya Portekizcesi) ve araç çubuğundan canli değiştirilebilir.",
  "h_look_p4": "Dil menüsü yan seritte, tema dugmesinin ustundeki kure dugmesidir. Canli degistirilen yirmi dil: Ingilizce, Ispanyolca, Almanca, Fransizca, Macarca, İtalyanca, Türkçe, Vietnamca, Lehçe, Cekce, Japonca, Geleneksel ve Basitlestirilmis haliyle Çince, Bengalce, Rusça, Kazakça, Ukraynaca, Norveççe (Bokmål) ve Brezilya Portekizcesi.",
  "t_themes_p": "KillerShell on dört temayla gelir: Dark, Light, Black, 98SE, Trash Polka, Blood, Greed, Cyanotic, Ectoplasm, Decay, Malaise, Sepulchre, Delirium ve Mourning. Bunlardan beşi - Dark, Light, Black, 98SE ve Trash Polka - paletin üstüne ayrica altisar vurgu rengi tasir; diğer dokuzu kendi basina birer palettir. Hepsi yan seritten canli değişir, hiçbir şeyi yeniden başlatmadan. Arayuz yirmi dilde yerellestirildi: Ingilizce, Ispanyolca, Almanca, Fransizca, Macarca, İtalyanca, Türkçe, Vietnamca, Lehçe, Cekce, Japonca, Geleneksel ve Basitlestirilmis haliyle Çince, Bengalce, Rusça, Kazakça, Ukraynaca, Norveççe (Bokmål) ve Brezilya Portekizcesi. Görünen her metin bir kaynak aramasindan geçer; dil değiştirmek tum pencereyi yeniden başlatmadan yeniler."
 });
 if (I18N["zh-cn"]) Object.assign(I18N["zh-cn"], {
- "f_lang_t": "二十种语言",
- "f_lang_d": "界面已本地化为二十种语言（英语、斯洛文尼亚语、西班牙语、德语、法语、匈牙利语、意大利语、土耳其语、越南语、波兰语、捷克语、日语、繁简中文、孟加拉语、俄语、哈萨克语、乌克兰语、挪威语（博克马尔语）和巴西葡萄牙语），可从工具栏实时切换。",
- "h_look_p4": "语言菜单是侧边栏上主题按钮上方的地球图标。二十种语言，实时切换：英语、斯洛文尼亚语、西班牙语、德语、法语、匈牙利语、意大利语、土耳其语、越南语、波兰语、捷克语、日语、繁体和简体中文、孟加拉语、俄语、哈萨克语、乌克兰语、挪威语（博克马尔语）和巴西葡萄牙语。",
+ "f_lang_t": "二十二种语言",
+ "f_lang_d": "界面已本地化为二十二种语言（英语、斯洛文尼亚语、西班牙语、德语、法语、匈牙利语、意大利语、土耳其语、越南语、波兰语、捷克语、日语、繁简中文、孟加拉语、俄语、哈萨克语、韩语、乌克兰语、挪威语（博克马尔语）、瑞典语和巴西葡萄牙语），可从工具栏实时切换。",
+ "h_look_p4": "语言菜单是侧边栏上主题按钮上方的地球图标。二十二种语言，实时切换：英语、斯洛文尼亚语、西班牙语、德语、法语、匈牙利语、意大利语、土耳其语、越南语、波兰语、捷克语、日语、繁体和简体中文、孟加拉语、俄语、哈萨克语、韩语、乌克兰语、挪威语（博克马尔语）、瑞典语和巴西葡萄牙语。",
  "t_themes_p": "KillerShell 自带十四套主题：Dark、Light、Black、98SE、Trash Polka、Blood、Greed、Cyanotic、Ectoplasm、Decay、Malaise、Sepulchre、Delirium 和 Mourning。其中五套（Dark、Light、Black、98SE 和 Trash Polka）在配色之上各自另带六种强调色；其余九套本身就是一套配色。全部可从侧栏实时切换，无需重启任何东西。界面已本地化为二十种语言：英语、斯洛文尼亚语、西班牙语、德语、法语、匈牙利语、意大利语、土耳其语、越南语、波兰语、捷克语、日语、繁体和简体中文、孟加拉语、俄语、哈萨克语、乌克兰语、挪威语（博克马尔语）和巴西葡萄牙语。每条可见文本都经由资源查找解析，切换语言即可整窗刷新，无需重启。"
 });
 if (I18N["zh"]) Object.assign(I18N["zh"], {
- "f_lang_t": "二十種語言",
- "f_lang_d": "介面已在地化為二十種語言（英語、スロベニア語、西班牙語、德語、法語、匈牙利語、義大利語、土耳其語、越南語、波蘭語、捷克語、日語、繁簡中文、孟加拉語、俄語、哈薩克語、烏克蘭語、挪威語（博克馬爾語）與巴西葡萄牙語），可從工具列即時切換。",
- "h_look_p4": "語言選單是側邊欄上主題按鈕上方的地球圖示。二十種語言，即時切換：英語、斯洛維尼亞語、西班牙語、德語、法語、匈牙利語、義大利語、土耳其語、越南語、波蘭語、捷克語、日語、繁體與簡體中文、孟加拉語、俄語、哈薩克語、烏克蘭語、挪威語（博克馬爾語）與巴西葡萄牙語。",
+ "f_lang_t": "二十二種語言",
+ "f_lang_d": "介面已在地化為二十二種語言（英語、斯洛維尼亞語、西班牙語、德語、法語、匈牙利語、義大利語、土耳其語、越南語、波蘭語、捷克語、日語、繁簡中文、孟加拉語、俄語、哈薩克語、韓語、烏克蘭語、挪威語（博克馬爾語）、瑞典語與巴西葡萄牙語），可從工具列即時切換。",
+ "h_look_p4": "語言選單是側邊欄上主題按鈕上方的地球圖示。二十二種語言，即時切換：英語、斯洛維尼亞語、西班牙語、德語、法語、匈牙利語、義大利語、土耳其語、越南語、波蘭語、捷克語、日語、繁體與簡體中文、孟加拉語、俄語、哈薩克語、韓語、烏克蘭語、挪威語（博克馬爾語）、瑞典語與巴西葡萄牙語。",
  "t_themes_p": "KillerShell 內建十四套主題：Dark、Light、Black、98SE、Trash Polka、Blood、Greed、Cyanotic、Ectoplasm、Decay、Malaise、Sepulchre、Delirium 與 Mourning。其中五套（Dark、Light、Black、98SE 與 Trash Polka）在配色之上各自另帶六種強調色；其餘九套本身就是一套配色。全部可從側欄即時切換，無須重新啟動任何東西。介面已在地化為二十種語言：英語、斯洛維尼亞語、西班牙語、德語、法語、匈牙利語、義大利語、土耳其語、越南語、波蘭語、捷克語、日語、繁體與簡體中文、孟加拉語、俄語、哈薩克語、烏克蘭語、挪威語（博克馬爾語）與巴西葡萄牙語。每條可見文字都經由資源查找解析，切換語言即可整窗重排，無須重新啟動。"
 });
 if (I18N["cs"]) Object.assign(I18N["cs"], {
- "f_lang_t": "Dvacet jazyků",
- "f_lang_d": "Rozhraní je lokalizováno do dvaceti jazyků (angličtina, slovinština, španělština, němčina, francouzština, maďarština, italština, turečtina, vietnamština, polština, čeština, japonština, tradiční a zjednodušená čínština, bengálština, ruština, kazaština, ukrajinština, norština (bokmål) a brazilská portugalština) a přepíná se za běhu z panelu nástrojů.",
- "h_look_p4": "Nabídka jazyků je glóbus v postranním pruhu, nad tlačítkem motivu. Dvacet jazyků, přepínaných za běhu: angličtina, slovinština, španělština, němčina, francouzština, maďarština, italština, turečtina, vietnamština, polština, čeština, japonština, čínština tradiční i zjednodušená, bengálština, ruština, kazaština, ukrajinština, norština (bokmål) a brazilská portugalština.",
+ "f_lang_t": "Dvaadvacet jazyků",
+ "f_lang_d": "Rozhraní je lokalizováno do dvaadvaceti jazyků (angličtina, slovinština, španělština, němčina, francouzština, maďarština, italština, turečtina, vietnamština, polština, čeština, japonština, tradiční a zjednodušená čínština, bengálština, ruština, kazaština, korejština, ukrajinština, norština (bokmål), švédština a brazilská portugalština) a přepíná se za běhu z panelu nástrojů.",
+ "h_look_p4": "Nabídka jazyků je glóbus v postranním pruhu, nad tlačítkem motivu. Dvaadvacet jazyků, přepínaných za běhu: angličtina, slovinština, španělština, němčina, francouzština, maďarština, italština, turečtina, vietnamština, polština, čeština, japonština, čínština tradiční i zjednodušená, bengálština, ruština, kazaština, korejština, ukrajinština, norština (bokmål), švédština a brazilská portugalština.",
  "t_themes_p": "KillerShell se dodává se čtrnácti motivy: Dark, Light, Black, 98SE, Trash Polka, Blood, Greed, Cyanotic, Ectoplasm, Decay, Malaise, Sepulchre, Delirium a Mourning. Pět z nich - Dark, Light, Black, 98SE a Trash Polka - nese navíc nad paletou po šesti akcentových barvách; zbylých devět je paletou samo o sobě. Vše se přepíná za běhu z bočního pruhu, bez restartu čehokoli. Rozhraní je lokalizováno do dvaceti jazyků: angličtina, slovinština, španělština, němčina, francouzština, maďarština, italština, turečtina, vietnamština, polština, čeština, japonština, čínština tradiční i zjednodušená, bengálština, ruština, kazaština, ukrajinština, norština (bokmål) a brazilská portugalština. Každý viditelný text se řeší přes vyhledání zdroje, takže přepnutí jazyka přeskládá celé okno bez restartu."
 });
 if (I18N["ja"]) Object.assign(I18N["ja"], {
- "f_lang_t": "20 言語",
- "f_lang_d": "インターフェイスは 20 言語 (英語、スロベニア語、スペイン語、ドイツ語、フランス語、ハンガリー語、イタリア語、トルコ語、ベトナム語、ポーランド語、チェコ語、日本語、繁体字と簡体字の中国語、ベンガル語、ロシア語、カザフ語、ウクライナ語、ノルウェー語 (ブークモール)、ブラジルのポルトガル語) にローカライズされ、ツールバーからライブで切り替えられます。",
- "h_look_p4": "言語メニューはサイド バーの、テーマ ボタンの上にある地球儀です。20 言語をライブで切り替えられます。英語、スロベニア語、スペイン語、ドイツ語、フランス語、ハンガリー語、イタリア語、トルコ語、ベトナム語、ポーランド語、チェコ語、日本語、繁体字と簡体字の中国語、ベンガル語、ロシア語、カザフ語、ウクライナ語、ノルウェー語 (ブークモール)、ブラジルのポルトガル語です。",
+ "f_lang_t": "22 言語",
+ "f_lang_d": "インターフェイスは 22 言語 (英語、スロベニア語、スペイン語、ドイツ語、フランス語、ハンガリー語、イタリア語、トルコ語、ベトナム語、ポーランド語、チェコ語、日本語、繁体字と簡体字の中国語、ベンガル語、ロシア語、カザフ語、韓国語、ウクライナ語、ノルウェー語 (ブークモール)、スウェーデン語、ブラジルのポルトガル語) にローカライズされ、ツールバーからライブで切り替えられます。",
+ "h_look_p4": "言語メニューはサイド バーの、テーマ ボタンの上にある地球儀です。22 言語をライブで切り替えられます。英語、スロベニア語、スペイン語、ドイツ語、フランス語、ハンガリー語、イタリア語、トルコ語、ベトナム語、ポーランド語、チェコ語、日本語、繁体字と簡体字の中国語、ベンガル語、ロシア語、カザフ語、韓国語、ウクライナ語、ノルウェー語 (ブークモール)、スウェーデン語、ブラジルのポルトガル語です。",
  "t_themes_p": "KillerShell は 14 種のテーマ (Dark、Light、Black、98SE、Trash Polka、Blood、Greed、Cyanotic、Ectoplasm、Decay、Malaise、Sepulchre、Delirium、Mourning) を同梱しています。うち 5 種 (Dark、Light、Black、98SE、Trash Polka) はパレットに加えてそれぞれ 6 色のアクセントカラーを備え、残る 9 種はそれ自体が一つのパレットです。すべてサイド レールからライブで切り替えられ、何も再起動しません。インターフェイスは 20 言語にローカライズされています。英語、スロベニア語、スペイン語、ドイツ語、フランス語、ハンガリー語、イタリア語、トルコ語、ベトナム語、ポーランド語、チェコ語、日本語、繁体字と簡体字の中国語、ベンガル語、ロシア語、カザフ語、ウクライナ語、ノルウェー語 (ブークモール)、ブラジルのポルトガル語です。見えるすべての文字列はリソース参照で解決されるので、言語の切り替えは再起動なしでウィンドウ全体を組み直します。"
 });
 if (I18N["bn"]) Object.assign(I18N["bn"], {
- "f_lang_t": "বিশটি ভাষা",
- "f_lang_d": "ইন্টারফেস বিশটি ভাষায় স্থানীয়কৃত (ইংরেজি, স্লোভেনীয়, স্প্যানিশ, জার্মান, ফরাসি, হাঙ্গেরীয়, ইতালীয়, তুর্কি, ভিয়েতনামি, পোলিশ, চেক, জাপানি, সনাতন ও সরলীকৃত চীনা, বাংলা, রুশ, কাজাখ, ইউক্রেনীয়, নরওয়েজীয় (বোকমাল) এবং ব্রাজিলীয় পর্তুগিজ), টুলবার থেকে লাইভ বদলানো যায়।",
- "h_look_p4": "ভাষার মেনু হলো সাইডবারে থিম বোতামের ওপরের গ্লোবটি। বিশটি ভাষা, লাইভ বদলানো যায়: ইংরেজি, স্লোভেনীয়, স্প্যানিশ, জার্মান, ফরাসি, হাঙ্গেরীয়, ইতালীয়, তুর্কি, ভিয়েতনামি, পোলিশ, চেক, জাপানি, সনাতন ও সরলীকৃত দুই রূপেই চীনা, বাংলা, রুশ, কাজাখ, ইউক্রেনীয়, নরওয়েজীয় (বোকমাল) আর ব্রাজিলীয় পর্তুগিজ।",
+ "f_lang_t": "বাইশটি ভাষা",
+ "f_lang_d": "ইন্টারফেস বাইশটি ভাষায় স্থানীয়কৃত (ইংরেজি, স্লোভেনীয়, স্প্যানিশ, জার্মান, ফরাসি, হাঙ্গেরীয়, ইতালীয়, তুর্কি, ভিয়েতনামি, পোলিশ, চেক, জাপানি, সনাতন ও সরলীকৃত চীনা, বাংলা, রুশ, কাজাখ, কোরিয়ান, ইউক্রেনীয়, নরওয়েজীয় (বোকমাল), সুইডিশ এবং ব্রাজিলীয় পর্তুগিজ), টুলবার থেকে লাইভ বদলানো যায়।",
+ "h_look_p4": "ভাষার মেনু হলো সাইডবারে থিম বোতামের ওপরের গ্লোবটি। বাইশটি ভাষা, লাইভ বদলানো যায়: ইংরেজি, স্লোভেনীয়, স্প্যানিশ, জার্মান, ফরাসি, হাঙ্গেরীয়, ইতালীয়, তুর্কি, ভিয়েতনামি, পোলিশ, চেক, জাপানি, সনাতন ও সরলীকৃত দুই রূপেই চীনা, বাংলা, রুশ, কাজাখ, কোরিয়ান, ইউক্রেনীয়, নরওয়েজীয় (বোকমাল), সুইডিশ আর ব্রাজিলীয় পর্তুগিজ।",
  "t_themes_p": "KillerShell আসে চোদ্দটি থিমসহ: Dark, Light, Black, 98SE, Trash Polka, Blood, Greed, Cyanotic, Ectoplasm, Decay, Malaise, Sepulchre, Delirium ও Mourning। এর মধ্যে পাঁচটি - Dark, Light, Black, 98SE ও Trash Polka - প্যালেটের ওপরে বাড়তি ছয়টি করে অ্যাকসেন্ট রং বহন করে; বাকি নয়টি নিজেরাই এক-একটি প্যালেট। সবই পাশের রেল থেকে লাইভ বদলানো যায়, কিছুই রিস্টার্ট করতে হয় না। ইন্টারফেস বিশটি ভাষায় স্থানীয়কৃত: ইংরেজি, স্লোভেনীয়, স্প্যানিশ, জার্মান, ফরাসি, হাঙ্গেরীয়, ইতালীয়, তুর্কি, ভিয়েতনামি, পোলিশ, চেক, জাপানি, সনাতন ও সরলীকৃত দুই রূপেই চীনা, বাংলা, রুশ, কাজাখ, ইউক্রেনীয়, নরওয়েজীয় (বোকমাল) এবং ব্রাজিলীয় পর্তুগিজ। প্রতিটি দৃশ্যমান লেখা রিসোর্স লুকআপের মধ্য দিয়ে আসে, তাই ভাষা বদলালে পুরো উইন্ডো রিস্টার্ট ছাড়াই নতুন করে সাজে।"
 });
 if (I18N["it"]) Object.assign(I18N["it"], {
- "f_lang_t": "Venti lingue",
- "f_lang_d": "L'interfaccia è localizzata in venti lingue (inglese, sloveno, spagnolo, tedesco, francese, ungherese, italiano, turco, vietnamita, polacco, ceco, giapponese, cinese tradizionale e semplificato, bengalese, russo, kazako, ucraino, norvegese (bokmål) e portoghese brasiliano), commutabili dal vivo dalla barra degli strumenti.",
- "h_look_p4": "Il menu delle lingue è il globo sulla barra laterale, sopra il pulsante del tema. Venti lingue, cambiate dal vivo: inglese, sloveno, spagnolo, tedesco, francese, ungherese, italiano, turco, vietnamita, polacco, ceco, giapponese, cinese sia tradizionale sia semplificato, bengalese, russo, kazako, ucraino, norvegese (bokmål) e portoghese brasiliano.",
+ "f_lang_t": "Ventidue lingue",
+ "f_lang_d": "L'interfaccia è localizzata in ventidue lingue (inglese, sloveno, spagnolo, tedesco, francese, ungherese, italiano, turco, vietnamita, polacco, ceco, giapponese, cinese tradizionale e semplificato, bengalese, russo, kazako, coreano, ucraino, norvegese (bokmål), svedese e portoghese brasiliano), commutabili dal vivo dalla barra degli strumenti.",
+ "h_look_p4": "Il menu delle lingue è il globo sulla barra laterale, sopra il pulsante del tema. Ventidue lingue, cambiate dal vivo: inglese, sloveno, spagnolo, tedesco, francese, ungherese, italiano, turco, vietnamita, polacco, ceco, giapponese, cinese sia tradizionale sia semplificato, bengalese, russo, kazako, coreano, ucraino, norvegese (bokmål), svedese e portoghese brasiliano.",
  "t_themes_p": "KillerShell viene fornito con quattordici temi: Dark, Light, Black, 98SE, Trash Polka, Blood, Greed, Cyanotic, Ectoplasm, Decay, Malaise, Sepulchre, Delirium e Mourning. Cinque di essi - Dark, Light, Black, 98SE e Trash Polka - portano ciascuno sei colori di accento sopra la tavolozza; gli altri nove sono una tavolozza a sé. Tutto si commuta dal vivo dalla barra laterale, senza niente da riavviare. L'interfaccia è localizzata in venti lingue: inglese, sloveno, spagnolo, tedesco, francese, ungherese, italiano, turco, vietnamita, polacco, ceco, giapponese, cinese sia tradizionale sia semplificato, bengalese, russo, kazako, ucraino, norvegese (bokmål) e portoghese brasiliano. Ogni stringa visibile è risolta attraverso una ricerca di risorse, quindi cambiare lingua ricompone l'intera finestra senza riavvio."
 });
 if (I18N["ru"]) Object.assign(I18N["ru"], {
- "f_lang_t": "Двадцать языков",
- "f_lang_d": "Интерфейс переведён на двадцать языков (английский, словенский, испанский, немецкий, французский, венгерский, итальянский, турецкий, вьетнамский, польский, чешский, японский, китайский традиционный и упрощённый, бенгальский, русский, казахский, украинский, норвежский (букмол) и португальский (Бразилия)) и переключается на лету с панели инструментов.",
- "h_look_p4": "Меню языка - это глобус на полосе, над кнопкой темы. Двадцать языков, переключаемых на лету: английский, словенский, испанский, немецкий, французский, венгерский, итальянский, турецкий, вьетнамский, польский, чешский, японский, китайский в традиционном и упрощённом вариантах, бенгальский, русский, казахский, украинский, норвежский (букмол) и португальский (Бразилия).",
+ "f_lang_t": "Двадцать два языка",
+ "f_lang_d": "Интерфейс переведён на двадцать два языка (английский, словенский, испанский, немецкий, французский, венгерский, итальянский, турецкий, вьетнамский, польский, чешский, японский, китайский традиционный и упрощённый, бенгальский, русский, казахский, корейский, украинский, норвежский (букмол), шведский и португальский (Бразилия)) и переключается на лету с панели инструментов.",
+ "h_look_p4": "Меню языка - это глобус на полосе, над кнопкой темы. Двадцать два языка, переключаемых на лету: английский, словенский, испанский, немецкий, французский, венгерский, итальянский, турецкий, вьетнамский, польский, чешский, японский, китайский в традиционном и упрощённом вариантах, бенгальский, русский, казахский, корейский, украинский, норвежский (букмол), шведский и португальский (Бразилия).",
  "t_themes_p": "KillerShell поставляется с четырнадцатью темами: Тёмная, Светлая, Чёрная, 98SE, Trash Polka, Кровь, Алчность, Цианоз, Эктоплазма, Распад, Недомогание, Склеп, Бред и Траур. Пять из них - Тёмная, Светлая, Чёрная, 98SE и Trash Polka - несут поверх палитры по шесть акцентных цветов; остальные девять сами по себе являются палитрой. Всё это переключается на лету с полосы, и ничего не нужно перезапускать. Интерфейс переведён на двадцать языков: английский, словенский, испанский, немецкий, французский, венгерский, итальянский, турецкий, вьетнамский, польский, чешский, японский, китайский в традиционном и упрощённом вариантах, бенгальский, русский, казахский, украинский, норвежский (букмол) и португальский (Бразилия). Каждая видимая строка разрешается через поиск в ресурсах, поэтому переключение языка перекомпоновывает всё окно без перезапуска."
 });
 if (I18N["kk"]) Object.assign(I18N["kk"], {
- "f_lang_t": "Жиырма тіл",
- "f_lang_d": "Интерфейс жиырма тілге аударылған (ағылшын, словен, испан, неміс, француз, венгр, итальян, түрік, вьетнам, поляк, чех, жапон, дәстүрлі және жеңілдетілген қытай, бенгал, орыс, қазақ, украин, норвег (букмол) және португал (Бразилия)) және құралдар тақтасынан бірден ауысады.",
- "h_look_p4": "Тіл мәзірі - жолақтағы, тақырып батырмасының үстіндегі глобус. Жиырма тіл, бірден ауысады: ағылшын, словен, испан, неміс, француз, венгр, итальян, түрік, вьетнам, поляк, чех, жапон, дәстүрлі және жеңілдетілген қытай, бенгал, орыс, қазақ, украин, норвег (букмол) және португал (Бразилия).",
+ "f_lang_t": "Жиырма екі тіл",
+ "f_lang_d": "Интерфейс жиырма екі тілге аударылған (ағылшын, словен, испан, неміс, француз, венгр, итальян, түрік, вьетнам, поляк, чех, жапон, дәстүрлі және жеңілдетілген қытай, бенгал, орыс, қазақ, корей, украин, норвег (букмол), швед және португал (Бразилия)) және құралдар тақтасынан бірден ауысады.",
+ "h_look_p4": "Тіл мәзірі - жолақтағы, тақырып батырмасының үстіндегі глобус. Жиырма екі тіл, бірден ауысады: ағылшын, словен, испан, неміс, француз, венгр, итальян, түрік, вьетнам, поляк, чех, жапон, дәстүрлі және жеңілдетілген қытай, бенгал, орыс, қазақ, корей, украин, норвег (букмол), швед және португал (Бразилия).",
  "t_themes_p": "KillerShell он төрт тақырыппен келеді: Қараңғы, Ашық, Қара, 98SE, Trash Polka, Қан, Ашкөздік, Цианоз, Эктоплазма, Ыдырау, Науқастық, Кесене, Сандырақ және Аза. Олардың бесеуі - Қараңғы, Ашық, Қара, 98SE және Trash Polka - палитраның үстіне алты акцент түсін алып жүреді; қалған тоғызы өз алдына палитра. Мұның бәрі жолақтан бірден ауысады, әрі қайта іске қосатын ештеңе жоқ. Интерфейс жиырма тілге аударылған: ағылшын, словен, испан, неміс, француз, венгр, итальян, түрік, вьетнам, поляк, чех, жапон, дәстүрлі және жеңілдетілген қытай, бенгал, орыс, қазақ, украин, норвег (букмол) және португал (Бразилия). Әрбір көрінетін жол ресурстан ізделу арқылы шешіледі, сондықтан тілді ауыстыру бүкіл терезені қайта іске қосусыз қайта құрастырады."
 });
 if (I18N["uk"]) Object.assign(I18N["uk"], {
- "f_lang_t": "Двадцять мов",
- "f_lang_d": "Інтерфейс локалізовано двадцятьма мовами (англійська, словенська, іспанська, німецька, французька, угорська, італійська, турецька, в'єтнамська, польська, чеська, японська, китайська традиційна та спрощена, бенгальська, російська, казахська, українська, норвезька (букмол) та бразильська португальська), перемикання наживо на панелі інструментів.",
- "h_look_p4": "Меню мов - це глобус на смузі, над кнопкою тем. Двадцять мов, перемикання наживо: англійська, словенська, іспанська, німецька, французька, угорська, італійська, турецька, в'єтнамська, польська, чеська, японська, китайська традиційна та спрощена, бенгальська, російська, казахська, українська, норвезька (букмол) та бразильська португальська.",
+ "f_lang_t": "Двадцять дві мови",
+ "f_lang_d": "Інтерфейс локалізовано двадцятьма двома мовами (англійська, словенська, іспанська, німецька, французька, угорська, італійська, турецька, в'єтнамська, польська, чеська, японська, китайська традиційна та спрощена, бенгальська, російська, казахська, корейська, українська, норвезька (букмол), шведська та бразильська португальська), перемикання наживо на панелі інструментів.",
+ "h_look_p4": "Меню мов - це глобус на смузі, над кнопкою тем. Двадцять дві мови, перемикання наживо: англійська, словенська, іспанська, німецька, французька, угорська, італійська, турецька, в'єтнамська, польська, чеська, японська, китайська традиційна та спрощена, бенгальська, російська, казахська, корейська, українська, норвезька (букмол), шведська та бразильська португальська.",
  "t_themes_p": "KillerShell постачається з чотирнадцятьма темами: Dark, Light, Black, 98SE, Trash Polka, Blood, Greed, Cyanotic, Ectoplasm, Decay, Malaise, Sepulchre, Delirium і Mourning. П'ять з них - Dark, Light, Black, 98SE і Trash Polka - мають по шість акцентних кольорів поверх палітри; решта дев'ять - самостійна палітра. Усе перемикається наживо з бічної смуги, без перезапуску. Інтерфейс локалізовано двадцятьма мовами: англійська, словенська, іспанська, німецька, французька, угорська, італійська, турецька, в'єтнамська, польська, чеська, японська, китайська традиційна та спрощена, бенгальська, російська, казахська, українська, норвезька (букмол) та бразильська португальська. Кожен видимий рядок розв'язується через пошук у ресурсах, тому перемикання мови перекомпоновує все вікно без перезапуску."
 });
 if (I18N["nb"]) Object.assign(I18N["nb"], {
- "f_lang_t": "Tjue språk",
- "f_lang_d": "Grensesnittet er lokalisert til tjue språk (engelsk, slovensk, spansk, tysk, fransk, ungarsk, italiensk, tyrkisk, vietnamesisk, polsk, tsjekkisk, japansk, tradisjonell og forenklet kinesisk, bengali, russisk, kasakhisk, ukrainsk, norsk bokmål og brasiliansk portugisisk), og kan byttes live fra verktøylinjen.",
- "h_look_p4": "Språkmenyen er globusen på sidelinjen, over temaknappen. Tjue språk, byttet live: engelsk, slovensk, spansk, tysk, fransk, ungarsk, italiensk, tyrkisk, vietnamesisk, polsk, tsjekkisk, japansk, kinesisk i både tradisjonell og forenklet form, bengali, russisk, kasakhisk, ukrainsk, norsk bokmål og brasiliansk portugisisk.",
+ "f_lang_t": "Tjueto språk",
+ "f_lang_d": "Grensesnittet er lokalisert til tjueto språk (engelsk, slovensk, spansk, tysk, fransk, ungarsk, italiensk, tyrkisk, vietnamesisk, polsk, tsjekkisk, japansk, tradisjonell og forenklet kinesisk, bengali, russisk, kasakhisk, koreansk, ukrainsk, norsk bokmål, svensk og brasiliansk portugisisk), og kan byttes live fra verktøylinjen.",
+ "h_look_p4": "Språkmenyen er globusen på sidelinjen, over temaknappen. Tjueto språk, byttet live: engelsk, slovensk, spansk, tysk, fransk, ungarsk, italiensk, tyrkisk, vietnamesisk, polsk, tsjekkisk, japansk, kinesisk i både tradisjonell og forenklet form, bengali, russisk, kasakhisk, koreansk, ukrainsk, norsk bokmål, svensk og brasiliansk portugisisk.",
  "t_themes_p": "KillerShell leveres med fjorten temaer: Dark, Light, Black, 98SE, Trash Polka, Blood, Greed, Cyanotic, Ectoplasm, Decay, Malaise, Sepulchre, Delirium og Mourning. Fem av dem - Dark, Light, Black, 98SE og Trash Polka - har i tillegg seks aksentfarger oppå paletten; de andre ni er en palett for seg. Alt byttes live fra sidelinjen, uten at noe må startes på nytt. Grensesnittet er lokalisert til tjue språk: engelsk, slovensk, spansk, tysk, fransk, ungarsk, italiensk, tyrkisk, vietnamesisk, polsk, tsjekkisk, japansk, tradisjonell og forenklet kinesisk, bengali, russisk, kasakhisk, ukrainsk, norsk bokmål og brasiliansk portugisisk. Hver synlige tekststreng løses opp gjennom et ressursoppslag, så et språkbytte bygger opp hele vinduet på nytt uten omstart."
 });
 if (I18N["pt"]) Object.assign(I18N["pt"], {
- "f_lang_t": "Vinte idiomas",
- "f_lang_d": "A interface está localizada em vinte idiomas (inglês, esloveno, espanhol, alemão, francês, húngaro, italiano, turco, vietnamita, polonês, tcheco, japonês, chinês tradicional e simplificado, bengali, russo, cazaque, ucraniano, norueguês bokmål e português do Brasil), com troca ao vivo pela barra de ferramentas.",
- "h_look_p4": "O menu de idioma é o globo na barra lateral, acima do botão de tema. Vinte idiomas, com troca ao vivo: inglês, esloveno, espanhol, alemão, francês, húngaro, italiano, turco, vietnamita, polonês, tcheco, japonês, chinês tanto tradicional quanto simplificado, bengali, russo, cazaque, ucraniano, norueguês bokmål e português do Brasil.",
+ "f_lang_t": "Vinte e dois idiomas",
+ "f_lang_d": "A interface está localizada em vinte e dois idiomas (inglês, esloveno, espanhol, alemão, francês, húngaro, italiano, turco, vietnamita, polonês, tcheco, japonês, chinês tradicional e simplificado, bengali, russo, cazaque, coreano, ucraniano, norueguês bokmål, sueco e português do Brasil), com troca ao vivo pela barra de ferramentas.",
+ "h_look_p4": "O menu de idioma é o globo na barra lateral, acima do botão de tema. Vinte e dois idiomas, com troca ao vivo: inglês, esloveno, espanhol, alemão, francês, húngaro, italiano, turco, vietnamita, polonês, tcheco, japonês, chinês tanto tradicional quanto simplificado, bengali, russo, cazaque, coreano, ucraniano, norueguês bokmål, sueco e português do Brasil.",
  "t_themes_p": "O KillerShell inclui catorze temas: Dark, Light, Black, 98SE, Trash Polka, Blood, Greed, Cyanotic, Ectoplasm, Decay, Malaise, Sepulchre, Delirium e Mourning. Cinco deles - Dark, Light, Black, 98SE e Trash Polka - trazem, além disso, seis cores de destaque sobre a paleta; os outros nove são uma paleta por si só. Tudo muda ao vivo pela barra lateral, sem nada para reiniciar. A interface está localizada em vinte idiomas: inglês, esloveno, espanhol, alemão, francês, húngaro, italiano, turco, vietnamita, polonês, tcheco, japonês, chinês tradicional e simplificado, bengali, russo, cazaque, ucraniano, norueguês bokmål e português do Brasil. Cada texto visível é resolvido por uma consulta de recursos, então trocar o idioma recompõe a janela inteira sem reinicialização."
 });
 // Terminal profiles, CLI and current theme descriptions.
@@ -8690,75 +8690,75 @@ Object.assign(I18N["bn"], {
 // CLI heading and the language count on the technical page.
 Object.assign(I18N["vi"], {
  "t_cli_h": "CLI",
- "t_themes_p3": "Giao diện được dịch sang hai mươi ngôn ngữ và chuyển đổi trực tiếp từ menu quả địa cầu. Chuỗi nào chưa được dịch sẽ hiển thị bằng tiếng Anh."
+ "t_themes_p3": "Giao diện được dịch sang hai mươi hai ngôn ngữ và chuyển đổi trực tiếp từ menu quả địa cầu. Chuỗi nào chưa được dịch sẽ hiển thị bằng tiếng Anh."
 });
 Object.assign(I18N["hu"], {
  "t_cli_h": "CLI",
- "t_themes_p3": "A felület húsz nyelvre van lefordítva, és a földgömb menüből élőben váltható. A még le nem fordított szövegek angolul jelennek meg."
+ "t_themes_p3": "A felület huszonkét nyelvre van lefordítva, és a földgömb menüből élőben váltható. A még le nem fordított szövegek angolul jelennek meg."
 });
 Object.assign(I18N["pl"], {
  "t_cli_h": "CLI",
- "t_themes_p3": "Interfejs jest przetłumaczony na dwadzieścia języków i przełącza się na żywo z menu globusa. Teksty, których tłumaczenie jeszcze nie obejmuje, wyświetlają się po angielsku."
+ "t_themes_p3": "Interfejs jest przetłumaczony na 22 języki i przełącza się na żywo z menu globusa. Teksty, których tłumaczenie jeszcze nie obejmuje, wyświetlają się po angielsku."
 });
 Object.assign(I18N["es"], {
  "t_cli_h": "CLI",
- "t_themes_p3": "La interfaz está traducida a veinte idiomas y cambia en vivo desde el menú del globo. Cualquier texto que una traducción aún no cubra se muestra en inglés."
+ "t_themes_p3": "La interfaz está traducida a veintidós idiomas y cambia en vivo desde el menú del globo. Cualquier texto que una traducción aún no cubra se muestra en inglés."
 });
 Object.assign(I18N["de"], {
  "t_cli_h": "CLI",
- "t_themes_p3": "Die Oberfläche ist in zwanzig Sprachen übersetzt und wechselt live über das Globus-Menü. Texte, die eine Übersetzung noch nicht abdeckt, erscheinen auf Englisch."
+ "t_themes_p3": "Die Oberfläche ist in zweiundzwanzig Sprachen übersetzt und wechselt live über das Globus-Menü. Texte, die eine Übersetzung noch nicht abdeckt, erscheinen auf Englisch."
 });
 Object.assign(I18N["fr"], {
  "t_cli_h": "CLI",
- "t_themes_p3": "L'interface est traduite en vingt langues et change en direct depuis le menu du globe. Tout texte qu'une traduction ne couvre pas encore s'affiche en anglais."
+ "t_themes_p3": "L'interface est traduite en vingt-deux langues et change en direct depuis le menu du globe. Tout texte qu'une traduction ne couvre pas encore s'affiche en anglais."
 });
 Object.assign(I18N["tr"], {
  "t_cli_h": "CLI",
- "t_themes_p3": "Arayüz yirmi dile çevrilmiştir ve küre menüsünden canlı olarak değiştirilir. Bir çevirinin henüz kapsamadığı metinler İngilizce görünür."
+ "t_themes_p3": "Arayüz yirmi iki dile çevrilmiştir ve küre menüsünden canlı olarak değiştirilir. Bir çevirinin henüz kapsamadığı metinler İngilizce görünür."
 });
 Object.assign(I18N["zh-cn"], {
  "t_cli_h": "CLI",
- "t_themes_p3": "界面已翻译为二十种语言，可从地球菜单实时切换。尚未翻译的文字以英语显示。"
+ "t_themes_p3": "界面已翻译为二十二种语言，可从地球菜单实时切换。尚未翻译的文字以英语显示。"
 });
 Object.assign(I18N["zh"], {
  "t_cli_h": "CLI",
- "t_themes_p3": "介面已翻譯為二十種語言，可從地球選單即時切換。尚未翻譯的文字以英文顯示。"
+ "t_themes_p3": "介面已翻譯為二十二種語言，可從地球選單即時切換。尚未翻譯的文字以英文顯示。"
 });
 Object.assign(I18N["cs"], {
  "t_cli_h": "CLI",
- "t_themes_p3": "Rozhraní je přeloženo do dvaceti jazyků a přepíná se za běhu z nabídky s glóbem. Texty, které překlad zatím nepokrývá, se zobrazí anglicky."
+ "t_themes_p3": "Rozhraní je přeloženo do dvaadvaceti jazyků a přepíná se za běhu z nabídky s glóbem. Texty, které překlad zatím nepokrývá, se zobrazí anglicky."
 });
 Object.assign(I18N["ja"], {
  "t_cli_h": "CLI",
- "t_themes_p3": "インターフェイスは 20 言語に翻訳されており、地球儀メニューからライブで切り替えられます。まだ翻訳されていない文字列は英語で表示されます。"
+ "t_themes_p3": "インターフェイスは 22 言語に翻訳されており、地球儀メニューからライブで切り替えられます。まだ翻訳されていない文字列は英語で表示されます。"
 });
 Object.assign(I18N["bn"], {
  "t_cli_h": "CLI",
- "t_themes_p3": "ইন্টারফেসটি বিশটি ভাষায় অনূদিত এবং গ্লোব মেনু থেকে লাইভ বদলানো যায়। যে লেখা এখনও অনূদিত হয়নি তা ইংরেজিতে দেখায়।"
+ "t_themes_p3": "ইন্টারফেসটি বাইশটি ভাষায় অনূদিত এবং গ্লোব মেনু থেকে লাইভ বদলানো যায়। যে লেখা এখনও অনূদিত হয়নি তা ইংরেজিতে দেখায়।"
 });
 Object.assign(I18N["it"], {
  "t_cli_h": "CLI",
- "t_themes_p3": "L'interfaccia è tradotta in venti lingue e si cambia dal vivo dal menu del globo. I testi non ancora coperti da una traduzione compaiono in inglese."
+ "t_themes_p3": "L'interfaccia è tradotta in ventidue lingue e si cambia dal vivo dal menu del globo. I testi non ancora coperti da una traduzione compaiono in inglese."
 });
 Object.assign(I18N["ru"], {
  "t_cli_h": "CLI",
- "t_themes_p3": "Интерфейс переведён на двадцать языков и переключается на лету из меню с глобусом. Строки, которые перевод ещё не охватывает, показываются на английском."
+ "t_themes_p3": "Интерфейс переведён на двадцать два языка и переключается на лету из меню с глобусом. Строки, которые перевод ещё не охватывает, показываются на английском."
 });
 Object.assign(I18N["kk"], {
  "t_cli_h": "CLI",
- "t_themes_p3": "Интерфейс жиырма тілге аударылған және глобус мәзірінен бірден ауысады. Әлі аударылмаған мәтіндер ағылшынша көрсетіледі."
+ "t_themes_p3": "Интерфейс жиырма екі тілге аударылған және глобус мәзірінен бірден ауысады. Әлі аударылмаған мәтіндер ағылшынша көрсетіледі."
 });
 Object.assign(I18N["uk"], {
  "t_cli_h": "CLI",
- "t_themes_p3": "Інтерфейс перекладено двадцятьма мовами, і він перемикається наживо з меню з глобусом. Рядки, яких переклад ще не охоплює, показуються англійською."
+ "t_themes_p3": "Інтерфейс перекладено двадцятьма двома мовами, і він перемикається наживо з меню з глобусом. Рядки, яких переклад ще не охоплює, показуються англійською."
 });
 Object.assign(I18N["nb"], {
  "t_cli_h": "CLI",
- "t_themes_p3": "Grensesnittet er oversatt til tjue språk og byttes live fra globusmenyen. Tekst som en oversettelse ennå ikke dekker, vises på engelsk."
+ "t_themes_p3": "Grensesnittet er oversatt til tjueto språk og byttes live fra globusmenyen. Tekst som en oversettelse ennå ikke dekker, vises på engelsk."
 });
 Object.assign(I18N["pt"], {
  "t_cli_h": "CLI",
- "t_themes_p3": "A interface está traduzida para vinte idiomas e muda ao vivo pelo menu do globo. Qualquer texto que uma tradução ainda não cubra aparece em inglês."
+ "t_themes_p3": "A interface está traduzida para vinte e dois idiomas e muda ao vivo pelo menu do globo. Qualquer texto que uma tradução ainda não cubra aparece em inglês."
 });
 Object.keys(I18N).forEach(function (locale) {
  I18N[locale].h_profiles_h += '<span class="chev">&#9656;</span>';
@@ -12278,7 +12278,7 @@ Object.assign(window.I18N["es"], {
   "h_ks_p": "Los atajos funcionan en cualquier parte de la ventana; los desplegables abiertos, el cuadro de fecha y el filtro de resultados se quedan con Enter para ellos. Esta es la referencia completa, agrupada exactamente igual que la tarjeta de la aplicación.",
   "h_look_p2": "El diálogo de fuentes tiene tres huecos: la aplicación, el terminal y el editor. Las listas del terminal y del editor están filtradas a fuentes de ancho fijo. Gira la rueda sobre una lista para recorrer las fuentes y cada una se aplica en cuanto llegas a ella, así la ves antes de decidirte.",
   "h_look_p3": "Gira la rueda sobre el logotipo de la barra de título para cambiar el tamaño de toda la aplicación, aproximadamente un 2% por paso entre el 70% y el 250%. Se recoloca en lugar de estirar un mapa de bits, así que el texto sigue nítido, y el ajuste se recuerda. El botón de densidad de la columna controla por separado lo juntas que se muestran las filas de resultados.",
-  "h_look_p4": "El menú de idioma es el globo de la columna, encima del botón de tema. Veinte idiomas, que cambian en vivo: inglés, esloveno, español, alemán, francés, húngaro, italiano, turco, vietnamita, polaco, checo, japonés, chino tradicional y simplificado, bengalí, ruso, kazajo, ucraniano, noruego (bokmål) y portugués de Brasil.",
+  "h_look_p4": "El menú de idioma es el globo de la columna, encima del botón de tema. Veintidós idiomas, que cambian en vivo: inglés, esloveno, español, alemán, francés, húngaro, italiano, turco, vietnamita, polaco, checo, japonés, chino tradicional y simplificado, bengalí, ruso, kazajo, coreano, ucraniano, noruego (bokmål), sueco y portugués de Brasil.",
   "h_win_p2": "Registrarse y convertirse en predeterminado son cosas distintas, y solo una le corresponde a KillerShell. Desde Windows 8 la clave que guarda tu aplicación predeterminada está protegida por un hash firmado, así que cualquier programa que diga convertirse en predeterminado o lo está falsificando o dejará de funcionar cuando Windows se dé cuenta. KillerShell se registra y después abre Configuración en su propia entrada para que elijas por tipo de archivo. No cambia nada hasta que tú lo hagas.",
   "h_win_p3": "<code>.bat</code>, <code>.cmd</code> y <code>.reg</code> reciben a propósito una fila \"Editar con KillerShell\" en lugar de quedarse con la acción de abrir. Su doble clic los ejecuta o los combina, y cambiar en silencio lo que eso significa es la forma de que alguien pierda una tarde. <code>.ps1</code> se trata como texto normal, porque Windows ya los abre en un editor con doble clic.",
   "h_win_p4": "Por usuario de forma predeterminada. Marca la casilla en una ventana elevada para registrarlo para todos los usuarios del equipo. Las dos vías de desinstalación lo vuelven a quitar, así que un registro nunca sobrevive al .exe al que apunta. Si lo ejecutas en modo portátil, la tarjeta lo indica, porque las asociaciones apuntarán a donde esté ese .exe en este momento.",
@@ -12390,7 +12390,7 @@ Object.assign(window.I18N["fr"], {
   "h_ks_p": "Les raccourcis fonctionnent partout dans la fenêtre ; les listes déroulantes ouvertes, la zone de date et le filtre de résultats gardent Entrée pour eux. Voici la référence complète, regroupée exactement comme la carte de l'application.",
   "h_look_p2": "La boîte de dialogue Polices a trois emplacements : l'application, le terminal et l'éditeur. Les listes du terminal et de l'éditeur sont filtrées sur les polices à chasse fixe. Faites tourner la molette sur une liste pour parcourir les polices : chacune s'applique dès que vous vous arrêtez dessus, pour que vous la voyiez avant de vous décider.",
   "h_look_p3": "Faites tourner la molette sur le logo de la barre de titre pour redimensionner toute l'application, environ 2 % par cran entre 70 % et 250 %. La mise en page se recompose au lieu d'étirer une image, le texte reste donc net, et le réglage est mémorisé. Le bouton de densité de la colonne règle séparément l'espacement des lignes de résultats.",
-  "h_look_p4": "Le menu de langue est le globe de la colonne, au-dessus du bouton de thème. Vingt langues, changées en direct : anglais, slovène, espagnol, allemand, français, hongrois, italien, turc, vietnamien, polonais, tchèque, japonais, chinois traditionnel et simplifié, bengali, russe, kazakh, ukrainien, norvégien (bokmål) et portugais du Brésil.",
+  "h_look_p4": "Le menu de langue est le globe de la colonne, au-dessus du bouton de thème. Vingt-deux langues, changées en direct : anglais, slovène, espagnol, allemand, français, hongrois, italien, turc, vietnamien, polonais, tchèque, japonais, chinois traditionnel et simplifié, bengali, russe, kazakh, coréen, ukrainien, norvégien (bokmål), suédois et portugais du Brésil.",
   "h_win_p1": "Par défaut, KillerShell ne touche à rien en dehors de sa propre clé de réglages. Si vous voulez que Windows le connaisse, le menu des thèmes a une ligne <b>Associations de fichiers</b> qui l'enregistre : une entrée « Ouvrir avec » pour chaque type de texte que gère l'éditeur, une ligne « Ouvrir dans KillerShell » sur les dossiers, les lecteurs et l'espace vide d'un dossier, une ligne « Ouvrir un terminal KillerShell ici » à côté, et l'entrée qui fait apparaître KillerShell dans Paramètres sous Applications par défaut.",
   "h_win_p2": "S'enregistrer et devenir l'application par défaut sont deux choses différentes, et seule l'une d'elles revient à KillerShell. Depuis Windows 8, la clé qui enregistre votre application par défaut est protégée par un hachage signé, si bien que tout programme qui prétend se définir lui-même par défaut soit falsifie ce hachage, soit cessera de fonctionner quand Windows s'en apercevra. KillerShell s'enregistre, puis ouvre Paramètres sur sa propre entrée pour que vous choisissiez par type de fichier. Rien ne change tant que vous ne l'avez pas fait.",
   "h_win_p3": "<code>.bat</code>, <code>.cmd</code> et <code>.reg</code> reçoivent volontairement une ligne « Modifier avec KillerShell » au lieu de prendre l'action d'ouverture. Un double-clic les exécute ou les fusionne, et changer discrètement ce que cela signifie est le meilleur moyen de faire perdre un après-midi à quelqu'un. <code>.ps1</code> est traité comme du texte ordinaire, car Windows les ouvre déjà dans un éditeur au double-clic.",
@@ -12484,7 +12484,7 @@ Object.assign(window.I18N["tr"], {
   "hx_119": "Pencere tek bir çerçeveyi paylaşan sekiz küçük uygulamadan oluşur, bu yüzden bir tuşun bir değil iki yanıtı olmalıdır: ne tür bir iş yaptığı ve bunu nerede yaptığı. Renkli başlıklar ilkidir: arama, gezinme, sekmeler, görünüm, dosya, düzenleme, yardım. Onların üstündeki düz başlıklar ikincisidir: <b>Her yerde</b>, hangi sekme gösterilirse gösterilsin pencerenin kendisinin çalıştırdığı şeydir; geri kalanlar her biri tek bir sekmeye aittir.",
   "h_look_p2": "Yazı Tipleri iletişim kutusunun üç yuvası vardır: uygulama, terminal ve düzenleyici. Terminal ve düzenleyici listeleri sabit genişlikli yazı tipleriyle süzülür. Yazı tiplerine göz atmak için bir listenin üzerinde tekerleği çevirin; her biri üzerine geldiğiniz anda uygulanır, böylece karar vermeden önce görürsünüz.",
   "h_look_p3": "Tüm uygulamayı yeniden boyutlandırmak için başlık çubuğundaki logonun üzerinde tekerleği çevirin; %70 ile %250 arasında adım başına yaklaşık %2. Bir bit eşlemi uzatmak yerine düzeni yeniden akıtır, bu yüzden metin keskin kalır ve ayar hatırlanır. Kenar çubuğundaki yoğunluk düğmesi ise sonuç satırlarının ne kadar sıkı dizileceğini ayrıca denetler.",
-  "h_look_p4": "Dil menüsü, kenar çubuğunda tema düğmesinin üstündeki küredir. Canlı olarak değiştirilen yirmi dil: İngilizce, Slovence, İspanyolca, Almanca, Fransızca, Macarca, İtalyanca, Türkçe, Vietnamca, Lehçe, Çekçe, Japonca, Geleneksel ve Basitleştirilmiş Çince, Bengalce, Rusça, Kazakça, Ukraynaca, Norveççe (Bokmål) ve Brezilya Portekizcesi.",
+  "h_look_p4": "Dil menüsü, kenar çubuğunda tema düğmesinin üstündeki küredir. Canlı olarak değiştirilen yirmi iki dil: İngilizce, Slovence, İspanyolca, Almanca, Fransızca, Macarca, İtalyanca, Türkçe, Vietnamca, Lehçe, Çekçe, Japonca, Geleneksel ve Basitleştirilmiş Çince, Bengalce, Rusça, Kazakça, Korece, Ukraynaca, Norveççe (Bokmål), İsveççe ve Brezilya Portekizcesi.",
   "hx_116": "KillerShell, Windows kabuğunun simgelerini ödünç almak yerine kendi simgelerini çizer. Klasörlerin kendi çizimleri vardır ve anlamı olanlar genel bir klasör olarak değil kendileri olarak çizilir: Giriş, Masaüstü, Belgeler, İndirilenler, Resimler, Müzik, Videolar, Sık Kullanılanlar, Program Files ve Windows, ayrıca sürücüler ve Bu Bilgisayar. Her sekme türünün de bir simgesi vardır (kabuk, yönetici kabuğu, çıkmış bir kabuk, belge, İşlemler, Olay Görüntüleyicisi, Performans ve Kayıt Defteri Düzenleyicisi) ve ağaç, yer imleri, liste, sekme şeridi, taşma listesi ve son kullanılanlar menüsü hepsi aynı yerden çözümlenir, böylece hiçbir şey komşusundan farklı bir simgeyle kalmaz.",
   "t_hero_sub": "KillerShell'in bir klasör ağacında nasıl gezindiğine, dosya adlarını nasıl eşleştirdiğine, dosyaların ve arşivlerin içini nasıl okuduğuna, onları nasıl taşıdığına, bir kabuğu nasıl barındırdığına, metni nasıl düzenlediğine, bir diskin haritasını nasıl çıkardığına ve işlemleri, performansı, olayları ve kayıt defterini nasıl yönettiğine perde arkasından bir bakış; hepsi hiç dizin oluşturmadan.",
   "t_stack_search_d": "Paralel bir motor: bir gezgin, CPU çekirdeği başına bir çalışanı besler ve sonuçlar arayüze toplu olarak gönderilir, istendiği an iptal edilebilir",
@@ -12560,7 +12560,7 @@ Object.assign(window.I18N["tr"], {
   "f_export_t": "HTML ve CSV dışa aktarma",
   "f_install_t": "Kurun ya da taşınabilir çalıştırın",
   "f_private_t": "Tasarımı gereği gizli",
-  "f_lang_d": "Arayüz yirmi dile çevrilmiştir (İngilizce, Slovence, İspanyolca, Almanca, Fransızca, Macarca, İtalyanca, Türkçe, Vietnamca, Lehçe, Çekçe, Japonca, Geleneksel ve Basitleştirilmiş Çince, Bengalce, Rusça, Kazakça, Ukraynaca, Norveççe (Bokmål) ve Brezilya Portekizcesi) ve araç çubuğundan canlı olarak değiştirilebilir.",
+  "f_lang_d": "Arayüz yirmi iki dile çevrilmiştir (İngilizce, Slovence, İspanyolca, Almanca, Fransızca, Macarca, İtalyanca, Türkçe, Vietnamca, Lehçe, Çekçe, Japonca, Geleneksel ve Basitleştirilmiş Çince, Bengalce, Rusça, Kazakça, Korece, Ukraynaca, Norveççe (Bokmål), İsveççe ve Brezilya Portekizcesi) ve araç çubuğundan canlı olarak değiştirilebilir.",
   "sb_empty": "Ekran görüntüleri<br>yakında",
   "h_nav_start": "Başlangıç",
   "h_nav_results": "Sonuçlarla çalışma",
