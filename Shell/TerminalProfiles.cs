@@ -1,6 +1,6 @@
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using KillerShell.Terminal;
 
 namespace KillerShell.Shell
@@ -37,19 +37,31 @@ namespace KillerShell.Shell
             dialog.ShowDialog();
         }
 
+        /// <summary>
+        /// The terminal strip's profile card: a tile per shown profile with its shortcut (F8 opens the default,
+        /// Shift+F8 Command Prompt), and a last tile that opens the profile manager.
+        /// </summary>
+        internal ContextMenu TerminalProfilesCard()
+        {
+            string? folder = _active.LaunchProfile?.BrowsePath(_active.CurrentFolder) ?? _active.CurrentFolder;
+            string defaultId = Services.ThemeManager.GetSetting("DefaultTerminalProfile") ?? "pwsh";
+            var card = Controls.CardMenus.TileCard();
+            card.Tag = "terminalprofiles";
+            Controls.CardMenus.WatchKeyboardStart(card);
+            var tiles = TerminalProfileStore.Load().Where(entry => !entry.Hidden).Select(entry =>
+                new KillerFamily.Controls.CardTile("", entry.Name,
+                    entry.Id == defaultId ? "F8" : entry.Id == "cmd" ? "Shift+F8" : null,
+                    () => OpenShell(entry.Resolve(), entry.StartFolder.Length > 0 ? null : folder)) { Id = entry.Id }).ToList();
+            tiles.Add(new KillerFamily.Controls.CardTile("", Loc("Str_Term_ManageProfiles"), null,
+                () => Dispatcher.BeginInvoke(new System.Action(() => ManageTerminalProfiles_Click(this, new RoutedEventArgs()))))
+                { Id = "manage", Shown = Loc("Str_Term_Profiles") });
+            card.Items.Add(Controls.CardMenus.Tiles(card, tiles));
+            return card;
+        }
+
         internal void TermProfiles_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is not FrameworkElement button) return;
-            var menu = new ContextMenu { PlacementTarget = button, Placement = PlacementMode.Bottom };
-            var holder = new MenuItem();
-            BuildTerminalProfiles(holder, _active.LaunchProfile?.BrowsePath(_active.CurrentFolder) ?? _active.CurrentFolder);
-            while (holder.Items.Count > 0)
-            {
-                object item = holder.Items[0];
-                holder.Items.RemoveAt(0);
-                menu.Items.Add(item);
-            }
-            menu.IsOpen = true;
+            if (sender is FrameworkElement button) OpenUnder(TerminalProfilesCard(), button);
         }
     }
 }

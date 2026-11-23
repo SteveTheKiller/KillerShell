@@ -166,9 +166,10 @@ public static class SearchWslScopeScenario
         try
         {
             var button = (Button)window.FindName("SearchPanelBtn");
-            button.ContextMenu.IsOpen = true;
-            ((MenuItem)button.ContextMenu.Items[1]).RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
-            button.ContextMenu.IsOpen = false;
+            // The right-click card, filled the way its ContextMenuOpening fills it, then its all-tabs tile.
+            var card = window.SearchScopeCard(button.ContextMenu);
+            KillerShell.Controls.CardMenus.TileButton(card, "tabs")!.RaiseEvent(
+                new RoutedEventArgs(System.Windows.Controls.Primitives.ButtonBase.ClickEvent));
             string roots = window.TitleSearchRootsText();
             Assert.Contains(@"\\wsl.localhost\DemoDistro\home\demo", roots);
         }

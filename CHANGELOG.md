@@ -33,6 +33,9 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - The document bar's settings gear opens a tile card like the other cards. The reading options flip in place and keep it open, and Indent picks its width from a list.
 - The document bar's encoding picker opens a tile card with one tile per encoding, the current one filled.
 - The Export button opens a small card with CSV and HTML tiles and their shortcuts.
+- Storage's depth and minimum-size pickers open tile cards with the current value filled.
+- The search scope chooser opens a tile card, with a fourth tile for searching within the current results.
+- The terminal profile picker opens a tile card with a tile per profile and one for managing them.
 
 ### Added
 

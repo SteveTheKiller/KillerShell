@@ -242,8 +242,9 @@
                            TextOptions.TextFormattingMode="Ideal"
                            shell:WindowChrome.IsHitTestVisibleInChrome="False" Text="{DynamicResource Str_Title_Elevated}"/>
                 <Button x:Name="SearchPanelBtn" Style="{StaticResource ChromeButton}" Content="&#xE721;"
-                        FontSize="{DynamicResource CaptionSearchGlyphSize}" Margin="{DynamicResource CaptionSearchMargin}" Click="SearchPanel_Click" ToolTip="{DynamicResource Str_TT_SearchPanel}">
-                    <Button.ContextMenu><ContextMenu Opened="SearchScopeMenu_Opened"/></Button.ContextMenu>
+                        FontSize="{DynamicResource CaptionSearchGlyphSize}" Margin="{DynamicResource CaptionSearchMargin}" Click="SearchPanel_Click" ToolTip="{DynamicResource Str_TT_SearchPanel}"
+                        ContextMenuOpening="SearchPanelBtn_ContextMenuOpening">
+                    <Button.ContextMenu><ContextMenu/></Button.ContextMenu>
                 </Button>
                 <!-- Language and theme moved to the icon rail (column 0), the way KillerNotes
                      has them. The title bar keeps only the window buttons. -->

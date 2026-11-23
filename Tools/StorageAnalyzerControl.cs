@@ -583,53 +583,36 @@ namespace KillerShell.Tools
             b.MouseLeftButtonUp += (_, e) =>
             {
                 e.Handled = true;
-                var menu = buildMenu();
-                // ANCHORED TO ITS OWN BUTTON, the locked family flyout rule - a toolbar button
-                // opens Bottom with a 4px gap and nothing hand-computed; WPF nudges it back on
-                // screen by itself when it would overflow.
-                menu.PlacementTarget = b;
-                menu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
-                menu.VerticalOffset = 4;
-                menu.IsOpen = true;
+                // A tile card anchored to its own button, the same placement the pane's other cards use.
+                MainWindow.OpenUnder(buildMenu(), b);
             };
             return b;
         }
 
-        private ContextMenu BuildDepthMenu()
-        {
-            var menu = new ContextMenu();
-            foreach (int d in DepthChoices)
-            {
-                int captured = d;
-                var item = new MenuItem
-                {
-                    IsCheckable = true,
-                    IsChecked = _depthLimit == d,
-                    Header = d == 0 ? MainWindow.LocStatic("Str_Storage_DepthAll")
-                                    : MainWindow.LocStatic("Str_Storage_Depth") + " " + d.ToString(CultureInfo.InvariantCulture),
-                };
-                item.Click += (_, _) => SetDepth(captured);
-                menu.Items.Add(item);
-            }
-            return menu;
-        }
+        // One tile per value, the current one filled. Tile ids are the value itself ("0", "2",
+        // "1048576"), which is what the card's tests pick by.
+        internal ContextMenu BuildDepthMenu()
+            => ChoiceCard("storagedepth", DepthChoices.Select(d => new KillerFamily.Controls.CardTile(
+                "",
+                d == 0 ? MainWindow.LocStatic("Str_Storage_DepthAll")
+                       : MainWindow.LocStatic("Str_Storage_Depth") + " " + d.ToString(CultureInfo.InvariantCulture),
+                null, () => SetDepth(d))
+                { Id = d.ToString(CultureInfo.InvariantCulture), Checked = _depthLimit == d }));
 
-        private ContextMenu BuildMinSizeMenu()
+        internal ContextMenu BuildMinSizeMenu()
+            => ChoiceCard("storageminsize", MinSizeChoices.Select(m => new KillerFamily.Controls.CardTile(
+                "",
+                m == 0 ? MainWindow.LocStatic("Str_Storage_MinAll") : FormatSize(m),
+                null, () => SetMinSize(m))
+                { Id = m.ToString(CultureInfo.InvariantCulture), Checked = _minSize == m }));
+
+        private static ContextMenu ChoiceCard(string tag, IEnumerable<KillerFamily.Controls.CardTile> tiles)
         {
-            var menu = new ContextMenu();
-            foreach (long m in MinSizeChoices)
-            {
-                long captured = m;
-                var item = new MenuItem
-                {
-                    IsCheckable = true,
-                    IsChecked = _minSize == m,
-                    Header = m == 0 ? MainWindow.LocStatic("Str_Storage_MinAll") : FormatSize(m),
-                };
-                item.Click += (_, _) => SetMinSize(captured);
-                menu.Items.Add(item);
-            }
-            return menu;
+            var card = Controls.CardMenus.TileCard();
+            card.Tag = tag;
+            Controls.CardMenus.WatchKeyboardStart(card);
+            card.Items.Add(Controls.CardMenus.Tiles(card, tiles.ToArray()));
+            return card;
         }
 
         private void SetDepth(int depth)

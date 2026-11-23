@@ -19,22 +19,24 @@ namespace KillerShell.Shell
             _ => "Str_SearchScope_Window"
         };
 
-        private void SearchScopeMenu_Opened(object sender, RoutedEventArgs e)
+        private static readonly string[] SearchScopeIds = { "window", "tabs", "computer" };
+
+        /// <summary>
+        /// The scope card: one tile per scope with the current one filled, and while the active tab holds results a
+        /// fourth tile that searches within them (filled while it does).
+        /// </summary>
+        internal ContextMenu SearchScopeCard(ContextMenu? into = null)
         {
-            if (sender is not ContextMenu menu) return;
-            menu.Items.Clear();
+            var card = into != null ? Controls.CardMenus.Prepare(into) : Controls.CardMenus.TileCard();
+            card.Tag = "searchscope";
+            Controls.CardMenus.WatchKeyboardStart(card);
             string[] glyphs = { "\uE737", "\uE8F1", "\uE7F4" };
+            var active = Pane.Active;
+            var tiles = new List<KillerFamily.Controls.CardTile>();
             for (int scope = 0; scope < 3; scope++)
             {
                 int selectedScope = scope;
-                var icon = new TextBlock { Text = glyphs[scope] };
-                icon.SetResourceReference(StyleProperty, "MenuIcon");
-                var item = new MenuItem
-                {
-                    Header = Loc(SearchScopeKey(scope)), Icon = icon,
-                    IsCheckable = true, IsChecked = Pane.Active?.PipeFiles == null && _titleSearchScope == scope
-                };
-                item.Click += (_, _) =>
+                tiles.Add(new KillerFamily.Controls.CardTile(glyphs[scope], Loc(SearchScopeKey(scope)), null, () =>
                 {
                     _titleSearchScope = selectedScope;
                     if (Pane.Active != null)
@@ -46,36 +48,32 @@ namespace KillerShell.Shell
                     if (!_searchOpen) ToggleSearchPanel();
                     else ApplySearchPanel(false);
                     FocusFirstTerm();
-                };
-                menu.Items.Add(item);
+                }) { Id = SearchScopeIds[scope], Checked = active?.PipeFiles == null && _titleSearchScope == scope });
             }
-            var active = Pane.Active;
             if (active?.PipeFiles != null || (active != null && !active.IsBrowsing && active.Results.Count > 0))
             {
-                menu.Items.Add(new Separator());
-                var icon = new TextBlock { Text = "\uE71C" };
-                icon.SetResourceReference(StyleProperty, "MenuIcon");
-                var within = new MenuItem
-                {
-                    Header = Loc("Str_Menu_PipeTab"), Icon = icon, InputGestureText = "Ctrl+Shift+F",
-                    IsCheckable = true, IsChecked = active.PipeFiles != null
-                };
-                within.Click += (_, _) =>
+                tiles.Add(new KillerFamily.Controls.CardTile("\uE71C", Loc("Str_Menu_PipeTab"), "Ctrl+Shift+F", () =>
                 {
                     if (Pane.Active != null && !Pane.Active.IsBrowsing && Pane.Active.Results.Count > 0)
                         PipeButton_Click(this, new RoutedEventArgs());
                     else FocusSearchTerms();
-                };
-                menu.Items.Add(within);
+                }) { Id = "within", Checked = active.PipeFiles != null });
             }
+            card.Items.Add(Controls.CardMenus.Tiles(card, tiles));
+            return card;
         }
 
         private void SearchScopeButton_Click(object sender, RoutedEventArgs e)
         {
-            var menu = new ContextMenu { PlacementTarget = SearchScopeButton };
-            SearchScopeButton.ContextMenu = menu;
-            menu.Opened += SearchScopeMenu_Opened;
-            menu.IsOpen = true;
+            var card = SearchScopeCard();
+            SearchScopeButton.ContextMenu = card;
+            OpenUnder(card, SearchScopeButton);
+        }
+
+        // A right-click on the title bar's search button offers the same card, refilled each time it opens.
+        private void SearchPanelBtn_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+            if (SearchPanelBtn.ContextMenu is { } menu) SearchScopeCard(menu);
         }
 
         private void TitleSearchPopup_Closed(object sender, EventArgs e)

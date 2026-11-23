@@ -9,6 +9,7 @@ using System.Windows.Media;
 using KillerShell.Models;
 using KillerShell.Shell;
 using Xunit;
+using CardMenus = KillerShell.Controls.CardMenus;
 
 namespace KillerShell.Tests.Terminal;
 
@@ -115,35 +116,38 @@ public static class SearchScopeResultsScenario
         var scope = view.Named<Button>("SearchScopeButton");
         scope.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
         ShellWindowFixture.PumpUntil(() => scope.ContextMenu?.IsOpen == true);
-        var within = Assert.Single(scope.ContextMenu.Items.OfType<MenuItem>(),
-            item => item.InputGestureText == "Ctrl+Shift+F");
-        Assert.False(within.IsChecked);
-        scope.ContextMenu.IsOpen = false;
-        within.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+        var within = CardMenus.TileButton(scope.ContextMenu, "within")!;
+        Assert.Equal("Ctrl+Shift+F", System.Windows.Automation.AutomationProperties.GetAcceleratorKey(within));
+        Assert.DoesNotContain("within", Filled(scope.ContextMenu));
+        string withinName = System.Windows.Automation.AutomationProperties.GetName(within);
+        within.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
         ShellWindowFixture.PumpUntil(() => pane.Active.PipeFiles != null);
         Assert.Equal(new[] { @"C:\Users\Demo\Documents\sample.txt", @"C:\Users\Demo\Documents\second.txt" },
             pane.Active.PipeFiles!.OrderBy(path => path, StringComparer.Ordinal));
-        Assert.Equal(within.Header, view.Named<TextBlock>("SearchScopeLabel").Text);
+        Assert.Equal(withinName, view.Named<TextBlock>("SearchScopeLabel").Text);
         var firstRefinement = pane.Active;
         firstRefinement.Results.Add(new SearchResult { FilePath = @"C:\Users\Demo\Documents\second.txt", FileName = "second.txt" });
         scope.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
         ShellWindowFixture.PumpUntil(() => scope.ContextMenu.IsOpen);
-        within = Assert.Single(scope.ContextMenu.Items.OfType<MenuItem>(), item => item.IsChecked);
-        scope.ContextMenu.IsOpen = false;
-        within.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+        Assert.Equal(new[] { "within" }, Filled(scope.ContextMenu));
+        CardMenus.TileButton(scope.ContextMenu, "within")!.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
         ShellWindowFixture.PumpUntil(() => !ReferenceEquals(firstRefinement, pane.Active));
         Assert.Equal(new[] { @"C:\Users\Demo\Documents\second.txt" }, pane.Active.PipeFiles);
         scope.RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
         ShellWindowFixture.PumpUntil(() => scope.ContextMenu.IsOpen);
-        Assert.Single(scope.ContextMenu.Items.OfType<MenuItem>(), item => item.IsChecked);
-        var windowScope = scope.ContextMenu.Items.OfType<MenuItem>().First();
-        scope.ContextMenu.IsOpen = false;
-        windowScope.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
+        Assert.Single(Filled(scope.ContextMenu));
+        var windowScope = CardMenus.TileButton(scope.ContextMenu, "window")!;
+        windowScope.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
         Assert.Null(pane.Active.PipeFiles);
-        Assert.Equal(windowScope.Header, view.Named<TextBlock>("SearchScopeLabel").Text);
+        Assert.Equal(System.Windows.Automation.AutomationProperties.GetName(windowScope), view.Named<TextBlock>("SearchScopeLabel").Text);
         Assert.Equal(pane.Active.RootPath, pane.ScopePathLabel.Text);
         view.Close();
     }
+
+    // A turned-on tile carries its accent fill as a local Background; the others keep the style's.
+    private static string[] Filled(ContextMenu card)
+        => CardMenus.Buttons(card).Where(b => b.ReadLocalValue(Control.BackgroundProperty) != DependencyProperty.UnsetValue)
+            .Select(b => b.CommandParameter as string).OfType<string>().ToArray();
 }
 
 public static class SearchFlyoutScrollScenario

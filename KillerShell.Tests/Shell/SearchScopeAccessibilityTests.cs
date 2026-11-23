@@ -50,7 +50,7 @@ public static class SearchScopeAccessibilityScenario
                 var peer = UIElementAutomationPeer.CreatePeerForElement(button);
                 ((IInvokeProvider)peer.GetPattern(PatternInterface.Invoke)).Invoke();
                 ShellWindowFixture.PumpUntil(() => button.ContextMenu?.IsOpen == true);
-                Assert.True(button.ContextMenu.Items.Count >= 3, "The actual scope chooser must open.");
+                Assert.True(KillerShell.Controls.CardMenus.Buttons(button.ContextMenu).Count() >= 3, "The actual scope chooser must open.");
                 button.ContextMenu.IsOpen = false;
                 view.Viewport.ScrollToTop();
                 Rect previous = Rect.Empty;
