@@ -102,7 +102,13 @@ namespace KillerShell.Shell
 
             // The active tab's ink paints the surface it joins. A top row meets the page's bar (the location,
             // shell or document row); a bottom row, or a listing whose location row is put away, meets the page.
-            var (inkBrush, inkScreen) = TabJoinSurface(t, bottom || (WearsLocationRow(t) && pane.MenuBarHidden));
+            // A bottom listing whose status row or bottom details are showing meets the frame's menu surface, not
+            // the list (the frame and DetailsPane are MenuBackgroundBrush, the list is ListPaneBrush).
+            bool meetsFrame = bottom && WearsLocationRow(t)
+                && (pane.PaneStatusBar.Visibility == Visibility.Visible
+                    || (pane.DetailsPane.Visibility == Visibility.Visible && !pane.DetailsPaneOnRight));
+            var (inkBrush, inkScreen) = meetsFrame ? ("MenuBackgroundBrush", false)
+                : TabJoinSurface(t, bottom || (WearsLocationRow(t) && pane.MenuBarHidden));
             pane.ActiveTabInkBrush = inkBrush;
             pane.ActiveTabInkScreen = inkScreen;
 

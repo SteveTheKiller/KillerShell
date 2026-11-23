@@ -370,7 +370,18 @@ public static class TrashPolkaTabSeamScenario
         pages.Add(("terminal", Open(() => window.OpenShell(TerminalProfile.Cmd(), fixture.Root), t => t.Term != null)));
         string text = Path.Combine(fixture.Root, "seam.txt");
         File.WriteAllText(text, "seam\r\n");
-        pages.Add(("editor", Open(() => window.OpenForEditing(text), t => t.Editor != null)));
+        var editor = Open(() => window.OpenForEditing(text), t => t.Editor != null);
+        pages.Add(("editor", editor));
+        // A finished search, as the user runs it: its status row ("1 match") shows under the listing, so a bottom tab
+        // meets that row and not the list surface.
+        editor.Groups[0].Terms[0].Pattern = "seam";
+        editor.CurrentFolder = fixture.Root;
+        pane.RootPathBox.Text = fixture.Root;
+        ShellWindowFixture.Click(window, "SearchButton");
+        ShellWindowFixture.PumpUntil(() => !ReferenceEquals(pane.Active, editor) && pane.Active!.HasSearch
+            && !pane.Active.IsSearching && pane.Active.Results.Count >= 1
+            && pane.PaneStatusBar.Visibility == Visibility.Visible);
+        pages.Add(("search", pane.Active!));
         pages.Add(("performance", Open(window.OpenPerformanceMonitor, t => t.Perf != null)));
         pages.Add(("processes", Open(window.OpenTaskManager, t => t.Procs != null)));
         pages.Add(("events", Open(window.OpenEventViewer, t => t.Events != null)));
