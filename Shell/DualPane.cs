@@ -956,8 +956,8 @@ namespace KillerShell.Shell
             // the rail gap on their right, so the two outer slots trade places.
             double outerLeft  = _treeRight ? edge : om.Left;
             double outerRight = _treeRight ? om.Left : edge;
-            SetPaneMargin(LeftPane, outerLeft, cols ? PaneGutter : outerRight);
-            SetPaneMargin(RightPane, cols ? om.Left : outerLeft, outerRight);
+            SetPaneMargin(LeftPane, outerLeft, cols ? PaneGutter : outerRight, _appScale != 1.0);
+            SetPaneMargin(RightPane, cols ? om.Left : outerLeft, outerRight, _appScale != 1.0);
         }
 
         // The -1 top tucks the pane's top border under the tab strip, so the active tab and the
@@ -967,7 +967,10 @@ namespace KillerShell.Shell
         // so with one tab the row above is zero high and -1 puts the pane's top border one pixel
         // outside the control, where it is clipped away - the ring came out open along its top
         // edge. Nothing to tuck under means nothing to pull up by.
-        private static void SetPaneMargin(FilePane p, double left, double right)
+        // At app size with the tabs on top, the pane tucks one stroke further up. Its stroke and the active tab's
+        // foot otherwise end on the same part-covered device row, and the tab cannot hide a stroke that shares
+        // its edge, so the stroke showed there as a line under the tab. Tabs below never had it.
+        private static void SetPaneMargin(FilePane p, double left, double right, bool scaled)
         {
             // Top/left/bottom come from PaneOuterMargin and TabBarMargin, NOT from literals. The
             // -1 that used to be hardcoded here is what left a persistent line under the
@@ -985,6 +988,7 @@ namespace KillerShell.Shell
 
             bool bottom = Grid.GetRow(p.TabBar) == 2;
             double overlap = p.TabBar.Visibility == Visibility.Visible ? om.Top : 0;
+            if (scaled && !bottom && overlap != 0) overlap -= p.ResultsPane.BorderThickness.Top;
             p.ResultsPane.Margin  = new Thickness(left, bottom ? 0 : overlap, right,
                 om.Bottom + (bottom ? overlap : 0));
             p.TabFadeGhost.Margin = p.ResultsPane.Margin;

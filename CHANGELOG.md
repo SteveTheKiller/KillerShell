@@ -14,7 +14,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this
 - Making a new folder in the file picker no longer freezes the window on a share that stopped answering.
 - A This PC tab restored from the last session lists the drives instead of opening empty, and shows the computer icon in the tab strip.
 - The Performance page wraps on a narrow pane and its cards scroll to the page's foot, so nothing runs off the edge or gets cut off.
-- At 110% and 125% app size the active tab joins its page without a line with the tabs below, and at 125% with the tabs above.
+- At 110% and 125% app size the active tab joins its page without a line, with the tabs above or below.
 - Under Trash Polka the Performance page, the Storage map, the file picker, drop-down lists and flyouts show the theme's surfaces and ink instead of flat or too-dark fills.
 - On 98SE the title bar buttons, tabs, menus, dialogs, window frame and icon rail match Windows 98.
 - Confirm and quit dialogs size to what they say, so a short prompt like Quit is narrower.

@@ -20,6 +20,7 @@ namespace KillerShell.Shell
 
         partial void ApplyAppScaleTo(double scale, ref bool handled)
         {
+            ApplyPaneMargins();      // DualPane.cs: the top-tab tuck depends on the scale
             LeftPane.QueueSnap();    // FilePane.xaml.cs: the panes' edges move to new device pixels
             RightPane.QueueSnap();
         }

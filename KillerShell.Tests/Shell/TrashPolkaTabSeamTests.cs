@@ -48,6 +48,7 @@ public sealed class TrashPolkaTabSeamTests
     [Theory]
     [InlineData("Red", "bottom", "single", "1.1")]
     [InlineData("Red", "bottom", "dual", "1.1")]
+    [InlineData("Red", "top", "single", "1.1")]
     [InlineData("Red", "top", "single", "1.25")]
     [InlineData("Orange", "bottom", "single", "1.25")]
     public Task ActiveTabsJoinTheirPagesAtAppSize(string accent, string placement, string layout, string scale)
